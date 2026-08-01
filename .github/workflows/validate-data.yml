@@ -25,8 +25,31 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install -r requirements-dev.txt
 
+      - name: Fetch current Olmos Park boundary
+        run: |
+          python scripts/fetch_tigerweb_place.py \
+            --geoid 4853988 \
+            --record-id TX:municipality:olmos-park:at_large:CITYWIDE \
+            --geometry-id olmos-park-citywide \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/raw/tigerweb-incorporated-place-4853988.geojson \
+            --output build/geojson/olmos_park_citywide.geojson
+
       - name: Run automated tests
         run: pytest -q
 
       - name: Validate normalized datasets
         run: python scripts/validate.py
+
+      - name: Validate generated geometry joins
+        run: |
+          python scripts/validate_geojson.py \
+            --normalized-dir data/normalized \
+            --geojson-dir build/geojson
+
+      - name: Upload generated Census boundary
+        uses: actions/upload-artifact@v4
+        with:
+          name: olmos-park-boundary
+          path: build/
+          if-no-files-found: error

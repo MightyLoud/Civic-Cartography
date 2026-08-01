@@ -1,0 +1,5 @@
+raw_id,place_fp,state,county,municipality,election_date,office_raw,candidate_full_name_raw,filing_status_raw,source_url,source_retrieved_at,source_confidence,qa_status,notes
+OLMOSPARK-001,53988,Texas,Bexar,Olmos Park,2026-05-02,Mayor,Erin Harrison,Unopposed - certified,https://www.olmospark.org/391/Election-Information,2026-08-01,high,OK,Final candidate and current officeholder for the 2026-2028 term.
+OLMOSPARK-002,53988,Texas,Bexar,Olmos Park,2026-05-02,City Council Place 4,James Griffin,Unopposed - certified,https://www.olmospark.org/391/Election-Information,2026-08-01,high,OK,Final candidate and current officeholder for the 2026-2028 term.
+OLMOSPARK-WITHDRAWN-004,53988,Texas,Bexar,Olmos Park,2026-05-02,City Council Place 4,Adam Harden,Withdrawn,https://www.olmospark.org/391/Election-Information,2026-08-01,high,OK,Retained as raw filing history but excluded from final officeholder context.
+OLMOSPARK-003,53988,Texas,Bexar,Olmos Park,2026-05-02,City Council Place 5,Will Brooks,Unopposed - certified,https://www.olmospark.org/391/Election-Information,2026-08-01,high,OK,Final candidate and current officeholder for the 2026-2028 term.
