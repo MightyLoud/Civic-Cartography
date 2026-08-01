@@ -5,17 +5,15 @@ on:
   pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository branch
+      - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -77,30 +75,13 @@ jobs:
             --raw-output build/arlington/raw/city-council-districts-3-4-5.geojson \
             --output build/arlington/geojson/arlington_districts_3_4_5.geojson
 
-      - name: Commit Arlington district release files once
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+      - name: Verify committed Arlington districts match official GIS
         run: |
-          mkdir -p data/raw/arlington data/geojson data/normalized
-          cp build/arlington/raw/city-council-districts-3-4-5.geojson \
-            data/raw/arlington/city-council-districts-3-4-5.geojson
-          cp build/arlington/geojson/arlington_districts_3_4_5.geojson \
-            data/geojson/arlington_districts_3_4_5.geojson
-          cat > data/normalized/arlington_2026_districts.csv <<'CSV'
-          record_id,state_fips,state_abbr,jurisdiction_type,jurisdiction_name,district_type,district_id,district_name,source_url,source_retrieved_at,source_confidence,qa_status,parity_ok,office_name,election_date,geometry_source_url,geometry_id,parent_record_id,notes
-          TX:municipality:arlington:district:3,48,TX,municipality,Arlington,district,3,District 3,https://www.arlingtontx.gov/Government/City-Government/City-Council/City-Council-District-Map,2026-08-01,high,approved,TRUE,City Council District 3,2026-05-02,https://gis2.arlingtontx.gov/agsext2/rest/services/OpenData/OD_PoliticalBoundary/MapServer/0,arlington-district-3,,"Single-member district; Nikkie Hunter elected in the 2026 bounded contest."
-          TX:municipality:arlington:district:4,48,TX,municipality,Arlington,district,4,District 4,https://www.arlingtontx.gov/Government/City-Government/City-Council/City-Council-District-Map,2026-08-01,high,approved,TRUE,City Council District 4,2026-05-02,https://gis2.arlingtontx.gov/agsext2/rest/services/OpenData/OD_PoliticalBoundary/MapServer/0,arlington-district-4,,"Single-member district; Tom Ware elected in the 2026 bounded contest."
-          TX:municipality:arlington:district:5,48,TX,municipality,Arlington,district,5,District 5,https://www.arlingtontx.gov/Government/City-Government/City-Council/City-Council-District-Map,2026-08-01,high,approved,TRUE,City Council District 5,2026-05-02,https://gis2.arlingtontx.gov/agsext2/rest/services/OpenData/OD_PoliticalBoundary/MapServer/0,arlington-district-5,,"Single-member district; Brittney Garcia-Dumas elected in the 2026 bounded contest."
-          CSV
-          sed -i 's/^          //' data/normalized/arlington_2026_districts.csv
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/raw/arlington/city-council-districts-3-4-5.geojson \
-            data/geojson/arlington_districts_3_4_5.geojson \
-            data/normalized/arlington_2026_districts.csv
-          if ! git diff --cached --quiet; then
-            git commit -m "Add Arlington district release files"
-            git push
-          fi
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/arlington/city-council-districts-3-4-5.geojson \
+            --fresh-raw build/arlington/raw/city-council-districts-3-4-5.geojson \
+            --committed-canonical data/geojson/arlington_districts_3_4_5.geojson \
+            --fresh-canonical build/arlington/geojson/arlington_districts_3_4_5.geojson
 
       - name: Run automated tests
         run: pytest -q
