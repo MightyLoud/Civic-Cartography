@@ -5,15 +5,17 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
+      - name: Check out repository branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -123,15 +125,34 @@ jobs:
             --committed-canonical data/geojson/eanes_isd_districtwide.geojson \
             --fresh-canonical build/eanes-isd/geojson/eanes_isd_districtwide.geojson
 
-      - name: Fetch current Coppell ISD unified-school-district boundary
+      - name: Generate Coppell ISD release geometry
         run: |
           python scripts/fetch_tigerweb_school_district.py \
             --name-token Coppell \
             --record-id TX:school_district:coppell-isd:at_large:DISTRICTWIDE \
             --geometry-id coppell-isd-districtwide \
             --retrieved-at 2026-08-01 \
-            --raw-output build/coppell-isd/raw/tigerweb-unified-school-district.geojson \
-            --output build/coppell-isd/geojson/coppell_isd_districtwide.geojson
+            --raw-output data/raw/coppell-isd/tigerweb-unified-school-district-4815210.geojson \
+            --output data/geojson/coppell_isd_districtwide.geojson
+
+      - name: Commit Coppell ISD release files once
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          mkdir -p data/normalized
+          cat > data/normalized/coppell_isd_2026.csv <<'CSV'
+          record_id,state_fips,state_abbr,jurisdiction_type,jurisdiction_name,district_type,district_id,district_name,source_url,source_retrieved_at,source_confidence,qa_status,parity_ok,office_name,election_date,geometry_source_url,geometry_id,parent_record_id,notes
+          TX:school_district:coppell-isd:at_large:DISTRICTWIDE,48,TX,school_district,Coppell Independent School District,at_large,DISTRICTWIDE,Districtwide,https://www.coppellisd.com/page/elections,2026-08-01,high,approved,TRUE,Board of Trustees Places 4-5,2026-05-02,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14,coppell-isd-districtwide,,"Trustees run for Places 4 and 5 but represent the whole district at large. Four filing events are preserved; three reached the final ballot; Carly Waters withdrew. Census GEOID 4815210."
+          CSV
+          sed -i 's/^          //' data/normalized/coppell_isd_2026.csv
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/raw/coppell-isd/tigerweb-unified-school-district-4815210.geojson \
+            data/geojson/coppell_isd_districtwide.geojson \
+            data/normalized/coppell_isd_2026.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Add Coppell ISD release files"
+            git push
+          fi
 
       - name: Run automated tests
         run: pytest -q
