@@ -1,0 +1,3 @@
+district_id,office_name,officeholder_name,first_elected,term_expires,source_url,source_retrieved_at,source_confidence,notes
+1,City Council District 1,Mauricio Galante,2024-05,2027-05,https://www.arlingtontx.gov/Government/City-Government/City-Council/City-Council-Members/Council-Member-Mauricio-Galante-District-1,2026-08-01,high,"Official City profile states Galante represents District 1 and was first elected in May 2024."
+2,City Council District 2,Raul H. Gonzalez,2020-11,,https://www.arlingtontx.gov/Government/City-Government/City-Council/City-Council-Members/Council-Member-Raul-H.-Gonzalez-District-2,2026-08-01,high,"Official City profile states Gonzalez represents District 2 and was first elected in November 2020."
