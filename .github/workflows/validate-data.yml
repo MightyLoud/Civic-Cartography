@@ -105,6 +105,16 @@ jobs:
             --committed-canonical data/geojson/arlington_districts_1_2.geojson \
             --fresh-canonical build/arlington-1-2/geojson/arlington_districts_1_2.geojson
 
+      - name: Fetch current Eanes ISD unified-school-district boundary
+        run: |
+          python scripts/fetch_tigerweb_school_district.py \
+            --name-token Eanes \
+            --record-id TX:school_district:eanes-isd:at_large:DISTRICTWIDE \
+            --geometry-id eanes-isd-districtwide \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/eanes-isd/raw/tigerweb-unified-school-district.geojson \
+            --output build/eanes-isd/geojson/eanes_isd_districtwide.geojson
+
       - name: Run automated tests
         run: pytest -q
 
