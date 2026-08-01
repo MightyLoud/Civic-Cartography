@@ -1,5 +1,9 @@
 # Arlington, Texas — District Geometry Proof
 
+## Status
+
+Released. The bounded Districts 3, 4, and 5 pipeline passed permanent read-only CI in GitHub Actions run #84.
+
 ## Purpose
 
 Arlington is the first Civic Cartography jurisdiction that requires multiple official district polygons and one-to-one district joins. The bounded scope is the three single-member City Council districts contested in the May 2, 2026 election: Districts 3, 4, and 5.
@@ -13,6 +17,7 @@ Arlington is the first Civic Cartography jurisdiction that requires multiple off
 - Jurisdiction type: municipality
 - District geometry source: City of Arlington OpenData Political Boundary service
 - ArcGIS layer: City Council District (`MapServer/0`)
+- Stable source district field: `DISTRICTID`
 - Election model in scope: single-member districts
 
 ## 2026 bounded election context
@@ -25,7 +30,7 @@ Arlington is the first Civic Cartography jurisdiction that requires multiple off
 
 Seven candidate rows are preserved under `data/raw/arlington/2026-district-candidates.csv`.
 
-## Planned normalized identifiers
+## Released identifiers
 
 ```text
 TX:municipality:arlington:district:3  -> arlington-district-3
@@ -33,9 +38,9 @@ TX:municipality:arlington:district:4  -> arlington-district-4
 TX:municipality:arlington:district:5  -> arlington-district-5
 ```
 
-## Target parity
+## Completed parity
 
-| Layer | Expected count |
+| Layer | Count |
 |---|---:|
 | Candidate evidence rows | 7 |
 | Normalized district rows | 3 |
@@ -43,16 +48,26 @@ TX:municipality:arlington:district:5  -> arlington-district-5
 | Missing joins | 0 |
 | Extra joins | 0 |
 
+All three normalized records have `qa_status = approved` and `parity_ok = TRUE`.
+
+## Release files
+
+- Candidate evidence: `data/raw/arlington/2026-district-candidates.csv`
+- Source manifest: `data/raw/arlington/source-manifest.csv`
+- Raw official geometry: `data/raw/arlington/city-council-districts-3-4-5.geojson`
+- Normalized records: `data/normalized/arlington_2026_districts.csv`
+- Canonical geometry: `data/geojson/arlington_districts_3_4_5.geojson`
+
 ## Source and QA rules
 
 1. Use only official City of Arlington district geometry from the ArcGIS service.
 2. Query and preserve Districts 3, 4, and 5 exactly; do not simplify them into approximate shapes.
 3. Keep the raw ArcGIS response separate from canonical map-ready GeoJSON.
-4. Canonical features must carry unique `geometry_id` and matching `record_id` values.
-5. District identifiers must resolve unambiguously to `3`, `4`, and `5`.
-6. Current-source drift must fail CI when district geometry or stable source attributes change.
-7. Mayor and at-large Districts 6, 7, and 8 are outside this issue.
+4. Canonical features carry unique `geometry_id` and matching `record_id` values.
+5. District identifiers resolve unambiguously to `3`, `4`, and `5` through `DISTRICTID`.
+6. CI regenerates the official features and fails on geometry, stable source-attribute, district-ID, or canonical-join drift.
+7. Mayor and at-large Districts 6, 7, and 8 remain outside this bounded release.
 
-## Completion rule
+## Result
 
-Arlington is not complete until raw candidate evidence exists, raw district geometry exists, three normalized rows exist, three canonical features exist, QA is approved, `parity_ok = TRUE`, CI is green, the pull request is merged, and the Jurisdiction Portfolio reflects the released state.
+Arlington proves the existing Civic Cartography pattern can move from one-feature at-large municipalities to a multi-feature district layer without weakening raw evidence, QA, parity, or source-drift controls.
