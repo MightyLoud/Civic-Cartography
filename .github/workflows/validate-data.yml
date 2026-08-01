@@ -32,16 +32,34 @@ jobs:
             --record-id TX:municipality:olmos-park:at_large:CITYWIDE \
             --geometry-id olmos-park-citywide \
             --retrieved-at 2026-08-01 \
-            --raw-output build/raw/tigerweb-incorporated-place-4853988.geojson \
-            --output build/geojson/olmos_park_citywide.geojson
+            --raw-output build/olmos-park/raw/tigerweb-incorporated-place-4853988.geojson \
+            --output build/olmos-park/geojson/olmos_park_citywide.geojson
 
-      - name: Verify committed boundary matches Census
+      - name: Verify committed Olmos Park boundary matches Census
         run: |
           python scripts/compare_tigerweb_snapshot.py \
             --committed-raw data/raw/olmos-park/tigerweb-incorporated-place-4853988.geojson \
-            --fresh-raw build/raw/tigerweb-incorporated-place-4853988.geojson \
+            --fresh-raw build/olmos-park/raw/tigerweb-incorporated-place-4853988.geojson \
             --committed-canonical data/geojson/olmos_park_citywide.geojson \
-            --fresh-canonical build/geojson/olmos_park_citywide.geojson
+            --fresh-canonical build/olmos-park/geojson/olmos_park_citywide.geojson
+
+      - name: Fetch current Addison boundary
+        run: |
+          python scripts/fetch_tigerweb_place.py \
+            --geoid 4801240 \
+            --record-id TX:municipality:addison:at_large:CITYWIDE \
+            --geometry-id addison-citywide \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/addison/raw/tigerweb-incorporated-place-4801240.geojson \
+            --output build/addison/geojson/addison_citywide.geojson
+
+      - name: Verify committed Addison boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/addison/tigerweb-incorporated-place-4801240.geojson \
+            --fresh-raw build/addison/raw/tigerweb-incorporated-place-4801240.geojson \
+            --committed-canonical data/geojson/addison_citywide.geojson \
+            --fresh-canonical build/addison/geojson/addison_citywide.geojson
 
       - name: Run automated tests
         run: pytest -q
@@ -49,12 +67,12 @@ jobs:
       - name: Validate normalized datasets
         run: python scripts/validate.py
 
-      - name: Validate committed geometry joins
+      - name: Validate geometry joins
         run: python scripts/validate_geojson.py
 
-      - name: Upload generated Census boundary
+      - name: Upload generated boundary checks
         uses: actions/upload-artifact@v4
         with:
-          name: olmos-park-boundary
+          name: civic-boundary-checks
           path: build/
           if-no-files-found: error
