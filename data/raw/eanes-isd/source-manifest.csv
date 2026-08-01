@@ -1,0 +1,4 @@
+source_id,source_type,agency,title,url,retrieved_at,confidence,use
+eanes-trustee-election-2026,election_structure_results,Eanes Independent School District,Trustee Election,https://www.eanesisd.net/board/election,2026-08-01,high,Confirms all trustee positions are at large and identifies the official winners for Places 1 2 and 3.
+eanes-official-canvass-2026,election_results,Eanes Independent School District,Eanes ISD May 2026 Election Official Canvass Results,https://www.eanesisd.net/fs/resource-manager/view/53f7fbc6-f08f-4ec6-b2e1-1476605a2b52,2026-08-01,high,Official canvass linked from the district election page.
+eanes-unified-school-boundary,geometry,U.S. Census Bureau,TIGERweb Current Unified School Districts,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14,2026-08-01,high,Current January 1 2025 unified-school-district polygon source.
