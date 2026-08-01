@@ -5,15 +5,17 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
+      - name: Check out repository branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -52,6 +54,18 @@ jobs:
             --retrieved-at 2026-08-01 \
             --raw-output data/raw/addison/tigerweb-incorporated-place-4801240.geojson \
             --output data/geojson/addison_citywide.geojson
+
+      - name: Commit Addison boundary snapshot once
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/raw/addison/tigerweb-incorporated-place-4801240.geojson \
+            data/geojson/addison_citywide.geojson
+          if ! git diff --cached --quiet; then
+            git commit -m "Add Addison Census boundary snapshot"
+            git push
+          fi
 
       - name: Run automated tests
         run: pytest -q
