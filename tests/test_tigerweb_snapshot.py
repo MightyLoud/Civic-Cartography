@@ -53,6 +53,20 @@ def test_raw_service_ids_are_ignored(tmp_path: Path) -> None:
     assert compare_files(committed, fresh, canonical=False) == []
 
 
+def test_response_metadata_is_ignored(tmp_path: Path) -> None:
+    committed = tmp_path / "committed.json"
+    fresh = tmp_path / "fresh.json"
+    committed_payload = raw_payload()
+    fresh_payload = raw_payload()
+    fresh_payload["exceededTransferLimit"] = False
+    fresh_payload["metadata"] = {"requestId": "volatile"}
+    fresh_payload["features"][0]["service_metadata"] = {"cache": "miss"}
+    write(committed, committed_payload)
+    write(fresh, fresh_payload)
+
+    assert compare_files(committed, fresh, canonical=False) == []
+
+
 def test_canonical_service_ids_are_ignored(tmp_path: Path) -> None:
     committed = tmp_path / "committed.json"
     fresh = tmp_path / "fresh.json"
