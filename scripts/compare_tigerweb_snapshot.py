@@ -25,11 +25,9 @@ def load_json(path: Path) -> dict[str, Any]:
     return payload
 
 
-def normalize_snapshot(payload: dict[str, Any], *, canonical: bool) -> dict[str, Any]:
-    """Project a response to stable civic properties and geometry only."""
-    normalized = copy.deepcopy(payload)
-    features = normalized.get("features")
-    if normalized.get("type") != "FeatureCollection" or not isinstance(features, list):
+def extract_feature(payload: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    features = payload.get("features")
+    if payload.get("type") != "FeatureCollection" or not isinstance(features, list):
         raise ValueError("snapshot must be a GeoJSON FeatureCollection")
     if len(features) != 1:
         raise ValueError(f"snapshot must contain exactly one feature; found {len(features)}")
@@ -44,7 +42,12 @@ def normalize_snapshot(payload: dict[str, Any], *, canonical: bool) -> dict[str,
         raise ValueError("snapshot feature properties must be an object")
     if not isinstance(geometry, dict):
         raise ValueError("snapshot feature geometry must be an object")
+    return properties, geometry
 
+
+def stable_source_view(payload: dict[str, Any], *, canonical: bool) -> dict[str, Any]:
+    """Return source attributes and geometry, excluding service bookkeeping."""
+    properties, geometry = extract_feature(copy.deepcopy(payload))
     source_properties = properties.get("source_attributes") if canonical else properties
     if not isinstance(source_properties, dict):
         if canonical:
@@ -54,9 +57,21 @@ def normalize_snapshot(payload: dict[str, Any], *, canonical: bool) -> dict[str,
     for field in VOLATILE_SOURCE_FIELDS:
         source_properties.pop(field, None)
 
-    # ArcGIS may add top-level response metadata or feature-local service IDs.
-    # Neither is part of the civic record. Keep only the canonical GeoJSON
-    # feature content that affects identity, attribution, joins, or geometry.
+    return {
+        "properties": source_properties,
+        "geometry": geometry,
+    }
+
+
+def stable_canonical_view(payload: dict[str, Any]) -> dict[str, Any]:
+    """Return canonical join, attribution, source attributes, and geometry."""
+    properties, geometry = extract_feature(copy.deepcopy(payload))
+    source_properties = properties.get("source_attributes")
+    if not isinstance(source_properties, dict):
+        raise ValueError("canonical snapshot must include source_attributes")
+    for field in VOLATILE_SOURCE_FIELDS:
+        source_properties.pop(field, None)
+
     return {
         "type": "FeatureCollection",
         "features": [
@@ -69,25 +84,33 @@ def normalize_snapshot(payload: dict[str, Any], *, canonical: bool) -> dict[str,
     }
 
 
-def compare_files(
-    committed: Path,
-    fresh: Path,
-    *,
-    canonical: bool,
-) -> list[str]:
-    errors: list[str] = []
+def compare_raw_and_canonical(raw_path: Path, canonical_path: Path) -> list[str]:
     try:
-        committed_payload = normalize_snapshot(load_json(committed), canonical=canonical)
-        fresh_payload = normalize_snapshot(load_json(fresh), canonical=canonical)
+        raw_view = stable_source_view(load_json(raw_path), canonical=False)
+        canonical_view = stable_source_view(load_json(canonical_path), canonical=True)
     except ValueError as exc:
         return [str(exc)]
 
-    if committed_payload != fresh_payload:
-        kind = "canonical" if canonical else "raw"
-        errors.append(
-            f"{kind} TIGERweb snapshot changed: {committed} does not match {fresh}"
-        )
-    return errors
+    if raw_view != canonical_view:
+        return [
+            f"raw and canonical snapshots disagree: {raw_path} does not support "
+            f"{canonical_path}"
+        ]
+    return []
+
+
+def compare_canonical_files(committed: Path, fresh: Path) -> list[str]:
+    try:
+        committed_view = stable_canonical_view(load_json(committed))
+        fresh_view = stable_canonical_view(load_json(fresh))
+    except ValueError as exc:
+        return [str(exc)]
+
+    if committed_view != fresh_view:
+        return [
+            f"canonical TIGERweb snapshot changed: {committed} does not match {fresh}"
+        ]
+    return []
 
 
 def main() -> int:
@@ -98,12 +121,20 @@ def main() -> int:
     parser.add_argument("--fresh-canonical", type=Path, required=True)
     args = parser.parse_args()
 
-    errors = compare_files(args.committed_raw, args.fresh_raw, canonical=False)
+    errors = compare_raw_and_canonical(
+        args.committed_raw,
+        args.committed_canonical,
+    )
     errors.extend(
-        compare_files(
+        compare_raw_and_canonical(
+            args.fresh_raw,
+            args.fresh_canonical,
+        )
+    )
+    errors.extend(
+        compare_canonical_files(
             args.committed_canonical,
             args.fresh_canonical,
-            canonical=True,
         )
     )
 
