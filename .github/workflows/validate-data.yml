@@ -72,16 +72,30 @@ jobs:
             --geometry-id-prefix arlington-district \
             --source-agency "City of Arlington" \
             --retrieved-at 2026-08-01 \
-            --raw-output build/arlington/raw/city-council-districts-3-4-5.geojson \
-            --output build/arlington/geojson/arlington_districts_3_4_5.geojson
+            --raw-output build/arlington-3-5/raw/city-council-districts-3-4-5.geojson \
+            --output build/arlington-3-5/geojson/arlington_districts_3_4_5.geojson
 
-      - name: Verify committed Arlington districts match official GIS
+      - name: Verify committed Arlington districts 3, 4, and 5
         run: |
           python scripts/compare_arcgis_district_snapshot.py \
             --committed-raw data/raw/arlington/city-council-districts-3-4-5.geojson \
-            --fresh-raw build/arlington/raw/city-council-districts-3-4-5.geojson \
+            --fresh-raw build/arlington-3-5/raw/city-council-districts-3-4-5.geojson \
             --committed-canonical data/geojson/arlington_districts_3_4_5.geojson \
-            --fresh-canonical build/arlington/geojson/arlington_districts_3_4_5.geojson
+            --fresh-canonical build/arlington-3-5/geojson/arlington_districts_3_4_5.geojson
+
+      - name: Build Arlington council districts 1 and 2
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://gis2.arlingtontx.gov/agsext2/rest/services/OpenData/OD_PoliticalBoundary/MapServer/0 \
+            --district-ids 1,2 \
+            --district-field DISTRICTID \
+            --jurisdiction-name Arlington \
+            --record-id-prefix TX:municipality:arlington:district \
+            --geometry-id-prefix arlington-district \
+            --source-agency "City of Arlington" \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/arlington-1-2/raw/city-council-districts-1-2.geojson \
+            --output build/arlington-1-2/geojson/arlington_districts_1_2.geojson
 
       - name: Run automated tests
         run: pytest -q
