@@ -35,17 +35,21 @@ jobs:
             --raw-output build/raw/tigerweb-incorporated-place-4853988.geojson \
             --output build/geojson/olmos_park_citywide.geojson
 
+      - name: Verify committed boundary matches Census
+        run: |
+          cmp data/raw/olmos-park/tigerweb-incorporated-place-4853988.geojson \
+            build/raw/tigerweb-incorporated-place-4853988.geojson
+          cmp data/geojson/olmos_park_citywide.geojson \
+            build/geojson/olmos_park_citywide.geojson
+
       - name: Run automated tests
         run: pytest -q
 
       - name: Validate normalized datasets
         run: python scripts/validate.py
 
-      - name: Validate generated geometry joins
-        run: |
-          python scripts/validate_geojson.py \
-            --normalized-dir data/normalized \
-            --geojson-dir build/geojson
+      - name: Validate committed geometry joins
+        run: python scripts/validate_geojson.py
 
       - name: Upload generated Census boundary
         uses: actions/upload-artifact@v4
