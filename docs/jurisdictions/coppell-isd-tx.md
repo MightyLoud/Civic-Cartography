@@ -2,7 +2,7 @@
 
 ## Status
 
-Released candidate. The complete raw → normalized → QA → GeoJSON chain passed permanent read-only validation in GitHub Actions run #132.
+Released candidate. The complete raw → normalized → QA → GeoJSON chain passed permanent read-only validation in GitHub Actions run #134.
 
 ## Purpose
 
