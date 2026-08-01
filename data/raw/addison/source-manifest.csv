@@ -1,0 +1,5 @@
+source_id,source_type,agency,title,url,retrieved_at,confidence,use
+addison-elections-2026,election_filings,Town of Addison,May 2026 General Election Candidates,https://www.addisontx.gov/Government/Elections,2026-08-01,high,Authoritative candidate list election date and three-seat at-large contest rules.
+addison-results-2026,election_results,Town of Addison,New Council Members Sworn in at May 12 Council Meeting,https://www.addisontx.gov/News-articles/2026-News/New-Council-Members-Sworn-in-at-May-12-Council-Meeting,2026-08-01,high,Authoritative canvassed winner confirmation for Blanton DeFrancisco and Gardner.
+addison-council-structure,governance_structure,Town of Addison,City Council,https://www.addisontx.gov/Government/City-Council,2026-08-01,high,Confirms one mayor and six council members elected at large for two-year terms.
+addison-census-boundary,geometry,U.S. Census Bureau,TIGERweb Incorporated Places current layer,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/28,2026-08-01,high,Current incorporated-place boundary source for GEOID 4801240.
