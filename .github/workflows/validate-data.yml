@@ -123,6 +123,16 @@ jobs:
             --committed-canonical data/geojson/eanes_isd_districtwide.geojson \
             --fresh-canonical build/eanes-isd/geojson/eanes_isd_districtwide.geojson
 
+      - name: Fetch current Coppell ISD unified-school-district boundary
+        run: |
+          python scripts/fetch_tigerweb_school_district.py \
+            --name-token Coppell \
+            --record-id TX:school_district:coppell-isd:at_large:DISTRICTWIDE \
+            --geometry-id coppell-isd-districtwide \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/coppell-isd/raw/tigerweb-unified-school-district.geojson \
+            --output build/coppell-isd/geojson/coppell_isd_districtwide.geojson
+
       - name: Run automated tests
         run: pytest -q
 
