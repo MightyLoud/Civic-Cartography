@@ -37,10 +37,11 @@ jobs:
 
       - name: Verify committed boundary matches Census
         run: |
-          cmp data/raw/olmos-park/tigerweb-incorporated-place-4853988.geojson \
-            build/raw/tigerweb-incorporated-place-4853988.geojson
-          cmp data/geojson/olmos_park_citywide.geojson \
-            build/geojson/olmos_park_citywide.geojson
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/olmos-park/tigerweb-incorporated-place-4853988.geojson \
+            --fresh-raw build/raw/tigerweb-incorporated-place-4853988.geojson \
+            --committed-canonical data/geojson/olmos_park_citywide.geojson \
+            --fresh-canonical build/geojson/olmos_park_citywide.geojson
 
       - name: Run automated tests
         run: pytest -q
