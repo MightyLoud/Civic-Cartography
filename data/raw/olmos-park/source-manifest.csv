@@ -1,0 +1,4 @@
+source_id,source_type,source_url,authority,vintage,retrieved_at,used_for,notes
+olmos-election-2026,official municipal election page,https://www.olmospark.org/391/Election-Information,City of Olmos Park,2026 election,2026-08-01,"Election scope, candidates, withdrawal, at-large structure, cancellation",Primary source for 2026 candidate and election facts.
+olmos-council-roster,official municipal roster,https://www.olmospark.org/378/City-Council,City of Olmos Park,current as retrieved,2026-08-01,"Governing-body composition, current officeholders, term dates",Confirms Mayor plus five council members.
+census-tigerweb-place,official federal GIS service,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/28,U.S. Census Bureau,2025-01-01,2026-08-01,"Incorporated-place boundary and Census GEOID 4853988",GeoJSON is fetched reproducibly with scripts/fetch_tigerweb_place.py.
