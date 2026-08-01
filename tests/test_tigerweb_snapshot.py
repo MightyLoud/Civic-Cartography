@@ -1,7 +1,10 @@
 import json
 from pathlib import Path
 
-from scripts.compare_tigerweb_snapshot import compare_files
+from scripts.compare_tigerweb_snapshot import (
+    compare_canonical_files,
+    compare_raw_and_canonical,
+)
 
 
 def raw_payload(*, object_id: int = 1, x: float = -98.49) -> dict:
@@ -44,27 +47,37 @@ def write(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload), encoding="utf-8")
 
 
-def test_raw_service_ids_are_ignored(tmp_path: Path) -> None:
-    committed = tmp_path / "committed.json"
-    fresh = tmp_path / "fresh.json"
-    write(committed, raw_payload(object_id=1))
-    write(fresh, raw_payload(object_id=999))
+def test_raw_and_canonical_service_ids_are_ignored(tmp_path: Path) -> None:
+    raw = tmp_path / "raw.json"
+    canonical = tmp_path / "canonical.json"
+    write(raw, raw_payload(object_id=1))
+    write(canonical, canonical_payload(object_id=999))
 
-    assert compare_files(committed, fresh, canonical=False) == []
+    assert compare_raw_and_canonical(raw, canonical) == []
 
 
 def test_response_metadata_is_ignored(tmp_path: Path) -> None:
-    committed = tmp_path / "committed.json"
-    fresh = tmp_path / "fresh.json"
-    committed_payload = raw_payload()
-    fresh_payload = raw_payload()
-    fresh_payload["exceededTransferLimit"] = False
-    fresh_payload["metadata"] = {"requestId": "volatile"}
-    fresh_payload["features"][0]["service_metadata"] = {"cache": "miss"}
-    write(committed, committed_payload)
-    write(fresh, fresh_payload)
+    raw = tmp_path / "raw.json"
+    canonical = tmp_path / "canonical.json"
+    raw_data = raw_payload()
+    raw_data["exceededTransferLimit"] = False
+    raw_data["metadata"] = {"requestId": "volatile"}
+    raw_data["features"][0]["service_metadata"] = {"cache": "miss"}
+    write(raw, raw_data)
+    write(canonical, canonical_payload())
 
-    assert compare_files(committed, fresh, canonical=False) == []
+    assert compare_raw_and_canonical(raw, canonical) == []
+
+
+def test_raw_geometry_change_is_reported(tmp_path: Path) -> None:
+    raw = tmp_path / "raw.json"
+    canonical = tmp_path / "canonical.json"
+    write(raw, raw_payload(x=-98.49))
+    write(canonical, canonical_payload(x=-98.50))
+
+    errors = compare_raw_and_canonical(raw, canonical)
+
+    assert any("disagree" in error for error in errors)
 
 
 def test_canonical_service_ids_are_ignored(tmp_path: Path) -> None:
@@ -73,16 +86,16 @@ def test_canonical_service_ids_are_ignored(tmp_path: Path) -> None:
     write(committed, canonical_payload(object_id=1))
     write(fresh, canonical_payload(object_id=999))
 
-    assert compare_files(committed, fresh, canonical=True) == []
+    assert compare_canonical_files(committed, fresh) == []
 
 
-def test_geometry_change_is_reported(tmp_path: Path) -> None:
+def test_canonical_geometry_change_is_reported(tmp_path: Path) -> None:
     committed = tmp_path / "committed.json"
     fresh = tmp_path / "fresh.json"
-    write(committed, raw_payload(x=-98.49))
-    write(fresh, raw_payload(x=-98.50))
+    write(committed, canonical_payload(x=-98.49))
+    write(fresh, canonical_payload(x=-98.50))
 
-    errors = compare_files(committed, fresh, canonical=False)
+    errors = compare_canonical_files(committed, fresh)
 
     assert any("snapshot changed" in error for error in errors)
 
@@ -96,6 +109,6 @@ def test_canonical_join_change_is_reported(tmp_path: Path) -> None:
     write(committed, committed_payload)
     write(fresh, fresh_payload)
 
-    errors = compare_files(committed, fresh, canonical=True)
+    errors = compare_canonical_files(committed, fresh)
 
     assert any("snapshot changed" in error for error in errors)
