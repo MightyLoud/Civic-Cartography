@@ -1,0 +1,5 @@
+candidate_record_id,election_date,office_name,place,candidate_name,filing_status,final_ballot,result_status,source_url,source_retrieved_at,source_confidence,notes
+TX:CoppellISD:2026:place-4:ranna-raval,2026-05-02,Board of Trustees,4,Ranna Raval,On Ballot,TRUE,Elected unopposed,https://www.coppellisd.com/page/elections,2026-08-01,high,Official results report 3118 votes and 100 percent for the unopposed Place 4 candidate.
+TX:CoppellISD:2026:place-5:kevin-chaka,2026-05-02,Board of Trustees,5,Kevin Chaka,On Ballot,TRUE,Elected,https://www.coppellisd.com/page/board-election-results,2026-08-01,high,Official results report 2425 votes and 63.50 percent.
+TX:CoppellISD:2026:place-5:khanh-windham,2026-05-02,Board of Trustees,5,Khanh Windham,On Ballot,TRUE,Not elected,https://www.coppellisd.com/page/board-election-results,2026-08-01,high,Official results report 1394 votes and 36.50 percent.
+TX:CoppellISD:2026:place-5:carly-waters,2026-05-02,Board of Trustees,5,Carly Waters,Withdrawn,FALSE,Withdrawn before final ballot,https://www.coppellisd.com/page/elections,2026-08-01,high,Preserved as a filing event because the official candidate list displays the name as withdrawn.
