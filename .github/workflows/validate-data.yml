@@ -5,17 +5,15 @@ on:
   pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository branch
+      - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -45,27 +43,23 @@ jobs:
             --committed-canonical data/geojson/olmos_park_citywide.geojson \
             --fresh-canonical build/olmos-park/geojson/olmos_park_citywide.geojson
 
-      - name: Generate Addison boundary for factory proof
+      - name: Fetch current Addison boundary
         run: |
           python scripts/fetch_tigerweb_place.py \
             --geoid 4801240 \
             --record-id TX:municipality:addison:at_large:CITYWIDE \
             --geometry-id addison-citywide \
             --retrieved-at 2026-08-01 \
-            --raw-output data/raw/addison/tigerweb-incorporated-place-4801240.geojson \
-            --output data/geojson/addison_citywide.geojson
+            --raw-output build/addison/raw/tigerweb-incorporated-place-4801240.geojson \
+            --output build/addison/geojson/addison_citywide.geojson
 
-      - name: Commit Addison boundary snapshot once
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+      - name: Verify committed Addison boundary matches Census
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/raw/addison/tigerweb-incorporated-place-4801240.geojson \
-            data/geojson/addison_citywide.geojson
-          if ! git diff --cached --quiet; then
-            git commit -m "Add Addison Census boundary snapshot"
-            git push
-          fi
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/addison/tigerweb-incorporated-place-4801240.geojson \
+            --fresh-raw build/addison/raw/tigerweb-incorporated-place-4801240.geojson \
+            --committed-canonical data/geojson/addison_citywide.geojson \
+            --fresh-canonical build/addison/geojson/addison_citywide.geojson
 
       - name: Run automated tests
         run: pytest -q
@@ -76,11 +70,9 @@ jobs:
       - name: Validate geometry joins
         run: python scripts/validate_geojson.py
 
-      - name: Upload generated Addison boundary
+      - name: Upload generated boundary checks
         uses: actions/upload-artifact@v4
         with:
-          name: addison-boundary
-          path: |
-            data/raw/addison/tigerweb-incorporated-place-4801240.geojson
-            data/geojson/addison_citywide.geojson
+          name: civic-boundary-checks
+          path: build/
           if-no-files-found: error
