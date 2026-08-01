@@ -26,7 +26,7 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def normalize_snapshot(payload: dict[str, Any], *, canonical: bool) -> dict[str, Any]:
-    """Remove only non-geographic ArcGIS bookkeeping fields."""
+    """Project a response to stable civic properties and geometry only."""
     normalized = copy.deepcopy(payload)
     features = normalized.get("features")
     if normalized.get("type") != "FeatureCollection" or not isinstance(features, list):
@@ -38,11 +38,12 @@ def normalize_snapshot(payload: dict[str, Any], *, canonical: bool) -> dict[str,
     if not isinstance(feature, dict) or feature.get("type") != "Feature":
         raise ValueError("snapshot feature must be a GeoJSON Feature")
 
-    # ArcGIS may emit a service-local feature id derived from OBJECTID.
-    feature.pop("id", None)
     properties = feature.get("properties")
+    geometry = feature.get("geometry")
     if not isinstance(properties, dict):
         raise ValueError("snapshot feature properties must be an object")
+    if not isinstance(geometry, dict):
+        raise ValueError("snapshot feature geometry must be an object")
 
     source_properties = properties.get("source_attributes") if canonical else properties
     if not isinstance(source_properties, dict):
@@ -53,7 +54,19 @@ def normalize_snapshot(payload: dict[str, Any], *, canonical: bool) -> dict[str,
     for field in VOLATILE_SOURCE_FIELDS:
         source_properties.pop(field, None)
 
-    return normalized
+    # ArcGIS may add top-level response metadata or feature-local service IDs.
+    # Neither is part of the civic record. Keep only the canonical GeoJSON
+    # feature content that affects identity, attribution, joins, or geometry.
+    return {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": properties,
+                "geometry": geometry,
+            }
+        ],
+    }
 
 
 def compare_files(
