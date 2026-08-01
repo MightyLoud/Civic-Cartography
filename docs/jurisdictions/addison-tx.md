@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Addison is the factory-proof run for the Civic Cartography pipeline. The work should reuse the Olmos Park source → normalized → QA → GeoJSON contract without introducing a broad new framework.
+Addison is the factory-proof repetition of the Civic Cartography pipeline. It reuses the Olmos Park source → normalized → QA → GeoJSON contract without introducing a broader framework.
 
 ## Jurisdiction identity
 
@@ -25,38 +25,50 @@ The May 2, 2026 election filled three City Council seats. Five candidates filed:
 4. Darren Gardner — elected
 5. Trish Stuart — not elected
 
-The official Town page states that Addison has a Mayor and six council members, all elected at large. Therefore, council-district polygons do not exist for this scope and must not be invented.
+The Town states that Addison has a Mayor and six council members, all elected at large. Council-district polygons do not exist for this scope and were not invented.
 
-## Planned identifiers
+## Published identifiers
 
 ```text
 record_id:   TX:municipality:addison:at_large:CITYWIDE
 geometry_id: addison-citywide
 ```
 
-## Target parity
+## Completed parity
 
-| Layer | Expected count |
+| Layer | Count |
 |---|---:|
 | Candidate filing rows | 5 |
 | Elected candidates in the 2026 contest | 3 |
+| Official source records | 4 |
 | Normalized mapped geography rows | 1 |
 | GeoJSON features | 1 |
 | Missing geometry joins | 0 |
 | Extra geometry joins | 0 |
 
+## QA result
+
+- `qa_status = approved`
+- `parity_ok = TRUE`
+- Current TIGERweb incorporated-place boundary matches the committed raw and canonical snapshots.
+- The normalized `addison-citywide` geometry ID resolves to exactly one GeoJSON feature and the matching record ID.
+- Olmos Park remains protected by the same CI run, proving the second jurisdiction did not weaken the first.
+
 ## Name QA note
 
 The TX Data C6 working row used `Tricia Stuart`; the current official election page uses `Trish Stuart`. The repository preserves the official display name and records the working-sheet form as an alias variation rather than silently treating them as separate people.
 
-## Next implementation steps
+## Reproducibility
 
-1. Fetch the current TIGERweb incorporated-place boundary for GEOID `4801240`.
-2. Commit the raw Census response and canonical `addison-citywide` GeoJSON.
-3. Add one approved normalized citywide record.
-4. Extend existing CI checks to Addison without weakening the Olmos Park checks.
-5. Register the released jurisdiction in the Command Center only after the full chain is green.
+The repository stores:
+
+- the five candidate rows under `data/raw/addison/`;
+- the official source manifest;
+- the raw Census TIGERweb response for GEOID `4801240`;
+- one normalized citywide row under `data/normalized/`;
+- one canonical map feature under `data/geojson/`;
+- read-only CI checks that regenerate and compare both Addison and Olmos Park against current Census data.
 
 ## Completion rule
 
-Addison is not complete until raw evidence exists, normalized data exists, QA passes, the GeoJSON join is one-to-one, `parity_ok = TRUE`, CI is green, and the Jurisdiction Portfolio reflects the release.
+Addison is complete when the pull request is merged through green CI and the Jurisdiction Portfolio is updated to `RELEASED`.
