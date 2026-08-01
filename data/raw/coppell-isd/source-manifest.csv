@@ -1,0 +1,5 @@
+source_id,source_type,agency,title,url,retrieved_at,confidence,use
+coppell-trustee-election-2026,election_filings_structure,Coppell Independent School District,Elections,https://www.coppellisd.com/page/elections,2026-08-01,high,Confirms Places 4 and 5 are on the 2026 ballot; lists three final-ballot candidates and one withdrawn filing; states trustees are elected at large for specific places.
+coppell-board-structure,governance_structure,Coppell Independent School District,Board of Trustees,https://www.coppellisd.com/page/board-of-trustees,2026-08-01,high,Confirms trustees do not represent geographic areas and each represents Coppell ISD at large.
+coppell-election-results-2026,election_results,Coppell Independent School District,Board Election Results,https://www.coppellisd.com/page/board-election-results,2026-08-01,high,Official 2026 vote totals for Place 4 and Place 5.
+coppell-unified-school-boundary,geometry,U.S. Census Bureau,TIGERweb Current Unified School Districts,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14,2026-08-01,high,Current unified-school-district polygon source.
