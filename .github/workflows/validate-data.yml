@@ -5,17 +5,15 @@ on:
   pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository branch
+      - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -99,29 +97,13 @@ jobs:
             --raw-output build/arlington-1-2/raw/city-council-districts-1-2.geojson \
             --output build/arlington-1-2/geojson/arlington_districts_1_2.geojson
 
-      - name: Commit Arlington districts 1 and 2 release files once
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+      - name: Verify committed Arlington districts 1 and 2
         run: |
-          mkdir -p data/raw/arlington data/geojson data/normalized
-          cp build/arlington-1-2/raw/city-council-districts-1-2.geojson \
-            data/raw/arlington/city-council-districts-1-2.geojson
-          cp build/arlington-1-2/geojson/arlington_districts_1_2.geojson \
-            data/geojson/arlington_districts_1_2.geojson
-          cat > data/normalized/arlington_current_districts_1_2.csv <<'CSV'
-          record_id,state_fips,state_abbr,jurisdiction_type,jurisdiction_name,district_type,district_id,district_name,source_url,source_retrieved_at,source_confidence,qa_status,parity_ok,office_name,election_date,geometry_source_url,geometry_id,parent_record_id,notes
-          TX:municipality:arlington:district:1,48,TX,municipality,Arlington,district,1,District 1,https://www.arlingtontx.gov/Government/City-Government/City-Council/City-Council-Members,2026-08-01,high,approved,TRUE,City Council District 1,,https://gis2.arlingtontx.gov/agsext2/rest/services/OpenData/OD_PoliticalBoundary/MapServer/0,arlington-district-1,,"Single-member district; current official representative Mauricio Galante was first elected in May 2024."
-          TX:municipality:arlington:district:2,48,TX,municipality,Arlington,district,2,District 2,https://www.arlingtontx.gov/Government/City-Government/City-Council/City-Council-Members,2026-08-01,high,approved,TRUE,City Council District 2,,https://gis2.arlingtontx.gov/agsext2/rest/services/OpenData/OD_PoliticalBoundary/MapServer/0,arlington-district-2,,"Single-member district; current official representative Raul H. Gonzalez was first elected in November 2020."
-          CSV
-          sed -i 's/^          //' data/normalized/arlington_current_districts_1_2.csv
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/raw/arlington/city-council-districts-1-2.geojson \
-            data/geojson/arlington_districts_1_2.geojson \
-            data/normalized/arlington_current_districts_1_2.csv
-          if ! git diff --cached --quiet; then
-            git commit -m "Add Arlington Districts 1 and 2 release files"
-            git push
-          fi
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/arlington/city-council-districts-1-2.geojson \
+            --fresh-raw build/arlington-1-2/raw/city-council-districts-1-2.geojson \
+            --committed-canonical data/geojson/arlington_districts_1_2.geojson \
+            --fresh-canonical build/arlington-1-2/geojson/arlington_districts_1_2.geojson
 
       - name: Run automated tests
         run: pytest -q
