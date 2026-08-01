@@ -1,0 +1,8 @@
+candidate_record_id,election_date,office_name,place,candidate_name,filing_status,result_status,source_url,source_retrieved_at,source_confidence,notes
+TX:EanesISD:2026:place-1:afshan-khan,2026-05-02,Board of Trustees,1,Afshan Khan,On Ballot,Not elected,https://www.eanesisd.net/board/election,2026-08-01,high,Preserved from TX Data C6 official-page capture.
+TX:EanesISD:2026:place-1:kate-ivers,2026-05-02,Board of Trustees,1,Kate Ivers,On Ballot,Elected,https://www.eanesisd.net/board/election,2026-08-01,high,Official Eanes ISD results identify Kate Ivers as the Place 1 winner.
+TX:EanesISD:2026:place-1:robert-morrow,2026-05-02,Board of Trustees,1,Robert Morrow,On Ballot,Not elected,https://www.eanesisd.net/board/election,2026-08-01,high,Preserved from TX Data C6 official-page capture.
+TX:EanesISD:2026:place-2:laura-clark,2026-05-02,Board of Trustees,2,Laura Clark,On Ballot,Not elected,https://www.eanesisd.net/board/election,2026-08-01,high,Preserved from TX Data C6 official-page capture.
+TX:EanesISD:2026:place-2:jennifer-blackman,2026-05-02,Board of Trustees,2,Jennifer Blackman,On Ballot,Elected,https://www.eanesisd.net/board/election,2026-08-01,high,Official Eanes ISD results identify Jennifer Blackman as the Place 2 winner.
+TX:EanesISD:2026:place-3:diane-hern,2026-05-02,Board of Trustees,3,Diane Hern,On Ballot,Elected,https://www.eanesisd.net/board/election,2026-08-01,high,Official Eanes ISD results identify Diane Hern as the re-elected Place 3 winner.
+TX:EanesISD:2026:place-3:swasti-apte,2026-05-02,Board of Trustees,3,Swasti Apte,On Ballot,Not elected,https://www.eanesisd.net/board/election,2026-08-01,high,Preserved from TX Data C6 official-page capture.
