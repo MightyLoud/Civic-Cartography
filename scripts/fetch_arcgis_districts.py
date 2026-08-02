@@ -55,6 +55,123 @@ def normalize_identifier(value: Any) -> str | None:
     return None
 
 
+def close_ring(ring: list[list[float]]) -> list[list[float]]:
+    """Return a closed two-dimensional coordinate ring."""
+    coordinates = [[float(point[0]), float(point[1])] for point in ring]
+    if coordinates and coordinates[0] != coordinates[-1]:
+        coordinates.append(coordinates[0].copy())
+    return coordinates
+
+
+def signed_ring_area(ring: list[list[float]]) -> float:
+    """Calculate signed planar ring area."""
+    return 0.5 * sum(
+        ring[index][0] * ring[index + 1][1]
+        - ring[index + 1][0] * ring[index][1]
+        for index in range(len(ring) - 1)
+    )
+
+
+def point_in_ring(point: list[float], ring: list[list[float]]) -> bool:
+    """Return whether a point lies inside a ring using ray casting."""
+    x, y = point
+    inside = False
+    for index in range(len(ring) - 1):
+        x1, y1 = ring[index]
+        x2, y2 = ring[index + 1]
+        if (y1 > y) == (y2 > y):
+            continue
+        crossing_x = (x2 - x1) * (y - y1) / (y2 - y1) + x1
+        if x < crossing_x:
+            inside = not inside
+    return inside
+
+
+def esri_rings_to_geojson(rings: list[Any]) -> dict[str, Any]:
+    """Convert ArcGIS polygon rings to a GeoJSON Polygon or MultiPolygon."""
+    normalized: list[list[list[float]]] = []
+    for value in rings:
+        if not isinstance(value, list) or len(value) < 4:
+            continue
+        ring = close_ring(value)
+        if len(ring) >= 4 and abs(signed_ring_area(ring)) > 0:
+            normalized.append(ring)
+    if not normalized:
+        raise ValueError("ArcGIS polygon contained no valid rings")
+
+    areas = [abs(signed_ring_area(ring)) for ring in normalized]
+    parents: dict[int, int | None] = {}
+    for child_index, child in enumerate(normalized):
+        point = child[0]
+        containers = [
+            candidate_index
+            for candidate_index, candidate in enumerate(normalized)
+            if candidate_index != child_index
+            and areas[candidate_index] > areas[child_index]
+            and point_in_ring(point, candidate)
+        ]
+        parents[child_index] = (
+            min(containers, key=lambda index: areas[index]) if containers else None
+        )
+
+    depths: dict[int, int] = {}
+
+    def depth(index: int) -> int:
+        if index in depths:
+            return depths[index]
+        parent = parents[index]
+        depths[index] = 0 if parent is None else depth(parent) + 1
+        return depths[index]
+
+    for index in range(len(normalized)):
+        depth(index)
+
+    polygons: list[list[list[list[float]]]] = []
+    for exterior_index in sorted(
+        (index for index in range(len(normalized)) if depths[index] % 2 == 0),
+        key=lambda index: (-areas[index], index),
+    ):
+        holes = [
+            normalized[index]
+            for index in range(len(normalized))
+            if parents[index] == exterior_index and depths[index] % 2 == 1
+        ]
+        holes.sort(key=lambda ring: -abs(signed_ring_area(ring)))
+        polygons.append([normalized[exterior_index], *holes])
+
+    if len(polygons) == 1:
+        return {"type": "Polygon", "coordinates": polygons[0]}
+    return {"type": "MultiPolygon", "coordinates": polygons}
+
+
+def esri_json_to_geojson(payload: dict[str, Any]) -> dict[str, Any]:
+    """Convert an ArcGIS JSON feature response to a GeoJSON FeatureCollection."""
+    if payload.get("error"):
+        raise ValueError(f"ArcGIS query failed: {payload['error']!r}")
+    values = payload.get("features")
+    if not isinstance(values, list) or not values:
+        raise ValueError("ArcGIS JSON response contained no features")
+
+    features: list[dict[str, Any]] = []
+    for value in values:
+        if not isinstance(value, dict):
+            raise ValueError("ArcGIS JSON feature must be an object")
+        attributes = value.get("attributes")
+        geometry = value.get("geometry")
+        if not isinstance(attributes, dict):
+            raise ValueError("ArcGIS JSON feature attributes must be an object")
+        if not isinstance(geometry, dict) or not isinstance(geometry.get("rings"), list):
+            raise ValueError("ArcGIS JSON feature must contain polygon rings")
+        features.append(
+            {
+                "type": "Feature",
+                "properties": attributes,
+                "geometry": esri_rings_to_geojson(geometry["rings"]),
+            }
+        )
+    return {"type": "FeatureCollection", "features": features}
+
+
 def fetch_layer(
     layer_url: str,
     *,
@@ -62,16 +179,17 @@ def fetch_layer(
     out_fields: str = "*",
     geometry_precision: int | None = None,
     max_allowable_offset: float | None = None,
+    response_format: str = "geojson",
     timeout: int = 60,
 ) -> tuple[dict[str, Any], str]:
-    """Fetch layer features as WGS84 GeoJSON."""
+    """Fetch layer features and return them as a GeoJSON FeatureCollection."""
     query_url = f"{layer_url.rstrip('/')}/query"
     params = {
         "where": where,
         "outFields": out_fields,
         "returnGeometry": "true",
         "outSR": "4326",
-        "f": "geojson",
+        "f": "geojson" if response_format == "geojson" else "json",
     }
     if geometry_precision is not None:
         params["geometryPrecision"] = str(geometry_precision)
@@ -83,9 +201,12 @@ def fetch_layer(
     with urlopen(request, timeout=timeout) as response:
         payload = json.load(response)
 
+    if response_format == "esri-json":
+        payload = esri_json_to_geojson(payload)
+
     features = payload.get("features")
     if payload.get("type") != "FeatureCollection" or not isinstance(features, list):
-        raise ValueError("ArcGIS response must be a GeoJSON FeatureCollection")
+        raise ValueError("ArcGIS response must resolve to a GeoJSON FeatureCollection")
     if not features:
         raise ValueError("ArcGIS response contained no features")
     return payload, request_url
@@ -261,6 +382,12 @@ def main() -> int:
         help="Optional ArcGIS simplification tolerance in output spatial-reference units.",
     )
     parser.add_argument(
+        "--response-format",
+        choices=("geojson", "esri-json"),
+        default="geojson",
+        help="ArcGIS wire format; output files are always GeoJSON.",
+    )
+    parser.add_argument(
         "--timeout",
         type=int,
         default=60,
@@ -284,6 +411,7 @@ def main() -> int:
         out_fields=args.out_fields,
         geometry_precision=args.geometry_precision,
         max_allowable_offset=args.max_allowable_offset,
+        response_format=args.response_format,
         timeout=args.timeout,
     )
     district_field = args.district_field or infer_district_field(
