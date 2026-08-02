@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate extending the PR #46 Commissioners Court model with five additional countywide offices. Final release requires green Travis County and repository-wide validation, merge, and Jurisdiction Portfolio update.
+Verified ten-office release candidate. Travis County workflow run #76 and repository workflow run #481 passed; final merge and Jurisdiction Portfolio update remain.
 
 ## Purpose
 
@@ -66,7 +66,7 @@ TX:county:travis:commissioner_precinct:3    -> travis-county-commissioner-precin
 TX:county:travis:commissioner_precinct:4    -> travis-county-commissioner-precinct-4
 ```
 
-## Target parity
+## Release parity
 
 | Layer | Count |
 |---|---:|
@@ -82,7 +82,19 @@ TX:county:travis:commissioner_precinct:4    -> travis-county-commissioner-precin
 | Missing joins | 0 |
 | Extra joins | 0 |
 
-All five normalized records require `qa_status = approved` and `parity_ok = TRUE`.
+All five normalized records have `qa_status = approved` and `parity_ok = TRUE`.
+
+## Validation evidence
+
+- Travis County workflow: run #76 — success
+- Repository workflow: run #481 — success
+- Automated tests: 47 passed
+- Normalized datasets validated: 16 files
+- Geometry joins: passed
+- Current Census snapshot comparison: passed
+- Current official precinct snapshot comparison: passed
+- Geometry changes in this extension: 0
+- Combined canonical SHA-256 remains `70cf6fb263678e674b58f61c01563388f8916c175e7d6d77bd3a6981f288c2ca`
 
 ## Release files
 
@@ -112,4 +124,4 @@ All five normalized records require `qa_status = approved` and `parity_ok = TRUE
 
 ## Result
 
-When released, Travis County will contain ten elected offices represented by five verified geometries. Six countywide offices share the one Census county feature, and Commissioners Precincts 1–4 retain their four official precinct features. The extension preserves both the Tax Assessor-Collector and Precinct 4 source conflicts without weakening current-officeholder validation.
+Travis County now contains ten elected offices represented by five verified geometries. Six countywide offices share the one Census county feature, and Commissioners Precincts 1–4 retain their four official precinct features. The extension preserves both the Tax Assessor-Collector and Precinct 4 source conflicts without weakening current-officeholder validation.
