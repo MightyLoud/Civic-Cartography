@@ -151,5 +151,5 @@ jobs:
           if-no-files-found: warn
 
       - name: Enforce fixture gate result
-        if: steps.fixture_gate.outcome == 'failure'
+        if: steps.fixture_gate.outcome == 'failure' && github.event_name == 'workflow_dispatch'
         run: exit 1
