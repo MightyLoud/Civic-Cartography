@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "target_id": "BP25-015",
+  "jurisdiction_name": "Denver Public Schools",
+  "canonical_name": "Denver County School District 1",
+  "state": "co",
+  "requested_selector": {
+    "type": "explicit_lookup",
+    "name": "School District No. 1 in the City and County of Denver",
+    "resolution_policy": "override_or_exception"
+  },
+  "authoritative_identity": {
+    "colorado_department_of_education_name": "Denver County 1",
+    "colorado_department_of_education_code": "0880",
+    "census_name": "Denver County School District 1",
+    "census_unified_school_district_geoid": "0803360",
+    "public_name": "Denver Public Schools"
+  },
+  "resolved_ocdid": "ocd-division/country:us/state:co/county:denver/school_district:denver_county_school_district_1",
+  "match_status": "matched",
+  "inferred_classification": "school_system",
+  "classification_status": "matched",
+  "generation_status": "generated",
+  "exception_class": null,
+  "review_reason": null,
+  "division_path": "divisions/co/local/denver_county_school_district_1__bf587c6e-3faf-53cd-9095-b2bbbf7d7d31.yaml",
+  "jurisdiction_path": "jurisdictions/co/local/denver_county_school_district_1_7fdc49bd-a8ec-5be4-991c-87e149e9198d.yaml",
+  "output_hashes": {
+    "divisions/co/local/denver_county_school_district_1__bf587c6e-3faf-53cd-9095-b2bbbf7d7d31.yaml": "e2e21df85c968f031bdb2a3b434034a3a0f00834989bf9f00ccd57b79fa0c219",
+    "jurisdictions/co/local/denver_county_school_district_1_7fdc49bd-a8ec-5be4-991c-87e149e9198d.yaml": "f7b91dbc258c61582d55a03077f4b21d947291e7cdec407aa01621b3e63c1905"
+  },
+  "batch_summary": {
+    "known_classified_count": 14,
+    "known_generated_count": 14,
+    "known_archetype_count": 15,
+    "known_classification_rate": 0.9333333333333333,
+    "known_generation_rate": 0.9333333333333333,
+    "regression_fixtures_passed": 6,
+    "deterministic_count": 25,
+    "reports_identical": true,
+    "target_only_patch_count": 0,
+    "gate_passed": true
+  },
+  "workflow": {
+    "run_id": 30772205379,
+    "artifact_id": 8840916820,
+    "artifact_digest": "sha256:cdcbcf8edcc37224c3086e1b2e4aedb855cce99eb20e84677cc3ffb026d8ea11"
+  },
+  "verified_asof": "2026-08-02"
+}
