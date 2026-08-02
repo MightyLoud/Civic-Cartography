@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate pending Dallas County and repository-wide validation.
+Verified ten-office release package. First-pass pre-merge validation succeeded in Dallas County workflow run #21 and repository workflow run #810.
 
 ## Purpose
 
@@ -162,7 +162,15 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Validation evidence
 
-Pending final exact-head Dallas County and repository-wide workflow results. The combined canonical SHA-256 must remain `1fcefca2f253e3176fb07d15e8a070073100b9f18ae9f030ef5a8a7203c7357c` because no geometry files change in this extension.
+- Dallas County workflow run #21: success
+- Repository workflow run #810: success
+- Automated tests: 66 passed
+- Normalized datasets validated: 21 files
+- Application item, web map, operational layer, and live roster contract: passed
+- Current Commissioner District snapshot comparison: passed
+- Current Census snapshot comparison: passed
+- Geometry joins: passed
+- Combined canonical SHA-256: `1fcefca2f253e3176fb07d15e8a070073100b9f18ae9f030ef5a8a7203c7357c`
 
 ## Release files
 
