@@ -2,8 +2,7 @@ name: Bootstrap Travis County geometry
 
 on:
   push:
-    branches:
-      - data/travis-county-commissioners-court
+  pull_request:
 
 permissions:
   contents: read
