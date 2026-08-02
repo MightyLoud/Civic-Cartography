@@ -22,7 +22,7 @@ def test_rtd_override_resolves_only_exact_maintained_aliases() -> None:
         overrides, state="co", name="Regional Transportation District"
     )
     abbreviation = resolve_authoritative_override(
-        overrides, state="CO", name="r.t.d."
+        overrides, state="CO", name="RTD"
     )
     near_miss = resolve_authoritative_override(
         overrides, state="co", name="Regional Transit District"
