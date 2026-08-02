@@ -1,12 +1,12 @@
-# Bexar County, Texas — Commissioners Court
+# Bexar County, Texas — Commissioners Court and Countywide Constitutional Roles
 
 ## Status
 
-Verified release package. Final pre-merge validation succeeded in Bexar County workflow run #6 and repository workflow run #520.
+Ten-role release candidate pending final Bexar County and repository-wide validation.
 
 ## Purpose
 
-Bexar County tests the county template against a dedicated county MapServer that directly exposes district identity, current Commissioner names, office websites, and GeoJSON geometry. It contrasts with the Travis County hybrid transport model and preserves a separate obsolete official roster as source-conflict evidence.
+Bexar County first proved the county template transfers cleanly through a dedicated MapServer that directly exposes district identity, current Commissioner names, office websites, and GeoJSON geometry. This extension tests a different countywide-office structure: four additional elected offices plus County Treasurer duties consolidated into the elected County Clerk after voters abolished the separate Treasurer office.
 
 ## Jurisdiction identity
 
@@ -15,7 +15,8 @@ Bexar County tests the county template against a dedicated county MapServer that
 - Jurisdiction type: county
 - County FIPS: `029`
 - Census GEOID: `48029`
-- Representation model: one County Judge elected countywide plus four Commissioners elected from precincts
+- Representation model: six countywide roles plus four Commissioners elected from precincts
+- Separately elected positions in scope: nine
 - County geometry source: U.S. Census Bureau TIGERweb Current Counties (`MapServer/82`)
 - Precinct geometry source: Bexar County GIS `CommissionerPrecincts/MapServer/0`
 - Stable precinct field: `Comm`
@@ -25,17 +26,33 @@ Bexar County tests the county template against a dedicated county MapServer that
 
 ## Current official scope
 
-| Office | Representative geography | Officeholder | GIS value |
+| Office or role | Representative geography | Officeholder | Selection structure |
 |---|---|---|---|
-| County Judge | Countywide | Peter Sakai | Not applicable |
-| Commissioner Precinct 1 | Precinct 1 | Rebeca Clay-Flores | Rebeca Clay-Flores |
-| Commissioner Precinct 2 | Precinct 2 | Justin Rodriguez | Justin Rodriguez |
-| Commissioner Precinct 3 | Precinct 3 | Grant Moody | Grant Moody |
-| Commissioner Precinct 4 | Precinct 4 | Tommy Calvert | Tommy Calvert Jr. |
+| County Judge | Countywide | Peter Sakai | Separately elected |
+| Sheriff | Countywide | Javier Salazar | Separately elected |
+| County Clerk | Countywide | Lucy Adame-Clark | Separately elected |
+| District Clerk | Countywide | Gloria A. Martinez | Separately elected |
+| Tax Assessor-Collector | Countywide | Albert Uresti | Separately elected |
+| County Treasurer duties | Countywide | Lucy Adame-Clark | Consolidated into County Clerk; not separately elected |
+| Commissioner Precinct 1 | Precinct 1 | Rebeca Clay-Flores | Separately elected from precinct |
+| Commissioner Precinct 2 | Precinct 2 | Justin Rodriguez | Separately elected from precinct |
+| Commissioner Precinct 3 | Precinct 3 | Grant Moody | Separately elected from precinct |
+| Commissioner Precinct 4 | Precinct 4 | Tommy Calvert | Separately elected from precinct; GIS alias `Tommy Calvert Jr.` |
 
-The Precinct 4 suffix variation is treated as a compatible naming alias. The website roster, individual office page, GIS website URL, and represented precinct all identify the same officeholder.
+## Treasurer abolition and consolidated duties
 
-## Obsolete official roster
+Texas voters adopted Proposition 4 on November 6, 1984, abolishing the office of County Treasurer in Bexar and Collin counties. Bexar County's current elected-official directory therefore does not list a separately elected Treasurer. The official County Clerk biography states that Lucy Adame-Clark serves as Bexar County Treasurer.
+
+The release models this accurately:
+
+1. County Treasurer duties are a distinct countywide role for evidence and scope reporting.
+2. Lucy Adame-Clark is counted once as a unique person while holding the elected County Clerk position and performing the consolidated Treasurer role.
+3. The Treasurer role does not create a second normalized countywide row or a second geometry.
+4. The public-elected-office count remains nine, while the scoped-role count is ten.
+
+## Commissioner source handling
+
+The Precinct 4 suffix variation is treated as a compatible naming alias. The website roster, individual office page, GIS website URL, and represented precinct identify the same officeholder.
 
 A still-live Bexar County elections-finance page lists Nelson W. Wolff as County Judge and Sergio "Chico" Rodriguez, Paul Elizondo, Kevin Wolff, and Tommy Adkisson as Commissioners. That page is retained in the source manifest as an obsolete historical roster and does not control any current officeholder field.
 
@@ -46,7 +63,7 @@ A still-live Bexar County elections-finance page lists Nelson W. Wolff as County
 3. `ComName` must resolve to Rebeca Clay-Flores, Justin Rodriguez, Grant Moody, and Tommy Calvert Jr.
 4. `Website` must resolve to the four official Commissioner office URLs.
 5. Direct GeoJSON regeneration must match the committed raw and canonical snapshots.
-6. The County Judge must join only to the Census county feature.
+6. All six countywide roles must share the single Census county feature.
 7. Every normalized row must join exactly one canonical feature.
 
 ## Stable identifiers
@@ -63,9 +80,12 @@ TX:county:bexar:commissioner_precinct:4    -> bexar-county-commissioner-precinct
 
 | Layer | Count |
 |---|---:|
-| Current-officeholder evidence rows | 5 |
-| Official source records | 11 |
-| Scoped offices | 5 |
+| Current-officeholder and role evidence rows | 10 |
+| New countywide role evidence rows | 5 |
+| Official source records | 18 |
+| Scoped office roles | 10 |
+| Separately elected positions | 9 |
+| Unique current officeholders | 9 |
 | Normalized geography rows | 5 |
 | Canonical GeoJSON features | 5 |
 | Countywide features | 1 |
@@ -75,21 +95,10 @@ TX:county:bexar:commissioner_precinct:4    -> bexar-county-commissioner-precinct
 
 All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
-## Validation evidence
-
-- Bexar County workflow run #6: success
-- Repository workflow run #520: success
-- Automated tests: 48 passed
-- Normalized datasets validated: 17 files
-- Current Census snapshot comparison: passed
-- Current Bexar County GIS snapshot comparison: passed
-- Live `Comm`, `ComName`, and `Website` contract: passed
-- Geometry joins: passed
-- Combined canonical SHA-256: `a41cb19220f74771bb373e6babeff0d4f8396074b02fcdaf7fe40836c1485216`
-
 ## Release files
 
-- Current roster: `data/raw/bexar-county/current-commissioners-court.csv`
+- Commissioners Court roster: `data/raw/bexar-county/current-commissioners-court.csv`
+- Countywide constitutional and consolidated roles: `data/raw/bexar-county/current-countywide-constitutional-offices.csv`
 - Source manifest: `data/raw/bexar-county/source-manifest.csv`
 - Raw Census county snapshot: `data/raw/bexar-county/tigerweb-county-48029.geojson`
 - Raw Commissioner precinct snapshot: `data/raw/bexar-county/commissioner-precincts-1-4.geojson`
@@ -101,4 +110,4 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Result
 
-Bexar County contains five scoped elected offices represented by five verified geometries: one countywide Census feature for the County Judge and four official Commissioner precinct polygons. The dedicated MapServer provides a clean direct-query transfer proof, while the obsolete official finance roster remains explicit QA evidence.
+Bexar County contains ten scoped office roles represented by five verified geometries. Six countywide roles share one Census feature, including Treasurer duties consolidated into the County Clerk, while Commissioners Precincts 1–4 retain four official GIS polygons. No geometry changes are required for the extension.
