@@ -80,7 +80,7 @@ def test_collin_county_stale_narrative_and_operational_gis_contract() -> None:
         attributes = props["source_attributes"]
         assert props["district_type"] == "commissioner_precinct"
         assert props["district_name"] == f"Commissioner Precinct {precinct_id}"
-        assert props["source_url"] == OPERATIONAL_LAYER
+        assert props["source_layer"] == OPERATIONAL_LAYER
         assert props["source_district_field"] == "COMMISH"
         assert str(attributes["COMMISH"]) == precinct_id
         gis_name = str(attributes["COMMISH_N"]).strip()
