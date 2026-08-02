@@ -45,10 +45,8 @@ jobs:
           APP_ITEM = '06f7b0e0e2354c8f8e77be19c4256ff5'
           USER_AGENT = 'Civic-Cartography-bootstrap/1.0'
           EXPECTED_NAMES = {
-              'robert walker', 'robert c walker',
-              'charlie riley',
-              'ritch wheeler',
-              'matt gray', 'matthew gray',
+              'robert walker', 'robert c walker', 'charlie riley',
+              'ritch wheeler', 'matt gray', 'matthew gray',
           }
 
           def fetch_json(url):
@@ -78,42 +76,49 @@ jobs:
 
           if re.search(r'/(?:MapServer|FeatureServer)/\d+$', service_url, re.I):
               candidate_layers = [service_url]
-              service_root = service_url.rsplit('/', 1)[0]
           elif re.search(r'/(?:MapServer|FeatureServer)$', service_url, re.I):
-              service_root = service_url
-              service = fetch_json(f'{service_root}?f=json')
+              service = fetch_json(f'{service_url}?f=json')
               candidate_layers = [
-                  f"{service_root}/{layer['id']}"
+                  f"{service_url}/{layer['id']}"
                   for layer in service.get('layers', [])
                   if 'commission' in str(layer.get('name') or '').lower()
                   or 'precinct' in str(layer.get('name') or '').lower()
               ]
               if not candidate_layers and len(service.get('layers', [])) == 1:
-                  candidate_layers = [f"{service_root}/{service['layers'][0]['id']}"]
+                  candidate_layers = [f"{service_url}/{service['layers'][0]['id']}"]
           else:
               raise SystemExit(f'Unexpected Montgomery County dataset URL: {service_url!r}')
 
           ranked = []
+          rejected_samples = {}
           for layer_url in candidate_layers:
               metadata = fetch_json(f'{layer_url}?f=json')
               if metadata.get('geometryType') != 'esriGeometryPolygon':
                   continue
               fields = [str(field.get('name') or '') for field in metadata.get('fields', [])]
-              payload = fetch_json(f"{layer_url}/query?{urllib.parse.urlencode({'where':'1=1','outFields':'*','returnGeometry':'false','f':'json'})}")
-              features = payload.get('features', [])
+              query = urllib.parse.urlencode({
+                  'where': '1=1', 'outFields': '*',
+                  'returnGeometry': 'false', 'f': 'json',
+              })
+              features = fetch_json(f'{layer_url}/query?{query}').get('features', [])
               for field in fields:
-                  values = []
+                  raw_values = []
+                  precinct_values = []
                   for feature in features:
                       raw = feature.get('attributes', {}).get(field)
                       text = str(raw).strip() if raw is not None else ''
-                      match = re.fullmatch(r'(?:precinct\s*)?([1-4])', text, re.I)
+                      if text:
+                          raw_values.append(text)
+                      match = re.search(r'(?<!\d)([1-4])(?!\d)', text)
                       if match:
-                          values.append(match.group(1))
-                  if sorted(set(values)) != ['1', '2', '3', '4']:
+                          precinct_values.append(match.group(1))
+                  if raw_values:
+                      rejected_samples[field] = sorted(set(raw_values))[:12]
+                  if sorted(set(precinct_values)) != ['1', '2', '3', '4']:
                       continue
                   score = 100
                   upper = field.upper()
-                  if upper in {'PRECINCT', 'PRECINCT_NO', 'PRECINCT_NUM', 'PCT', 'PCT_NO', 'DISTRICT'}:
+                  if any(token in upper for token in ('PREC', 'PCT', 'DIST', 'COMM')):
                       score += 30
                   if 'commission' in str(metadata.get('name') or '').lower():
                       score += 20
@@ -121,28 +126,28 @@ jobs:
 
           ranked.sort(key=lambda row: (row[0], row[1], row[2]), reverse=True)
           if not ranked:
-              raise SystemExit(f'No Montgomery County polygon layer resolved precinct IDs 1 through 4: {candidate_layers!r}')
+              raise SystemExit(
+                  'No Montgomery County polygon layer resolved precinct IDs 1 through 4. '
+                  f'Candidates: {candidate_layers!r}; field samples: {rejected_samples!r}'
+              )
 
-          score, layer_url, district_field, layer_meta, features = ranked[0]
+          _, layer_url, district_field, layer_meta, features = ranked[0]
           service_root = layer_url.rsplit('/', 1)[0]
 
+          field_samples = {}
           name_fields = []
-          samples = {}
           for field in [str(item.get('name') or '') for item in layer_meta.get('fields', [])]:
               values = []
               normalized = set()
               for feature in features:
                   raw = feature.get('attributes', {}).get(field)
-                  if raw is None:
-                      continue
-                  text = str(raw).strip()
+                  text = str(raw).strip() if raw is not None else ''
                   if not text:
                       continue
                   values.append(text)
-                  norm = re.sub(r'[^a-z0-9]+', ' ', text.lower()).strip()
-                  normalized.add(norm)
+                  normalized.add(re.sub(r'[^a-z0-9]+', ' ', text.lower()).strip())
               if values:
-                  samples[field] = sorted(set(values))[:12]
+                  field_samples[field] = sorted(set(values))[:12]
               if len(normalized & EXPECTED_NAMES) >= 2:
                   name_fields.append(field)
 
@@ -150,7 +155,6 @@ jobs:
           queue = deque([(APP_ITEM, 0)])
           referenced_items = []
           discovered_urls = []
-          app_linked = False
           id_pattern = re.compile(r'\b[0-9a-fA-F]{32}\b')
 
           def walk(value):
@@ -163,13 +167,12 @@ jobs:
                   for child in value:
                       yield from walk(child)
               elif isinstance(value, str):
-                  for match in id_pattern.findall(value):
-                      yield match.lower()
+                  yield from (match.lower() for match in id_pattern.findall(value))
 
-          while queue and len(seen) < 40:
+          while queue and len(seen) < 60:
               item_id, depth = queue.popleft()
               item_id = item_id.lower()
-              if item_id in seen or depth > 4:
+              if item_id in seen or depth > 5:
                   continue
               seen.add(item_id)
               try:
@@ -178,24 +181,24 @@ jobs:
               except Exception:
                   continue
               referenced_items.append({
-                  'id': item_id,
-                  'title': meta.get('title'),
-                  'type': meta.get('type'),
-                  'url': meta.get('url'),
+                  'id': item_id, 'title': meta.get('title'),
+                  'type': meta.get('type'), 'url': meta.get('url'),
                   'depth': depth,
               })
-              meta_url = meta.get('url')
-              if isinstance(meta_url, str):
-                  discovered_urls.append(meta_url.rstrip('/'))
-              if item_id == DATA_ITEM:
-                  app_linked = True
+              if isinstance(meta.get('url'), str):
+                  discovered_urls.append(meta['url'].rstrip('/'))
               for child_id in walk(data):
                   if child_id not in seen:
                       queue.append((child_id, depth + 1))
 
           normalized_urls = {url.rstrip('/') for url in discovered_urls}
-          if service_root in normalized_urls or layer_url in normalized_urls:
-              app_linked = True
+          referenced_ids = {item['id'] for item in referenced_items}
+          app_linked = (
+              DATA_ITEM in referenced_ids
+              or service_root in normalized_urls
+              or layer_url in normalized_urls
+              or any(url.startswith(service_root + '/') for url in normalized_urls)
+          )
           if not app_linked:
               raise SystemExit(
                   'Montgomery County lookup app did not resolve to the dataset/service contract. '
@@ -215,7 +218,7 @@ jobs:
               'district_field': district_field,
               'layer_name': layer_meta.get('name'),
               'candidate_name_fields': sorted(name_fields),
-              'field_samples': samples,
+              'field_samples': field_samples,
           }
           output = Path('build/montgomery-county/source-contract.json')
           output.parent.mkdir(parents=True, exist_ok=True)
@@ -227,7 +230,7 @@ jobs:
           print(f'Montgomery County district field: {district_field}')
           print(f'Montgomery County candidate name fields: {sorted(name_fields)}')
           print(f'Montgomery County app references: {referenced_items}')
-          print(f'Montgomery County field samples: {samples}')
+          print(f'Montgomery County field samples: {field_samples}')
           PY
 
       - name: Fetch current Montgomery County Commissioner precincts
