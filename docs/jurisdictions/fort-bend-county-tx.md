@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate pending final Fort Bend County and repository-wide validation.
+Verified release package. Pre-merge validation succeeded in Fort Bend County workflow run #4 and repository workflow run #704.
 
 ## Purpose
 
@@ -105,6 +105,19 @@ TX:county:fort-bend:commissioner_precinct:4    -> fort-bend-county-commissioner-
 | Extra joins | 0 |
 
 All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
+
+## Validation evidence
+
+- Fort Bend County workflow run #4: success
+- Repository workflow run #704: success
+- Automated tests: 58 passed
+- Normalized datasets validated: 20 files
+- Live `NAME`, `COMMISSION`, `WEBSITE`, and `EFFECTIVE` contract: passed
+- Four-district January 2026 versus 2022–2025 archive divergence: passed
+- Current precinct snapshot comparison: passed
+- Current Census snapshot comparison: passed
+- Geometry joins: passed
+- Combined canonical SHA-256: `0b00c8a65accd7841d6ee18612071b5c695d9bf0de05be5e7316a9386d40becc`
 
 ## Release files
 
