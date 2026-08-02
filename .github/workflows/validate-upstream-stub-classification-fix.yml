@@ -52,11 +52,17 @@ jobs:
           cd upstream
           uv sync --frozen
 
-      - name: Apply upstream-ready patch
+      - name: Apply and normalize upstream patch
         run: |
-          git -C upstream apply --check "../$PATCH_PATH"
-          git -C upstream apply "../$PATCH_PATH"
+          mkdir -p build
+          git -C upstream apply --recount --check "../$PATCH_PATH"
+          git -C upstream apply --recount "../$PATCH_PATH"
           git -C upstream diff --check
+          git -C upstream add -N \
+            ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-design.md \
+            ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-implementation.md \
+            tests/src/init_migration/test_generate_pipeline_stub_classification.py
+          git -C upstream diff --binary > build/upstream-ready.patch
 
       - name: Run targeted upstream unit tests
         run: |
@@ -195,6 +201,7 @@ jobs:
         with:
           name: upstream-stub-classification-fix
           path: |
+            build/upstream-ready.patch
             build/upstream-source/source-manifest.json
             build/run-1/execution-results.json
             build/run-1/diagnostics.json
