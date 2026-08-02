@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate for a 22-office Denton County model. Permanent read-only validation protects one Census county feature, four official Commissioner precincts, and six official `JP / Constable` precincts.
+Verified 22-office release validated in Denton County workflow run #50 and repository workflow run #299. Permanent read-only validation protects one Census county feature, four official Commissioner precincts, and six official `JP / Constable` precincts.
 
 ## Purpose
 
@@ -86,9 +86,9 @@ TX:county:denton:constable_precinct:5        -> denton-county-constable-precinct
 TX:county:denton:constable_precinct:6        -> denton-county-constable-precinct-6
 ```
 
-The stable `constable_precinct` identifiers are retained because they already anchor the released shared precinct geometry. The normalized `office_name` and evidence now explicitly include both paired offices.
+The stable `constable_precinct` identifiers are retained because they already anchor the released shared precinct geometry. The normalized `office_name` and evidence explicitly include both paired offices.
 
-## Target parity
+## Completed parity
 
 | Layer | Count |
 |---|---:|
@@ -102,8 +102,9 @@ The stable `constable_precinct` identifiers are retained because they already an
 | Shared JP / Constable features | 6 |
 | Missing joins | 0 |
 | Extra joins | 0 |
+| Automated tests | 29 |
 
-All normalized records must retain `qa_status = approved` and `parity_ok = TRUE`. Because this extension adds no geometry, the combined canonical release SHA-256 must remain:
+All normalized records retain `qa_status = approved` and `parity_ok = TRUE`. This extension adds no geometry, so the combined canonical release SHA-256 remains:
 
 ```text
 775f2e6c66f3c0c1527e563246dda66bc8aa650a40e02050ed6803599e40667a
@@ -137,6 +138,15 @@ All normalized records must retain `qa_status = approved` and `parity_ok = TRUE`
 8. Every normalized record must join exactly one canonical feature.
 9. Current-source drift fails CI when geometry, stable source attributes, officeholder fields, precinct IDs, Census GEOID, or joins change.
 
-## Completion rule
+## Validation
 
-The extension is complete only after the six JP evidence rows, 30-source manifest, paired normalized records, unchanged 11-feature digest, green CI, merged pull request, closed issue, and Command Center all agree.
+- Denton County workflow run #50: passed
+- Repository workflow run #299: passed
+- Arlington regression run #77: passed
+- Irving regression run #129: passed
+- Oak Point regression run #107: passed
+- CFBISD regression run #92: passed
+
+## Result
+
+Denton County now covers 22 elected offices with 11 geometries: six countywide offices share one county polygon, four Commissioners retain separate Commissioner precincts, and six Justice-of-the-Peace / Constable pairs share six official precinct polygons. The added Justice-of-the-Peace offices increased office coverage without increasing geography rows, features, or the canonical digest.
