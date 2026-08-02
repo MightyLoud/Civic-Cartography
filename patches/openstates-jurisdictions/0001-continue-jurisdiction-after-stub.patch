@@ -1,9 +1,9 @@
 diff --git a/ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-design.md b/ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-design.md
 new file mode 100644
-index 0000000..f4a2811
+index 0000000..2a3e0d0
 --- /dev/null
 +++ b/ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-design.md
-@@ -0,0 +1,48 @@
+@@ -0,0 +1,50 @@
 +# Continue jurisdiction classification after stub Division generation
 +
 +## Tracking
@@ -56,10 +56,10 @@ index 0000000..f4a2811
 +Jurisdiction.
 diff --git a/ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-implementation.md b/ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-implementation.md
 new file mode 100644
-index 0000000..dc40f14
+index 0000000..a502681
 --- /dev/null
 +++ b/ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-implementation.md
-@@ -0,0 +1,35 @@
+@@ -0,0 +1,40 @@
 +# Stub Division jurisdiction classification implementation plan
 +
 +## Scope
@@ -101,10 +101,10 @@ index 0000000..dc40f14
 +uv run ruff check src/init_migration/generate_pipeline.py tests/src/init_migration/test_generate_pipeline_stub_classification.py
 +```
 diff --git a/src/init_migration/generate_pipeline.py b/src/init_migration/generate_pipeline.py
-index 81aaf57..7dbaf88 100644
+index 81aaf57..b6c74a1 100644
 --- a/src/init_migration/generate_pipeline.py
 +++ b/src/init_migration/generate_pipeline.py
-@@ -358,6 +358,52 @@ class GeneratePipeline:
+@@ -351,6 +351,57 @@ class GeneratePipeline:
          """
          return jurisdiction_ocdid in self.created_jurisdictions
  
@@ -162,7 +162,7 @@ index 81aaf57..7dbaf88 100644
      async def run(self) -> GeneratorResp:
          """Run the pipeline: find matches, generate Division, then Jurisdiction.
  
-@@ -383,6 +429,9 @@ class GeneratePipeline:
+@@ -381,6 +432,9 @@ class GeneratePipeline:
                      response.division_path = str(
                          div_gen.dump_division(output_dir=self.division_output_dir)
                      )
@@ -172,7 +172,7 @@ index 81aaf57..7dbaf88 100644
                  self.quarantine.ocdid_no_validation_div.append(
                      {
                          "ocdid": self.data.ocdid.raw_ocdid,
-@@ -428,47 +477,13 @@ class GeneratePipeline:
+@@ -432,45 +486,14 @@ class GeneratePipeline:
                  response.division_path = str(
                      div_gen.dump_division(output_dir=self.division_output_dir)
                  )
@@ -223,10 +223,10 @@ index 81aaf57..7dbaf88 100644
  
 diff --git a/tests/src/init_migration/test_generate_pipeline_stub_classification.py b/tests/src/init_migration/test_generate_pipeline_stub_classification.py
 new file mode 100644
-index 0000000..04d3a3a
+index 0000000..8b6f21b
 --- /dev/null
 +++ b/tests/src/init_migration/test_generate_pipeline_stub_classification.py
-@@ -0,0 +1,126 @@
+@@ -0,0 +1,137 @@
 +from types import SimpleNamespace
 +from uuid import UUID
 +
