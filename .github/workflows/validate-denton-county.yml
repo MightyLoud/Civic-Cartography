@@ -67,6 +67,51 @@ jobs:
             --committed-canonical data/geojson/denton_county_commissioner_precincts.geojson \
             --fresh-canonical build/denton-county/precincts/geojson/denton_county_commissioner_precincts.geojson
 
+      - name: Build current Denton County constable precincts
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://gis.dentoncounty.gov/arcgis/rest/services/PoliticalBoundaries_GC/MapServer/5 \
+            --district-ids 1,2,3,4,5,6 \
+            --district-field JP_C \
+            --district-type constable_precinct \
+            --district-name-prefix "Constable Precinct" \
+            --jurisdiction-name "Denton County" \
+            --record-id-prefix TX:county:denton:constable_precinct \
+            --geometry-id-prefix denton-county-constable-precinct \
+            --source-agency "Denton County GIS" \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/denton-county/constables/raw/constable-precincts-1-6.geojson \
+            --output build/denton-county/constables/geojson/denton_county_constable_precincts.geojson
+
+      - name: Verify fresh constable roster attributes
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('build/denton-county/constables/geojson/denton_county_constable_precincts.geojson')
+          payload = json.loads(path.read_text(encoding='utf-8'))
+          expected = {
+              '1': 'TREVOR KRUEGER',
+              '2': 'MICHAEL A. TRUITT',
+              '3': 'DAN ROCHELLE',
+              '4': 'DANNY FLETCHER',
+              '5': 'DOUG BOYDSTON',
+              '6': 'RICHARD BACHUS',
+          }
+          found = {}
+          for feature in payload.get('features', []):
+              props = feature.get('properties') or {}
+              district_id = str(props.get('district_id') or '')
+              attrs = props.get('source_attributes') or {}
+              found[district_id] = str(attrs.get('NAME_CONST') or '').strip().upper()
+              if props.get('source_district_field') != 'JP_C':
+                  raise SystemExit(f"Unexpected source field for precinct {district_id}: {props.get('source_district_field')!r}")
+          if found != expected:
+              raise SystemExit(f'Constable roster mismatch: expected {expected!r}; found {found!r}')
+          print('Verified six current constable names against official GIS attributes.')
+          PY
+
       - name: Run automated tests
         run: pytest -q
 
