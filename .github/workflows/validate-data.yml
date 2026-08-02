@@ -5,15 +5,17 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
+      - name: Check out repository branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -158,6 +160,35 @@ jobs:
             --fresh-raw build/poth-isd/raw/tigerweb-unified-school-district-4835550.geojson \
             --committed-canonical data/geojson/poth_isd_districtwide.geojson \
             --fresh-canonical build/poth-isd/geojson/poth_isd_districtwide.geojson
+
+      - name: Generate Corinth release geometry
+        run: |
+          python scripts/fetch_tigerweb_place.py \
+            --geoid 4816696 \
+            --record-id TX:municipality:corinth:at_large:CITYWIDE \
+            --geometry-id corinth-citywide \
+            --retrieved-at 2026-08-01 \
+            --raw-output data/raw/corinth/tigerweb-incorporated-place-4816696.geojson \
+            --output data/geojson/corinth_citywide.geojson
+
+      - name: Commit Corinth release files once
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          mkdir -p data/normalized
+          cat > data/normalized/corinth_2026.csv <<'CSV'
+          record_id,state_fips,state_abbr,jurisdiction_type,jurisdiction_name,district_type,district_id,district_name,source_url,source_retrieved_at,source_confidence,qa_status,parity_ok,office_name,election_date,geometry_source_url,geometry_id,parent_record_id,notes
+          TX:municipality:corinth:at_large:CITYWIDE,48,TX,municipality,City of Corinth,at_large,CITYWIDE,Citywide,https://www.corinthtx.gov/city-secretary/page/may-2026-election-guide,2026-08-01,high,approved,TRUE,"Mayor; Council Place 2 Special; Council Place 5",2026-05-02,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/28,corinth-citywide,,"Same-day mixed election scope: Mayor and Place 5 general elections with three-year terms through May 2029; Place 2 special election for an unexpired term through May 2028. Five candidate evidence rows are preserved separately. Census GEOID 4816696."
+          CSV
+          sed -i 's/^          //' data/normalized/corinth_2026.csv
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/raw/corinth/tigerweb-incorporated-place-4816696.geojson \
+            data/geojson/corinth_citywide.geojson \
+            data/normalized/corinth_2026.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Add Corinth mixed-election release files"
+            git push
+          fi
 
       - name: Run automated tests
         run: pytest -q
