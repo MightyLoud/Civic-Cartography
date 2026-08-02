@@ -1,0 +1,224 @@
+name: Validate Dallas County Commissioners Court
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-dallas-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Validate official application, web map, layer, and live roster contract
+        run: |
+          python - <<'PY'
+          import json
+          import time
+          import urllib.parse
+          import urllib.request
+
+          APP_ID = '929bdc6b485f47428f2e26266bd3ed81'
+          WEBMAP_ID = 'a9d7fe8a050848ed9d5f08086436ed3f'
+          LAYER_URL = 'https://services3.arcgis.com/zqe2kwz79KUqUvxC/arcgis/rest/services/DC_CCs_Adopted_2021_Rev1/FeatureServer/0'
+          ROOT = 'https://www.arcgis.com/sharing/rest/content/items'
+
+          def fetch_json(url):
+              request = urllib.request.Request(url, headers={'User-Agent': 'Civic-Cartography-validator/1.0'})
+              last_error = None
+              for attempt in range(1, 6):
+                  try:
+                      with urllib.request.urlopen(request, timeout=45) as response:
+                          return json.load(response)
+                  except Exception as exc:
+                      last_error = exc
+                      if attempt == 5:
+                          raise
+                      time.sleep(attempt * 5)
+              raise last_error
+
+          app_item = fetch_json(f'{ROOT}/{APP_ID}?f=json')
+          app_data = fetch_json(f'{ROOT}/{APP_ID}/data?f=json')
+          if app_item.get('title') != 'Who is My Commissioner':
+              raise SystemExit(f'Unexpected Dallas County application title: {app_item.get("title")!r}')
+          if app_item.get('orgId') != 'zqe2kwz79KUqUvxC':
+              raise SystemExit(f'Unexpected Dallas County ArcGIS organization: {app_item.get("orgId")!r}')
+
+          ids = []
+          def collect_ids(value):
+              if isinstance(value, dict):
+                  for key, child in value.items():
+                      if key.lower() in {'itemid', 'webmap'} and isinstance(child, str):
+                          ids.append(child)
+                      collect_ids(child)
+              elif isinstance(value, list):
+                  for child in value:
+                      collect_ids(child)
+          collect_ids(app_data)
+          if WEBMAP_ID not in ids:
+              raise SystemExit(f'Official application no longer references web map {WEBMAP_ID}: {ids}')
+
+          webmap_item = fetch_json(f'{ROOT}/{WEBMAP_ID}?f=json')
+          webmap_data = fetch_json(f'{ROOT}/{WEBMAP_ID}/data?f=json')
+          if webmap_item.get('type') != 'Web Map':
+              raise SystemExit(f'Unexpected item type for Dallas County web map: {webmap_item.get("type")!r}')
+          urls = []
+          def collect_urls(value):
+              if isinstance(value, dict):
+                  for key, child in value.items():
+                      if key == 'url' and isinstance(child, str):
+                          urls.append(child.rstrip('/'))
+                      collect_urls(child)
+              elif isinstance(value, list):
+                  for child in value:
+                      collect_urls(child)
+          collect_urls(webmap_data)
+          if LAYER_URL not in urls:
+              raise SystemExit(f'Official web map no longer references the adopted layer: {urls}')
+
+          layer = fetch_json(f'{LAYER_URL}?f=json')
+          if layer.get('geometryType') != 'esriGeometryPolygon':
+              raise SystemExit(f'Unexpected Dallas County geometry type: {layer.get("geometryType")!r}')
+          fields = {field.get('name') for field in layer.get('fields', [])}
+          required_fields = {'DISTRICT', 'Name', 'Comm_URL', 'Photo'}
+          if not required_fields.issubset(fields):
+              raise SystemExit(f'Dallas County layer lost required fields: {sorted(required_fields - fields)}')
+
+          query = urllib.parse.urlencode({
+              'where': '1=1',
+              'outFields': 'DISTRICT,Name,Photo,Comm_URL',
+              'returnGeometry': 'false',
+              'orderByFields': 'DISTRICT',
+              'f': 'json',
+          })
+          payload = fetch_json(f'{LAYER_URL}/query?{query}')
+          rows = {str(feature['attributes']['DISTRICT']): feature['attributes'] for feature in payload.get('features', [])}
+          expected = {
+              '1': 'Dr. Theresa Daniel',
+              '2': 'Andy Sommerman',
+              '3': 'John Wiley Price',
+              '4': 'Dr. Elba Garcia',
+          }
+          if set(rows) != set(expected):
+              raise SystemExit(f'Unexpected Dallas County district IDs: {sorted(rows)}')
+          for district_id, officeholder in expected.items():
+              row = rows[district_id]
+              if row.get('Name') != officeholder:
+                  raise SystemExit(f'District {district_id} roster drift: {row.get("Name")!r} != {officeholder!r}')
+              expected_url = f'https://www.dallascounty.org/government/comcrt/district{district_id}/'
+              if row.get('Comm_URL') != expected_url:
+                  raise SystemExit(f'District {district_id} commissioner URL drift: {row.get("Comm_URL")!r}')
+              if row.get('Photo') != f'COMM. DIST. {district_id}':
+                  raise SystemExit(f'District {district_id} Photo drift: {row.get("Photo")!r}')
+          print('Dallas County application, web map, adopted layer, and live roster match the release contract.')
+          PY
+
+      - name: Fetch current Dallas County Commissioner districts
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/dallas-county/districts
+            if python scripts/fetch_arcgis_districts.py \
+              --layer-url https://services3.arcgis.com/zqe2kwz79KUqUvxC/arcgis/rest/services/DC_CCs_Adopted_2021_Rev1/FeatureServer/0 \
+              --district-ids 1,2,3,4 \
+              --district-field DISTRICT \
+              --district-type commissioner_precinct \
+              --district-name-prefix "Commissioner District" \
+              --jurisdiction-name "Dallas County" \
+              --record-id-prefix TX:county:dallas:commissioner_precinct \
+              --geometry-id-prefix dallas-county-commissioner-district \
+              --source-agency "Dallas County GIS" \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/dallas-county/districts/raw/commissioner-districts-1-4.geojson \
+              --output build/dallas-county/districts/geojson/dallas_county_commissioner_districts.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Dallas County districts match official source
+        run: |
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/dallas-county/commissioner-districts-1-4.geojson \
+            --fresh-raw build/dallas-county/districts/raw/commissioner-districts-1-4.geojson \
+            --committed-canonical data/geojson/dallas_county_commissioner_districts.geojson \
+            --fresh-canonical build/dallas-county/districts/geojson/dallas_county_commissioner_districts.geojson
+
+      - name: Fetch current Dallas County boundary
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/dallas-county/county
+            if python scripts/fetch_tigerweb_county.py \
+              --geoid 48113 \
+              --record-id TX:county:dallas:countywide:COUNTYWIDE \
+              --geometry-id dallas-county-countywide \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/dallas-county/county/raw/tigerweb-county-48113.geojson \
+              --output build/dallas-county/county/geojson/dallas_county_countywide.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Dallas County boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/dallas-county/tigerweb-county-48113.geojson \
+            --fresh-raw build/dallas-county/county/raw/tigerweb-county-48113.geojson \
+            --committed-canonical data/geojson/dallas_county_countywide.geojson \
+            --fresh-canonical build/dallas-county/county/geojson/dallas_county_countywide.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Calculate Dallas County combined canonical digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          paths = [
+              Path('data/geojson/dallas_county_countywide.geojson'),
+              Path('data/geojson/dallas_county_commissioner_districts.geojson'),
+          ]
+          digest = hashlib.sha256()
+          for path in sorted(paths, key=lambda item: item.name):
+              digest.update(path.name.encode('utf-8'))
+              digest.update(b'\0')
+              digest.update(path.read_bytes())
+              digest.update(b'\0')
+          value = digest.hexdigest()
+          output = Path('build/dallas-county/release-sha256.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(value + '\n', encoding='utf-8')
+          print(f'Dallas County combined canonical SHA-256: {value}')
+          PY
+
+      - name: Upload Dallas County validation check
+        uses: actions/upload-artifact@v4
+        with:
+          name: dallas-county-validation
+          path: build/dallas-county/
+          if-no-files-found: error
