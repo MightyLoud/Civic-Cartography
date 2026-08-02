@@ -61,6 +61,7 @@ def fetch_layer(
     where: str = "1=1",
     out_fields: str = "*",
     geometry_precision: int | None = None,
+    max_allowable_offset: float | None = None,
     timeout: int = 60,
 ) -> tuple[dict[str, Any], str]:
     """Fetch layer features as WGS84 GeoJSON."""
@@ -74,6 +75,8 @@ def fetch_layer(
     }
     if geometry_precision is not None:
         params["geometryPrecision"] = str(geometry_precision)
+    if max_allowable_offset is not None:
+        params["maxAllowableOffset"] = format(max_allowable_offset, ".15g")
 
     request_url = f"{query_url}?{urlencode(params)}"
     request = Request(request_url, headers={"User-Agent": USER_AGENT})
@@ -253,6 +256,11 @@ def main() -> int:
         help="Optional ArcGIS geometryPrecision value for slow or oversized layers.",
     )
     parser.add_argument(
+        "--max-allowable-offset",
+        type=float,
+        help="Optional ArcGIS simplification tolerance in output spatial-reference units.",
+    )
+    parser.add_argument(
         "--timeout",
         type=int,
         default=60,
@@ -275,6 +283,7 @@ def main() -> int:
         where=args.where,
         out_fields=args.out_fields,
         geometry_precision=args.geometry_precision,
+        max_allowable_offset=args.max_allowable_offset,
         timeout=args.timeout,
     )
     district_field = args.district_field or infer_district_field(
