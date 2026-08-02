@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate pending permanent El Paso County and repository-wide validation.
+Verified release package. First-pass pre-merge validation succeeded in El Paso County workflow run #6 and repository workflow run #891.
 
 ## Purpose
 
@@ -110,7 +110,16 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Validation evidence
 
-The source-resolution bootstrap proved that portal item `0b4e626d91684cecb1e35828cf52092f` resolves to `Website_Basemap/MapServer/10` using field `Precinct`. Final exact-head workflow evidence is pending.
+- Portal source-resolution bootstrap: item `0b4e626d91684cecb1e35828cf52092f` resolves to `Website_Basemap/MapServer/10` using field `Precinct`
+- El Paso County workflow run #6: success
+- Repository workflow run #891: success
+- Automated tests: 75 passed
+- Normalized datasets validated: 23 files
+- Roster, alias, bilingual-source, portal, and layer contracts: passed
+- Current Commissioner precinct snapshot comparison: passed
+- Current Census snapshot comparison: passed
+- Geometry joins: passed
+- Combined canonical SHA-256: `9738b23a8dfba2f0d042244291fdca38ec606e24516b19863870d4b4a68798c5`
 
 ## Release files
 
