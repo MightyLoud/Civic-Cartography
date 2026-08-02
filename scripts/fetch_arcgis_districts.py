@@ -55,19 +55,31 @@ def normalize_identifier(value: Any) -> str | None:
     return None
 
 
-def fetch_layer(layer_url: str) -> tuple[dict[str, Any], str]:
+def fetch_layer(
+    layer_url: str,
+    *,
+    out_fields: str = "*",
+    geometry_precision: int | None = None,
+    timeout: int = 60,
+) -> tuple[dict[str, Any], str]:
     """Fetch all layer features as WGS84 GeoJSON."""
     query_url = f"{layer_url.rstrip('/')}/query"
     params = {
         "where": "1=1",
-        "outFields": "*",
+        "outFields": out_fields,
         "returnGeometry": "true",
+        "returnZ": "false",
+        "returnM": "false",
+        "returnTrueCurves": "false",
         "outSR": "4326",
         "f": "geojson",
     }
+    if geometry_precision is not None:
+        params["geometryPrecision"] = str(geometry_precision)
+
     request_url = f"{query_url}?{urlencode(params)}"
     request = Request(request_url, headers={"User-Agent": USER_AGENT})
-    with urlopen(request, timeout=60) as response:
+    with urlopen(request, timeout=timeout) as response:
         payload = json.load(response)
 
     features = payload.get("features")
@@ -227,6 +239,22 @@ def main() -> int:
     parser.add_argument("--geometry-id-prefix", required=True)
     parser.add_argument("--source-agency", required=True)
     parser.add_argument("--retrieved-at", required=True)
+    parser.add_argument(
+        "--out-fields",
+        default="*",
+        help="Comma-separated ArcGIS attributes to request; defaults to all fields.",
+    )
+    parser.add_argument(
+        "--geometry-precision",
+        type=int,
+        help="Optional ArcGIS geometryPrecision value for slow or oversized layers.",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=60,
+        help="ArcGIS request timeout in seconds; defaults to 60.",
+    )
     parser.add_argument("--raw-output", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -239,7 +267,12 @@ def main() -> int:
     if not expected_ids:
         raise ValueError("--district-ids must contain at least one district number")
 
-    payload, request_url = fetch_layer(args.layer_url)
+    payload, request_url = fetch_layer(
+        args.layer_url,
+        out_fields=args.out_fields,
+        geometry_precision=args.geometry_precision,
+        timeout=args.timeout,
+    )
     district_field = args.district_field or infer_district_field(
         payload["features"], expected_ids
     )
