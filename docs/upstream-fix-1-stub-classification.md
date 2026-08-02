@@ -2,7 +2,7 @@
 
 ## Status
 
-This work prepares and validates a patch against:
+Validated against:
 
 `openstates/jurisdictions@6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705`
 
@@ -15,7 +15,7 @@ Tracking issue: `MightyLoud/Civic-Cartography#43`.
 
 ## Baseline failure
 
-The real two-run baseline produced:
+The original real two-run baseline produced:
 
 - Seattle: Division and Jurisdiction
 - Tacoma: Division and Jurisdiction
@@ -24,8 +24,8 @@ The real two-run baseline produced:
 - RTD: unresolved
 - Denver: place Division/Jurisdiction plus county stub Division
 
-The no-validation-match branch returns immediately after the stub Division is
-written. The existing reusable OCDID classifier is never called.
+The no-validation-match branch returned immediately after the stub Division was
+written. The existing reusable OCDID classifier was never called.
 
 ## Patch behavior
 
@@ -39,22 +39,46 @@ The patch:
 6. adds focused unit tests outside `tests/integration` and `tests/sample_output`.
 
 The successful-match path uses the same helper but passes its existing LSAD
-value unchanged. Global blank-LSAD normalization remains fix 2.
+value unchanged. Global blank-LSAD normalization remains separate.
 
-## Validation contract
+## Confirmed result
 
-The dedicated workflow must prove:
+The final validation workflow passed every infrastructure and behavior check:
 
-- the patch applies cleanly to the pinned upstream commit;
-- its new upstream unit tests pass;
-- upstream Ruff checks pass for the changed Python files;
-- Pierce County produces a `government` Jurisdiction path;
-- Colorado Springs School District 11 produces a `school_system` Jurisdiction
-  path;
-- Denver's county alias member also reaches Jurisdiction generation;
-- both complete captures remain identical; and
-- all six fixtures remain deterministic.
+- ordinary `git apply --check` succeeded;
+- the regenerated Git diff matched the committed patch byte-for-byte;
+- the new upstream unit tests passed;
+- Ruff passed for both changed Python files;
+- two clean patched captures completed;
+- all six fixtures remained deterministic; and
+- both complete reports were identical.
 
-The strict six-fixture gate may remain red because fix 1 intentionally preserves
-the upstream `partial` status and does not solve RTD selection or canonical
-alias handling.
+Measured fixture impact:
+
+| Fixture | Before | After fix 1 |
+|---|---|---|
+| Seattle | generated `government` | unchanged |
+| Tacoma | generated `government` | unchanged |
+| Pierce County | stub Division only | Division plus `government` Jurisdiction |
+| Colorado Springs School District 11 | stub Division only | Division plus `school_system` Jurisdiction |
+| Regional Transportation District | unresolved | unchanged |
+| City and County of Denver | place complete; county stub only | both alias members produce `government` Jurisdictions |
+
+Evaluation ID: `4a351bffd71563a15f53`  
+Both run IDs: `d6293fee3205c7f2669f`
+
+Permanent evidence:
+
+- `evidence/upstream-fix-1/2026-08-02/source-manifest.json`
+- `evidence/upstream-fix-1/2026-08-02/fixture-evaluation.json`
+
+## Why the strict gate remains 2/6
+
+Fix 1 intentionally preserves `Status.PARTIAL` when validation enrichment is
+missing. Pierce County, District 11, and Denver now classify and generate
+Jurisdictions correctly, but the acceptance adapter still records their runs as
+partial with an explicit review reason.
+
+That is not a failure of fix 1. It keeps missing enrichment visible rather than
+claiming full generation. RTD selection and canonical consolidated-alias output
+remain separate reusable changes.
