@@ -1,0 +1,64 @@
+name: Validate Irving runoff proof
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-irving:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Fetch current official Irving District 3
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://services3.arcgis.com/OfsJXUlu8pSkbl7B/arcgis/rest/services/CityCouncilDistricts2022/FeatureServer/0 \
+            --district-ids 3 \
+            --district-field DISTRICTID \
+            --jurisdiction-name "City of Irving" \
+            --record-id-prefix TX:municipality:irving:district \
+            --geometry-id-prefix irving-district \
+            --source-agency "City of Irving" \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/irving/raw/city-council-district-3.geojson \
+            --output build/irving/geojson/irving_district_3.geojson
+
+      - name: Verify committed Irving District 3 matches official source
+        run: |
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/irving/city-council-district-3.geojson \
+            --fresh-raw build/irving/raw/city-council-district-3.geojson \
+            --committed-canonical data/geojson/irving_district_3.geojson \
+            --fresh-canonical build/irving/geojson/irving_district_3.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Upload Irving boundary check
+        uses: actions/upload-artifact@v4
+        with:
+          name: irving-runoff-boundary-check
+          path: build/irving/
+          if-no-files-found: error
