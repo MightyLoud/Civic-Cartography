@@ -4,6 +4,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "data/raw/travis-county/current-commissioners-court.csv"
+CONSTITUTIONAL_EVIDENCE = (
+    ROOT / "data/raw/travis-county/current-countywide-constitutional-offices.csv"
+)
 MANIFEST = ROOT / "data/raw/travis-county/source-manifest.csv"
 NORMALIZED = ROOT / "data/normalized/travis_county_commissioners_court.csv"
 PRECINCTS = ROOT / "data/geojson/travis_county_commissioner_precincts.geojson"
@@ -18,6 +21,13 @@ def test_travis_county_roster_and_geometry_contract() -> None:
         "County Commissioner Precinct 3": "Ann Howard",
         "County Commissioner Precinct 4": "George Morales",
     }
+    expected_countywide = {
+        "Sheriff": "Sally Hernandez",
+        "County Clerk": "Dyana Limon-Mercado",
+        "District Clerk": "Velva L. Price",
+        "Tax Assessor-Collector": "Celia Israel",
+        "County Treasurer": "Dolores Ortega Carter",
+    }
 
     with EVIDENCE.open(newline="", encoding="utf-8") as handle:
         evidence = list(csv.DictReader(handle))
@@ -29,6 +39,24 @@ def test_travis_county_roster_and_geometry_contract() -> None:
     assert "Margaret Gomez" in precinct_four["notes"]
     assert "stale-source" in precinct_four["notes"]
 
+    with CONSTITUTIONAL_EVIDENCE.open(newline="", encoding="utf-8") as handle:
+        countywide_evidence = list(csv.DictReader(handle))
+    assert len(countywide_evidence) == 5
+    assert {
+        row["office_name"]: row["officeholder"] for row in countywide_evidence
+    } == expected_countywide
+    assert {row["geography_id"] for row in countywide_evidence} == {"COUNTYWIDE"}
+    assert {row["geography_type"] for row in countywide_evidence} == {"countywide"}
+    tax_row = next(
+        row
+        for row in countywide_evidence
+        if row["office_name"] == "Tax Assessor-Collector"
+    )
+    assert "Celia Israel" in tax_row["notes"]
+    assert "January 3, 2025" in tax_row["notes"]
+    assert "Bruce Elfant" in tax_row["notes"]
+    assert "stale-source" in tax_row["notes"]
+
     with NORMALIZED.open(newline="", encoding="utf-8") as handle:
         normalized = list(csv.DictReader(handle))
     assert len(normalized) == 5
@@ -36,6 +64,15 @@ def test_travis_county_roster_and_geometry_contract() -> None:
     assert {row["parity_ok"] for row in normalized} == {"TRUE"}
     assert {row["district_id"] for row in normalized} == {"COUNTYWIDE", "1", "2", "3", "4"}
     assert len({row["geometry_id"] for row in normalized}) == 5
+
+    countywide_rows = [row for row in normalized if row["district_type"] == "countywide"]
+    assert len(countywide_rows) == 1
+    countywide = countywide_rows[0]
+    assert countywide["record_id"] == "TX:county:travis:countywide:COUNTYWIDE"
+    assert countywide["geometry_id"] == "travis-county-countywide"
+    for office in ["County Judge", *expected_countywide.keys()]:
+        assert office in countywide["office_name"]
+
     precinct_rows = [row for row in normalized if row["district_type"] == "commissioner_precinct"]
     assert len(precinct_rows) == 4
     assert {
@@ -48,9 +85,20 @@ def test_travis_county_roster_and_geometry_contract() -> None:
 
     with MANIFEST.open(newline="", encoding="utf-8") as handle:
         manifest = {row["source_id"]: row for row in csv.DictReader(handle)}
-    assert len(manifest) == 12
+    assert len(manifest) == 19
     assert "travis-county-transparency-contacts" in manifest
     assert "Margaret Gomez" in manifest["travis-county-transparency-contacts"]["use"]
+    assert "Sally Hernandez" in manifest["travis-county-transparency-contacts"]["use"]
+    assert "travis-county-sheriff" in manifest
+    assert "travis-county-clerk" in manifest
+    assert "travis-county-district-clerk" in manifest
+    assert "travis-county-tax-assessor-current" in manifest
+    assert "travis-county-tax-assessor-inauguration" in manifest
+    assert "travis-county-tax-assessor-stale-bruce-elfant" in manifest
+    assert "stale-source" in manifest[
+        "travis-county-tax-assessor-stale-bruce-elfant"
+    ]["use"]
+    assert "travis-county-treasurer" in manifest
     assert "travis-county-commissioner-precincts-feature" in manifest
     assert "renderer" in manifest["travis-county-commissioner-precincts-feature"]["use"]
     assert "timeout" in manifest["travis-county-commissioner-precincts-feature"]["use"]

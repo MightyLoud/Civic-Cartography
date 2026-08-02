@@ -1,12 +1,12 @@
-# Travis County, Texas — Commissioners Court
+# Travis County, Texas — Commissioners Court and Countywide Constitutional Offices
 
 ## Status
 
-Released through PR #46 after green Travis County and repository-wide validation.
+Verified ten-office release candidate. Travis County workflow run #76 and repository workflow run #481 passed; final merge and Jurisdiction Portfolio update remain.
 
 ## Purpose
 
-Travis County is the third county transfer proof. It tests the county model against an independently maintained ArcGIS Enterprise layer with a slow feature-query endpoint, a live renderer that carries the current roster, a cached geometry export with one stale officeholder value, and a separate official directory that has not caught up with the current Precinct 4 officeholder.
+Travis County is the third county transfer proof and the second proof that multiple countywide constitutional offices can share one verified county geometry. The extension adds five countywide offices without creating duplicate normalized rows or changing the released five-feature geometry package.
 
 ## Jurisdiction identity
 
@@ -15,46 +15,46 @@ Travis County is the third county transfer proof. It tests the county model agai
 - Jurisdiction type: county
 - County FIPS: `453`
 - Census GEOID: `48453`
-- Representation model: one County Judge elected countywide plus four Commissioners elected from precincts
+- Representation model: six countywide offices plus four Commissioners elected from precincts
 - County geometry source: U.S. Census Bureau TIGERweb Current Counties (`MapServer/82`)
 - Precinct source layer: Travis County GIS `Travis_County_Commissioner_Precincts` (`FeatureServer/0`)
-- Precinct geometry transport: the ArcGIS Hub cached GeoJSON export for the same official item
+- Precinct geometry transport: ArcGIS Hub cached GeoJSON export for the same official item
 - Stable precinct source field: `PRECINCT`
 - Declared officeholder field: `COMMISSIONER`
-- Current roster validation: the live layer renderer keyed by `PRECINCT`
+- Current Commissioner roster validation: live layer renderer keyed by `PRECINCT`
 - Stable precinct values: `1`, `2`, `3`, `4`
 
 ## Current official scope
 
-| Office | Representative geography | Officeholder |
-|---|---|---|
-| County Judge | Countywide | Andy Brown |
-| Commissioner Precinct 1 | Precinct 1 | Jeff Travillion |
-| Commissioner Precinct 2 | Precinct 2 | Brigid Shea |
-| Commissioner Precinct 3 | Precinct 3 | Ann Howard |
-| Commissioner Precinct 4 | Precinct 4 | George Morales |
+| Office | Representative geography | Officeholder | Evidence note |
+|---|---|---|---|
+| County Judge | Countywide | Andy Brown | Existing released countywide office |
+| Sheriff | Countywide | Sally Hernandez | Official Travis County Sheriff's Office page |
+| County Clerk | Countywide | Dyana Limon-Mercado | Official County Clerk page |
+| District Clerk | Countywide | Velva L. Price | Official District Clerk biography |
+| Tax Assessor-Collector | Countywide | Celia Israel | Elected November 2024 and sworn January 3, 2025 |
+| County Treasurer | Countywide | Dolores Ortega Carter | Official Treasurer page and transparency directory |
+| Commissioner Precinct 1 | Precinct 1 | Jeff Travillion | Live GIS renderer and office page |
+| Commissioner Precinct 2 | Precinct 2 | Brigid Shea | Live GIS renderer and office page |
+| Commissioner Precinct 3 | Precinct 3 | Ann Howard | Live GIS renderer and office page |
+| Commissioner Precinct 4 | Precinct 4 | George Morales | Live GIS renderer and office page |
+
+## Tax Assessor-Collector source conflict
+
+Current official evidence identifies Celia Israel as Travis County Tax Assessor-Collector:
+
+1. Israel was elected in November 2024.
+2. The Tax Office announced her January 3, 2025 inauguration for a four-year term.
+3. The current Tax Office biography and 2026 newsroom identify Israel as Tax Assessor-Collector.
+4. The Travis County financial-transparency directory also lists Celia Israel.
+
+A separate official Bruce Elfant biography page remains live and describes Elfant as Tax Assessor-Collector. The release preserves that page as stale-source evidence instead of silently discarding it or allowing it to override newer official records.
 
 ## Precinct 4 source conflict
 
-The live Precinct 4 office page, county homepage, public-information directory, and live GIS renderer identify George Morales as Commissioner. A separate financial-transparency contact directory still lists Margaret Gomez. The ArcGIS Hub cached export also retains `Margaret Gómez` in its Precinct 4 `COMMISSIONER` property.
+The live Precinct 4 office page, county homepage, public-information directory, and live GIS renderer identify George Morales as Commissioner. The financial-transparency directory still lists Margaret Gomez, and the ArcGIS Hub cached export retains `Margaret Gómez` in the Precinct 4 `COMMISSIONER` property.
 
-The release does not silently discard either stale value. The composite raw precinct snapshot preserves the cached value as `HUB_CACHE_COMMISSIONER`, while its current `COMMISSIONER` value is resolved from the live renderer. The directory conflict remains in the source manifest and roster notes.
-
-Direct FeatureServer and MapServer feature queries repeatedly timed out or returned HTTP 503 from GitHub-hosted validation runners, including filtered geometry and attributes-only requests. The release therefore does not claim that a successful live feature query returned the current officeholder attributes.
-
-## Hybrid GIS source contract
-
-The source and transport responsibilities are separated deliberately:
-
-1. Travis County's official `FeatureServer/0` remains the authoritative source layer.
-2. Live layer metadata must expose both `PRECINCT` and `COMMISSIONER` fields.
-3. The live unique-value renderer must map Precincts 1–4 to Jeff Travillion, Brigid Shea, Ann Howard, and George Morales.
-4. The ArcGIS Hub cached GeoJSON export for the same official item supplies exactly four polygon geometries.
-5. Cached officeholder values do not control the current roster; any mismatch is retained as `HUB_CACHE_COMMISSIONER`.
-6. The cached Precinct 4 value must remain explicit until the official export catches up or the source contract is re-evaluated.
-7. Permanent validation rebuilds the composite snapshot and fails on geometry, schema, renderer roster, precinct identity, cached-conflict handling, or canonical-join drift.
-
-This is a transport adaptation, not a source substitution. The polygons, layer metadata, and renderer all originate from Travis County's official ArcGIS item.
+The composite raw precinct snapshot preserves the cached value as `HUB_CACHE_COMMISSIONER`, while its current `COMMISSIONER` value is resolved from the live renderer. Direct FeatureServer and MapServer feature queries repeatedly timed out or returned HTTP 503 from GitHub-hosted runners, so the release separates live metadata/renderer validation from cached polygon transport.
 
 ## Stable identifiers
 
@@ -70,9 +70,11 @@ TX:county:travis:commissioner_precinct:4    -> travis-county-commissioner-precin
 
 | Layer | Count |
 |---|---:|
-| Current-officeholder evidence rows | 5 |
-| Official source records | 12 |
-| Scoped offices | 5 |
+| Commissioners Court evidence rows | 5 |
+| New countywide constitutional-office evidence rows | 5 |
+| Total current-officeholder evidence rows | 10 |
+| Official source records | 19 |
+| Scoped offices | 10 |
 | Normalized geography rows | 5 |
 | Canonical GeoJSON features | 5 |
 | Countywide features | 1 |
@@ -84,18 +86,20 @@ All five normalized records have `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Validation evidence
 
-- Final Travis County workflow: run #55 — success
-- Final repository workflow: run #455 — success
-- Automated tests: 41 passed
+- Travis County workflow: run #76 — success
+- Repository workflow: run #481 — success
+- Automated tests: 47 passed
 - Normalized datasets validated: 16 files
 - Geometry joins: passed
 - Current Census snapshot comparison: passed
 - Current official precinct snapshot comparison: passed
-- Combined canonical SHA-256: `70cf6fb263678e674b58f61c01563388f8916c175e7d6d77bd3a6981f288c2ca`
+- Geometry changes in this extension: 0
+- Combined canonical SHA-256 remains `70cf6fb263678e674b58f61c01563388f8916c175e7d6d77bd3a6981f288c2ca`
 
 ## Release files
 
 - Commissioners Court roster: `data/raw/travis-county/current-commissioners-court.csv`
+- Countywide constitutional-office roster: `data/raw/travis-county/current-countywide-constitutional-offices.csv`
 - Source manifest: `data/raw/travis-county/source-manifest.csv`
 - Raw Census county snapshot: `data/raw/travis-county/tigerweb-county-48453.geojson`
 - Raw composite Commissioner precinct snapshot: `data/raw/travis-county/commissioner-precincts-1-4.geojson`
@@ -107,17 +111,17 @@ All five normalized records have `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Source and QA rules
 
-1. Preserve all five current officeholders.
-2. Map the County Judge only to the countywide Census feature.
-3. Map each Commissioner to exactly one official Commissioner precinct feature.
-4. Require exactly four precinct values: `1`, `2`, `3`, and `4`.
-5. Require the live GIS renderer roster to match Jeff Travillion, Brigid Shea, Ann Howard, and George Morales.
-6. Require the live layer schema to retain `PRECINCT` and `COMMISSIONER`.
-7. Preserve the Margaret Gomez directory value and cached `Margaret Gómez` value as outdated evidence.
-8. Do not include Constables, Justices of the Peace, or other county offices in this bounded release.
+1. Preserve all ten current officeholders.
+2. Represent the County Judge, Sheriff, County Clerk, District Clerk, Tax Assessor-Collector, and County Treasurer in one countywide normalized record.
+3. Do not create duplicate countywide rows or geometry.
+4. Map each Commissioner to exactly one official Commissioner precinct feature.
+5. Preserve the stale Bruce Elfant biography, Margaret Gomez directory value, and cached `Margaret Gómez` value as explicit conflict evidence.
+6. Require the live GIS renderer roster to match Jeff Travillion, Brigid Shea, Ann Howard, and George Morales.
+7. Require the live layer schema to retain `PRECINCT` and `COMMISSIONER`.
+8. Do not include County Attorney, District Attorney, Constables, Justices of the Peace, or judicial offices in this bounded extension.
 9. Every normalized record must join exactly one canonical feature.
-10. Current-source drift fails CI when Census geometry, precinct geometry, schema, renderer roster, cached-conflict handling, precinct IDs, or canonical joins change.
+10. Geometry files must remain unchanged in this extension.
 
 ## Result
 
-Travis County contains five elected offices represented by five verified geometries: one countywide Census feature for the County Judge and four official Commissioner precinct features. The release preserves both Precinct 4 stale-source conflicts and documents the hybrid official-source contract required for reliable automated validation.
+Travis County now contains ten elected offices represented by five verified geometries. Six countywide offices share the one Census county feature, and Commissioners Precincts 1–4 retain their four official precinct features. The extension preserves both the Tax Assessor-Collector and Precinct 4 source conflicts without weakening current-officeholder validation.
