@@ -35,29 +35,16 @@ jobs:
           features = payload.get('features', [])
           if payload.get('type') != 'FeatureCollection' or len(features) != 4:
               raise SystemExit(f'Unexpected Hub response: {payload!r}')
-          object_ids = sorted(
-              int(feature['properties']['OBJECTID'])
-              for feature in features
-          )
-          Path('build/travis-county/precincts/raw/object-ids.txt').write_text(
-              ','.join(str(value) for value in object_ids),
-              encoding='utf-8',
-          )
-          print(f"Downloaded four Hub geometry features with object IDs {object_ids}.")
+          print('Downloaded four Hub geometry features.')
           PY
 
-      - name: Fetch current Travis County precinct attributes
+      - name: Fetch current Travis County layer metadata
         run: |
-          object_ids="$(cat build/travis-county/precincts/raw/object-ids.txt)"
           curl --fail-with-body --location --silent --show-error --compressed \
-            --connect-timeout 30 --max-time 90 --retry 1 --retry-all-errors \
-            --get "https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/FeatureServer/0/query" \
-            --data-urlencode "objectIds=${object_ids}" \
-            --data-urlencode "outFields=*" \
-            --data-urlencode "returnGeometry=false" \
-            --data-urlencode "orderByFields=PRECINCT" \
+            --connect-timeout 30 --max-time 60 --retry 3 --retry-all-errors \
+            --get "https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/FeatureServer/0" \
             --data-urlencode "f=json" \
-            --output build/travis-county/precincts/raw/live-attributes.json
+            --output build/travis-county/precincts/raw/live-layer-metadata.json
 
       - name: Fetch Travis County boundary with retry
         run: |
@@ -78,7 +65,7 @@ jobs:
             sleep $((attempt * 5))
           done
 
-      - name: Combine current attributes with official precinct geometry
+      - name: Combine current roster metadata with official precinct geometry
         run: |
           python - <<'PY'
           import copy
@@ -89,36 +76,54 @@ jobs:
 
           hub_url = "https://hub.arcgis.com/api/v3/datasets/1fd888e1d8124c1dbd35b5dac25a0a5a_0/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1"
           layer_url = "https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/FeatureServer/0"
-          object_ids = Path("build/travis-county/precincts/raw/object-ids.txt").read_text(encoding="utf-8")
-          live_query_url = f"{layer_url}/query?objectIds={object_ids}&outFields=%2A&returnGeometry=false&orderByFields=PRECINCT&f=json"
+          metadata_url = f"{layer_url}?f=json"
 
           hub_payload = json.loads(
               Path("build/travis-county/precincts/raw/hub-download.geojson").read_text(encoding="utf-8")
           )
-          live_payload = json.loads(
-              Path("build/travis-county/precincts/raw/live-attributes.json").read_text(encoding="utf-8")
+          metadata = json.loads(
+              Path("build/travis-county/precincts/raw/live-layer-metadata.json").read_text(encoding="utf-8")
           )
-          if live_payload.get("error"):
-              raise SystemExit(f"Live Travis County attribute query failed: {live_payload['error']!r}")
+          if metadata.get("error"):
+              raise SystemExit(f"Live Travis County layer metadata failed: {metadata['error']!r}")
+          fields = {field.get("name") for field in metadata.get("fields", [])}
+          if not {"PRECINCT", "COMMISSIONER"} <= fields:
+              raise SystemExit(f"Travis County layer fields changed: {sorted(fields)!r}")
 
-          live_by_precinct = {}
-          for feature in live_payload.get("features", []):
-              attributes = feature.get("attributes") or {}
-              precinct = normalize_identifier(attributes.get("PRECINCT"))
-              if precinct is None or precinct in live_by_precinct:
-                  raise SystemExit(f"Invalid live Travis County precinct attributes: {attributes!r}")
-              live_by_precinct[precinct] = attributes
-          if set(live_by_precinct) != {"1", "2", "3", "4"}:
-              raise SystemExit(f"Unexpected live Travis County precinct IDs: {sorted(live_by_precinct)!r}")
+          renderer = ((metadata.get("drawingInfo") or {}).get("renderer") or {})
+          if renderer.get("field1") != "PRECINCT":
+              raise SystemExit(f"Unexpected Travis County renderer field: {renderer.get('field1')!r}")
+          current_by_precinct = {}
+          for item in renderer.get("uniqueValueInfos", []):
+              precinct = normalize_identifier(item.get("value"))
+              label = str(item.get("label") or "").strip()
+              if precinct is None or ":" not in label:
+                  continue
+              current_by_precinct[precinct] = label.split(":", 1)[1].strip()
+          expected = {
+              "1": "Jeff Travillion",
+              "2": "Brigid Shea",
+              "3": "Ann Howard",
+              "4": "George Morales",
+          }
+          if current_by_precinct != expected:
+              raise SystemExit(
+                  f"Travis County live renderer roster mismatch: expected {expected!r}; found {current_by_precinct!r}"
+              )
 
           combined_features = []
           for hub_feature in hub_payload.get("features", []):
-              properties = hub_feature.get("properties") or {}
+              properties = copy.deepcopy(hub_feature.get("properties") or {})
               precinct = normalize_identifier(properties.get("PRECINCT"))
-              if precinct not in live_by_precinct:
+              if precinct not in current_by_precinct:
                   continue
+              stale_name = str(properties.get("COMMISSIONER") or "").strip()
+              if stale_name and stale_name != current_by_precinct[precinct]:
+                  properties["HUB_CACHE_COMMISSIONER"] = stale_name
+              properties["COMMISSIONER"] = current_by_precinct[precinct]
+              properties.pop("CommissionerPicture", None)
               feature = copy.deepcopy(hub_feature)
-              feature["properties"] = copy.deepcopy(live_by_precinct[precinct])
+              feature["properties"] = properties
               combined_features.append(feature)
 
           raw_payload = select_features(
@@ -143,25 +148,12 @@ jobs:
               district_name_prefix="Commissioner Precinct",
           )
           for feature in canonical["features"]:
-              feature["properties"]["source_attribute_request_url"] = live_query_url
+              feature["properties"]["source_roster_metadata_url"] = metadata_url
           write_json(
               Path("build/travis-county/precincts/geojson/travis_county_commissioner_precincts.geojson"),
               canonical,
           )
-
-          found = {
-              str(feature["properties"]["PRECINCT"]): feature["properties"]["COMMISSIONER"]
-              for feature in raw_payload["features"]
-          }
-          expected = {
-              "1": "Jeff Travillion",
-              "2": "Brigid Shea",
-              "3": "Ann Howard",
-              "4": "George Morales",
-          }
-          if found != expected:
-              raise SystemExit(f"Travis County commissioner roster mismatch: expected {expected!r}; found {found!r}")
-          print("Combined four official precinct geometries with the current live commissioner attributes.")
+          print("Combined four official precinct geometries with the current live renderer roster.")
           PY
 
       - name: Upload Travis County bootstrap artifacts
