@@ -1,0 +1,223 @@
+{
+  "evaluation_id": "4a351bffd71563a15f53",
+  "first_run_id": "d6293fee3205c7f2669f",
+  "fixtures": [
+    {
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/seattle_5363000_323546d6-d859-53ea-9403-bd5680b2ab05.yaml"
+      ],
+      "exception_class": null,
+      "expected_archetype": "AR-001",
+      "expected_classification": "government",
+      "failures": [],
+      "generation_status": "generated",
+      "human_minutes": 0.0,
+      "inferred_classification": "government",
+      "jurisdiction_name": "Seattle",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/seattle_200747ac-8010-510a-b0be-7fce0ae00bff.yaml"
+      ],
+      "output_hashes": {
+        "divisions/wa/local/seattle_5363000_323546d6-d859-53ea-9403-bd5680b2ab05.yaml": "fb487965148729f4b041fe1fa2eb6e28cf20f9ad7d247324c28de3dde866182d",
+        "jurisdictions/wa/local/seattle_200747ac-8010-510a-b0be-7fce0ae00bff.yaml": "349e339bcbc2fd099b9f72e3a842e3b9f094f6780dc99390290538ecdfa770f0"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:seattle"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "BP25-001"
+    },
+    {
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/tacoma_5370000_f7a3a1b6-57c5-5b88-a1e3-1232c5272a6f.yaml"
+      ],
+      "exception_class": null,
+      "expected_archetype": "AR-001",
+      "expected_classification": "government",
+      "failures": [],
+      "generation_status": "generated",
+      "human_minutes": 0.0,
+      "inferred_classification": "government",
+      "jurisdiction_name": "Tacoma",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/tacoma_da99d54b-e54b-524e-83b4-b7a593240c21.yaml"
+      ],
+      "output_hashes": {
+        "divisions/wa/local/tacoma_5370000_f7a3a1b6-57c5-5b88-a1e3-1232c5272a6f.yaml": "f32c380ff32f50ebc16607a90dbfebdf9e78db7a0724504c9875a835c88d3f26",
+        "jurisdictions/wa/local/tacoma_da99d54b-e54b-524e-83b4-b7a593240c21.yaml": "e81522d3d63f8b26b9ed640d6dc230ea8e30243e3ac2f4c5b4691e8c8fbb5e9c"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:tacoma"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "BP25-002"
+    },
+    {
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/unknown__3c00afd9-8478-52f8-ba1c-8cd27a495f5d.yaml"
+      ],
+      "exception_class": "upstream_partial_generation",
+      "expected_archetype": "AR-002",
+      "expected_classification": "government",
+      "failures": [
+        "first_run: generation_status must be 'generated'",
+        "first_run: generated fixture still has exception_class='upstream_partial_generation'",
+        "first_run: generated fixture still has a review_reason",
+        "second_run: generation_status must be 'generated'",
+        "second_run: generated fixture still has exception_class='upstream_partial_generation'",
+        "second_run: generated fixture still has a review_reason"
+      ],
+      "generation_status": "partial",
+      "human_minutes": 0.0,
+      "inferred_classification": "government",
+      "jurisdiction_name": "Pierce County",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/pierce_bf353bec-1938-55cd-be36-0ef8e1bab286.yaml"
+      ],
+      "output_hashes": {
+        "divisions/wa/local/unknown__3c00afd9-8478-52f8-ba1c-8cd27a495f5d.yaml": "a06213482dae44b493e2480959a255caf918cdde5def690406c74fbf6345cf82",
+        "jurisdictions/wa/local/pierce_bf353bec-1938-55cd-be36-0ef8e1bab286.yaml": "730527dafad533541ea44f9daefe59d3de972d5e7c992da3b34b0bba2f2c3dcb"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/county:pierce"
+      ],
+      "review_reason": "ocd-division/country:us/state:wa/county:pierce; status=partial; error=No validation match found",
+      "status": "failed",
+      "target_id": "BP25-009"
+    },
+    {
+      "deterministic": true,
+      "division_paths": [
+        "divisions/co/local/unknown__535d01fb-7ce9-5d37-a2cb-2b4d0ad27622.yaml"
+      ],
+      "exception_class": "upstream_partial_generation",
+      "expected_archetype": "AR-003",
+      "expected_classification": "school_system",
+      "failures": [
+        "first_run: generation_status must be 'generated'",
+        "first_run: generated fixture still has exception_class='upstream_partial_generation'",
+        "first_run: generated fixture still has a review_reason",
+        "second_run: generation_status must be 'generated'",
+        "second_run: generated fixture still has exception_class='upstream_partial_generation'",
+        "second_run: generated fixture still has a review_reason"
+      ],
+      "generation_status": "partial",
+      "human_minutes": 0.0,
+      "inferred_classification": "school_system",
+      "jurisdiction_name": "Colorado Springs School District 11",
+      "jurisdiction_paths": [
+        "jurisdictions/co/local/colorado_springs_school_district_no._11_2fc8bf53-13ca-558a-90d7-46e44ce037fe.yaml"
+      ],
+      "output_hashes": {
+        "divisions/co/local/unknown__535d01fb-7ce9-5d37-a2cb-2b4d0ad27622.yaml": "631e63b3538f915e1598eb085d1c1f04fec439391724bdc30549b144ecfb102f",
+        "jurisdictions/co/local/colorado_springs_school_district_no._11_2fc8bf53-13ca-558a-90d7-46e44ce037fe.yaml": "1212843a7d7e02ee0448f2c5b1cb0ca12087bb98c60abe6fbdeef93b87d23b30"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:co/county:el_paso/school_district:colorado_springs_school_district_no._11"
+      ],
+      "review_reason": "ocd-division/country:us/state:co/county:el_paso/school_district:colorado_springs_school_district_no._11; status=partial; error=No validation match found",
+      "status": "failed",
+      "target_id": "BP25-014"
+    },
+    {
+      "deterministic": true,
+      "division_paths": [],
+      "exception_class": "upstream_target_not_found",
+      "expected_archetype": "AR-004",
+      "expected_classification": "transit_authority",
+      "failures": [
+        "first_run: match_status='not_found' is not resolved",
+        "first_run: inferred classification does not equal transit_authority",
+        "first_run: classification_status must be 'matched'",
+        "first_run: generation_status must be 'generated'",
+        "first_run: at least one Division path is required",
+        "first_run: at least one Jurisdiction path is required",
+        "first_run: output_hashes must be non-empty",
+        "first_run: generated fixture still has exception_class='upstream_target_not_found'",
+        "first_run: generated fixture still has a review_reason",
+        "second_run: match_status='not_found' is not resolved",
+        "second_run: inferred classification does not equal transit_authority",
+        "second_run: classification_status must be 'matched'",
+        "second_run: generation_status must be 'generated'",
+        "second_run: at least one Division path is required",
+        "second_run: at least one Jurisdiction path is required",
+        "second_run: output_hashes must be non-empty",
+        "second_run: generated fixture still has exception_class='upstream_target_not_found'",
+        "second_run: generated fixture still has a review_reason"
+      ],
+      "generation_status": "skipped",
+      "human_minutes": 0.0,
+      "inferred_classification": null,
+      "jurisdiction_name": "Regional Transportation District",
+      "jurisdiction_paths": [],
+      "output_hashes": {},
+      "resolved_ocdids": [],
+      "review_reason": "No upstream record matched the maintained exact-name aliases: denver regional transportation district, regional transportation district, regional transportation district colorado, regional transportation district rtd",
+      "status": "failed",
+      "target_id": "BP25-018"
+    },
+    {
+      "deterministic": true,
+      "division_paths": [
+        "divisions/co/local/denver_0820000_eac2c839-9df8-52a4-b0c0-b991e823cd53.yaml",
+        "divisions/co/local/unknown__dfec8fbb-dfe0-5c67-8201-3fa6efbfa3a3.yaml"
+      ],
+      "exception_class": "upstream_partial_generation",
+      "expected_archetype": "AR-005",
+      "expected_classification": "government",
+      "failures": [
+        "first_run: generation_status must be 'generated'",
+        "first_run: generated fixture still has exception_class='upstream_partial_generation'",
+        "first_run: generated fixture still has a review_reason",
+        "second_run: generation_status must be 'generated'",
+        "second_run: generated fixture still has exception_class='upstream_partial_generation'",
+        "second_run: generated fixture still has a review_reason"
+      ],
+      "generation_status": "partial",
+      "human_minutes": 0.0,
+      "inferred_classification": "government",
+      "jurisdiction_name": "City and County of Denver",
+      "jurisdiction_paths": [
+        "jurisdictions/co/local/denver_74c899d1-8abd-5a2c-8839-075721d25911.yaml",
+        "jurisdictions/co/local/denver_c9595597-9ec3-5c12-a4a6-d5d9665ad7c5.yaml"
+      ],
+      "output_hashes": {
+        "divisions/co/local/denver_0820000_eac2c839-9df8-52a4-b0c0-b991e823cd53.yaml": "89fa44f1a7c11d17d29183dc72a4d55950b96c3defaaee02cadcd1c49a776145",
+        "divisions/co/local/unknown__dfec8fbb-dfe0-5c67-8201-3fa6efbfa3a3.yaml": "fe5430abb09290b2795090f3ef56e05d965d524032fe769f02d1fbc66218fda1",
+        "jurisdictions/co/local/denver_74c899d1-8abd-5a2c-8839-075721d25911.yaml": "dc917d2f6d1bde497c1f0445f8908846c668de7f508be94a892dad8ac7ffffab",
+        "jurisdictions/co/local/denver_c9595597-9ec3-5c12-a4a6-d5d9665ad7c5.yaml": "ccf88b1594bdcfa6fda54284a787c5b26c9eda9721af444f791b62a303b0880f"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:co/county:denver",
+        "ocd-division/country:us/state:co/place:denver"
+      ],
+      "review_reason": "ocd-division/country:us/state:co/place:denver; status=success | ocd-division/country:us/state:co/county:denver; status=partial; error=No validation match found",
+      "status": "failed",
+      "target_id": "BP25-022"
+    }
+  ],
+  "manifest_name": "batch_pilot_25",
+  "manifest_sha256": "733e7bc7ddf40e4905105dcf60389fbb95a3dd17eb348414b7d643d8deeb81fb",
+  "run_asof": "2026-08-02T15:00:00Z",
+  "schema_version": 1,
+  "second_run_id": "d6293fee3205c7f2669f",
+  "summary": {
+    "deterministic_count": 6,
+    "failed_count": 4,
+    "fixture_count": 6,
+    "gate_passed": false,
+    "human_review_gate": "passed",
+    "median_human_minutes": 0.0,
+    "passed_count": 2,
+    "report_content_match": true
+  },
+  "upstream": {
+    "repository": "openstates/jurisdictions",
+    "revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
+  }
+}

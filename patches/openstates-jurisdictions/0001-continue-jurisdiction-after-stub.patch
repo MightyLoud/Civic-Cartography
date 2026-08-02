@@ -1,0 +1,366 @@
+diff --git a/ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-design.md b/ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-design.md
+new file mode 100644
+index 0000000..2a3e0d0
+--- /dev/null
++++ b/ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-design.md
+@@ -0,0 +1,50 @@
++# Continue jurisdiction classification after stub Division generation
++
++## Tracking
++
++An upstream issue is required before submission. The initial issue creation
++attempt was blocked by repository permissions. External evidence is tracked in
++`MightyLoud/Civic-Cartography#43`.
++
++## Problem
++
++`GeneratePipeline.run()` returns immediately after writing a stub Division when
++the validation CSV has no match. Valid governing OCD divisions therefore never
++reach `infer_jurisdiction_seed()`.
++
++This affects reusable division types including:
++
++- counties, which should classify as `government`; and
++- school districts, which should classify as `school_system`.
++
++The no-match response correctly remains `partial` because validation enrichment
++is missing. The missing enrichment should not prevent creation of a
++Jurisdiction when the OCD ID itself has an established classification rule.
++
++## Decision
++
++Extract the existing Jurisdiction-generation block into a private helper that:
++
++1. receives the LSAD value explicitly;
++2. calls `infer_jurisdiction_seed()`;
++3. creates a Jurisdiction only when the seed permits it; and
++4. preserves the existing deduplication behavior.
++
++The no-validation-match path will call the helper with `lsad_code=None` after
++writing and quarantining the stub Division. The normal matched-record path will
++pass its current LSAD value unchanged.
++
++## Non-goals
++
++- Do not change the `partial` status for a no-validation-match response.
++- Do not classify ambiguous multiple-match records.
++- Do not normalize blank LSAD values globally.
++- Do not add target-specific overrides.
++- Do not modify core Pydantic models, integration tests, or `tests/sample_output`.
++
++## Expected impact
++
++Pierce County and Colorado Springs School District 11 should produce both
++Division and Jurisdiction paths while remaining explicit partial-enrichment
++results. Unknown or non-governing OCD division types should continue without a
++Jurisdiction.
+diff --git a/ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-implementation.md b/ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-implementation.md
+new file mode 100644
+index 0000000..a502681
+--- /dev/null
++++ b/ai_tools/planning/2026-08-02-stub-division-jurisdiction-classification-implementation.md
+@@ -0,0 +1,40 @@
++# Stub Division jurisdiction classification implementation plan
++
++## Scope
++
++Implement the design in
++`2026-08-02-stub-division-jurisdiction-classification-design.md`.
++
++## Tasks
++
++1. Add a private `GeneratePipeline` helper for Jurisdiction generation.
++2. Reuse the helper from the existing successful-match path without changing
++   its LSAD input.
++3. Invoke the helper from the no-validation-match path with no LSAD value.
++4. Preserve quarantine data and the `partial` response status.
++5. Add unit tests mirroring `src/init_migration/generate_pipeline.py`.
++
++## Test cases
++
++### No validation match
++
++- a stub Division is written;
++- classification is still invoked;
++- the classifier receives `lsad_code=None`;
++- quarantine reason remains `no_validation_match`; and
++- response status remains `partial`.
++
++### Reusable OCD ID classification
++
++- a county stub can produce a `government` Jurisdiction;
++- the generated Jurisdiction path is returned; and
++- the jurisdiction OCD ID is added to the existing deduplication set.
++
++## Validation
++
++Run:
++
++```bash
++uv run pytest tests/src/init_migration/test_generate_pipeline_stub_classification.py
++uv run ruff check src/init_migration/generate_pipeline.py tests/src/init_migration/test_generate_pipeline_stub_classification.py
++```
+diff --git a/src/init_migration/generate_pipeline.py b/src/init_migration/generate_pipeline.py
+index 81aaf57..b6c74a1 100644
+--- a/src/init_migration/generate_pipeline.py
++++ b/src/init_migration/generate_pipeline.py
+@@ -351,6 +351,57 @@ class GeneratePipeline:
+         """
+         return jurisdiction_ocdid in self.created_jurisdictions
+ 
++    def _generate_jurisdiction_for_division(
++        self,
++        response: GeneratorResp,
++        *,
++        lsad_code: str | None,
++    ) -> None:
++        """Generate a Jurisdiction for the current Division when rules allow."""
++        if not self.division:
++            return
++
++        seed = infer_jurisdiction_seed(
++            ocdid=self.division.ocdid,
++            lsad_code=lsad_code,
++        )
++        if not seed.has_jurisdiction:
++            logger.info(
++                "No jurisdiction created for division",
++                extra={
++                    "ocdid": self.division.ocdid,
++                    "reason": seed.reason,
++                },
++            )
++            return
++
++        classification = seed.classification or "government"
++        jurisdiction_ocdid = self._derive_jurisdiction_ocdid(
++            self.division.ocdid, classification
++        )
++        if self.jurisdiction_exists(jurisdiction_ocdid):
++            logger.info(
++                "Jurisdiction already exists",
++                extra={"jurisdiction_ocdid": jurisdiction_ocdid},
++            )
++            return
++
++        jur_gen = JurGenerator(self.req, division=self.division)
++        self.jurisdiction = jur_gen.generate_jurisdiction(
++            division=self.division,
++            uuid=self.uuid,
++            classification=classification,
++        )
++        if self.jurisdiction:
++            response.jurisdiction_path = str(
++                jur_gen.dump_jurisdiction(output_dir=self.jurisdiction_output_dir)
++            )
++            self.created_jurisdictions.add(jurisdiction_ocdid)
++            logger.info(
++                "Jurisdiction created",
++                extra={"jurisdiction_ocdid": jurisdiction_ocdid},
++            )
++
+     async def run(self) -> GeneratorResp:
+         """Run the pipeline: find matches, generate Division, then Jurisdiction.
+ 
+@@ -381,6 +432,9 @@ class GeneratePipeline:
+                     response.division_path = str(
+                         div_gen.dump_division(output_dir=self.division_output_dir)
+                     )
++                    self._generate_jurisdiction_for_division(
++                        response, lsad_code=None
++                    )
+                 self.quarantine.ocdid_no_validation_div.append(
+                     {
+                         "ocdid": self.data.ocdid.raw_ocdid,
+@@ -432,45 +486,14 @@ class GeneratePipeline:
+                 response.division_path = str(
+                     div_gen.dump_division(output_dir=self.division_output_dir)
+                 )
+-            # Determine whether and what kind of Jurisdiction to create (issue #41)
++
+             if self.division:
+-                seed = infer_jurisdiction_seed(
+-                    ocdid=self.division.ocdid,
++                self._generate_jurisdiction_for_division(
++                    response,
+                     lsad_code=self.division.government_identifiers.lsad
+                     if self.division.government_identifiers
+                     else None,
+                 )
+-                if seed.has_jurisdiction:
+-                    classification = seed.classification or "government"
+-                    jurisdiction_ocdid = self._derive_jurisdiction_ocdid(
+-                        self.division.ocdid, classification
+-                    )
+-                    if not self.jurisdiction_exists(jurisdiction_ocdid):
+-                        jur_gen = JurGenerator(
+-                            self.req,
+-                            division=self.division,
+-                        )
+-                        self.jurisdiction = jur_gen.generate_jurisdiction(
+-                            division=self.division,
+-                            uuid=self.uuid,
+-                            classification=classification,
+-                        )
+-                        if self.jurisdiction:
+-                            response.jurisdiction_path = str(
+-                                jur_gen.dump_jurisdiction(
+-                                    output_dir=self.jurisdiction_output_dir
+-                                )
+-                            )
+-                            self.created_jurisdictions.add(jurisdiction_ocdid)
+-                            logger.info(f"Jurisdiction created: {jurisdiction_ocdid}")
+-                    else:
+-                        logger.info(
+-                            f"Jurisdiction already exists: {jurisdiction_ocdid}"
+-                        )
+-                else:
+-                    logger.info(
+-                        f"No jurisdiction created for {self.division.ocdid}: {seed.reason}"
+-                    )
+ 
+             response.status = GeneratorStatus(status=Status.SUCCESS)
+ 
+diff --git a/tests/src/init_migration/test_generate_pipeline_stub_classification.py b/tests/src/init_migration/test_generate_pipeline_stub_classification.py
+new file mode 100644
+index 0000000..8b6f21b
+--- /dev/null
++++ b/tests/src/init_migration/test_generate_pipeline_stub_classification.py
+@@ -0,0 +1,137 @@
++from types import SimpleNamespace
++from uuid import UUID
++
++import polars as pl
++import pytest
++
++import src.init_migration.generate_pipeline as generate_pipeline
++from src.init_migration.generate_pipeline import GeneratePipeline, NoMatch
++from src.init_migration.pipeline_models import OCDidIngestResp, Status
++from src.models.ocdid import OCDIdParsed
++
++
++PIERCE_OCDID = "ocd-division/country:us/state:wa/county:pierce"
++TEST_UUID = UUID("0f42b7c3-4e0a-4e6d-b2b1-720a8d4e8079")
++
++
++def _ingest(ocdid: str = PIERCE_OCDID) -> OCDidIngestResp:
++    return OCDidIngestResp(
++        uuid=TEST_UUID,
++        ocdid=OCDIdParsed.parse_ocdid(ocdid),
++        raw_record={"id": ocdid, "name": "Pierce County"},
++    )
++
++
++@pytest.mark.asyncio
++async def test_no_validation_match_continues_to_jurisdiction_classification(
++    monkeypatch: pytest.MonkeyPatch,
++    tmp_path,
++) -> None:
++    data = _ingest()
++    pipeline = GeneratePipeline.__new__(GeneratePipeline)
++    pipeline.req = SimpleNamespace(data=data)
++    pipeline.data = data
++    pipeline.uuid = data.uuid
++    pipeline.division_output_dir = tmp_path
++    pipeline.jurisdiction_output_dir = tmp_path
++    pipeline.quarantine = NoMatch()
++    pipeline.created_jurisdictions = set()
++    pipeline.division = None
++    pipeline.jurisdiction = None
++    pipeline.find_matches = lambda _: pl.DataFrame()
++
++    division = SimpleNamespace(
++        ocdid=PIERCE_OCDID,
++        government_identifiers=SimpleNamespace(lsad=""),
++    )
++    division_path = tmp_path / "divisions/wa/local/pierce.yaml"
++
++    class FakeDivGenerator:
++        def __init__(self, req) -> None:
++            assert req is pipeline.req
++
++        def generate_division_stub(self, uuid):
++            assert uuid == TEST_UUID
++            return division
++
++        def dump_division(self, output_dir):
++            assert output_dir == tmp_path
++            return division_path
++
++    monkeypatch.setattr(generate_pipeline, "DivGenerator", FakeDivGenerator)
++
++    classification_calls: list[str | None] = []
++
++    def continue_classification(response, *, lsad_code):
++        classification_calls.append(lsad_code)
++
++    pipeline._generate_jurisdiction_for_division = continue_classification
++
++    response = await pipeline.run()
++
++    assert classification_calls == [None]
++    assert response.division_path == str(division_path)
++    assert response.status.status is Status.PARTIAL
++    assert response.status.error == "No validation match found"
++    assert pipeline.quarantine.ocdid_no_validation_div == [
++        {
++            "ocdid": PIERCE_OCDID,
++            "reason": "no_validation_match",
++            "matched_records": [],
++        }
++    ]
++
++
++def test_stub_division_can_generate_ocdid_classified_jurisdiction(
++    monkeypatch: pytest.MonkeyPatch,
++    tmp_path,
++) -> None:
++    pipeline = GeneratePipeline.__new__(GeneratePipeline)
++    pipeline.req = SimpleNamespace()
++    pipeline.uuid = TEST_UUID
++    pipeline.division = SimpleNamespace(ocdid=PIERCE_OCDID)
++    pipeline.jurisdiction = None
++    pipeline.created_jurisdictions = set()
++    pipeline.jurisdiction_output_dir = tmp_path
++    response = SimpleNamespace(jurisdiction_path=None)
++
++    classifier_call = {}
++
++    def fake_infer_jurisdiction_seed(*, ocdid, lsad_code):
++        classifier_call.update({"ocdid": ocdid, "lsad_code": lsad_code})
++        return SimpleNamespace(
++            has_jurisdiction=True,
++            classification="government",
++            reason="general government fallback",
++        )
++
++    jurisdiction_path = tmp_path / "jurisdictions/wa/local/pierce.yaml"
++
++    class FakeJurGenerator:
++        def __init__(self, req, division) -> None:
++            assert req is pipeline.req
++            assert division is pipeline.division
++
++        def generate_jurisdiction(self, *, division, uuid, classification):
++            assert division is pipeline.division
++            assert uuid == TEST_UUID
++            assert classification == "government"
++            return SimpleNamespace()
++
++        def dump_jurisdiction(self, output_dir):
++            assert output_dir == tmp_path
++            return jurisdiction_path
++
++    monkeypatch.setattr(
++        generate_pipeline, "infer_jurisdiction_seed", fake_infer_jurisdiction_seed
++    )
++    monkeypatch.setattr(generate_pipeline, "JurGenerator", FakeJurGenerator)
++
++    pipeline._generate_jurisdiction_for_division(response, lsad_code=None)
++
++    expected_ocdid = (
++        "ocd-jurisdiction/country:us/state:wa/county:pierce/government"
++    )
++    assert classifier_call == {"ocdid": PIERCE_OCDID, "lsad_code": None}
++    assert response.jurisdiction_path == str(jurisdiction_path)
++    assert pipeline.created_jurisdictions == {expected_ocdid}
