@@ -1,0 +1,212 @@
+name: Bootstrap Collin County Commissioners Court
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap-collin-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'push' && github.ref_name || github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Resolve official interactive map layer
+        id: source
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import html
+          import json
+          import re
+          import urllib.parse
+          import urllib.request
+          from pathlib import Path
+
+          APP_URL = 'https://maps.collincountytx.gov/ccmap_commissioners/'
+          USER_AGENT = 'Civic-Cartography-bootstrap/1.0'
+
+          def fetch_text(url):
+              request = urllib.request.Request(url, headers={'User-Agent': USER_AGENT})
+              with urllib.request.urlopen(request, timeout=45) as response:
+                  return response.read().decode('utf-8', errors='replace')
+
+          root = fetch_text(APP_URL)
+          candidates = [(APP_URL, root)]
+          paths = {
+              'config.json',
+              'js/config.js',
+              'config/config.json',
+              'configs/config.json',
+          }
+          for pattern in (
+              r'(?:src|href)=["\']([^"\']+)["\']',
+              r'["\']([^"\']+\.(?:json|js))(?:\?[^"\']*)?["\']',
+          ):
+              for match in re.findall(pattern, root, flags=re.I):
+                  paths.add(html.unescape(match))
+
+          seen = {APP_URL}
+          queue = []
+          for path in paths:
+              url = urllib.parse.urljoin(APP_URL, path)
+              if url.startswith(APP_URL) and url not in seen:
+                  queue.append(url)
+                  seen.add(url)
+
+          for url in queue[:100]:
+              try:
+                  text = fetch_text(url)
+              except Exception:
+                  continue
+              candidates.append((url, text))
+
+          service_urls = []
+          pattern = re.compile(r'https?:\\?/\\?/[^"\'<>\\s]+?/(?:MapServer|FeatureServer)/\d+', re.I)
+          for source_url, text in candidates:
+              normalized = text.replace('\\/', '/')
+              for match in pattern.findall(normalized):
+                  service_urls.append((source_url, match.rstrip('/')))
+
+          ranked = []
+          for source_url, layer_url in service_urls:
+              score = 0
+              if 'collincountytx.gov' in layer_url:
+                  score += 10
+              if 'Election_Department' in layer_url:
+                  score += 8
+              if 'InteractiveMap/Election' in layer_url:
+                  score += 7
+              if 'VotingPrecincts_Edited_PlanC2333' in layer_url:
+                  score += 6
+              if layer_url.endswith('/1') or layer_url.endswith('/3'):
+                  score += 3
+              ranked.append((score, source_url, layer_url))
+          ranked.sort(reverse=True)
+
+          if not ranked:
+              raise SystemExit(f'No ArcGIS operational layer found in {len(candidates)} fetched application resources.')
+
+          layer_url = ranked[0][2]
+          if not any(token in layer_url for token in ('Election_Department', 'InteractiveMap/Election', 'VotingPrecincts_Edited_PlanC2333')):
+              raise SystemExit(f'Unexpected Collin County application layer: {layer_url}')
+
+          contract = {
+              'application_url': APP_URL,
+              'application_resources_checked': [url for url, _ in candidates],
+              'ranked_layer_candidates': [
+                  {'score': score, 'source_url': source_url, 'layer_url': candidate}
+                  for score, source_url, candidate in ranked[:20]
+              ],
+              'operational_layer_url': layer_url,
+          }
+          output = Path('build/collin-county/app-source-contract.json')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(json.dumps(contract, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print(f'layer_url={layer_url}')
+          PY
+
+      - name: Validate live Collin County precinct attributes
+        run: |
+          python - <<'PY'
+          import json
+          import urllib.parse
+          import urllib.request
+          from pathlib import Path
+
+          layer_url = '${{ steps.source.outputs.layer_url }}'
+          query = urllib.parse.urlencode({
+              'where': '1=1',
+              'outFields': 'COMMISH,COMMISH_N',
+              'returnGeometry': 'false',
+              'orderByFields': 'COMMISH',
+              'f': 'json',
+          })
+          request = urllib.request.Request(f'{layer_url}/query?{query}', headers={'User-Agent': 'Civic-Cartography-bootstrap/1.0'})
+          with urllib.request.urlopen(request, timeout=45) as response:
+              payload = json.load(response)
+          rows = {str(feature['attributes']['COMMISH']): feature['attributes'] for feature in payload.get('features', [])}
+          expected = {
+              '1': 'Susan Fletcher',
+              '2': 'Cheryl Williams',
+              '3': 'Darrell Hale',
+              '4': 'Duncan Webb',
+          }
+          if set(rows) != set(expected):
+              raise SystemExit(f'Unexpected Collin County precinct IDs: {sorted(rows)}')
+          for precinct_id, officeholder in expected.items():
+              if rows[precinct_id].get('COMMISH_N') != officeholder:
+                  raise SystemExit(f'Precinct {precinct_id} roster drift: {rows[precinct_id].get("COMMISH_N")!r} != {officeholder!r}')
+          output = Path('build/collin-county/live-layer-attributes.json')
+          output.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print(json.dumps(rows, indent=2, sort_keys=True))
+          PY
+
+      - name: Fetch current Collin County Commissioner precincts
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url "${{ steps.source.outputs.layer_url }}" \
+            --district-ids 1,2,3,4 \
+            --district-field COMMISH \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Collin County" \
+            --record-id-prefix TX:county:collin:commissioner_precinct \
+            --geometry-id-prefix collin-county-commissioner-precinct \
+            --source-agency "Collin County GIS" \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/collin-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --output build/collin-county/precincts/geojson/collin_county_commissioner_precincts.geojson
+
+      - name: Fetch current Collin County boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48085 \
+            --record-id TX:county:collin:countywide:COUNTYWIDE \
+            --geometry-id collin-county-countywide \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/collin-county/county/raw/tigerweb-county-48085.geojson \
+            --output build/collin-county/county/geojson/collin_county_countywide.geojson
+
+      - name: Commit generated Collin County snapshots
+        if: github.event_name == 'push'
+        run: |
+          mkdir -p data/raw/collin-county data/geojson
+          cp build/collin-county/precincts/raw/commissioner-precincts-1-4.geojson data/raw/collin-county/commissioner-precincts-1-4.geojson
+          cp build/collin-county/precincts/geojson/collin_county_commissioner_precincts.geojson data/geojson/collin_county_commissioner_precincts.geojson
+          cp build/collin-county/county/raw/tigerweb-county-48085.geojson data/raw/collin-county/tigerweb-county-48085.geojson
+          cp build/collin-county/county/geojson/collin_county_countywide.geojson data/geojson/collin_county_countywide.geojson
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add data/raw/collin-county/commissioner-precincts-1-4.geojson \
+            data/geojson/collin_county_commissioner_precincts.geojson \
+            data/raw/collin-county/tigerweb-county-48085.geojson \
+            data/geojson/collin_county_countywide.geojson
+          if git diff --cached --quiet; then
+            echo "Collin County snapshots already match generated output."
+            exit 0
+          fi
+          git commit -m "Add Collin County source snapshots"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Upload Collin County bootstrap
+        uses: actions/upload-artifact@v4
+        with:
+          name: collin-county-bootstrap
+          path: build/collin-county/
+          if-no-files-found: error
