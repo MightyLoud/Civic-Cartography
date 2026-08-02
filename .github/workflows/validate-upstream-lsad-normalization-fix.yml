@@ -1,0 +1,210 @@
+name: Validate upstream LSAD normalization fix
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-upstream-lsad-normalization-fix.yml"
+      - "patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch"
+      - "patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch"
+      - "scripts/capture_upstream_fixtures.py"
+      - "tests/fixtures/batch_pilot_25.yml"
+      - "civic_cartography/fixture_harness.py"
+      - "civic_cartography/target_manifest.py"
+
+permissions:
+  contents: read
+
+env:
+  UPSTREAM_REPOSITORY: openstates/jurisdictions
+  UPSTREAM_REVISION: 6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705
+  RUN_ASOF: 2026-08-02T15:00:00Z
+  PATCH_1: patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch
+  PATCH_2: patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+
+      - name: Check out pinned upstream generator
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM_REPOSITORY }}
+          ref: ${{ env.UPSTREAM_REVISION }}
+          path: upstream
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install uv
+          cd upstream
+          uv sync --frozen
+
+      - name: Apply fix 1 and verify standalone fix 2
+        run: |
+          git -C upstream apply --check "../$PATCH_1"
+          git -C upstream apply "../$PATCH_1"
+          git -C upstream add -A
+          git -C upstream \
+            -c user.name="Civic Cartography" \
+            -c user.email="civic-cartography@example.invalid" \
+            commit -m "Apply validated fix 1 baseline"
+
+          git -C upstream apply --check "../$PATCH_2"
+          git -C upstream apply "../$PATCH_2"
+          git -C upstream add -N .
+          git -C upstream diff --check
+          git -C upstream diff --binary > build-normalized-fix-2.patch
+          cmp --silent build-normalized-fix-2.patch "$PATCH_2"
+
+      - name: Run targeted upstream tests and lint
+        run: |
+          cd upstream
+          uv run pytest \
+            tests/src/init_migration/test_generate_pipeline_stub_classification.py \
+            tests/src/init_migration/test_jurisdiction_seed.py \
+            --color=yes
+          uv run ruff check \
+            src/init_migration/generate_pipeline.py \
+            src/init_migration/jurisdiction_seed.py \
+            tests/src/init_migration/test_generate_pipeline_stub_classification.py \
+            tests/src/init_migration/test_jurisdiction_seed.py
+
+      - name: Assert LSAD normalization behavior
+        run: |
+          cd upstream
+          uv run python - <<'PY'
+          from src.init_migration.jurisdiction_seed import infer_jurisdiction_seed
+
+          county = "ocd-division/country:us/state:wa/county:pierce"
+          school = (
+              "ocd-division/country:us/state:co/county:el_paso/"
+              "school_district:colorado_springs_school_district_no._11"
+          )
+          for value in (None, "", "   ", "None", "null"):
+              assert infer_jurisdiction_seed(
+                  county, lsad_code=value
+              ).classification == "government"
+          for value in ("", "None", "null"):
+              assert infer_jurisdiction_seed(
+                  school, lsad_code=value
+              ).classification == "school_system"
+          try:
+              infer_jurisdiction_seed(county, lsad_code=" ZZ ")
+          except ValueError as exc:
+              assert "Unknown LSAD code 'ZZ'" in str(exc)
+          else:
+              raise AssertionError("unknown nonblank LSAD did not raise")
+          PY
+
+      - name: Capture patched upstream run 1
+        run: |
+          upstream/.venv/bin/python scripts/capture_upstream_fixtures.py \
+            --upstream-root upstream \
+            --target-manifest tests/fixtures/batch_pilot_25.yml \
+            --run-asof "$RUN_ASOF" \
+            --source-dir build/upstream-source \
+            --work-dir build/run-1 \
+            --execution-results build/run-1/execution-results.json \
+            --diagnostics build/run-1/diagnostics.json
+          python scripts/run_target_manifest.py \
+            --target-manifest tests/fixtures/batch_pilot_25.yml \
+            --run-asof "$RUN_ASOF" \
+            --execution-results build/run-1/execution-results.json \
+            --artifact-root build/run-1/artifacts \
+            --result-path build/run-1/report.json
+
+      - name: Capture patched upstream run 2
+        run: |
+          upstream/.venv/bin/python scripts/capture_upstream_fixtures.py \
+            --upstream-root upstream \
+            --target-manifest tests/fixtures/batch_pilot_25.yml \
+            --run-asof "$RUN_ASOF" \
+            --source-dir build/upstream-source \
+            --work-dir build/run-2 \
+            --execution-results build/run-2/execution-results.json \
+            --diagnostics build/run-2/diagnostics.json
+          python scripts/run_target_manifest.py \
+            --target-manifest tests/fixtures/batch_pilot_25.yml \
+            --run-asof "$RUN_ASOF" \
+            --execution-results build/run-2/execution-results.json \
+            --artifact-root build/run-2/artifacts \
+            --result-path build/run-2/report.json
+
+      - name: Evaluate and assert no fixture regression
+        run: |
+          PYTHONPATH=. python scripts/check_regression_fixtures.py \
+            --target-manifest tests/fixtures/batch_pilot_25.yml \
+            --first-report build/run-1/report.json \
+            --second-report build/run-2/report.json \
+            --upstream-repository "$UPSTREAM_REPOSITORY" \
+            --upstream-revision "$UPSTREAM_REVISION" \
+            --result-path build/fixture-evaluation.json || true
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          reports = [
+              json.loads(Path("build/run-1/report.json").read_text()),
+              json.loads(Path("build/run-2/report.json").read_text()),
+          ]
+          expected = {
+              "BP25-001": "government",
+              "BP25-002": "government",
+              "BP25-009": "government",
+              "BP25-014": "school_system",
+          }
+          for report in reports:
+              by_id = {row["target_id"]: row for row in report["results"]}
+              for target_id, classification in expected.items():
+                  row = by_id[target_id]
+                  assert row["jurisdiction_paths"]
+                  assert row["inferred_classification"] == classification
+                  assert row["classification_status"] == "matched"
+              assert len(by_id["BP25-022"]["jurisdiction_paths"]) == 2
+
+          evaluation = json.loads(Path("build/fixture-evaluation.json").read_text())
+          summary = evaluation["summary"]
+          assert summary["deterministic_count"] == 6
+          assert summary["report_content_match"] is True
+          Path("fix-2-summary.md").write_text(
+              "## Upstream fix 2: normalize blank LSAD values\n\n"
+              f"- Strict fixtures passing: **{summary['passed_count']}/{summary['fixture_count']}**\n"
+              f"- Deterministic fixtures: **{summary['deterministic_count']}/{summary['fixture_count']}**\n"
+              f"- Full report match: **{summary['report_content_match']}**\n"
+          )
+          PY
+          cat fix-2-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload fix 2 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: upstream-lsad-normalization-fix
+          path: |
+            build-normalized-fix-2.patch
+            build/upstream-source/source-manifest.json
+            build/run-1/execution-results.json
+            build/run-1/diagnostics.json
+            build/run-1/report.json
+            build/run-1/artifacts
+            build/run-2/execution-results.json
+            build/run-2/diagnostics.json
+            build/run-2/report.json
+            build/run-2/artifacts
+            build/fixture-evaluation.json
+            fix-2-summary.md
+          if-no-files-found: warn
