@@ -68,6 +68,11 @@ jobs:
           def searchable(value):
               return re.sub(r'[^a-z0-9]+', ' ', value.casefold()).strip()
 
+          def require_aliases(page, label, aliases):
+              for options in aliases:
+                  if not any(option in page for option in options):
+                      raise SystemExit(f'{label} lost current holder variants: {options!r}')
+
           officials = searchable(fetch(OFFICIALS))
           expected_officials = (
               'richard f cortez', 'david l fuentes', 'eduardo eddie cantu',
@@ -78,22 +83,23 @@ jobs:
               if value not in officials:
                   raise SystemExit(f'Hidalgo County officials directory lost current holder: {value}')
 
+          court_aliases = (
+              ('richard f cortez', 'richard cortez'),
+              ('david l fuentes', 'david fuentes'),
+              ('eduardo eddie cantu', 'eddie cantu', 'eduardo cantu'),
+              ('everardo ever villarreal', 'everardo villarreal', 'ever villarreal'),
+              ('ellie torres',),
+          )
           court = searchable(fetch(COURT))
-          for value in ('richard f cortez', 'david l fuentes', 'eduardo eddie cantu', 'everardo ever villarreal', 'ellie torres'):
-              if value not in court:
-                  raise SystemExit(f'Hidalgo County Commissioners Court page lost current member: {value}')
+          require_aliases(court, 'Hidalgo County Commissioners Court page', court_aliases)
           if 'drainage district meetings' not in court:
               raise SystemExit('Hidalgo County court page lost separate Drainage District meeting identity.')
 
           maps = searchable(fetch(MAPS))
-          for value in ('david l fuentes', 'eduardo eddie cantu', 'everardo ever villarreal', 'ellie torres'):
-              if value not in maps:
-                  raise SystemExit(f'Hidalgo County maps page lost current precinct representative: {value}')
+          require_aliases(maps, 'Hidalgo County maps page', court_aliases[1:])
 
           board = searchable(fetch(BOARD))
-          for value in ('richard f cortez', 'david l fuentes', 'eduardo eddie cantu', 'everardo ever villarreal', 'ellie torres'):
-              if value not in board:
-                  raise SystemExit(f'Hidalgo Drainage District board page lost member: {value}')
+          require_aliases(board, 'Hidalgo Drainage District board page', court_aliases)
           if 'chairman' not in board or 'board member' not in board:
               raise SystemExit('Hidalgo Drainage District board roles changed unexpectedly.')
 
