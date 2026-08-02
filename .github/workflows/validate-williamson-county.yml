@@ -40,7 +40,7 @@ jobs:
           python scripts/fetch_arcgis_districts.py \
             --layer-url https://gis.wilco.org/arcgis/rest/services/public/county_elections/MapServer/1 \
             --district-ids 1,2,3,4 \
-            --district-field PCT_NUMBER \
+            --district-field LABEL_NAME \
             --district-type commissioner_precinct \
             --district-name-prefix "Commissioner Precinct" \
             --jurisdiction-name "Williamson County" \
@@ -70,9 +70,9 @@ jobs:
               raise SystemExit(f'Unexpected precinct IDs: {ids!r}')
           for feature in features:
               props = feature.get('properties') or {}
-              if props.get('source_district_field') != 'PCT_NUMBER':
+              if props.get('source_district_field') != 'LABEL_NAME':
                   raise SystemExit(f"Unexpected source field: {props.get('source_district_field')!r}")
-          print('Verified one county feature and four PCT_NUMBER commissioner precincts.')
+          print('Verified one county feature and four LABEL_NAME commissioner precincts.')
           PY
 
       - name: Run automated tests
