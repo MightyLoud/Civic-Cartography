@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate for one countywide County Judge and four Commissioner precincts. Final release requires green permanent drift validation, repository-wide validation, and merge.
+Released through PR #46 after green Travis County and repository-wide validation.
 
 ## Purpose
 
@@ -66,7 +66,7 @@ TX:county:travis:commissioner_precinct:3    -> travis-county-commissioner-precin
 TX:county:travis:commissioner_precinct:4    -> travis-county-commissioner-precinct-4
 ```
 
-## Target parity
+## Release parity
 
 | Layer | Count |
 |---|---:|
@@ -80,7 +80,18 @@ TX:county:travis:commissioner_precinct:4    -> travis-county-commissioner-precin
 | Missing joins | 0 |
 | Extra joins | 0 |
 
-All five normalized records require `qa_status = approved` and `parity_ok = TRUE`.
+All five normalized records have `qa_status = approved` and `parity_ok = TRUE`.
+
+## Validation evidence
+
+- Final Travis County workflow: run #55 — success
+- Final repository workflow: run #455 — success
+- Automated tests: 41 passed
+- Normalized datasets validated: 16 files
+- Geometry joins: passed
+- Current Census snapshot comparison: passed
+- Current official precinct snapshot comparison: passed
+- Combined canonical SHA-256: `70cf6fb263678e674b58f61c01563388f8916c175e7d6d77bd3a6981f288c2ca`
 
 ## Release files
 
@@ -109,4 +120,4 @@ All five normalized records require `qa_status = approved` and `parity_ok = TRUE
 
 ## Result
 
-When released, Travis County will contain five elected offices represented by five verified geometries: one countywide Census feature for the County Judge and four official Commissioner precinct features. The release preserves both Precinct 4 stale-source conflicts and documents the hybrid official-source contract required for reliable automated validation.
+Travis County contains five elected offices represented by five verified geometries: one countywide Census feature for the County Judge and four official Commissioner precinct features. The release preserves both Precinct 4 stale-source conflicts and documents the hybrid official-source contract required for reliable automated validation.
