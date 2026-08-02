@@ -1,8 +1,8 @@
 # Poth ISD, Texas — Canceled Election Proof
 
-## Purpose
+## Release status
 
-Poth Independent School District is the Civic Cartography proof for a canceled school-board election in which all candidates were certified unopposed. The bounded scope is the three trustee seats scheduled for May 2, 2026.
+Poth Independent School District is the completed Civic Cartography proof for a canceled school-board election in which all candidates were certified unopposed. The bounded scope is the three trustee seats scheduled for May 2, 2026.
 
 ## Jurisdiction identity
 
@@ -10,6 +10,7 @@ Poth Independent School District is the Civic Cartography proof for a canceled s
 - State: Texas
 - County context: Wilson County
 - Jurisdiction type: school district
+- Census unified-school-district GEOID: `4835550`
 - Geometry model: one unified-school-district feature
 - Election model: seven trustees elected at large using cumulative voting
 - 2026 election status: canceled after certification of unopposed candidates
@@ -25,22 +26,33 @@ Poth Independent School District is the Civic Cartography proof for a canceled s
 
 The three declaration records are preserved under `data/raw/poth-isd/2026-trustee-declarations.csv`.
 
-## Planned identifiers
+## Released identifiers
 
 ```text
 record_id:   TX:school_district:poth-isd:at_large:DISTRICTWIDE
 geometry_id: poth-isd-districtwide
 ```
 
-## Target parity
+## Released artifacts
 
-| Layer | Expected count |
+- Candidate/declaration evidence: `data/raw/poth-isd/2026-trustee-declarations.csv`
+- Source manifest: `data/raw/poth-isd/source-manifest.csv`
+- Raw Census snapshot: `data/raw/poth-isd/tigerweb-unified-school-district-4835550.geojson`
+- Normalized record: `data/normalized/poth_isd_2026.csv`
+- Canonical geometry: `data/geojson/poth_isd_districtwide.geojson`
+
+## Verified parity
+
+| Layer | Released count |
 |---|---:|
 | Candidate/declaration evidence rows | 3 |
+| Official source records | 5 |
 | Normalized mapped geography rows | 1 |
 | Canonical GeoJSON features | 1 |
 | Missing joins | 0 |
 | Extra joins | 0 |
+
+The normalized record has `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Source and QA rules
 
@@ -48,12 +60,12 @@ geometry_id: poth-isd-districtwide
 2. Preserve all three declared-elected candidates and normalize spelling to official oath/current-board evidence.
 3. Do not create separate trustee polygons; Poth ISD elects its board at large.
 4. Resolve exactly one current Census unified-school-district feature whose official name contains `Poth`.
-5. Capture and preserve the returned Census GEOID rather than assuming it.
+5. Preserve Census GEOID `4835550` and fail CI if the current source resolves differently.
 6. Keep the raw TIGERweb response separate from canonical map-ready GeoJSON.
-7. The canonical feature must carry `geometry_id = poth-isd-districtwide` and its matching `record_id`.
-8. Current-source drift must fail CI when geometry, GEOID, stable source attributes, or the canonical join changes.
-9. The four trustee terms scheduled for 2027 remain outside this bounded release.
+7. Require `geometry_id = poth-isd-districtwide` and its matching `record_id` on the canonical feature.
+8. Fail CI when geometry, GEOID, stable source attributes, or the canonical join changes.
+9. Keep the four trustee terms scheduled for 2027 outside this bounded release.
 
-## Completion rule
+## Completion result
 
-Poth ISD is not complete until candidate/declaration evidence, raw Census geometry, one normalized record, one canonical feature, approved QA, `parity_ok = TRUE`, green CI, a merged pull request, and the Jurisdiction Portfolio all agree.
+The raw declaration evidence, source manifest, normalized record, raw Census snapshot, canonical feature, approved QA, one-to-one join, and live Census drift comparison are complete and green. The release is ready to merge and register in the Jurisdiction Portfolio.
