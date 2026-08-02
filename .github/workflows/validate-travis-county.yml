@@ -80,7 +80,7 @@ jobs:
               '1': normalize('Jeff Travillion'),
               '2': normalize('Brigid Shea'),
               '3': normalize('Ann Howard'),
-              '4': normalize('Margaret Gomez'),
+              '4': normalize('George Morales'),
           }
           found = {}
           for feature in features:
@@ -94,7 +94,7 @@ jobs:
               raise SystemExit(
                   f'Unexpected simplified-source commissioner attributes: expected {expected_geometry_attributes!r}; found {found!r}'
               )
-          print('Verified four Travis County simplified precinct geometries and preserved stale Precinct 4 source attribute.')
+          print('Verified four current Travis County simplified precinct geometries and officeholder attributes.')
           PY
 
       - name: Run automated tests
