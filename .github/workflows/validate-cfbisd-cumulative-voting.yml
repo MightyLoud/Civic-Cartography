@@ -1,0 +1,60 @@
+name: Validate CFBISD cumulative-voting proof
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-cfbisd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Fetch current CFBISD boundary
+        run: |
+          python scripts/fetch_tigerweb_school_district.py \
+            --name-token "Carrollton-Farmers Branch" \
+            --record-id TX:school_district:carrollton-farmers-branch-isd:at_large:DISTRICTWIDE \
+            --geometry-id carrollton-farmers-branch-isd-districtwide \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/cfbisd/raw/tigerweb-unified-school-district-4813050.geojson \
+            --output build/cfbisd/geojson/carrollton_farmers_branch_isd_districtwide.geojson
+
+      - name: Verify committed CFBISD boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/cfbisd/tigerweb-unified-school-district-4813050.geojson \
+            --fresh-raw build/cfbisd/raw/tigerweb-unified-school-district-4813050.geojson \
+            --committed-canonical data/geojson/carrollton_farmers_branch_isd_districtwide.geojson \
+            --fresh-canonical build/cfbisd/geojson/carrollton_farmers_branch_isd_districtwide.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Upload CFBISD boundary check
+        uses: actions/upload-artifact@v4
+        with:
+          name: cfbisd-cumulative-voting-boundary-check
+          path: build/cfbisd/
+          if-no-files-found: error
