@@ -1,0 +1,245 @@
+name: Validate Hidalgo County dual-body schema
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-hidalgo-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Validate roster, dual-body, adoption, and source contracts
+        run: |
+          python - <<'PY'
+          import html
+          import json
+          import re
+          import time
+          import urllib.parse
+          import urllib.request
+          from pathlib import Path
+
+          OFFICIALS = 'https://www.hidalgocounty.us/937/County-Officials'
+          COURT = 'https://www.hidalgocounty.us/79/Commissioners-Court'
+          MAPS = 'https://www.hidalgocounty.us/487/Maps'
+          COURT_LIVE = 'https://www.hidalgocounty.us/1939/Commissioners-Court-LIVE'
+          BOARD = 'https://www.hcdd1.org/page/Board%20of%20Directors'
+          ADMIN = 'https://www.hcdd1.org/page/Our%20Admin'
+          HISTORY = 'https://www.hcdd1.org/page/about.history'
+          REDISTRICTING = 'https://hidalgocountytx.new.swagit.com/videos/148135'
+          ITEM_ID = 'bc95c6e0bbed4ba98a16b303219de88a'
+          ITEM_URL = f'https://www.arcgis.com/sharing/rest/content/items/{ITEM_ID}'
+          LAYER = 'https://services9.arcgis.com/dwMDP55HTfoj4n1c/arcgis/rest/services/County_Commissioners_View/FeatureServer/0'
+          CONTRACT = Path('data/raw/hidalgo-county/portal-source-contract.json')
+
+          def fetch(url, json_response=False):
+              request = urllib.request.Request(url, headers={'User-Agent': 'Civic-Cartography-validator/1.0'})
+              last_error = None
+              for attempt in range(1, 6):
+                  try:
+                      with urllib.request.urlopen(request, timeout=45) as response:
+                          if json_response:
+                              return json.load(response)
+                          return html.unescape(response.read().decode('utf-8', errors='replace'))
+                  except Exception as exc:
+                      last_error = exc
+                      if attempt == 5:
+                          raise
+                      time.sleep(attempt * 5)
+              raise last_error
+
+          def searchable(value):
+              return re.sub(r'[^a-z0-9]+', ' ', value.casefold()).strip()
+
+          def require_aliases(page, label, aliases):
+              for options in aliases:
+                  if not any(option in page for option in options):
+                      raise SystemExit(f'{label} lost current holder variants: {options!r}')
+
+          officials = searchable(fetch(OFFICIALS))
+          expected_officials = (
+              'richard f cortez', 'david l fuentes', 'eduardo eddie cantu',
+              'everardo ever villarreal', 'ellie torres', 'j e eddie guerra',
+              'arturo guajardo jr', 'laura hinojosa', 'pablo paul villarreal jr', 'lita leo',
+          )
+          for value in expected_officials:
+              if value not in officials:
+                  raise SystemExit(f'Hidalgo County officials directory lost current holder: {value}')
+
+          court_aliases = (
+              ('richard f cortez', 'richard cortez'),
+              ('david l fuentes', 'david fuentes'),
+              ('eduardo eddie cantu', 'eddie cantu', 'eduardo cantu'),
+              ('everardo ever villarreal', 'everardo villarreal', 'ever villarreal'),
+              ('ellie torres',),
+          )
+          court = searchable(fetch(COURT))
+          require_aliases(court, 'Hidalgo County Commissioners Court page', court_aliases)
+          if 'drainage district meetings' not in court:
+              raise SystemExit('Hidalgo County court page lost separate Drainage District meeting identity.')
+
+          maps = searchable(fetch(MAPS))
+          if 'commissioner' not in maps or 'precinct' not in maps:
+              raise SystemExit('Hidalgo County maps page lost Commissioner precinct map context.')
+
+          board = searchable(fetch(BOARD))
+          require_aliases(board, 'Hidalgo Drainage District board page', court_aliases)
+          if 'chairman' not in board or 'board member' not in board:
+              raise SystemExit('Hidalgo Drainage District board roles changed unexpectedly.')
+
+          admin = searchable(fetch(ADMIN))
+          if 'county judge' not in admin or 'county commissioners' not in admin:
+              raise SystemExit('Hidalgo Drainage District administration structure changed.')
+          history = searchable(fetch(HISTORY))
+          for value in ('1939', 'commissioners court'):
+              if value not in history:
+                  raise SystemExit(f'Hidalgo Drainage District history lost marker: {value}')
+          court_live = searchable(fetch(COURT_LIVE))
+          if 'commissioners court' not in court_live or 'drainage district' not in court_live:
+              raise SystemExit('Hidalgo County live page lost separate Court and Drainage District identities.')
+          redistricting = searchable(fetch(REDISTRICTING))
+          if '2021' not in redistricting or 'commissioner' not in redistricting:
+              raise SystemExit('Hidalgo County 2021 Commissioner redistricting evidence changed.')
+
+          contract = json.loads(CONTRACT.read_text(encoding='utf-8'))
+          assert contract['item_id'] == ITEM_ID
+          assert contract['item_title'] == 'Hidalgo County Basemap'
+          assert contract['item_owner'] == 'rpresas'
+          assert contract['operational_layer_url'] == LAYER
+          assert contract['district_field'] == 'DISTRICT'
+          assert contract['district_values'] == ['1', '2', '3', '4']
+
+          item = fetch(f'{ITEM_URL}?f=json', json_response=True)
+          if item.get('id') != ITEM_ID or item.get('title') != 'Hidalgo County Basemap' or item.get('owner') != 'rpresas':
+              raise SystemExit(f'Unexpected Hidalgo County ArcGIS item metadata: {item!r}')
+          metadata = fetch(f'{LAYER}?f=json', json_response=True)
+          if metadata.get('geometryType') != 'esriGeometryPolygon':
+              raise SystemExit(f'Unexpected Hidalgo County geometry type: {metadata.get("geometryType")!r}')
+          fields = {field.get('name') for field in metadata.get('fields', [])}
+          if 'DISTRICT' not in fields:
+              raise SystemExit('Hidalgo County operational layer lost DISTRICT field.')
+          query = urllib.parse.urlencode({
+              'where': '1=1',
+              'outFields': 'DISTRICT',
+              'returnGeometry': 'false',
+              'orderByFields': 'DISTRICT',
+              'f': 'json',
+          })
+          payload = fetch(f'{LAYER}/query?{query}', json_response=True)
+          values = sorted({str(feature['attributes']['DISTRICT']) for feature in payload.get('features', [])})
+          if values != ['1', '2', '3', '4']:
+              raise SystemExit(f'Unexpected Hidalgo County precinct IDs: {values}')
+          print('Hidalgo County roster, dual-body, adoption, item, and layer contracts match the release.')
+          PY
+
+      - name: Fetch current Hidalgo County Commissioner precincts
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/hidalgo-county/precincts
+            if python scripts/fetch_arcgis_districts.py \
+              --layer-url https://services9.arcgis.com/dwMDP55HTfoj4n1c/arcgis/rest/services/County_Commissioners_View/FeatureServer/0 \
+              --district-ids 1,2,3,4 \
+              --district-field DISTRICT \
+              --district-type commissioner_precinct \
+              --district-name-prefix "Commissioner Precinct" \
+              --jurisdiction-name "Hidalgo County" \
+              --record-id-prefix TX:county:hidalgo:commissioner_precinct \
+              --geometry-id-prefix hidalgo-county-commissioner-precinct \
+              --source-agency "Hidalgo County GIS" \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/hidalgo-county/precincts/raw/commissioner-precincts-1-4.geojson \
+              --output build/hidalgo-county/precincts/geojson/hidalgo_county_commissioner_precincts.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Hidalgo County precincts match source
+        run: |
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/hidalgo-county/commissioner-precincts-1-4.geojson \
+            --fresh-raw build/hidalgo-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --committed-canonical data/geojson/hidalgo_county_commissioner_precincts.geojson \
+            --fresh-canonical build/hidalgo-county/precincts/geojson/hidalgo_county_commissioner_precincts.geojson
+
+      - name: Fetch current Hidalgo County boundary
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/hidalgo-county/county
+            if python scripts/fetch_tigerweb_county.py \
+              --geoid 48215 \
+              --record-id TX:county:hidalgo:countywide:COUNTYWIDE \
+              --geometry-id hidalgo-county-countywide \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/hidalgo-county/county/raw/tigerweb-county-48215.geojson \
+              --output build/hidalgo-county/county/geojson/hidalgo_county_countywide.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Hidalgo County boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/hidalgo-county/tigerweb-county-48215.geojson \
+            --fresh-raw build/hidalgo-county/county/raw/tigerweb-county-48215.geojson \
+            --committed-canonical data/geojson/hidalgo_county_countywide.geojson \
+            --fresh-canonical build/hidalgo-county/county/geojson/hidalgo_county_countywide.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Calculate Hidalgo County combined canonical digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          paths = [
+              Path('data/geojson/hidalgo_county_countywide.geojson'),
+              Path('data/geojson/hidalgo_county_commissioner_precincts.geojson'),
+          ]
+          digest = hashlib.sha256()
+          for path in sorted(paths, key=lambda item: item.name):
+              digest.update(path.name.encode('utf-8'))
+              digest.update(b'\0')
+              digest.update(path.read_bytes())
+              digest.update(b'\0')
+          value = digest.hexdigest()
+          output = Path('build/hidalgo-county/release-sha256.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(value + '\n', encoding='utf-8')
+          print(f'Hidalgo County combined canonical SHA-256: {value}')
+          PY
+
+      - name: Upload Hidalgo County validation check
+        uses: actions/upload-artifact@v4
+        with:
+          name: hidalgo-county-validation
+          path: build/hidalgo-county/
+          if-no-files-found: error

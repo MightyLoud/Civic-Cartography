@@ -1,0 +1,17 @@
+{
+  "district_field": "DISTRICT",
+  "district_values": [
+    "1",
+    "2",
+    "3",
+    "4"
+  ],
+  "item_id": "bc95c6e0bbed4ba98a16b303219de88a",
+  "item_owner": "rpresas",
+  "item_title": "Hidalgo County Basemap",
+  "item_type": "Web Map",
+  "item_url": "",
+  "layer_name": "County Commissioners",
+  "operational_layer_url": "https://services9.arcgis.com/dwMDP55HTfoj4n1c/arcgis/rest/services/County_Commissioners_View/FeatureServer/0",
+  "source_classification": "county-associated ArcGIS source controlled by official Hidalgo County roster and 2021 redistricting evidence"
+}
