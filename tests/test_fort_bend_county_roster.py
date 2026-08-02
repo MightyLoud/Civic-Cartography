@@ -91,8 +91,19 @@ def test_fort_bend_county_roster_succession_and_2026_geometry_contract() -> None
     assert "KP George" in predecessor
     assert "stale predecessor" in predecessor
     directory = manifest["fort-bend-county-elected-officials"]["use"]
-    for officeholder in (*expected_court.values(), *expected_constitutional.values()):
-        assert officeholder.replace(" Jr.", "") in directory or officeholder in directory
+    expected_directory_names = {
+        "Daniel Wong",
+        "Vincent Morales",
+        "Grady Prestage",
+        "Andy Meyers",
+        "Dexter L. McCoy",
+        "Eric Fagan",
+        "Laura Richard",
+        "Beverley McGrew Walker",
+        "Carmen Turner",
+        "Bill Rickert",
+    }
+    assert all(name in directory for name in expected_directory_names)
     expected_new_sources = {
         "fort-bend-county-sheriff",
         "fort-bend-county-sheriff-history",
