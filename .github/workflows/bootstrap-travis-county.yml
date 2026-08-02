@@ -35,7 +35,7 @@ jobs:
       - name: Fetch Travis County commissioner precincts
         run: |
           python scripts/fetch_arcgis_districts.py \
-            --layer-url https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/FeatureServer/0 \
+            --layer-url https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/MapServer/0 \
             --district-ids 1,2,3,4 \
             --district-field PRECINCT \
             --district-type commissioner_precinct \
