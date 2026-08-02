@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Irving City Council Single-Member District 3 is the first Civic Cartography proof for a two-stage runoff election. The bounded scope preserves the May 2, 2026 general-election field, the June 13 runoff pair, and the final winner while joining both stages to one official 2026 district polygon.
+Irving City Council Single-Member District 3 is the first Civic Cartography proof for a two-stage runoff election. The bounded scope preserves the May 2, 2026 general-election field, the June 13 runoff pair, and the final winner while joining both stages to one official district polygon.
 
 ## Jurisdiction identity
 
@@ -12,8 +12,8 @@ Irving City Council Single-Member District 3 is the first Civic Cartography proo
 - Jurisdiction type: municipality
 - Geography model: one single-member council-district feature
 - Election model: majority-required general election followed by a two-candidate runoff when no candidate receives a majority
-- Geometry source: City of Irving Official City Council Districts 2026 ArcGIS feature layer
-- Source district field: `DISTNUM`
+- Geometry source: City of Irving `CityCouncilDistricts2022` ArcGIS feature layer used for the 2026 election
+- Source district field: `DISTRICTID`
 
 ## 2026 election stages
 
@@ -61,11 +61,12 @@ geometry_id: irving-district-3
 2. Preserve May 2 and June 13 as separate election stages.
 3. Preserve advancement, elimination, and final-result status separately.
 4. Do not map Irving citywide; only registered voters in Single-Member District 3 could vote in this race.
-5. Fetch exactly `DISTNUM = 3` from the official 2026 City Council Districts feature layer.
-6. Keep the raw ArcGIS response separate from canonical map-ready GeoJSON.
-7. The canonical feature must carry `geometry_id = irving-district-3` and matching `record_id = TX:municipality:irving:district:3`.
-8. Current-source drift must fail CI when geometry, the district ID, stable source attributes, or the canonical join changes.
-9. Mayor and Districts 5 and 6 remain outside this bounded release.
+5. Fetch exactly `DISTRICTID = 3` from the official City of Irving feature layer.
+6. Verify that the source attributes identify `NAME = District 3` and `REPNAME = Abdul Khabeer` before publication.
+7. Keep the raw ArcGIS response separate from canonical map-ready GeoJSON.
+8. The canonical feature must carry `geometry_id = irving-district-3` and matching `record_id = TX:municipality:irving:district:3`.
+9. Current-source drift must fail CI when geometry, the district ID, stable source attributes, or the canonical join changes.
+10. Mayor and Districts 5 and 6 remain outside this bounded release.
 
 ## Completion rule
 
