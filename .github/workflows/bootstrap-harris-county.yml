@@ -1,0 +1,104 @@
+name: Bootstrap Harris County Commissioners Court
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap-harris-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'push' && github.ref_name || github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Fetch current Harris County Commissioner precincts
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://services.arcgis.com/su8ic9KbA7PYVxPS/ArcGIS/rest/services/Commissioner_Precincts/FeatureServer/0 \
+            --district-ids 1,2,3,4 \
+            --district-field PCT_NO \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Harris County" \
+            --record-id-prefix TX:county:harris:commissioner_precinct \
+            --geometry-id-prefix harris-county-commissioner-precinct \
+            --source-agency "Harris County GIS" \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/harris-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --output build/harris-county/precincts/geojson/harris_county_commissioner_precincts.geojson
+
+      - name: Inspect Harris County live precinct attributes
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('build/harris-county/precincts/raw/commissioner-precincts-1-4.geojson')
+          payload = json.loads(path.read_text(encoding='utf-8'))
+          found = {}
+          for feature in payload['features']:
+              props = feature.get('properties') or {}
+              found[str(props.get('PCT_NO'))] = {
+                  'COMMISSION': props.get('COMMISSION'),
+                  'URL': props.get('URL'),
+              }
+          if set(found) != {'1', '2', '3', '4'}:
+              raise SystemExit(f'Unexpected Harris County precinct IDs: {found!r}')
+          output = Path('build/harris-county/live-attributes.json')
+          output.write_text(json.dumps(found, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print(json.dumps(found, indent=2, sort_keys=True))
+          PY
+
+      - name: Fetch current Harris County boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48201 \
+            --record-id TX:county:harris:countywide:COUNTYWIDE \
+            --geometry-id harris-county-countywide \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/harris-county/county/raw/tigerweb-county-48201.geojson \
+            --output build/harris-county/county/geojson/harris_county_countywide.geojson
+
+      - name: Commit generated Harris County snapshots
+        if: github.event_name == 'push'
+        run: |
+          mkdir -p data/raw/harris-county data/geojson
+          cp build/harris-county/county/raw/tigerweb-county-48201.geojson data/raw/harris-county/tigerweb-county-48201.geojson
+          cp build/harris-county/county/geojson/harris_county_countywide.geojson data/geojson/harris_county_countywide.geojson
+          cp build/harris-county/precincts/raw/commissioner-precincts-1-4.geojson data/raw/harris-county/commissioner-precincts-1-4.geojson
+          cp build/harris-county/precincts/geojson/harris_county_commissioner_precincts.geojson data/geojson/harris_county_commissioner_precincts.geojson
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add data/raw/harris-county/tigerweb-county-48201.geojson \
+            data/raw/harris-county/commissioner-precincts-1-4.geojson \
+            data/geojson/harris_county_countywide.geojson \
+            data/geojson/harris_county_commissioner_precincts.geojson
+          if git diff --cached --quiet; then
+            echo "Harris County snapshots already match generated output."
+            exit 0
+          fi
+          git commit -m "Add Harris County source snapshots"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Upload Harris County bootstrap
+        uses: actions/upload-artifact@v4
+        with:
+          name: harris-county-bootstrap
+          path: build/harris-county/
+          if-no-files-found: error
