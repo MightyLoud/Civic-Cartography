@@ -20,23 +20,41 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Fetch Travis County boundary
-        run: |
-          python scripts/fetch_tigerweb_county.py \
-            --geoid 48453 \
-            --record-id TX:county:travis:countywide:COUNTYWIDE \
-            --geometry-id travis-county-countywide \
-            --retrieved-at 2026-08-02 \
-            --raw-output build/travis-county/county/raw/tigerweb-county-48453.geojson \
-            --output build/travis-county/county/geojson/travis_county_countywide.geojson
-
       - name: Download cached Travis County precinct GeoJSON
         run: |
           mkdir -p build/travis-county/precincts/raw
           curl --fail-with-body --location --silent --show-error --compressed \
-            --connect-timeout 30 --max-time 300 --retry 2 --retry-all-errors \
+            --connect-timeout 30 --max-time 300 --retry 3 --retry-all-errors \
             "https://hub.arcgis.com/api/v3/datasets/1fd888e1d8124c1dbd35b5dac25a0a5a_0/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1" \
             --output build/travis-county/precincts/raw/hub-download.geojson
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('build/travis-county/precincts/raw/hub-download.geojson')
+          payload = json.loads(path.read_text(encoding='utf-8'))
+          if payload.get('type') != 'FeatureCollection':
+              raise SystemExit(f'Unexpected Hub response: {payload!r}')
+          print(f"Downloaded {len(payload.get('features', []))} Hub features.")
+          PY
+
+      - name: Fetch Travis County boundary with retry
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/travis-county/county
+            if python scripts/fetch_tigerweb_county.py \
+              --geoid 48453 \
+              --record-id TX:county:travis:countywide:COUNTYWIDE \
+              --geometry-id travis-county-countywide \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/travis-county/county/raw/tigerweb-county-48453.geojson \
+              --output build/travis-county/county/geojson/travis_county_countywide.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then
+              exit 1
+            fi
+            sleep $((attempt * 5))
+          done
 
       - name: Canonicalize Travis County commissioner precincts
         run: |
@@ -50,8 +68,6 @@ jobs:
           layer_url = "https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/MapServer/0"
           download_path = Path("build/travis-county/precincts/raw/hub-download.geojson")
           payload = json.loads(download_path.read_text(encoding="utf-8"))
-          if payload.get("type") != "FeatureCollection":
-              raise SystemExit(f"Unexpected Hub response: {payload!r}")
 
           raw_payload = select_features(
               payload,
@@ -94,6 +110,7 @@ jobs:
           PY
 
       - name: Upload Travis County bootstrap artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: travis-county-bootstrap
