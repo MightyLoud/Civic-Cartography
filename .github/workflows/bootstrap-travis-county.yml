@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - data/travis-county-commissioners-court
-  pull_request:
 
 permissions:
   contents: read
@@ -32,21 +31,72 @@ jobs:
             --raw-output build/travis-county/county/raw/tigerweb-county-48453.geojson \
             --output build/travis-county/county/geojson/travis_county_countywide.geojson
 
-      - name: Fetch Travis County commissioner precincts
+      - name: Fetch filtered Travis County commissioner precincts
         run: |
-          python scripts/fetch_arcgis_districts.py \
-            --layer-url https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/MapServer/0 \
-            --district-ids 1,2,3,4 \
-            --district-field PRECINCT \
-            --district-type commissioner_precinct \
-            --district-name-prefix "Commissioner Precinct" \
-            --jurisdiction-name "Travis County" \
-            --record-id-prefix TX:county:travis:commissioner_precinct \
-            --geometry-id-prefix travis-county-commissioner-precinct \
-            --source-agency "Travis County GIS" \
-            --retrieved-at 2026-08-02 \
-            --raw-output build/travis-county/precincts/raw/commissioner-precincts-1-4.geojson \
-            --output build/travis-county/precincts/geojson/travis_county_commissioner_precincts.geojson
+          mkdir -p build/travis-county/precincts/raw
+          curl --fail-with-body --silent --show-error --compressed \
+            --connect-timeout 30 --max-time 300 --retry 2 --retry-all-errors \
+            --get "https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/MapServer/0/query" \
+            --data-urlencode "where=PRECINCT IN (1,2,3,4)" \
+            --data-urlencode "outFields=PRECINCT,COMMISSIONER" \
+            --data-urlencode "returnGeometry=true" \
+            --data-urlencode "outSR=4326" \
+            --data-urlencode "geometryPrecision=6" \
+            --data-urlencode "f=geojson" \
+            --output build/travis-county/precincts/raw/arcgis-query.geojson
+
+      - name: Canonicalize Travis County commissioner precincts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from urllib.parse import urlencode
+
+          from scripts.fetch_arcgis_districts import canonicalize, select_features, write_json
+
+          layer_url = "https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/MapServer/0"
+          params = {
+              "where": "PRECINCT IN (1,2,3,4)",
+              "outFields": "PRECINCT,COMMISSIONER",
+              "returnGeometry": "true",
+              "outSR": "4326",
+              "geometryPrecision": "6",
+              "f": "geojson",
+          }
+          request_url = f"{layer_url}/query?{urlencode(params)}"
+          query_path = Path("build/travis-county/precincts/raw/arcgis-query.geojson")
+          payload = json.loads(query_path.read_text(encoding="utf-8"))
+          if payload.get("type") != "FeatureCollection":
+              raise SystemExit(f"Unexpected ArcGIS response: {payload!r}")
+
+          raw_payload = select_features(
+              payload,
+              district_field="PRECINCT",
+              expected_ids={"1", "2", "3", "4"},
+          )
+          canonical = canonicalize(
+              raw_payload,
+              district_field="PRECINCT",
+              jurisdiction_name="Travis County",
+              record_id_prefix="TX:county:travis:commissioner_precinct",
+              geometry_id_prefix="travis-county-commissioner-precinct",
+              source_agency="Travis County GIS",
+              layer_url=layer_url,
+              request_url=request_url,
+              retrieved_at="2026-08-02",
+              district_type="commissioner_precinct",
+              district_name_prefix="Commissioner Precinct",
+          )
+          write_json(
+              Path("build/travis-county/precincts/raw/commissioner-precincts-1-4.geojson"),
+              raw_payload,
+          )
+          write_json(
+              Path("build/travis-county/precincts/geojson/travis_county_commissioner_precincts.geojson"),
+              canonical,
+          )
+          print("Wrote four filtered Travis County commissioner precincts.")
+          PY
 
       - name: Upload Travis County bootstrap artifacts
         uses: actions/upload-artifact@v4
