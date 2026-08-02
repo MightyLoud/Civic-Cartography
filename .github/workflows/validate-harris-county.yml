@@ -1,0 +1,160 @@
+name: Validate Harris County Commissioners Court
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-harris-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Fetch current Harris County Commissioner precincts
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/harris-county/precincts
+            if python scripts/fetch_arcgis_districts.py \
+              --layer-url https://services.arcgis.com/su8ic9KbA7PYVxPS/ArcGIS/rest/services/Commissioner_Precincts/FeatureServer/0 \
+              --district-ids 1,2,3,4 \
+              --district-field PCT_NO \
+              --district-type commissioner_precinct \
+              --district-name-prefix "Commissioner Precinct" \
+              --jurisdiction-name "Harris County" \
+              --record-id-prefix TX:county:harris:commissioner_precinct \
+              --geometry-id-prefix harris-county-commissioner-precinct \
+              --source-agency "Harris County GIS" \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/harris-county/precincts/raw/commissioner-precincts-1-4.geojson \
+              --output build/harris-county/precincts/geojson/harris_county_commissioner_precincts.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then
+              exit 1
+            fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Validate current Harris County GIS roster attributes
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(
+              Path('build/harris-county/precincts/raw/commissioner-precincts-1-4.geojson').read_text(encoding='utf-8')
+          )
+          expected_names = {
+              '1': 'Rodney Ellis',
+              '2': 'Adrian Garcia',
+              '3': 'Tom S. Ramsey',
+              '4': 'Lesley Briones',
+          }
+          expected_websites = {
+              '1': 'https://www.hcp1.net/',
+              '2': 'https://www.hcp2.com/',
+              '3': 'https://www.pct3.com/',
+              '4': 'https://www.hcp4.net/',
+          }
+          names = {}
+          websites = {}
+          for feature in payload['features']:
+              props = feature.get('properties') or {}
+              district_id = str(props.get('PCT_NO'))
+              names[district_id] = props.get('COMMISSION')
+              websites[district_id] = props.get('URL')
+          if names != expected_names:
+              raise SystemExit(f'Harris County GIS COMMISSION mismatch: expected {expected_names!r}; found {names!r}')
+          if websites != expected_websites:
+              raise SystemExit(f'Harris County GIS URL mismatch: expected {expected_websites!r}; found {websites!r}')
+          print('Harris County live GIS roster attributes match the release contract.')
+          PY
+
+      - name: Fetch current Harris County boundary
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/harris-county/county
+            if python scripts/fetch_tigerweb_county.py \
+              --geoid 48201 \
+              --record-id TX:county:harris:countywide:COUNTYWIDE \
+              --geometry-id harris-county-countywide \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/harris-county/county/raw/tigerweb-county-48201.geojson \
+              --output build/harris-county/county/geojson/harris_county_countywide.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then
+              exit 1
+            fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Harris County boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/harris-county/tigerweb-county-48201.geojson \
+            --fresh-raw build/harris-county/county/raw/tigerweb-county-48201.geojson \
+            --committed-canonical data/geojson/harris_county_countywide.geojson \
+            --fresh-canonical build/harris-county/county/geojson/harris_county_countywide.geojson
+
+      - name: Verify committed Harris County precincts match GIS
+        run: |
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/harris-county/commissioner-precincts-1-4.geojson \
+            --fresh-raw build/harris-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --committed-canonical data/geojson/harris_county_commissioner_precincts.geojson \
+            --fresh-canonical build/harris-county/precincts/geojson/harris_county_commissioner_precincts.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Calculate Harris County combined canonical digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          paths = [
+              Path('data/geojson/harris_county_countywide.geojson'),
+              Path('data/geojson/harris_county_commissioner_precincts.geojson'),
+          ]
+          digest = hashlib.sha256()
+          for path in sorted(paths, key=lambda item: item.name):
+              digest.update(path.name.encode('utf-8'))
+              digest.update(b'\0')
+              digest.update(path.read_bytes())
+              digest.update(b'\0')
+          value = digest.hexdigest()
+          output = Path('build/harris-county/release-sha256.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(value + '\n', encoding='utf-8')
+          print(f'Harris County combined canonical SHA-256: {value}')
+          PY
+
+      - name: Upload Harris County validation check
+        uses: actions/upload-artifact@v4
+        with:
+          name: harris-county-validation
+          path: build/harris-county/
+          if-no-files-found: error
