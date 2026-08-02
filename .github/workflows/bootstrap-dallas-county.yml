@@ -1,0 +1,198 @@
+name: Bootstrap Dallas County Commissioner Districts
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap-dallas-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'push' && github.ref_name || github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Resolve official searchable application layer
+        id: source
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          import re
+          import urllib.request
+          from pathlib import Path
+
+          APP_ID = '929bdc6b485f47428f2e26266bd3ed81'
+          ROOT = 'https://www.arcgis.com/sharing/rest/content/items'
+
+          def fetch_json(url):
+              request = urllib.request.Request(url, headers={'User-Agent': 'Civic-Cartography-bootstrap/1.0'})
+              with urllib.request.urlopen(request, timeout=45) as response:
+                  return json.load(response)
+
+          item = fetch_json(f'{ROOT}/{APP_ID}?f=json')
+          data = fetch_json(f'{ROOT}/{APP_ID}/data?f=json')
+
+          candidates = []
+          def walk(value, path='root'):
+              if isinstance(value, dict):
+                  for key, child in value.items():
+                      next_path = f'{path}.{key}'
+                      if key.lower() in {'itemid', 'webmap'} and isinstance(child, str) and re.fullmatch(r'[0-9a-fA-F]{32}', child):
+                          candidates.append((next_path, child))
+                      walk(child, next_path)
+              elif isinstance(value, list):
+                  for index, child in enumerate(value):
+                      walk(child, f'{path}[{index}]')
+          walk(data)
+
+          webmap_id = None
+          webmap_data = None
+          layer_url = None
+          for _, candidate in candidates:
+              candidate_item = fetch_json(f'{ROOT}/{candidate}?f=json')
+              if candidate_item.get('type') != 'Web Map':
+                  continue
+              candidate_data = fetch_json(f'{ROOT}/{candidate}/data?f=json')
+              urls = []
+              def collect_urls(value):
+                  if isinstance(value, dict):
+                      for key, child in value.items():
+                          if key == 'url' and isinstance(child, str):
+                              urls.append(child)
+                          collect_urls(child)
+                  elif isinstance(value, list):
+                      for child in value:
+                          collect_urls(child)
+              collect_urls(candidate_data)
+              matches = [url.rstrip('/') for url in urls if 'DC_CCs_Adopted_2021' in url and url.rstrip('/').endswith('/0')]
+              if matches:
+                  webmap_id = candidate
+                  webmap_data = candidate_data
+                  layer_url = matches[0]
+                  break
+
+          if not layer_url:
+              raise SystemExit(f'Official app no longer references the adopted 2021 Commissioners Court layer. Candidates: {candidates}')
+
+          contract = {
+              'application': item,
+              'application_id': APP_ID,
+              'webmap_id': webmap_id,
+              'operational_layer_url': layer_url,
+          }
+          output = Path('build/dallas-county/app-source-contract.json')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(json.dumps(contract, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print(f'layer_url={layer_url}')
+          print(f'webmap_id={webmap_id}')
+          PY
+
+      - name: Validate live Dallas County district attributes
+        run: |
+          python - <<'PY'
+          import json
+          import urllib.parse
+          import urllib.request
+          from pathlib import Path
+
+          layer_url = '${{ steps.source.outputs.layer_url }}'
+          query = urllib.parse.urlencode({
+              'where': '1=1',
+              'outFields': 'DISTRICT,Name,Photo,Comm_URL',
+              'returnGeometry': 'false',
+              'orderByFields': 'DISTRICT',
+              'f': 'json',
+          })
+          request = urllib.request.Request(f'{layer_url}/query?{query}', headers={'User-Agent': 'Civic-Cartography-bootstrap/1.0'})
+          with urllib.request.urlopen(request, timeout=45) as response:
+              payload = json.load(response)
+          rows = {str(feature['attributes']['DISTRICT']): feature['attributes'] for feature in payload.get('features', [])}
+          expected = {
+              '1': 'Dr. Theresa Daniel',
+              '2': 'Andy Sommerman',
+              '3': 'John Wiley Price',
+              '4': 'Dr. Elba Garcia',
+          }
+          if set(rows) != set(expected):
+              raise SystemExit(f'Unexpected Dallas County district IDs: {sorted(rows)}')
+          for district_id, officeholder in expected.items():
+              row = rows[district_id]
+              if row.get('Name') != officeholder:
+                  raise SystemExit(f'District {district_id} roster drift: {row.get("Name")!r} != {officeholder!r}')
+              if not str(row.get('Comm_URL') or '').strip():
+                  raise SystemExit(f'District {district_id} lost Comm_URL')
+              if not str(row.get('Photo') or '').strip():
+                  raise SystemExit(f'District {district_id} lost Photo')
+          output = Path('build/dallas-county/live-layer-attributes.json')
+          output.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print(json.dumps(rows, indent=2, sort_keys=True))
+          PY
+
+      - name: Fetch current Dallas County Commissioner districts
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url "${{ steps.source.outputs.layer_url }}" \
+            --district-ids 1,2,3,4 \
+            --district-field DISTRICT \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner District" \
+            --jurisdiction-name "Dallas County" \
+            --record-id-prefix TX:county:dallas:commissioner_precinct \
+            --geometry-id-prefix dallas-county-commissioner-district \
+            --source-agency "Dallas County GIS" \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/dallas-county/districts/raw/commissioner-districts-1-4.geojson \
+            --output build/dallas-county/districts/geojson/dallas_county_commissioner_districts.geojson
+
+      - name: Fetch current Dallas County boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48113 \
+            --record-id TX:county:dallas:countywide:COUNTYWIDE \
+            --geometry-id dallas-county-countywide \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/dallas-county/county/raw/tigerweb-county-48113.geojson \
+            --output build/dallas-county/county/geojson/dallas_county_countywide.geojson
+
+      - name: Commit generated Dallas County snapshots
+        if: github.event_name == 'push'
+        run: |
+          mkdir -p data/raw/dallas-county data/geojson
+          cp build/dallas-county/districts/raw/commissioner-districts-1-4.geojson data/raw/dallas-county/commissioner-districts-1-4.geojson
+          cp build/dallas-county/districts/geojson/dallas_county_commissioner_districts.geojson data/geojson/dallas_county_commissioner_districts.geojson
+          cp build/dallas-county/county/raw/tigerweb-county-48113.geojson data/raw/dallas-county/tigerweb-county-48113.geojson
+          cp build/dallas-county/county/geojson/dallas_county_countywide.geojson data/geojson/dallas_county_countywide.geojson
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add data/raw/dallas-county/commissioner-districts-1-4.geojson \
+            data/geojson/dallas_county_commissioner_districts.geojson \
+            data/raw/dallas-county/tigerweb-county-48113.geojson \
+            data/geojson/dallas_county_countywide.geojson
+          if git diff --cached --quiet; then
+            echo "Dallas County snapshots already match generated output."
+            exit 0
+          fi
+          git commit -m "Add Dallas County source snapshots"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Upload Dallas County bootstrap
+        uses: actions/upload-artifact@v4
+        with:
+          name: dallas-county-bootstrap
+          path: build/dallas-county/
+          if-no-files-found: error
