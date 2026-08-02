@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mightyloud.github.io/Civic-Cartography/schemas/target-manifest.schema.json",
+  "title": "Civic Cartography Target Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "name", "targets"],
+  "properties": {
+    "version": {"const": 1},
+    "name": {"type": "string", "minLength": 1},
+    "description": {"type": "string", "minLength": 1},
+    "run_asof": {"type": "string", "format": "date-time"},
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/target"}
+    }
+  },
+  "$defs": {
+    "classification": {
+      "enum": [
+        "government",
+        "legislature",
+        "school_system",
+        "executive",
+        "transit_authority",
+        "utility_commission",
+        "judicial",
+        "prosecutorial",
+        "advisory_board",
+        "special_purpose_district"
+      ]
+    },
+    "ocdidSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": {"const": "ocdid"},
+        "value": {
+          "type": "string",
+          "pattern": "^ocd-division/country:us/state:[a-z]{2}/.+"
+        }
+      }
+    },
+    "lookupSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "name", "resolution_policy"],
+      "properties": {
+        "type": {"const": "explicit_lookup"},
+        "name": {"type": "string", "minLength": 1},
+        "resolution_policy": {"const": "override_or_exception"}
+      }
+    },
+    "aliasSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "members", "canonical_rule"],
+      "properties": {
+        "type": {"const": "alias_group"},
+        "members": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ocd-division/country:us/state:[a-z]{2}/.+"
+          }
+        },
+        "canonical_rule": {"type": "string", "minLength": 1}
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_id",
+        "jurisdiction_name",
+        "state",
+        "selector",
+        "expected_archetype",
+        "expected_classification",
+        "category"
+      ],
+      "properties": {
+        "target_id": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9_-]*$"
+        },
+        "jurisdiction_name": {"type": "string", "minLength": 1},
+        "state": {"type": "string", "pattern": "^[A-Za-z]{2}$"},
+        "selector": {
+          "oneOf": [
+            {"$ref": "#/$defs/ocdidSelector"},
+            {"$ref": "#/$defs/lookupSelector"},
+            {"$ref": "#/$defs/aliasSelector"}
+          ]
+        },
+        "expected_archetype": {"type": "string", "minLength": 1},
+        "expected_classification": {"$ref": "#/$defs/classification"},
+        "category": {
+          "enum": [
+            "regression_fixture",
+            "new_known_archetype",
+            "discovery"
+          ]
+        }
+      }
+    }
+  }
+}
