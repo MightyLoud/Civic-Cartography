@@ -8,6 +8,7 @@ MANIFEST = ROOT / "data/raw/collin-county/source-manifest.csv"
 NORMALIZED = ROOT / "data/normalized/collin_county_commissioners_court.csv"
 PRECINCTS = ROOT / "data/geojson/collin_county_commissioner_precincts.geojson"
 COUNTY = ROOT / "data/geojson/collin_county_countywide.geojson"
+OPERATIONAL_LAYER = "https://maps.collincountytx.gov/server/rest/services/InteractiveMap/Election/MapServer/1"
 
 
 def test_collin_county_stale_narrative_and_operational_gis_contract() -> None:
@@ -35,8 +36,10 @@ def test_collin_county_stale_narrative_and_operational_gis_contract() -> None:
     assert len({row["geometry_id"] for row in normalized}) == 5
     commissioner_rows = [row for row in normalized if row["district_type"] == "commissioner_precinct"]
     assert len(commissioner_rows) == 4
+    assert {row["geometry_source_url"] for row in commissioner_rows} == {OPERATIONAL_LAYER}
     assert all("2011/2012 dates are stale" in row["notes"] for row in commissioner_rows)
     assert all("November 1, 2021" in row["notes"] for row in commissioner_rows)
+    assert all("uppercase COMMISH_N" in row["notes"] for row in commissioner_rows)
 
     with MANIFEST.open(newline="", encoding="utf-8") as handle:
         manifest = {row["source_id"]: row for row in csv.DictReader(handle)}
@@ -44,11 +47,16 @@ def test_collin_county_stale_narrative_and_operational_gis_contract() -> None:
     stale = manifest["collin-county-stale-precinct-page"]["use"]
     assert "September 6, 2011" in stale
     assert "January 1, 2012" in stale
-    current = manifest["collin-county-2021-commissioners-layer"]["use"]
-    assert "November 1, 2021" in current
-    assert "2021-1127-11-01" in current
+    app = manifest["collin-county-interactive-map"]["use"]
+    assert "InteractiveMap/Election/MapServer/1" in app
+    assert "uppercase COMMISH_N" in app
+    metadata = manifest["collin-county-2021-commissioners-layer"]["use"]
+    assert "November 1, 2021" in metadata
+    assert "2021-1127-11-01" in metadata
+    assert "app-resolved MapServer/1" in metadata
     for field in ("COMMISH", "COMMISH_N"):
-        assert field in current
+        assert field in app
+        assert field in metadata
 
     county = json.loads(COUNTY.read_text(encoding="utf-8"))
     assert len(county["features"]) == 1
@@ -72,9 +80,12 @@ def test_collin_county_stale_narrative_and_operational_gis_contract() -> None:
         attributes = props["source_attributes"]
         assert props["district_type"] == "commissioner_precinct"
         assert props["district_name"] == f"Commissioner Precinct {precinct_id}"
+        assert props["source_url"] == OPERATIONAL_LAYER
         assert props["source_district_field"] == "COMMISH"
         assert str(attributes["COMMISH"]) == precinct_id
-        assert attributes["COMMISH_N"] == expected_names[precinct_id]
+        gis_name = str(attributes["COMMISH_N"]).strip()
+        assert gis_name == gis_name.upper()
+        assert gis_name.casefold() == expected_names[precinct_id].casefold()
         found[precinct_id] = props["geometry_id"]
     assert found == {
         "1": "collin-county-commissioner-precinct-1",
