@@ -2,7 +2,7 @@
 
 ## Status
 
-Ten-role release candidate pending final Tarrant County and repository-wide validation.
+Verified ten-role release package. Pre-merge validation succeeded in Tarrant County workflow run #18 and repository workflow run #649 after one unrelated TIGERweb retry.
 
 ## Purpose
 
@@ -129,9 +129,23 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Geometry preservation
 
-The countywide and Commissioner precinct GeoJSON files are unchanged by this extension. The existing canonical digest must remain:
+The countywide and Commissioner precinct GeoJSON files are unchanged by this extension. The existing canonical digest remains:
 
 `36a5c53bd999162d8837de7218a89f146949eaf552feca56abddd557054cb263`
+
+## Validation evidence
+
+- Tarrant County workflow run #18: success
+- Repository workflow run #649: success after retrying an unrelated transient TIGERweb non-JSON response for Olmos Park
+- Automated tests: 57 passed
+- Normalized datasets validated: 19 files
+- Controlling ArcGIS metadata hierarchy: passed
+- Four-district geometry-source divergence: passed
+- Current controlling precinct snapshot comparison: passed
+- Current Census snapshot comparison: passed
+- Countywide role, election-count, Treasurer-abolition, and tax-transition regression: passed
+- Geometry joins: passed
+- Combined canonical SHA-256: `36a5c53bd999162d8837de7218a89f146949eaf552feca56abddd557054cb263`
 
 ## Release files
 
