@@ -2,11 +2,11 @@
 
 ## Status
 
-Ten-office extension candidate. The released five-feature geometry package remains unchanged while five additional countywide constitutional offices are added to the existing countywide record. Merge requires permanent Williamson County drift validation, the full repository suite, and an unchanged combined canonical digest.
+Verified ten-office release validated in Williamson County workflow run #23 and repository workflow run #330. Five additional countywide constitutional offices were added without changing the released five-feature geometry package.
 
 ## Purpose
 
-Williamson County first proved the Denton County Commissioners Court pattern transfers cleanly to an independent county GIS stack. This extension tests whether the shared-countywide-office pattern also transfers without duplicate normalized rows or additional geometry.
+Williamson County first proved the Denton County Commissioners Court pattern transfers cleanly to an independent county GIS stack. This extension proves the shared-countywide-office pattern also transfers without duplicate normalized rows or additional geometry.
 
 ## Jurisdiction identity
 
@@ -62,9 +62,9 @@ TX:county:williamson:commissioner_precinct:4     -> williamson-county-commission
 
 The countywide normalized record represents all six countywide offices. Separate normalized rows for each countywide office are intentionally not created because they would duplicate the same geography join.
 
-## Target parity
+## Completed parity
 
-| Layer | Expected count |
+| Layer | Count |
 |---|---:|
 | Current-officeholder evidence rows | 10 |
 | Official source records | 16 |
@@ -77,7 +77,7 @@ The countywide normalized record represents all six countywide offices. Separate
 | Missing joins | 0 |
 | Extra joins | 0 |
 
-All five normalized records must retain `qa_status = approved` and `parity_ok = TRUE`. The combined canonical release SHA-256 must remain:
+All five normalized records retain `qa_status = approved` and `parity_ok = TRUE`. Thirty automated tests passed. The combined canonical release SHA-256 remains:
 
 ```text
 4670b4dd07affbfd098a6fd63716ed78b08bba71d8c5740bb8b19f1838b37d34
@@ -105,10 +105,10 @@ All five normalized records must retain `qa_status = approved` and `parity_ok = 
 6. Preserve all five canonical features unchanged in this extension.
 7. Require `COUNTY = WILLIAMSON` on all four precinct source features.
 8. Preserve the renderer/query field inconsistency rather than claiming hidden `PCT_NUMBER` is queryable.
-9. Every normalized record must join exactly one canonical feature.
+9. Every normalized record joins exactly one canonical feature.
 10. Current-source drift fails CI when geometry, source labels, county attributes, GEOID, or canonical joins change.
 11. County Attorney, District Attorney, judges, Constables, Justices of the Peace, Auditor, and appointed administrative offices remain outside this bounded release.
 
-## Completion rule
+## Result
 
-The extension is complete only after the ten-office roster, sixteen-source manifest, five normalized rows, five unchanged canonical features, permanent tests, green CI, merged pull request, closed issue, and the existing Williamson County portfolio row all agree.
+Williamson County now covers ten elected offices with five geometries: six countywide offices share one verified Census county polygon, while Commissioners Precincts 1–4 retain four official Williamson County GIS polygons. The countywide-office pattern transferred without geometry changes, duplicate joins, or generic-fetcher modifications, while the Gaddes-to-Totty transition remains fully traceable.
