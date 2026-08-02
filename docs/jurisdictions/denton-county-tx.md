@@ -2,7 +2,7 @@
 
 ## Status
 
-Verified ten-office release validated in Denton County workflow run #18 and repository workflow run #267. The release contains one countywide Census feature plus four official commissioner-precinct features. Five additional countywide constitutional officeholders were added without changing geometry.
+Verified ten-office release validated in Denton County workflow run #20 and repository workflow run #269. The release contains one countywide Census feature plus four official commissioner-precinct features. Five additional countywide constitutional officeholders were added without changing geometry.
 
 ## Purpose
 
