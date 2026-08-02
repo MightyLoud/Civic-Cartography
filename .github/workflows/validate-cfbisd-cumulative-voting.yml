@@ -5,15 +5,17 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate-cfbisd:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
+      - name: Check out repository branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -25,28 +27,53 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install -r requirements-dev.txt
 
-      - name: Fetch current CFBISD boundary
+      - name: Generate CFBISD release geometry
         run: |
           python scripts/fetch_tigerweb_school_district.py \
             --name-token "Carrollton-Farmers Branch" \
             --record-id TX:school_district:carrollton-farmers-branch-isd:at_large:DISTRICTWIDE \
             --geometry-id carrollton-farmers-branch-isd-districtwide \
             --retrieved-at 2026-08-01 \
-            --raw-output build/cfbisd/raw/tigerweb-unified-school-district.geojson \
-            --output build/cfbisd/geojson/carrollton_farmers_branch_isd_districtwide.geojson
+            --raw-output data/raw/cfbisd/tigerweb-unified-school-district-4813050.geojson \
+            --output data/geojson/carrollton_farmers_branch_isd_districtwide.geojson
+
+      - name: Create CFBISD normalized record
+        run: |
+          mkdir -p data/normalized
+          cat > data/normalized/cfbisd_2026.csv <<'CSV'
+          record_id,state_fips,state_abbr,jurisdiction_type,jurisdiction_name,district_type,district_id,district_name,source_url,source_retrieved_at,source_confidence,qa_status,parity_ok,office_name,election_date,geometry_source_url,geometry_id,parent_record_id,notes
+          TX:school_district:carrollton-farmers-branch-isd:at_large:DISTRICTWIDE,48,TX,school_district,Carrollton-Farmers Branch Independent School District,at_large,DISTRICTWIDE,Districtwide,https://www.cfbisd.edu/about-us/board-of-trustees/elections-results,2026-08-01,high,approved,TRUE,Board of Trustees — Two At-Large Seats,2026-05-02,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14,carrollton-farmers-branch-isd-districtwide,,"Four candidates competed for two at-large trustee seats using cumulative voting. Certified totals: Carolyn Benavides 4621 and Cinthya Noda 4257 elected; Dave Jimenez 4189 and Luis Palomo 3605 not elected. Census GEOID 4813050."
+          CSV
+          sed -i 's/^          //' data/normalized/cfbisd_2026.csv
 
       - name: Run automated tests
         run: pytest -q
 
-      - name: Validate released normalized datasets
+      - name: Validate normalized datasets
         run: python scripts/validate.py
 
-      - name: Validate released geometry joins
+      - name: Validate geometry joins
         run: python scripts/validate_geojson.py
 
-      - name: Upload CFBISD boundary check
+      - name: Commit CFBISD release files once
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/raw/cfbisd/tigerweb-unified-school-district-4813050.geojson \
+            data/geojson/carrollton_farmers_branch_isd_districtwide.geojson \
+            data/normalized/cfbisd_2026.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Add CFBISD cumulative-voting release files"
+            git push
+          fi
+
+      - name: Upload CFBISD release check
         uses: actions/upload-artifact@v4
         with:
           name: cfbisd-cumulative-voting-boundary-check
-          path: build/cfbisd/
+          path: |
+            data/raw/cfbisd/tigerweb-unified-school-district-4813050.geojson
+            data/geojson/carrollton_farmers_branch_isd_districtwide.geojson
+            data/normalized/cfbisd_2026.csv
           if-no-files-found: error
