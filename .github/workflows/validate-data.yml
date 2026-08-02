@@ -141,6 +141,16 @@ jobs:
             --committed-canonical data/geojson/coppell_isd_districtwide.geojson \
             --fresh-canonical build/coppell-isd/geojson/coppell_isd_districtwide.geojson
 
+      - name: Fetch current Poth ISD unified-school-district boundary
+        run: |
+          python scripts/fetch_tigerweb_school_district.py \
+            --name-token Poth \
+            --record-id TX:school_district:poth-isd:at_large:DISTRICTWIDE \
+            --geometry-id poth-isd-districtwide \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/poth-isd/raw/tigerweb-unified-school-district.geojson \
+            --output build/poth-isd/geojson/poth_isd_districtwide.geojson
+
       - name: Run automated tests
         run: pytest -q
 
