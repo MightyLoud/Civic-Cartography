@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate pending permanent Hidalgo County and repository-wide validation.
+Verified release package. First-pass pre-merge validation succeeded in Hidalgo County workflow run #10 and repository workflow run #958.
 
 ## Purpose
 
@@ -62,7 +62,7 @@ The release therefore models five public-body assignments while retaining only t
 
 ## Geometry source hierarchy
 
-The official County Officials directory and office pages control the elected roster. The official November 13, 2021 redistricting action controls adoption of the current Commissioner precinct plan.
+The official County Officials directory and office pages control the elected roster. The official county maps page supplies Commissioner-precinct map context, not roster authority. The official November 13, 2021 redistricting action controls adoption of the current Commissioner precinct plan.
 
 A reviewed county-associated ArcGIS item titled `Hidalgo County Basemap`, owned by `rpresas`, resolves operational Commissioner polygons to:
 
@@ -84,12 +84,13 @@ The release does not infer officeholders from GIS. Official county pages control
 4. The Drainage District administration page must continue defining the board as the County Judge and four Commissioners.
 5. The Drainage District history must preserve the 1939 transfer of management and control to Commissioners Court.
 6. County meeting pages must preserve separate Commissioners Court and Drainage District meeting identities.
-7. The 2021 county redistricting record must preserve Commissioner precinct adoption evidence.
-8. ArcGIS item `bc95c6e0bbed4ba98a16b303219de88a` must remain titled `Hidalgo County Basemap` and owned by `rpresas`, or an explicitly reviewed replacement must be approved.
-9. The operational layer must remain polygon geometry with field `DISTRICT` and values 1 through 4.
-10. Direct GeoJSON regeneration must match the committed raw and canonical snapshots.
-11. Six countywide offices must share only the Census county feature.
-12. Every normalized row must join exactly one canonical feature.
+7. The county maps page must preserve Commissioner-precinct map context without being treated as the roster authority.
+8. The 2021 county redistricting record must preserve Commissioner precinct adoption evidence.
+9. ArcGIS item `bc95c6e0bbed4ba98a16b303219de88a` must remain titled `Hidalgo County Basemap` and owned by `rpresas`, or an explicitly reviewed replacement must be approved.
+10. The operational layer must remain polygon geometry with field `DISTRICT` and values 1 through 4.
+11. Direct GeoJSON regeneration must match the committed raw and canonical snapshots.
+12. Six countywide offices must share only the Census county feature.
+13. Every normalized row must join exactly one canonical feature.
 
 ## Stable identifiers
 
@@ -123,7 +124,19 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Validation evidence
 
-The source-resolution bootstrap proved that ArcGIS item `bc95c6e0bbed4ba98a16b303219de88a` resolves to `County_Commissioners_View/FeatureServer/0` using field `DISTRICT`. Final exact-head workflow evidence is pending.
+- Source-resolution bootstrap: ArcGIS item `bc95c6e0bbed4ba98a16b303219de88a` resolves to `County_Commissioners_View/FeatureServer/0` using field `DISTRICT`
+- Hidalgo County workflow run #10: success
+- Repository workflow run #958: success
+- Automated tests: 76 passed
+- Normalized datasets validated: 24 files
+- Ten-office roster validation: passed
+- Five-person Commissioners Court / Drainage District board overlap: passed
+- Separate public-body meeting identity: passed
+- 2021 redistricting evidence: passed
+- Current Commissioner precinct snapshot comparison: passed
+- Current Census snapshot comparison: passed
+- Geometry joins: passed
+- Combined canonical SHA-256: `ce2e958d1febb028d57089dc6a6c458f39d188d981c368622d33d86881f852a2`
 
 ## Release files
 
