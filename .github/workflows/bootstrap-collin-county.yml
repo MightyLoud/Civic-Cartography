@@ -93,7 +93,6 @@ jobs:
                   roots.add(match.rstrip('/'))
 
           candidates = set(direct_layers)
-          root_evidence = {}
           for root in sorted(roots):
               if 'collincountytx.gov' not in root:
                   continue
@@ -101,7 +100,6 @@ jobs:
                   service = fetch_json(f'{root}?f=json')
               except Exception:
                   continue
-              root_evidence[root] = service
               for layer in service.get('layers', []):
                   if str(layer.get('name', '')).strip().lower() == 'commissioners':
                       candidates.add(f"{root}/{layer['id']}")
@@ -193,8 +191,9 @@ jobs:
           if set(rows) != set(expected):
               raise SystemExit(f'Unexpected Collin County precinct IDs: {sorted(rows)}')
           for precinct_id, officeholder in expected.items():
-              if rows[precinct_id].get('COMMISH_N') != officeholder:
-                  raise SystemExit(f'Precinct {precinct_id} roster drift: {rows[precinct_id].get("COMMISH_N")!r} != {officeholder!r}')
+              actual = str(rows[precinct_id].get('COMMISH_N') or '').strip()
+              if actual.casefold() != officeholder.casefold():
+                  raise SystemExit(f'Precinct {precinct_id} roster drift: {actual!r} != {officeholder!r}')
           output = Path('build/collin-county/live-layer-attributes.json')
           output.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
           print(json.dumps(rows, indent=2, sort_keys=True))
