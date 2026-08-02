@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate pending snapshot generation and final validation.
+Verified release package. First-pass pre-merge validation succeeded in Collin County workflow run #21 and repository workflow run #850.
 
 ## Purpose
 
@@ -101,7 +101,18 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Validation evidence
 
-The source-resolution bootstrap proved that the official application requests `InteractiveMap/Election/MapServer/1`. Pending final exact-head Collin County and repository-wide workflow results.
+- Browser source-resolution bootstrap: official application resolves `InteractiveMap/Election/MapServer/1`
+- Collin County workflow run #21: success
+- Repository workflow run #850: success
+- Automated tests: 73 passed
+- Normalized datasets validated: 22 files
+- Stale landing-page narrative validation: passed
+- Operational layer and uppercase roster contract: passed
+- 2021 plan-adoption metadata validation: passed
+- Current Commissioner precinct snapshot comparison: passed
+- Current Census snapshot comparison: passed
+- Geometry joins: passed
+- Combined canonical SHA-256: `329729e91a3f0664ff9186002639b4ca76ea53797fbca7d11df983e869244d85`
 
 ## Release files
 
@@ -117,4 +128,4 @@ The source-resolution bootstrap proved that the official application requests `I
 
 ## Result
 
-Collin County will contain five scoped elected offices represented by five geometries. The proof demonstrates that a current official landing page can carry stale adoption dates while a linked application supplies the controlling operational geometry and a synchronized official layer supplies current adoption metadata.
+Collin County contains five scoped elected offices represented by five geometries. The proof demonstrates that a current official landing page can carry stale adoption dates while a linked application supplies the controlling operational geometry and a synchronized official layer supplies current adoption metadata.
