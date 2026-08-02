@@ -7,7 +7,6 @@ on:
       - ".github/workflows/capture-upstream-six-fixtures.yml"
       - "scripts/capture_upstream_fixtures.py"
       - "scripts/capture_upstream_with_authoritative_overrides.py"
-      - "scripts/apply_upstream_rtd_jurisdiction_draft.py"
       - "scripts/normalize_capture_acceptance.py"
       - "data/authoritative_jurisdiction_overrides.yml"
       - "civic_cartography/authoritative_overrides.py"
@@ -91,7 +90,7 @@ jobs:
           cd upstream
           uv sync --frozen
 
-      - name: Apply validated patches and normalize RTD patch
+      - name: Apply validated upstream patches and verify RTD patch
         run: |
           git -C upstream apply --check "../$PATCH_1"
           git -C upstream apply "../$PATCH_1"
@@ -103,14 +102,15 @@ jobs:
             -c user.email="civic-cartography@example.invalid" \
             commit -m "Apply validated upstream fixes 1 and 2"
 
-          git -C upstream apply \
-            --exclude=src/init_migration/generate_jurisdiction.py \
-            --recount "../$PATCH_3"
-          python scripts/apply_upstream_rtd_jurisdiction_draft.py \
-            --upstream-root upstream
+          git -C upstream apply --check "../$PATCH_3"
+          git -C upstream apply "../$PATCH_3"
           git -C upstream add -N .
           git -C upstream diff --check
           git -C upstream diff --binary > build-normalized-patch-3.patch
+          if ! cmp -s "$PATCH_3" build-normalized-patch-3.patch; then
+            diff -u "$PATCH_3" build-normalized-patch-3.patch
+            exit 1
+          fi
 
       - name: Test upstream override behavior
         run: |
