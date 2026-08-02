@@ -53,4 +53,8 @@ def test_williamson_countywide_offices_share_one_geometry() -> None:
     assert "williamson-county-tax-assessor-resignation" in manifest
     assert "williamson-county-tax-assessor-appointment" in manifest
     assert "williamson-county-tax-assessor-collector" in manifest
-    assert len(manifest) == 16
+    assert "williamson-county-constables" in manifest
+    assert "williamson-county-justice-courts" in manifest
+    assert {f"williamson-county-constable-{index}" for index in range(1, 5)} <= set(manifest)
+    assert {f"williamson-county-jp-{index}" for index in range(1, 5)} <= set(manifest)
+    assert len(manifest) == 26
