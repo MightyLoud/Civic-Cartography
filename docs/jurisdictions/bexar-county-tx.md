@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate pending final Bexar County and repository-wide validation.
+Verified release candidate. Bexar County workflow run #4 and repository workflow run #516 passed; final merge and Jurisdiction Portfolio update remain.
 
 ## Purpose
 
@@ -74,6 +74,18 @@ TX:county:bexar:commissioner_precinct:4    -> bexar-county-commissioner-precinct
 | Extra joins | 0 |
 
 All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
+
+## Validation evidence
+
+- Bexar County workflow run #4: success
+- Repository workflow run #516: success
+- Automated tests: 48 passed
+- Normalized datasets validated: 17 files
+- Current Census snapshot comparison: passed
+- Current Bexar County GIS snapshot comparison: passed
+- Live `Comm`, `ComName`, and `Website` contract: passed
+- Geometry joins: passed
+- Combined canonical SHA-256: `a41cb19220f74771bb373e6babeff0d4f8396074b02fcdaf7fe40836c1485216`
 
 ## Release files
 
