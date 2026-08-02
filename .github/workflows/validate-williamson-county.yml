@@ -1,0 +1,131 @@
+name: Validate Williamson County transfer proof
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-williamson-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Fetch current Williamson County boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48491 \
+            --record-id TX:county:williamson:countywide:COUNTYWIDE \
+            --geometry-id williamson-county-countywide \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/williamson-county/county/raw/tigerweb-county-48491.geojson \
+            --output build/williamson-county/county/geojson/williamson_county_countywide.geojson
+
+      - name: Verify committed Williamson County boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/williamson-county/tigerweb-county-48491.geojson \
+            --fresh-raw build/williamson-county/county/raw/tigerweb-county-48491.geojson \
+            --committed-canonical data/geojson/williamson_county_countywide.geojson \
+            --fresh-canonical build/williamson-county/county/geojson/williamson_county_countywide.geojson
+
+      - name: Fetch current Williamson County commissioner precincts
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://gis.wilco.org/arcgis/rest/services/public/county_elections/MapServer/1 \
+            --district-ids 1,2,3,4 \
+            --district-field LABEL_NAME \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Williamson County" \
+            --record-id-prefix TX:county:williamson:commissioner_precinct \
+            --geometry-id-prefix williamson-county-commissioner-precinct \
+            --source-agency "Williamson County GIS" \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/williamson-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --output build/williamson-county/precincts/geojson/williamson_county_commissioner_precincts.geojson
+
+      - name: Verify committed Williamson County precincts match official GIS
+        run: |
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/williamson-county/commissioner-precincts-1-4.geojson \
+            --fresh-raw build/williamson-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --committed-canonical data/geojson/williamson_county_commissioner_precincts.geojson \
+            --fresh-canonical build/williamson-county/precincts/geojson/williamson_county_commissioner_precincts.geojson
+
+      - name: Verify fresh Williamson County precinct attributes
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('build/williamson-county/precincts/geojson/williamson_county_commissioner_precincts.geojson')
+          payload = json.loads(path.read_text(encoding='utf-8'))
+          expected = {'1': 'PCT 1', '2': 'PCT 2', '3': 'PCT 3', '4': 'PCT 4'}
+          found = {}
+          for feature in payload.get('features', []):
+              props = feature.get('properties') or {}
+              district_id = str(props.get('district_id') or '')
+              attrs = props.get('source_attributes') or {}
+              found[district_id] = str(attrs.get('LABEL_NAME') or '').strip().upper()
+              if props.get('source_district_field') != 'LABEL_NAME':
+                  raise SystemExit(f"Unexpected source field for precinct {district_id}: {props.get('source_district_field')!r}")
+              if str(attrs.get('COUNTY') or '').strip().upper() != 'WILLIAMSON':
+                  raise SystemExit(f"Unexpected county for precinct {district_id}: {attrs.get('COUNTY')!r}")
+          if found != expected:
+              raise SystemExit(f'Williamson precinct label mismatch: expected {expected!r}; found {found!r}')
+          print('Verified four Williamson County precinct labels and county attributes.')
+          PY
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Calculate Williamson County combined canonical digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          paths = [
+              Path('data/geojson/williamson_county_countywide.geojson'),
+              Path('data/geojson/williamson_county_commissioner_precincts.geojson'),
+          ]
+          digest = hashlib.sha256()
+          for path in sorted(paths, key=lambda item: item.name):
+              digest.update(path.name.encode('utf-8'))
+              digest.update(b'\0')
+              digest.update(path.read_bytes())
+              digest.update(b'\0')
+          value = digest.hexdigest()
+          output = Path('build/williamson-county/release-sha256.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(value + '\n', encoding='utf-8')
+          print(f'Williamson County combined canonical SHA-256: {value}')
+          PY
+
+      - name: Upload Williamson County validation check
+        uses: actions/upload-artifact@v4
+        with:
+          name: williamson-county-boundary-check
+          path: build/williamson-county/
+          if-no-files-found: error
