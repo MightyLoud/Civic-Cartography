@@ -1,0 +1,285 @@
+name: Bootstrap Montgomery County complete schema
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap-montgomery-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'push' && github.ref_name || github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Resolve dataset and lookup app to one operational layer
+        id: source
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          import time
+          import urllib.parse
+          import urllib.request
+          from collections import deque
+          from pathlib import Path
+
+          PORTAL = 'https://www.arcgis.com'
+          DATA_ITEM = 'ea4f547b5eec474b8eb6d022afe173b3'
+          APP_ITEM = '06f7b0e0e2354c8f8e77be19c4256ff5'
+          USER_AGENT = 'Civic-Cartography-bootstrap/1.0'
+          EXPECTED_NAMES = {
+              'robert walker', 'robert c walker',
+              'charlie riley',
+              'ritch wheeler',
+              'matt gray', 'matthew gray',
+          }
+
+          def fetch_json(url):
+              request = urllib.request.Request(url, headers={'User-Agent': USER_AGENT})
+              last_error = None
+              for attempt in range(1, 6):
+                  try:
+                      with urllib.request.urlopen(request, timeout=45) as response:
+                          return json.load(response)
+                  except Exception as exc:
+                      last_error = exc
+                      if attempt == 5:
+                          raise
+                      time.sleep(attempt * 5)
+              raise last_error
+
+          def item_metadata(item_id):
+              return fetch_json(f'{PORTAL}/sharing/rest/content/items/{item_id}?f=json')
+
+          def item_data(item_id):
+              return fetch_json(f'{PORTAL}/sharing/rest/content/items/{item_id}/data?f=json')
+
+          data_meta = item_metadata(DATA_ITEM)
+          service_url = str(data_meta.get('url') or '').rstrip('/')
+          if not service_url:
+              raise SystemExit(f'Montgomery County dataset item has no service URL: {data_meta!r}')
+
+          if re.search(r'/(?:MapServer|FeatureServer)/\d+$', service_url, re.I):
+              candidate_layers = [service_url]
+              service_root = service_url.rsplit('/', 1)[0]
+          elif re.search(r'/(?:MapServer|FeatureServer)$', service_url, re.I):
+              service_root = service_url
+              service = fetch_json(f'{service_root}?f=json')
+              candidate_layers = [
+                  f"{service_root}/{layer['id']}"
+                  for layer in service.get('layers', [])
+                  if 'commission' in str(layer.get('name') or '').lower()
+                  or 'precinct' in str(layer.get('name') or '').lower()
+              ]
+              if not candidate_layers and len(service.get('layers', [])) == 1:
+                  candidate_layers = [f"{service_root}/{service['layers'][0]['id']}"]
+          else:
+              raise SystemExit(f'Unexpected Montgomery County dataset URL: {service_url!r}')
+
+          ranked = []
+          for layer_url in candidate_layers:
+              metadata = fetch_json(f'{layer_url}?f=json')
+              if metadata.get('geometryType') != 'esriGeometryPolygon':
+                  continue
+              fields = [str(field.get('name') or '') for field in metadata.get('fields', [])]
+              payload = fetch_json(f"{layer_url}/query?{urllib.parse.urlencode({'where':'1=1','outFields':'*','returnGeometry':'false','f':'json'})}")
+              features = payload.get('features', [])
+              for field in fields:
+                  values = []
+                  for feature in features:
+                      raw = feature.get('attributes', {}).get(field)
+                      text = str(raw).strip() if raw is not None else ''
+                      match = re.fullmatch(r'(?:precinct\s*)?([1-4])', text, re.I)
+                      if match:
+                          values.append(match.group(1))
+                  if sorted(set(values)) != ['1', '2', '3', '4']:
+                      continue
+                  score = 100
+                  upper = field.upper()
+                  if upper in {'PRECINCT', 'PRECINCT_NO', 'PRECINCT_NUM', 'PCT', 'PCT_NO', 'DISTRICT'}:
+                      score += 30
+                  if 'commission' in str(metadata.get('name') or '').lower():
+                      score += 20
+                  ranked.append((score, layer_url, field, metadata, features))
+
+          ranked.sort(key=lambda row: (row[0], row[1], row[2]), reverse=True)
+          if not ranked:
+              raise SystemExit(f'No Montgomery County polygon layer resolved precinct IDs 1 through 4: {candidate_layers!r}')
+
+          score, layer_url, district_field, layer_meta, features = ranked[0]
+          service_root = layer_url.rsplit('/', 1)[0]
+
+          name_fields = []
+          samples = {}
+          for field in [str(item.get('name') or '') for item in layer_meta.get('fields', [])]:
+              values = []
+              normalized = set()
+              for feature in features:
+                  raw = feature.get('attributes', {}).get(field)
+                  if raw is None:
+                      continue
+                  text = str(raw).strip()
+                  if not text:
+                      continue
+                  values.append(text)
+                  norm = re.sub(r'[^a-z0-9]+', ' ', text.lower()).strip()
+                  normalized.add(norm)
+              if values:
+                  samples[field] = sorted(set(values))[:12]
+              if len(normalized & EXPECTED_NAMES) >= 2:
+                  name_fields.append(field)
+
+          seen = set()
+          queue = deque([(APP_ITEM, 0)])
+          referenced_items = []
+          discovered_urls = []
+          app_linked = False
+          id_pattern = re.compile(r'\b[0-9a-fA-F]{32}\b')
+
+          def walk(value):
+              if isinstance(value, dict):
+                  for key, child in value.items():
+                      if key.lower() == 'url' and isinstance(child, str):
+                          discovered_urls.append(child.rstrip('/'))
+                      yield from walk(child)
+              elif isinstance(value, list):
+                  for child in value:
+                      yield from walk(child)
+              elif isinstance(value, str):
+                  for match in id_pattern.findall(value):
+                      yield match.lower()
+
+          while queue and len(seen) < 40:
+              item_id, depth = queue.popleft()
+              item_id = item_id.lower()
+              if item_id in seen or depth > 4:
+                  continue
+              seen.add(item_id)
+              try:
+                  meta = item_metadata(item_id)
+                  data = item_data(item_id)
+              except Exception:
+                  continue
+              referenced_items.append({
+                  'id': item_id,
+                  'title': meta.get('title'),
+                  'type': meta.get('type'),
+                  'url': meta.get('url'),
+                  'depth': depth,
+              })
+              meta_url = meta.get('url')
+              if isinstance(meta_url, str):
+                  discovered_urls.append(meta_url.rstrip('/'))
+              if item_id == DATA_ITEM:
+                  app_linked = True
+              for child_id in walk(data):
+                  if child_id not in seen:
+                      queue.append((child_id, depth + 1))
+
+          normalized_urls = {url.rstrip('/') for url in discovered_urls}
+          if service_root in normalized_urls or layer_url in normalized_urls:
+              app_linked = True
+          if not app_linked:
+              raise SystemExit(
+                  'Montgomery County lookup app did not resolve to the dataset/service contract. '
+                  f'Referenced items: {referenced_items!r}; URLs: {sorted(normalized_urls)!r}'
+              )
+
+          contract = {
+              'portal_url': PORTAL,
+              'dataset_item_id': DATA_ITEM,
+              'dataset_item': data_meta,
+              'lookup_app_item_id': APP_ITEM,
+              'lookup_app_referenced_items': referenced_items,
+              'lookup_app_discovered_urls': sorted(normalized_urls),
+              'lookup_app_linked_to_service': app_linked,
+              'operational_layer_url': layer_url,
+              'service_root_url': service_root,
+              'district_field': district_field,
+              'layer_name': layer_meta.get('name'),
+              'candidate_name_fields': sorted(name_fields),
+              'field_samples': samples,
+          }
+          output = Path('build/montgomery-county/source-contract.json')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(json.dumps(contract, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
+              handle.write(f'layer_url={layer_url}\n')
+              handle.write(f'district_field={district_field}\n')
+          print(f'Montgomery County operational layer: {layer_url}')
+          print(f'Montgomery County district field: {district_field}')
+          print(f'Montgomery County candidate name fields: {sorted(name_fields)}')
+          print(f'Montgomery County app references: {referenced_items}')
+          print(f'Montgomery County field samples: {samples}')
+          PY
+
+      - name: Fetch current Montgomery County Commissioner precincts
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url "${{ steps.source.outputs.layer_url }}" \
+            --district-ids 1,2,3,4 \
+            --district-field "${{ steps.source.outputs.district_field }}" \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Montgomery County" \
+            --record-id-prefix TX:county:montgomery:commissioner_precinct \
+            --geometry-id-prefix montgomery-county-commissioner-precinct \
+            --source-agency "Montgomery County IT-GIS" \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/montgomery-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --output build/montgomery-county/precincts/geojson/montgomery_county_commissioner_precincts.geojson
+
+      - name: Fetch current Montgomery County boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48339 \
+            --record-id TX:county:montgomery:countywide:COUNTYWIDE \
+            --geometry-id montgomery-county-countywide \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/montgomery-county/county/raw/tigerweb-county-48339.geojson \
+            --output build/montgomery-county/county/geojson/montgomery_county_countywide.geojson
+
+      - name: Commit generated Montgomery County snapshots
+        if: github.event_name == 'push'
+        run: |
+          mkdir -p data/raw/montgomery-county data/geojson
+          cp build/montgomery-county/precincts/raw/commissioner-precincts-1-4.geojson data/raw/montgomery-county/commissioner-precincts-1-4.geojson
+          cp build/montgomery-county/precincts/geojson/montgomery_county_commissioner_precincts.geojson data/geojson/montgomery_county_commissioner_precincts.geojson
+          cp build/montgomery-county/county/raw/tigerweb-county-48339.geojson data/raw/montgomery-county/tigerweb-county-48339.geojson
+          cp build/montgomery-county/county/geojson/montgomery_county_countywide.geojson data/geojson/montgomery_county_countywide.geojson
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add data/raw/montgomery-county/commissioner-precincts-1-4.geojson \
+            data/geojson/montgomery_county_commissioner_precincts.geojson \
+            data/raw/montgomery-county/tigerweb-county-48339.geojson \
+            data/geojson/montgomery_county_countywide.geojson
+          if git diff --cached --quiet; then
+            echo "Montgomery County snapshots already match generated output."
+            exit 0
+          fi
+          git commit -m "Add Montgomery County source snapshots"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Upload Montgomery County bootstrap
+        uses: actions/upload-artifact@v4
+        with:
+          name: montgomery-county-bootstrap
+          path: build/montgomery-county/
+          if-no-files-found: error
