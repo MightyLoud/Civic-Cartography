@@ -30,3 +30,38 @@ overrides:
       current OCD identifier inputs do not contain RTD. The classification is
       transit_authority because RTD is the elected regional public body that
       develops, maintains, and operates the district mass-transit system.
+
+  - override_id: co-denver-county-school-district-1
+    state: co
+    canonical_name: Denver County School District 1
+    aliases:
+      - Denver County School District 1
+      - Denver County 1
+      - Denver Public Schools
+      - School District No. 1 in the City and County of Denver
+    ocdid: ocd-division/country:us/state:co/county:denver/school_district:denver_county_school_district_1
+    jurisdiction:
+      has_jurisdiction: true
+      classification: school_system
+      jurisdiction_name: Denver County School District 1
+      jurisdiction_type_suffix: school_system
+      url: https://www.dpsk12.org/
+    source:
+      source_name: Denver County School District 1
+      source_url:
+        official_website: https://www.dpsk12.org/
+        colorado_district_directory: https://ed.cde.state.co.us/district-and-boces-websites-and-maps
+        colorado_district_profile: https://sites.cde.state.co.us/schoolview/explore/profile/0880
+        census_school_district_record: https://tigerweb.geo.census.gov/tigerwebmain/Files/bas26/tigerweb_bas26_sduni_2024_acs24_co.html
+      source_description: >-
+        The Colorado Department of Education identifies Denver County 1 with
+        state district code 0880, while the Census Bureau identifies Denver
+        County School District 1 as unified school district GEOID 0803360.
+        Denver Public Schools is the district's public-facing name.
+    verified_asof: '2026-08-02'
+    evidence_notes: >-
+      The current OCD identifier inputs contain no matching Denver school-system
+      row. This maintained override preserves the exact legal, Census, state,
+      and public-facing aliases and uses the same county-nested school_district
+      pattern already validated for Colorado Springs School District 11. No
+      fuzzy name resolution or target-only generator patch is used.

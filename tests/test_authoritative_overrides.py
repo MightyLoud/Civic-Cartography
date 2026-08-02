@@ -39,6 +39,36 @@ def test_rtd_override_resolves_only_exact_maintained_aliases() -> None:
     assert near_miss is None
 
 
+def test_denver_school_override_resolves_maintained_exact_aliases() -> None:
+    overrides = load_authoritative_overrides(REGISTRY)
+
+    legal_name = resolve_authoritative_override(
+        overrides,
+        state="co",
+        name="School District No. 1 in the City and County of Denver",
+    )
+    census_name = resolve_authoritative_override(
+        overrides, state="CO", name="Denver County School District 1"
+    )
+    public_name = resolve_authoritative_override(
+        overrides, state="co", name="Denver Public Schools"
+    )
+    near_miss = resolve_authoritative_override(
+        overrides, state="co", name="Denver School District"
+    )
+
+    assert legal_name is not None
+    assert legal_name.override_id == "co-denver-county-school-district-1"
+    assert legal_name.ocdid == (
+        "ocd-division/country:us/state:co/county:denver/"
+        "school_district:denver_county_school_district_1"
+    )
+    assert legal_name.generator_override["classification"] == "school_system"
+    assert census_name == legal_name
+    assert public_name == legal_name
+    assert near_miss is None
+
+
 def test_override_registry_rejects_duplicate_aliases(tmp_path: Path) -> None:
     path = tmp_path / "overrides.yml"
     path.write_text(
