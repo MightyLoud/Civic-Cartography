@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import csv
+import io
 import json
 import sys
 from pathlib import Path
@@ -49,6 +51,26 @@ def _load_manifest_targets(path: Path) -> list[dict[str, Any]]:
     return normalized
 
 
+def _normalize_local_csv(csv_bytes: bytes) -> bytes:
+    """Project variable-width local CSV rows onto the upstream id/name contract."""
+    try:
+        text = csv_bytes.decode("utf-8-sig")
+    except UnicodeDecodeError as exc:
+        raise BatchCaptureError("state-local CSV must be UTF-8") from exc
+
+    output = io.StringIO(newline="")
+    writer = csv.writer(output, lineterminator="\n")
+    for row_number, row in enumerate(csv.reader(io.StringIO(text)), start=1):
+        if not row or not any(value.strip() for value in row):
+            continue
+        if len(row) < 2:
+            raise BatchCaptureError(
+                f"state-local CSV row {row_number} has fewer than two columns"
+            )
+        writer.writerow(row[:2])
+    return output.getvalue().encode("utf-8")
+
+
 def _ensure_sources_for_states(
     api: dict[str, Any], source_dir: Path, states: list[str]
 ) -> dict[str, Any]:
@@ -71,6 +93,10 @@ def _ensure_sources_for_states(
     manifest = {
         "version": 1,
         "states": states,
+        "local_csv_normalization": {
+            "columns": ["id", "name"],
+            "strategy": "parse CSV and retain the first two fields",
+        },
         "files": {
             key: {
                 "path": path.name,
@@ -116,9 +142,8 @@ async def capture_batch(args: argparse.Namespace) -> None:
     manager = api["DownloadManager"](states=states, db_path=str(db_path))
     manager.load_master_csv(sources["files"]["master"].read_bytes())
     for state in states:
-        manager.load_local_csv(
-            sources["files"][f"{state}_local"].read_bytes(), state
-        )
+        raw_local = sources["files"][f"{state}_local"].read_bytes()
+        manager.load_local_csv(_normalize_local_csv(raw_local), state)
 
     matcher = api["OCDidMatcher"](
         db_path=str(db_path),
@@ -177,7 +202,10 @@ async def capture_batch(args: argparse.Namespace) -> None:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Capture every target in a target manifest from a pinned upstream checkout."
+        description=(
+            "Capture every target in a target manifest from a pinned upstream "
+            "checkout."
+        )
     )
     parser.add_argument("--upstream-root", required=True)
     parser.add_argument("--target-manifest", required=True)
@@ -193,7 +221,13 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     try:
         asyncio.run(capture_batch(args))
-    except (BatchCaptureError, base_capture.CaptureError, httpx.HTTPError, OSError, ValueError) as exc:
+    except (
+        BatchCaptureError,
+        base_capture.CaptureError,
+        httpx.HTTPError,
+        OSError,
+        ValueError,
+    ) as exc:
         print(f"upstream-batch-capture error: {exc}", file=sys.stderr)
         return 2
     return 0
