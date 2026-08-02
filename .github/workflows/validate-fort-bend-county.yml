@@ -1,0 +1,254 @@
+name: Validate Fort Bend County Commissioners Court
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-fort-bend-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Validate Fort Bend County source hierarchy and live attributes
+        run: |
+          python - <<'PY'
+          import json
+          import time
+          import urllib.parse
+          import urllib.request
+          from datetime import datetime, timezone
+
+          current_url = 'https://gisportal.fortbendcountytx.gov/arcgis/rest/services/InteractiveMap/Boundaries_Public/FeatureServer/7'
+          archive_url = 'https://gisportal.fortbendcountytx.gov/arcgis/rest/services/Archive/Archive/FeatureServer/0'
+
+          def fetch_json(url):
+              request = urllib.request.Request(url, headers={'User-Agent': 'Civic-Cartography-validator/1.0'})
+              last_error = None
+              for attempt in range(1, 6):
+                  try:
+                      with urllib.request.urlopen(request, timeout=45) as response:
+                          return json.load(response)
+                  except Exception as exc:
+                      last_error = exc
+                      if attempt == 5:
+                          raise
+                      time.sleep(attempt * 5)
+              raise last_error
+
+          current = fetch_json(f'{current_url}?f=json')
+          archive = fetch_json(f'{archive_url}?f=json')
+          if current.get('geometryType') != 'esriGeometryPolygon':
+              raise SystemExit(f'Unexpected current geometry type: {current.get("geometryType")!r}')
+          if archive.get('geometryType') != 'esriGeometryPolygon':
+              raise SystemExit(f'Unexpected archive geometry type: {archive.get("geometryType")!r}')
+          current_fields = {field.get('name') for field in current.get('fields', [])}
+          archive_fields = {field.get('name') for field in archive.get('fields', [])}
+          required_current = {'NAME', 'COMMISSION', 'WEBSITE', 'EFFECTIVE'}
+          if not required_current.issubset(current_fields):
+              raise SystemExit(f'Current layer lost required fields: {sorted(required_current - current_fields)}')
+          if 'PRECINCT' not in archive_fields:
+              raise SystemExit(f'Archive layer lost PRECINCT field: {sorted(archive_fields)}')
+
+          query = urllib.parse.urlencode({
+              'where': '1=1',
+              'outFields': 'NAME,COMMISSION,WEBSITE,EFFECTIVE',
+              'returnGeometry': 'false',
+              'orderByFields': 'NAME',
+              'f': 'json',
+          })
+          payload = fetch_json(f'{current_url}/query?{query}')
+          attributes = {
+              str(feature.get('attributes', {}).get('NAME')): feature.get('attributes', {})
+              for feature in payload.get('features', [])
+          }
+          if set(attributes) != {'1', '2', '3', '4'}:
+              raise SystemExit(f'Unexpected current precinct IDs: {sorted(attributes)}')
+          expected_commission = {
+              '1': 'Vincent Morales, Jr.',
+              '2': 'Grady Prestage',
+              '3': 'Andy Meyers',
+              '4': 'Dexter McCoy',
+          }
+          for district_id, expected_name in expected_commission.items():
+              row = attributes[district_id]
+              if row.get('COMMISSION') != expected_name:
+                  raise SystemExit(
+                      f'Precinct {district_id} commissioner drift: {row.get("COMMISSION")!r} != {expected_name!r}'
+                  )
+              expected_suffix = f'/commissioner-precinct-{district_id}'
+              website = str(row.get('WEBSITE') or '')
+              if not website.endswith(expected_suffix):
+                  raise SystemExit(f'Precinct {district_id} website drift: {website!r}')
+              effective = row.get('EFFECTIVE')
+              if effective != 1767225600000:
+                  raise SystemExit(f'Precinct {district_id} effective timestamp drift: {effective!r}')
+              effective_date = datetime.fromtimestamp(effective / 1000, tz=timezone.utc).date().isoformat()
+              if effective_date != '2026-01-01':
+                  raise SystemExit(f'Precinct {district_id} effective date drift: {effective_date}')
+          print('Fort Bend County live roster and January 1, 2026 source hierarchy match the release contract.')
+          PY
+
+      - name: Fetch current January 1 2026 Commissioner precincts
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/fort-bend-county/current
+            if python scripts/fetch_arcgis_districts.py \
+              --layer-url https://gisportal.fortbendcountytx.gov/arcgis/rest/services/InteractiveMap/Boundaries_Public/FeatureServer/7 \
+              --district-ids 1,2,3,4 \
+              --district-field NAME \
+              --district-type commissioner_precinct \
+              --district-name-prefix "Commissioner Precinct" \
+              --jurisdiction-name "Fort Bend County" \
+              --record-id-prefix TX:county:fort-bend:commissioner_precinct \
+              --geometry-id-prefix fort-bend-county-commissioner-precinct \
+              --source-agency "Fort Bend County GIS" \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/fort-bend-county/current/raw/commissioner-precincts-1-4.geojson \
+              --output build/fort-bend-county/current/geojson/fort_bend_county_commissioner_precincts.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Fetch archived 2022 to 2025 Commissioner precincts
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/fort-bend-county/archive-2022-2025
+            if python scripts/fetch_arcgis_districts.py \
+              --layer-url https://gisportal.fortbendcountytx.gov/arcgis/rest/services/Archive/Archive/FeatureServer/0 \
+              --district-ids 1,2,3,4 \
+              --district-field PRECINCT \
+              --district-type commissioner_precinct \
+              --district-name-prefix "Commissioner Precinct" \
+              --jurisdiction-name "Fort Bend County" \
+              --record-id-prefix TX:county:fort-bend:commissioner_precinct \
+              --geometry-id-prefix fort-bend-county-commissioner-precinct \
+              --source-agency "Fort Bend County GIS Archive" \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/fort-bend-county/archive-2022-2025/raw/commissioner-precincts-1-4.geojson \
+              --output build/fort-bend-county/archive-2022-2025/geojson/fort_bend_county_commissioner_precincts.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Validate four-district 2026 archive divergence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          current = json.loads(Path('build/fort-bend-county/current/geojson/fort_bend_county_commissioner_precincts.geojson').read_text(encoding='utf-8'))
+          archive = json.loads(Path('build/fort-bend-county/archive-2022-2025/geojson/fort_bend_county_commissioner_precincts.geojson').read_text(encoding='utf-8'))
+
+          def geometry_map(payload):
+              return {
+                  str(feature['properties']['district_id']): feature['geometry']
+                  for feature in payload['features']
+              }
+
+          current_map = geometry_map(current)
+          archive_map = geometry_map(archive)
+          expected = {'1', '2', '3', '4'}
+          if set(current_map) != expected or set(archive_map) != expected:
+              raise SystemExit('Fort Bend County layers no longer expose exactly precincts 1 through 4.')
+          comparison = {
+              district_id: current_map[district_id] == archive_map[district_id]
+              for district_id in sorted(current_map)
+          }
+          output = Path('build/fort-bend-county/geometry-source-divergence.json')
+          output.write_text(json.dumps(comparison, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print(json.dumps(comparison, indent=2, sort_keys=True))
+          if any(comparison.values()):
+              raise SystemExit('Expected every archived 2022-2025 precinct to differ from the January 1, 2026 geometry.')
+          PY
+
+      - name: Verify committed Fort Bend County precincts match current source
+        run: |
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/fort-bend-county/commissioner-precincts-1-4.geojson \
+            --fresh-raw build/fort-bend-county/current/raw/commissioner-precincts-1-4.geojson \
+            --committed-canonical data/geojson/fort_bend_county_commissioner_precincts.geojson \
+            --fresh-canonical build/fort-bend-county/current/geojson/fort_bend_county_commissioner_precincts.geojson
+
+      - name: Fetch current Fort Bend County boundary
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/fort-bend-county/county
+            if python scripts/fetch_tigerweb_county.py \
+              --geoid 48157 \
+              --record-id TX:county:fort-bend:countywide:COUNTYWIDE \
+              --geometry-id fort-bend-county-countywide \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/fort-bend-county/county/raw/tigerweb-county-48157.geojson \
+              --output build/fort-bend-county/county/geojson/fort_bend_county_countywide.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Fort Bend County boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/fort-bend-county/tigerweb-county-48157.geojson \
+            --fresh-raw build/fort-bend-county/county/raw/tigerweb-county-48157.geojson \
+            --committed-canonical data/geojson/fort_bend_county_countywide.geojson \
+            --fresh-canonical build/fort-bend-county/county/geojson/fort_bend_county_countywide.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Calculate Fort Bend County combined canonical digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          paths = [
+              Path('data/geojson/fort_bend_county_countywide.geojson'),
+              Path('data/geojson/fort_bend_county_commissioner_precincts.geojson'),
+          ]
+          digest = hashlib.sha256()
+          for path in sorted(paths, key=lambda item: item.name):
+              digest.update(path.name.encode('utf-8'))
+              digest.update(b'\0')
+              digest.update(path.read_bytes())
+              digest.update(b'\0')
+          value = digest.hexdigest()
+          output = Path('build/fort-bend-county/release-sha256.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(value + '\n', encoding='utf-8')
+          print(f'Fort Bend County combined canonical SHA-256: {value}')
+          PY
+
+      - name: Upload Fort Bend County validation check
+        uses: actions/upload-artifact@v4
+        with:
+          name: fort-bend-county-validation
+          path: build/fort-bend-county/
+          if-no-files-found: error
