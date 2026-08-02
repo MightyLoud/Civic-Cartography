@@ -6,6 +6,9 @@ on:
     paths:
       - ".github/workflows/capture-upstream-six-fixtures.yml"
       - "scripts/capture_upstream_fixtures.py"
+      - "scripts/normalize_capture_acceptance.py"
+      - "patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch"
+      - "patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch"
       - "tests/fixtures/batch_pilot_25.yml"
       - "civic_cartography/fixture_harness.py"
       - "civic_cartography/target_manifest.py"
@@ -17,6 +20,8 @@ env:
   UPSTREAM_REPOSITORY: openstates/jurisdictions
   UPSTREAM_REVISION: 6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705
   RUN_ASOF: 2026-08-02T15:00:00Z
+  PATCH_1: patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch
+  PATCH_2: patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch
 
 jobs:
   capture:
@@ -50,6 +55,14 @@ jobs:
           cd upstream
           uv sync --frozen
 
+      - name: Apply validated upstream patches
+        run: |
+          git -C upstream apply --check "../$PATCH_1"
+          git -C upstream apply "../$PATCH_1"
+          git -C upstream apply --check "../$PATCH_2"
+          git -C upstream apply "../$PATCH_2"
+          git -C upstream diff --check
+
       - name: Capture clean upstream run 1
         run: |
           upstream/.venv/bin/python scripts/capture_upstream_fixtures.py \
@@ -58,6 +71,10 @@ jobs:
             --run-asof "$RUN_ASOF" \
             --source-dir build/upstream-source \
             --work-dir build/run-1 \
+            --execution-results build/run-1/execution-results.json \
+            --diagnostics build/run-1/diagnostics.json
+          python scripts/normalize_capture_acceptance.py \
+            --target-manifest tests/fixtures/batch_pilot_25.yml \
             --execution-results build/run-1/execution-results.json \
             --diagnostics build/run-1/diagnostics.json
           python scripts/run_target_manifest.py \
@@ -75,6 +92,10 @@ jobs:
             --run-asof "$RUN_ASOF" \
             --source-dir build/upstream-source \
             --work-dir build/run-2 \
+            --execution-results build/run-2/execution-results.json \
+            --diagnostics build/run-2/diagnostics.json
+          python scripts/normalize_capture_acceptance.py \
+            --target-manifest tests/fixtures/batch_pilot_25.yml \
             --execution-results build/run-2/execution-results.json \
             --diagnostics build/run-2/diagnostics.json
           python scripts/run_target_manifest.py \
@@ -96,6 +117,33 @@ jobs:
             --upstream-revision "$UPSTREAM_REVISION" \
             --result-path build/fixture-evaluation.json
 
+      - name: Assert honest four-fixture result
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          evaluation = json.loads(Path("build/fixture-evaluation.json").read_text())
+          fixtures = {row["target_id"]: row for row in evaluation["fixtures"]}
+          passed = {target_id for target_id, row in fixtures.items() if row["status"] == "passed"}
+          failed = set(fixtures) - passed
+          assert passed == {"BP25-001", "BP25-002", "BP25-009", "BP25-014"}
+          assert failed == {"BP25-018", "BP25-022"}
+          assert evaluation["summary"]["passed_count"] == 4
+          assert evaluation["summary"]["deterministic_count"] == 6
+          assert evaluation["summary"]["report_content_match"] is True
+          assert fixtures["BP25-018"]["exception_class"] == "upstream_target_not_found"
+          assert fixtures["BP25-022"]["exception_class"] == "upstream_alias_noncanonical"
+
+          diagnostics = json.loads(Path("build/run-1/diagnostics.json").read_text())
+          by_id = {row["target_id"]: row for row in diagnostics["targets"]}
+          assert by_id["BP25-001"]["enrichment_status"] == "complete"
+          assert by_id["BP25-002"]["enrichment_status"] == "complete"
+          assert by_id["BP25-009"]["enrichment_status"] == "partial"
+          assert by_id["BP25-014"]["enrichment_status"] == "partial"
+          assert by_id["BP25-022"]["enrichment_status"] == "partial"
+          PY
+
       - name: Write capture summary
         if: always()
         run: |
@@ -105,6 +153,11 @@ jobs:
           from pathlib import Path
 
           report = json.loads(Path("build/fixture-evaluation.json").read_text())
+          diagnostics = json.loads(Path("build/run-1/diagnostics.json").read_text())
+          enrichment = {
+              row["target_id"]: row.get("enrichment_status", "not_recorded")
+              for row in diagnostics["targets"]
+          }
           summary = report["summary"]
           lines = [
               "## Real upstream six-fixture capture",
@@ -115,13 +168,15 @@ jobs:
               f"- Full report match: **{summary['report_content_match']}**",
               f"- Gate passed: **{summary['gate_passed']}**",
               "",
-              "| Fixture | Status | Generation | Exception |",
-              "|---|---|---|---|",
+              "| Fixture | Status | Generation | Enrichment | Exception |",
+              "|---|---|---|---|---|",
           ]
           for fixture in report["fixtures"]:
               lines.append(
                   f"| {fixture['jurisdiction_name']} | {fixture['status']} | "
-                  f"{fixture.get('generation_status')} | {fixture.get('exception_class') or ''} |"
+                  f"{fixture.get('generation_status')} | "
+                  f"{enrichment.get(fixture['target_id'], '')} | "
+                  f"{fixture.get('exception_class') or ''} |"
               )
           Path("capture-summary.md").write_text("\n".join(lines) + "\n")
           PY
