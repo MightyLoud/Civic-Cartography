@@ -2,10 +2,17 @@ from __future__ import annotations
 
 import csv
 import io
+import sys
+from pathlib import Path
 
 import pytest
 
-from scripts.capture_upstream_batch import BatchCaptureError, _normalize_local_csv
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SCRIPTS_DIR = PROJECT_ROOT / "scripts"
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+
+from capture_upstream_batch import BatchCaptureError, _normalize_local_csv
 
 
 def _rows(value: bytes) -> list[list[str]]:
