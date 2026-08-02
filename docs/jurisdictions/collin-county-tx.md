@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate pending Collin County and repository-wide validation.
+Verified nine-office release package. First-pass pre-merge validation succeeded in Collin County workflow run #34 and repository workflow run #865.
 
 ## Purpose
 
@@ -152,7 +152,20 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Validation evidence
 
-Pending final exact-head Collin County and repository-wide workflow results. The combined canonical SHA-256 must remain `329729e91a3f0664ff9186002639b4ca76ea53797fbca7d11df983e869244d85` because no geometry files change in this extension.
+- Collin County workflow run #34: success
+- Repository workflow run #865: success
+- Automated tests: 74 passed
+- Normalized datasets validated: 22 files
+- Four countywide current-officeholder evidence rows: passed
+- Abolished County Treasurer structural exception: passed
+- County Clerk Treasury functional-assignment distinction: passed
+- Stale landing-page narrative validation: passed
+- Operational layer and uppercase roster contract: passed
+- 2021 plan-adoption metadata validation: passed
+- Current Commissioner precinct snapshot comparison: passed
+- Current Census snapshot comparison: passed
+- Geometry joins: passed
+- Combined canonical SHA-256: `329729e91a3f0664ff9186002639b4ca76ea53797fbca7d11df983e869244d85`
 
 ## Release files
 
