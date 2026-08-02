@@ -48,6 +48,8 @@ jobs:
             --geometry-id-prefix travis-county-commissioner-precinct \
             --source-agency "Travis County GIS" \
             --retrieved-at 2026-08-02 \
+            --out-fields PRECINCT,COMMISSIONER,NAME,DISTRICT \
+            --geometry-precision 6 \
             --raw-output build/travis-county/precincts/raw/commissioner-precincts-1-4.geojson \
             --output build/travis-county/precincts/geojson/travis_county_commissioner_precincts.geojson
 
