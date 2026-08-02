@@ -2,11 +2,11 @@
 
 ## Status
 
-Release candidate pending application-layer resolution and final validation.
+Release candidate pending snapshot generation and final validation.
 
 ## Purpose
 
-Collin County tests stale official narrative versus controlling operational GIS. The county's official precinct landing page labels the Commissioner precinct information current but still says the plan was adopted September 6, 2011 and effective January 1, 2012. The county's live GIS layer states that the current Commissioner plan was approved November 1, 2021 under Court Order 2021-1127-11-01 and carries the current four-Commissioner roster in `COMMISH_N`.
+Collin County tests stale official narrative versus controlling operational GIS. The county's official precinct landing page labels the Commissioner precinct information current but still says the plan was adopted September 6, 2011 and effective January 1, 2012. Browser network capture of the county's official `ccmap_commissioners` application resolves released geometry to `InteractiveMap/Election/MapServer/1`. A synchronized official Plan C2333 layer records that the Commissioner plan was approved November 1, 2021 under Court Order `2021-1127-11-01`.
 
 ## Jurisdiction identity
 
@@ -19,9 +19,12 @@ Collin County tests stale official narrative versus controlling operational GIS.
 - County geometry source: U.S. Census Bureau TIGERweb Current Counties (`MapServer/82`)
 - Official current roster page: Collin County Commissioners Court
 - Official interactive application: `https://maps.collincountytx.gov/ccmap_commissioners/`
+- App-resolved operational layer: `https://maps.collincountytx.gov/server/rest/services/InteractiveMap/Election/MapServer/1`
+- Adoption-metadata cross-check: `https://maps.collincountytx.gov/server/rest/services/Election/VotingPrecincts_Edited_PlanC2333/FeatureServer/3`
 - Stable precinct field: `COMMISH`
 - Stable precinct values: `1`, `2`, `3`, `4`
 - Live roster field: `COMMISH_N`
+- Source label casing: uppercase officeholder names
 
 ## Current official scope
 
@@ -33,32 +36,40 @@ Collin County tests stale official narrative versus controlling operational GIS.
 | County Commissioner Precinct 3 | Precinct 3 | Darrell Hale |
 | County Commissioner Precinct 4 | Precinct 4 | Duncan Webb |
 
-The official Commissioners Court page identifies all five current holders. Individual biographies independently support each officeholder.
+The official Commissioners Court page identifies all five current holders. Individual biographies independently support each officeholder. The operational GIS layer publishes the four Commissioner names in uppercase; validation compares those labels case-insensitively without rewriting the source attributes.
 
 ## Stale narrative and controlling geometry
 
 The official `Precincts and State Districts` page calls its entries current but says the Commissioner precincts were adopted September 6, 2011 and became effective January 1, 2012.
 
-The operational Commissioners layer instead states:
+Browser-level network capture proves the official interactive map requests:
 
-- approved November 1, 2021
-- Court Order `2021-1127-11-01`
+`https://maps.collincountytx.gov/server/rest/services/InteractiveMap/Election/MapServer/1`
+
+That operational layer supplies:
+
 - polygon geometry
-- stable field `COMMISH`
-- live roster field `COMMISH_N`
+- stable `COMMISH` values 1 through 4
+- live uppercase `COMMISH_N` officeholder labels
 
-The release preserves the landing-page dates as stale official narrative. The application-resolved 2021 layer controls the geometry and roster-bearing GIS contract.
+A synchronized official plan-metadata layer supplies:
+
+- approval date November 1, 2021
+- Court Order `2021-1127-11-01`
+- the same `COMMISH` and `COMMISH_N` schema
+
+The release preserves the landing-page dates as stale official narrative. The app-resolved MapServer layer controls released geometry; the Plan C2333 layer independently controls the adoption metadata.
 
 ## Source contract
 
 1. The official Commissioners Court page must identify Chris Hill and Commissioners Susan Fletcher, Cheryl Williams, Darrell Hale, and Duncan Webb.
 2. The official precinct landing page's 2011/2012 dates must remain classified as stale narrative unless the county corrects the page.
-3. The official `ccmap_commissioners` application must resolve to a Collin County ArcGIS Commissioners layer.
-4. The controlling layer must remain polygon geometry with fields `COMMISH` and `COMMISH_N`.
+3. The official `ccmap_commissioners` application must resolve to `InteractiveMap/Election/MapServer/1` or an explicitly reviewed replacement.
+4. The operational layer must remain polygon geometry with fields `COMMISH` and `COMMISH_N`.
 5. `COMMISH` must resolve to exactly 1 through 4.
-6. Live `COMMISH_N` values must match the independently maintained current roster.
-7. The controlling layer must identify the November 1, 2021 adoption and Court Order `2021-1127-11-01`.
-8. Direct GeoJSON regeneration must match the committed raw and canonical snapshots.
+6. Live `COMMISH_N` values must match the independently maintained current roster case-insensitively while their source casing remains preserved.
+7. The synchronized Plan C2333 layer must identify the November 1, 2021 adoption and Court Order `2021-1127-11-01`.
+8. Direct GeoJSON regeneration from the operational layer must match the committed raw and canonical snapshots.
 9. The County Judge must join only to the Census county feature.
 10. Every normalized row must join exactly one canonical feature.
 
@@ -90,7 +101,7 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Validation evidence
 
-Pending bootstrap source resolution and final exact-head Collin County and repository-wide workflow results.
+The source-resolution bootstrap proved that the official application requests `InteractiveMap/Election/MapServer/1`. Pending final exact-head Collin County and repository-wide workflow results.
 
 ## Release files
 
@@ -102,7 +113,8 @@ Pending bootstrap source resolution and final exact-head Collin County and repos
 - Canonical county geometry: `data/geojson/collin_county_countywide.geojson`
 - Canonical Commissioner precinct geometry: `data/geojson/collin_county_commissioner_precincts.geojson`
 - Regression test: `tests/test_collin_county_roster.py`
+- Permanent drift workflow: `.github/workflows/validate-collin-county.yml`
 
 ## Result
 
-Collin County will contain five scoped elected offices represented by five geometries. The proof demonstrates that a current official landing page can carry stale adoption dates while a linked operational GIS layer supplies the controlling plan date, stable precinct IDs, current roster attributes, and canonical polygons.
+Collin County will contain five scoped elected offices represented by five geometries. The proof demonstrates that a current official landing page can carry stale adoption dates while a linked application supplies the controlling operational geometry and a synchronized official layer supplies current adoption metadata.
