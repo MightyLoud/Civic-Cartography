@@ -1,0 +1,178 @@
+name: Bootstrap Fort Bend County Commissioners Court
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap-fort-bend-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'push' && github.ref_name || github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Fetch current 2026 Fort Bend County Commissioner precincts
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://gisportal.fortbendcountytx.gov/arcgis/rest/services/InteractiveMap/Boundaries_Public/FeatureServer/7 \
+            --district-ids 1,2,3,4 \
+            --district-field NAME \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Fort Bend County" \
+            --record-id-prefix TX:county:fort-bend:commissioner_precinct \
+            --geometry-id-prefix fort-bend-county-commissioner-precinct \
+            --source-agency "Fort Bend County GIS" \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/fort-bend-county/current/raw/commissioner-precincts-1-4.geojson \
+            --output build/fort-bend-county/current/geojson/fort_bend_county_commissioner_precincts.geojson
+
+      - name: Capture live current-layer attributes
+        run: |
+          python - <<'PY'
+          import json
+          import urllib.parse
+          import urllib.request
+          from pathlib import Path
+
+          base = 'https://gisportal.fortbendcountytx.gov/arcgis/rest/services/InteractiveMap/Boundaries_Public/FeatureServer/7/query'
+          params = urllib.parse.urlencode({
+              'where': '1=1',
+              'outFields': 'NAME,COMMISSION,WEBSITE,EFFECTIVE',
+              'returnGeometry': 'false',
+              'orderByFields': 'NAME',
+              'f': 'json',
+          })
+          request = urllib.request.Request(f'{base}?{params}', headers={'User-Agent': 'Civic-Cartography-bootstrap/1.0'})
+          with urllib.request.urlopen(request, timeout=45) as response:
+              payload = json.load(response)
+          output = Path('build/fort-bend-county/current-layer-attributes.json')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print(json.dumps(payload, indent=2, sort_keys=True))
+          features = payload.get('features', [])
+          ids = {str(feature.get('attributes', {}).get('NAME')) for feature in features}
+          if ids != {'1', '2', '3', '4'}:
+              raise SystemExit(f'Unexpected current precinct IDs: {sorted(ids)}')
+          PY
+
+      - name: Resolve archived 2022 to 2025 district field
+        id: archive-field
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          import urllib.request
+
+          url = 'https://gisportal.fortbendcountytx.gov/arcgis/rest/services/Archive/Archive/FeatureServer/0?f=json'
+          request = urllib.request.Request(url, headers={'User-Agent': 'Civic-Cartography-bootstrap/1.0'})
+          with urllib.request.urlopen(request, timeout=45) as response:
+              payload = json.load(response)
+          fields = {field.get('name') for field in payload.get('fields', [])}
+          for candidate in ('NAME', 'PRECINCT', 'Precinct', 'PCT'):
+              if candidate in fields:
+                  print(f'field={candidate}')
+                  break
+          else:
+              raise SystemExit(f'No supported archive district field found: {sorted(fields)}')
+          PY
+
+      - name: Fetch archived 2022 to 2025 Commissioner precincts
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://gisportal.fortbendcountytx.gov/arcgis/rest/services/Archive/Archive/FeatureServer/0 \
+            --district-ids 1,2,3,4 \
+            --district-field "${{ steps.archive-field.outputs.field }}" \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Fort Bend County" \
+            --record-id-prefix TX:county:fort-bend:commissioner_precinct \
+            --geometry-id-prefix fort-bend-county-commissioner-precinct \
+            --source-agency "Fort Bend County GIS Archive" \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/fort-bend-county/archive-2022-2025/raw/commissioner-precincts-1-4.geojson \
+            --output build/fort-bend-county/archive-2022-2025/geojson/fort_bend_county_commissioner_precincts.geojson
+
+      - name: Preserve the 2026 versus archived-boundary divergence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          current = json.loads(Path('build/fort-bend-county/current/geojson/fort_bend_county_commissioner_precincts.geojson').read_text(encoding='utf-8'))
+          archive = json.loads(Path('build/fort-bend-county/archive-2022-2025/geojson/fort_bend_county_commissioner_precincts.geojson').read_text(encoding='utf-8'))
+
+          def geometry_map(payload):
+              return {
+                  str(feature['properties']['district_id']): feature['geometry']
+                  for feature in payload['features']
+              }
+
+          current_map = geometry_map(current)
+          archive_map = geometry_map(archive)
+          expected = {'1', '2', '3', '4'}
+          if set(current_map) != expected or set(archive_map) != expected:
+              raise SystemExit('Fort Bend County layers no longer expose exactly districts 1 through 4.')
+          comparison = {
+              district_id: current_map[district_id] == archive_map[district_id]
+              for district_id in sorted(current_map)
+          }
+          output = Path('build/fort-bend-county/geometry-source-divergence.json')
+          output.write_text(json.dumps(comparison, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print(json.dumps(comparison, indent=2, sort_keys=True))
+          if all(comparison.values()):
+              raise SystemExit('Current 2026 and archived 2022-2025 precinct geometries are unexpectedly identical.')
+          PY
+
+      - name: Fetch current Fort Bend County boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48157 \
+            --record-id TX:county:fort-bend:countywide:COUNTYWIDE \
+            --geometry-id fort-bend-county-countywide \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/fort-bend-county/county/raw/tigerweb-county-48157.geojson \
+            --output build/fort-bend-county/county/geojson/fort_bend_county_countywide.geojson
+
+      - name: Commit generated Fort Bend County snapshots
+        if: github.event_name == 'push'
+        run: |
+          mkdir -p data/raw/fort-bend-county data/geojson
+          cp build/fort-bend-county/county/raw/tigerweb-county-48157.geojson data/raw/fort-bend-county/tigerweb-county-48157.geojson
+          cp build/fort-bend-county/county/geojson/fort_bend_county_countywide.geojson data/geojson/fort_bend_county_countywide.geojson
+          cp build/fort-bend-county/current/raw/commissioner-precincts-1-4.geojson data/raw/fort-bend-county/commissioner-precincts-1-4.geojson
+          cp build/fort-bend-county/current/geojson/fort_bend_county_commissioner_precincts.geojson data/geojson/fort_bend_county_commissioner_precincts.geojson
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add data/raw/fort-bend-county/tigerweb-county-48157.geojson \
+            data/raw/fort-bend-county/commissioner-precincts-1-4.geojson \
+            data/geojson/fort_bend_county_countywide.geojson \
+            data/geojson/fort_bend_county_commissioner_precincts.geojson
+          if git diff --cached --quiet; then
+            echo "Fort Bend County snapshots already match generated output."
+            exit 0
+          fi
+          git commit -m "Add Fort Bend County source snapshots"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Upload Fort Bend County bootstrap
+        uses: actions/upload-artifact@v4
+        with:
+          name: fort-bend-county-bootstrap
+          path: build/fort-bend-county/
+          if-no-files-found: error
