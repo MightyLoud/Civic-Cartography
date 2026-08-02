@@ -2,7 +2,7 @@
 
 ## Status
 
-Extension candidate for ten Denton County offices. The released geometry remains one countywide Census feature plus four official commissioner-precinct features. The extension adds five countywide constitutional officeholders without adding or changing geometry.
+Verified ten-office release validated in Denton County workflow run #18 and repository workflow run #267. The release contains one countywide Census feature plus four official commissioner-precinct features. Five additional countywide constitutional officeholders were added without changing geometry.
 
 ## Purpose
 
@@ -47,7 +47,7 @@ TX:county:denton:commissioner_precinct:4     -> denton-county-commissioner-preci
 
 The countywide normalized record represents all six countywide offices. Separate normalized rows for each countywide office are intentionally not created because they would duplicate the same geography join.
 
-## Target parity
+## Completed parity
 
 | Layer | Count |
 |---|---:|
@@ -61,7 +61,7 @@ The countywide normalized record represents all six countywide offices. Separate
 | Missing joins | 0 |
 | Extra joins | 0 |
 
-All five normalized records must retain `qa_status = approved` and `parity_ok = TRUE`. The geometry files are unchanged from the Commissioners Court release, so the combined canonical release SHA-256 remains:
+All five normalized records retain `qa_status = approved` and `parity_ok = TRUE`. The geometry files are unchanged from the Commissioners Court release, so the combined canonical release SHA-256 remains:
 
 ```text
 2d514e6a297d020445e54d32731428dda030ca1543924195ecee6d6d020d37c3
@@ -87,10 +87,10 @@ All five normalized records must retain `qa_status = approved` and `parity_ok = 
 5. Use the official Census county feature for GEOID `48121`.
 6. Use Denton County GIS item `2022 Commissioner Precincts`; the historic pre-2022 layer is not an acceptable current source.
 7. Resolve commissioner precincts through stable source field `COMMISH` and require IDs 1–4 exactly once.
-8. Every normalized record must join exactly one canonical feature.
+8. Every normalized record joins exactly one canonical feature.
 9. Current-source drift fails CI when geometry, stable source attributes, precinct IDs, GEOID, or canonical joins change.
 10. The Criminal District Attorney, judges, constables, justices of the peace, auditor, and appointed offices remain outside this bounded release.
 
-## Completion rule
+## Result
 
-The extension is complete only when official evidence, the expanded countywide normalized record, unchanged geometry, approved QA, `parity_ok = TRUE`, green CI, a merged pull request, and the existing Denton County portfolio row all agree.
+Denton County now covers ten elected offices with five geometries: six countywide offices share one verified county polygon, while Commissioners Precincts 1–4 retain four official precinct polygons. Permanent read-only validation confirms the constitutional-office extension did not alter the released geometry or join contract.
