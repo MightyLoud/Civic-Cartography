@@ -15,7 +15,6 @@ MANIFEST="tests/fixtures/batch_pilot_25.yml"
 
 python -m pytest \
   tests/test_batch_acceptance.py \
-  tests/test_batch_capture.py \
   tests/test_authoritative_overrides.py \
   tests/test_canonical_aliases.py \
   tests/test_canonical_alias_acceptance.py \
@@ -26,6 +25,10 @@ python -m pip install uv
   cd upstream
   uv sync --frozen
 )
+
+PYTHONPATH=. upstream/.venv/bin/python -m pytest \
+  tests/test_batch_capture.py \
+  --color=yes
 
 git -C upstream apply --check "../$PATCH_1"
 git -C upstream apply "../$PATCH_1"
