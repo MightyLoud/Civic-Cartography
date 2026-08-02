@@ -6,9 +6,14 @@ on:
     paths:
       - ".github/workflows/capture-upstream-six-fixtures.yml"
       - "scripts/capture_upstream_fixtures.py"
+      - "scripts/capture_upstream_with_authoritative_overrides.py"
       - "scripts/normalize_capture_acceptance.py"
+      - "data/authoritative_jurisdiction_overrides.yml"
+      - "civic_cartography/authoritative_overrides.py"
       - "patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch"
       - "patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch"
+      - "patches/openstates-jurisdictions/0003-authoritative-jurisdiction-overrides.patch"
+      - "tests/test_authoritative_overrides.py"
       - "tests/fixtures/batch_pilot_25.yml"
       - "civic_cartography/fixture_harness.py"
       - "civic_cartography/target_manifest.py"
@@ -22,6 +27,8 @@ env:
   RUN_ASOF: 2026-08-02T15:00:00Z
   PATCH_1: patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch
   PATCH_2: patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch
+  PATCH_3: patches/openstates-jurisdictions/0003-authoritative-jurisdiction-overrides.patch
+  OVERRIDE_REGISTRY: data/authoritative_jurisdiction_overrides.yml
 
 jobs:
   capture:
@@ -49,23 +56,81 @@ jobs:
       - name: Install Civic-Cartography test dependencies
         run: python -m pip install -r requirements-dev.txt
 
+      - name: Validate authoritative override registry
+        run: python -m pytest tests/test_authoritative_overrides.py --color=yes
+
+      - name: Record override registry evidence
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          path = Path("data/authoritative_jurisdiction_overrides.yml")
+          Path("build").mkdir(exist_ok=True)
+          Path("build/authoritative-overrides-manifest.json").write_text(
+              json.dumps(
+                  {
+                      "version": 1,
+                      "path": path.as_posix(),
+                      "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                      "verified_asof": "2026-08-02",
+                  },
+                  indent=2,
+                  sort_keys=True,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+          PY
+
       - name: Install uv and pinned upstream dependencies
         run: |
           python -m pip install uv
           cd upstream
           uv sync --frozen
 
-      - name: Apply validated upstream patches
+      - name: Apply validated upstream patches and verify RTD patch
         run: |
           git -C upstream apply --check "../$PATCH_1"
           git -C upstream apply "../$PATCH_1"
           git -C upstream apply --check "../$PATCH_2"
           git -C upstream apply "../$PATCH_2"
+          git -C upstream add -A
+          git -C upstream \
+            -c user.name="Civic Cartography" \
+            -c user.email="civic-cartography@example.invalid" \
+            commit -m "Apply validated upstream fixes 1 and 2"
+
+          git -C upstream apply --check "../$PATCH_3"
+          git -C upstream apply "../$PATCH_3"
+          git -C upstream add -N .
           git -C upstream diff --check
+          git -C upstream diff --binary > build-normalized-patch-3.patch
+          if ! cmp -s "$PATCH_3" build-normalized-patch-3.patch; then
+            diff -u "$PATCH_3" build-normalized-patch-3.patch
+            exit 1
+          fi
+
+      - name: Test upstream override behavior
+        run: |
+          cd upstream
+          uv run pytest \
+            tests/src/init_migration/test_generate_pipeline_stub_classification.py \
+            tests/src/init_migration/test_jurisdiction_seed.py \
+            tests/src/init_migration/test_authoritative_jurisdiction_override.py \
+            --color=yes
+          uv run ruff check \
+            src/init_migration/pipeline_models.py \
+            src/init_migration/generate_pipeline.py \
+            src/init_migration/generate_division.py \
+            src/init_migration/generate_jurisdiction.py \
+            tests/src/init_migration/test_authoritative_jurisdiction_override.py
 
       - name: Capture clean upstream run 1
         run: |
-          upstream/.venv/bin/python scripts/capture_upstream_fixtures.py \
+          PYTHONPATH=. upstream/.venv/bin/python scripts/capture_upstream_with_authoritative_overrides.py \
+            --override-registry "$OVERRIDE_REGISTRY" \
             --upstream-root upstream \
             --target-manifest tests/fixtures/batch_pilot_25.yml \
             --run-asof "$RUN_ASOF" \
@@ -86,7 +151,8 @@ jobs:
 
       - name: Capture clean upstream run 2
         run: |
-          upstream/.venv/bin/python scripts/capture_upstream_fixtures.py \
+          PYTHONPATH=. upstream/.venv/bin/python scripts/capture_upstream_with_authoritative_overrides.py \
+            --override-registry "$OVERRIDE_REGISTRY" \
             --upstream-root upstream \
             --target-manifest tests/fixtures/batch_pilot_25.yml \
             --run-asof "$RUN_ASOF" \
@@ -117,31 +183,60 @@ jobs:
             --upstream-revision "$UPSTREAM_REVISION" \
             --result-path build/fixture-evaluation.json
 
-      - name: Assert honest four-fixture result
+      - name: Assert honest five-fixture result and RTD YAML
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
+          import yaml
+
           evaluation = json.loads(Path("build/fixture-evaluation.json").read_text())
           fixtures = {row["target_id"]: row for row in evaluation["fixtures"]}
           passed = {target_id for target_id, row in fixtures.items() if row["status"] == "passed"}
           failed = set(fixtures) - passed
-          assert passed == {"BP25-001", "BP25-002", "BP25-009", "BP25-014"}
-          assert failed == {"BP25-018", "BP25-022"}
-          assert evaluation["summary"]["passed_count"] == 4
+          assert passed == {"BP25-001", "BP25-002", "BP25-009", "BP25-014", "BP25-018"}
+          assert failed == {"BP25-022"}
+          assert evaluation["summary"]["passed_count"] == 5
           assert evaluation["summary"]["deterministic_count"] == 6
           assert evaluation["summary"]["report_content_match"] is True
-          assert fixtures["BP25-018"]["exception_class"] == "upstream_target_not_found"
           assert fixtures["BP25-022"]["exception_class"] == "upstream_alias_noncanonical"
+
+          rtd = fixtures["BP25-018"]
+          expected_division_id = (
+              "ocd-division/country:us/state:co/"
+              "special_district:regional_transportation_district"
+          )
+          expected_jurisdiction_id = (
+              "ocd-jurisdiction/country:us/state:co/"
+              "special_district:regional_transportation_district/transit_authority"
+          )
+          assert rtd["resolved_ocdids"] == [expected_division_id]
+          assert rtd["inferred_classification"] == "transit_authority"
+          assert len(rtd["division_paths"]) == 1
+          assert len(rtd["jurisdiction_paths"]) == 1
+
+          division = yaml.safe_load(
+              (Path("build/run-1/artifacts") / rtd["division_paths"][0]).read_text()
+          )
+          jurisdiction = yaml.safe_load(
+              (Path("build/run-1/artifacts") / rtd["jurisdiction_paths"][0]).read_text()
+          )
+          assert division["ocdid"] == expected_division_id
+          assert division["display_name"] == "Regional Transportation District"
+          assert division["jurisdiction_id"] == expected_jurisdiction_id
+          assert division["sourcing"][0]["source_name"] == "Regional Transportation District"
+          assert "governance_materials" in division["sourcing"][0]["source_url"]
+          assert jurisdiction["ocdid"] == expected_jurisdiction_id
+          assert jurisdiction["name"] == "Regional Transportation District"
+          assert jurisdiction["classification"] == "transit_authority"
+          assert jurisdiction["url"] == "https://www.rtd-denver.com/"
+          assert jurisdiction["sourcing"][0]["source_name"] == "Regional Transportation District"
 
           diagnostics = json.loads(Path("build/run-1/diagnostics.json").read_text())
           by_id = {row["target_id"]: row for row in diagnostics["targets"]}
-          assert by_id["BP25-001"]["enrichment_status"] == "complete"
-          assert by_id["BP25-002"]["enrichment_status"] == "complete"
-          assert by_id["BP25-009"]["enrichment_status"] == "partial"
-          assert by_id["BP25-014"]["enrichment_status"] == "partial"
-          assert by_id["BP25-022"]["enrichment_status"] == "partial"
+          assert by_id["BP25-018"]["attempts"][0]["source"] == "authoritative_override"
+          assert by_id["BP25-018"]["enrichment_status"] == "partial"
           PY
 
       - name: Write capture summary
@@ -192,6 +287,9 @@ jobs:
         with:
           name: upstream-six-fixture-capture
           path: |
+            data/authoritative_jurisdiction_overrides.yml
+            build/authoritative-overrides-manifest.json
+            build-normalized-patch-3.patch
             build/upstream-source/source-manifest.json
             build/run-1/execution-results.json
             build/run-1/diagnostics.json
