@@ -2,7 +2,7 @@
 
 ## Status
 
-This work prepares and validates a second patch against:
+Validated against:
 
 `openstates/jurisdictions@6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705`
 
@@ -33,18 +33,30 @@ This means:
 - known LSAD codes retain their current semantics; and
 - unknown nonblank values still raise.
 
-## Validation contract
+## Validation result
 
-The dedicated workflow applies fix 1 and fix 2 to the pinned upstream revision,
-then proves:
+The dedicated workflow proved:
 
+- ordinary `git apply --check` for fix 1 and standalone fix 2;
+- regenerated fix-2 diff matches the committed patch byte-for-byte;
 - targeted upstream tests pass;
 - Ruff passes;
 - blank and null-like values classify by OCDID type;
 - a real unknown code remains an error;
-- the two real six-fixture captures remain identical; and
+- both real six-fixture captures are identical;
+- all six fixtures remain deterministic; and
 - no fix-1 Jurisdiction output regresses.
 
-Fix 2 is a classifier correctness change. It is not expected to increase the
-strict six-fixture pass count because the current failed fixtures are still
-explicit partial-enrichment, RTD-selection, and alias-canonicalization cases.
+Evaluation ID: `4a351bffd71563a15f53`  
+Both run IDs: `d6293fee3205c7f2669f`
+
+## Fixture impact
+
+The strict gate remains **2/6**, as expected. Fix 2 is a classifier correctness
+change; the remaining failures are explicit partial-enrichment semantics, RTD
+selection, and consolidated-alias canonicalization.
+
+## Permanent evidence
+
+- `evidence/upstream-fix-2/2026-08-02/source-manifest.json`
+- `evidence/upstream-fix-2/2026-08-02/fixture-evaluation.json`
