@@ -2,7 +2,7 @@
 
 ## Status
 
-Verified release candidate. Bexar County workflow run #4 and repository workflow run #516 passed; final merge and Jurisdiction Portfolio update remain.
+Verified release package. Final pre-merge validation succeeded in Bexar County workflow run #6 and repository workflow run #520.
 
 ## Purpose
 
@@ -77,8 +77,8 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Validation evidence
 
-- Bexar County workflow run #4: success
-- Repository workflow run #516: success
+- Bexar County workflow run #6: success
+- Repository workflow run #520: success
 - Automated tests: 48 passed
 - Normalized datasets validated: 17 files
 - Current Census snapshot comparison: passed
