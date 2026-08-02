@@ -27,23 +27,7 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install -r requirements-dev.txt
 
-      - name: Fetch current Tarrant County Commissioner precincts
-        run: |
-          python scripts/fetch_arcgis_districts.py \
-            --layer-url https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/CommissionerPrecinct/MapServer/0 \
-            --district-ids 1,2,3,4 \
-            --district-field District_N \
-            --district-type commissioner_precinct \
-            --district-name-prefix "Commissioner Precinct" \
-            --jurisdiction-name "Tarrant County" \
-            --record-id-prefix TX:county:tarrant:commissioner_precinct \
-            --geometry-id-prefix tarrant-county-commissioner-precinct \
-            --source-agency "Tarrant County GIS" \
-            --retrieved-at 2026-08-02 \
-            --raw-output build/tarrant-county/current/raw/commissioner-precincts-1-4.geojson \
-            --output build/tarrant-county/current/geojson/tarrant_county_commissioner_precincts.geojson
-
-      - name: Fetch effective June 3 2025 cross-check layer
+      - name: Fetch controlling June 3 2025 Tarrant County precinct layer
         run: |
           python scripts/fetch_arcgis_districts.py \
             --layer-url https://mapit.tarrantcounty.com/arcgis/rest/services/BondProject/BondProjects/MapServer/3 \
@@ -59,14 +43,30 @@ jobs:
             --raw-output build/tarrant-county/effective-2025/raw/commissioner-precincts-1-4.geojson \
             --output build/tarrant-county/effective-2025/geojson/tarrant_county_commissioner_precincts.geojson
 
-      - name: Compare current and effective-2025 Tarrant County geometries
+      - name: Fetch undated general-purpose Tarrant County precinct layer
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/CommissionerPrecinct/MapServer/0 \
+            --district-ids 1,2,3,4 \
+            --district-field District_N \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Tarrant County" \
+            --record-id-prefix TX:county:tarrant:commissioner_precinct \
+            --geometry-id-prefix tarrant-county-commissioner-precinct \
+            --source-agency "Tarrant County GIS" \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/tarrant-county/general-layer/raw/commissioner-precincts-1-4.geojson \
+            --output build/tarrant-county/general-layer/geojson/tarrant_county_commissioner_precincts.geojson
+
+      - name: Preserve the geometry-source divergence contract
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
-          current = json.loads(Path('build/tarrant-county/current/geojson/tarrant_county_commissioner_precincts.geojson').read_text(encoding='utf-8'))
-          effective = json.loads(Path('build/tarrant-county/effective-2025/geojson/tarrant_county_commissioner_precincts.geojson').read_text(encoding='utf-8'))
+          controlling = json.loads(Path('build/tarrant-county/effective-2025/geojson/tarrant_county_commissioner_precincts.geojson').read_text(encoding='utf-8'))
+          general = json.loads(Path('build/tarrant-county/general-layer/geojson/tarrant_county_commissioner_precincts.geojson').read_text(encoding='utf-8'))
 
           def geometry_map(payload):
               return {
@@ -74,23 +74,24 @@ jobs:
                   for feature in payload['features']
               }
 
-          current_map = geometry_map(current)
-          effective_map = geometry_map(effective)
-          if set(current_map) != {'1', '2', '3', '4'}:
-              raise SystemExit(f'Unexpected current IDs: {sorted(current_map)}')
-          if set(effective_map) != {'1', '2', '3', '4'}:
-              raise SystemExit(f'Unexpected effective-2025 IDs: {sorted(effective_map)}')
+          controlling_map = geometry_map(controlling)
+          general_map = geometry_map(general)
+          expected = {'1', '2', '3', '4'}
+          if set(controlling_map) != expected:
+              raise SystemExit(f'Unexpected controlling IDs: {sorted(controlling_map)}')
+          if set(general_map) != expected:
+              raise SystemExit(f'Unexpected general-layer IDs: {sorted(general_map)}')
           comparison = {
-              district_id: current_map[district_id] == effective_map[district_id]
-              for district_id in sorted(current_map)
+              district_id: controlling_map[district_id] == general_map[district_id]
+              for district_id in sorted(controlling_map)
           }
-          Path('build/tarrant-county/geometry-crosscheck.json').write_text(
+          Path('build/tarrant-county/geometry-source-divergence.json').write_text(
               json.dumps(comparison, indent=2, sort_keys=True) + '\n',
               encoding='utf-8',
           )
           print(json.dumps(comparison, indent=2, sort_keys=True))
-          if not all(comparison.values()):
-              raise SystemExit('Current and effective-2025 Tarrant County geometries differ.')
+          if any(comparison.values()):
+              raise SystemExit('Expected every undated general-layer precinct to differ from the June 3 2025 controlling geometry.')
           PY
 
       - name: Fetch current Tarrant County boundary
@@ -109,8 +110,8 @@ jobs:
           mkdir -p data/raw/tarrant-county data/geojson
           cp build/tarrant-county/county/raw/tigerweb-county-48439.geojson data/raw/tarrant-county/tigerweb-county-48439.geojson
           cp build/tarrant-county/county/geojson/tarrant_county_countywide.geojson data/geojson/tarrant_county_countywide.geojson
-          cp build/tarrant-county/current/raw/commissioner-precincts-1-4.geojson data/raw/tarrant-county/commissioner-precincts-1-4.geojson
-          cp build/tarrant-county/current/geojson/tarrant_county_commissioner_precincts.geojson data/geojson/tarrant_county_commissioner_precincts.geojson
+          cp build/tarrant-county/effective-2025/raw/commissioner-precincts-1-4.geojson data/raw/tarrant-county/commissioner-precincts-1-4.geojson
+          cp build/tarrant-county/effective-2025/geojson/tarrant_county_commissioner_precincts.geojson data/geojson/tarrant_county_commissioner_precincts.geojson
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add data/raw/tarrant-county/tigerweb-county-48439.geojson \
