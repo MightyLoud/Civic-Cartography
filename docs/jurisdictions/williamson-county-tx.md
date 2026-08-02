@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate for an eighteen-office Williamson County model. The extension adds four Constables and four Justices of the Peace to the four already released shared precinct records without changing normalized-row or geometry counts.
+Verified eighteen-office release validated in Williamson County workflow run #36 and repository workflow run #343. Four Constables and four Justices of the Peace were added to the existing four shared precinct records without changing normalized-row or geometry counts.
 
 ## Purpose
 
@@ -83,7 +83,7 @@ TX:county:williamson:commissioner_precinct:4     -> williamson-county-commission
 
 The identifiers remain unchanged because this extension adds offices to existing geography records rather than creating new geography.
 
-## Target parity
+## Completed parity
 
 | Layer | Count |
 |---|---:|
@@ -98,7 +98,7 @@ The identifiers remain unchanged because this extension adds offices to existing
 | Missing joins | 0 |
 | Extra joins | 0 |
 
-All five normalized records retain `qa_status = approved` and `parity_ok = TRUE`. The combined canonical release SHA-256 must remain:
+All five normalized records retain `qa_status = approved` and `parity_ok = TRUE`. Thirty-one automated tests passed. The combined canonical release SHA-256 remains:
 
 ```text
 4670b4dd07affbfd098a6fd63716ed78b08bba71d8c5740bb8b19f1838b37d34
@@ -133,6 +133,6 @@ All five normalized records retain `qa_status = approved` and `parity_ok = TRUE`
 10. Current-source drift fails CI when geometry, source labels, county attributes, GEOID, or canonical joins change.
 11. County Attorney, District Attorney, county courts, district courts, Auditor, and appointed administrative offices remain outside scope.
 
-## Completion rule
+## Result
 
-The extension is complete only when the eight new evidence rows, twenty-six-source manifest, five approved normalized records, five unchanged canonical features, green live-source validation, unchanged digest, merged pull request, closed issue, and updated Jurisdiction Portfolio all agree.
+Williamson County now covers eighteen elected offices with five geometries: six countywide offices share one verified Census county feature, while each of four official precinct features serves its paired Commissioner, Constable, and Justice of the Peace. The extension added eight officeholders and ten authoritative sources without changing geometry, normalized-row count, join count, or the canonical digest.
