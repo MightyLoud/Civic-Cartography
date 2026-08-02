@@ -159,6 +159,24 @@ jobs:
             --committed-canonical data/geojson/poth_isd_districtwide.geojson \
             --fresh-canonical build/poth-isd/geojson/poth_isd_districtwide.geojson
 
+      - name: Fetch current Corinth boundary
+        run: |
+          python scripts/fetch_tigerweb_place.py \
+            --geoid 4816696 \
+            --record-id TX:municipality:corinth:at_large:CITYWIDE \
+            --geometry-id corinth-citywide \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/corinth/raw/tigerweb-incorporated-place-4816696.geojson \
+            --output build/corinth/geojson/corinth_citywide.geojson
+
+      - name: Verify committed Corinth boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/corinth/tigerweb-incorporated-place-4816696.geojson \
+            --fresh-raw build/corinth/raw/tigerweb-incorporated-place-4816696.geojson \
+            --committed-canonical data/geojson/corinth_citywide.geojson \
+            --fresh-canonical build/corinth/geojson/corinth_citywide.geojson
+
       - name: Run automated tests
         run: pytest -q
 
