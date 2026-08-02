@@ -67,7 +67,16 @@ def _normalize_local_csv(csv_bytes: bytes) -> bytes:
             raise BatchCaptureError(
                 f"state-local CSV row {row_number} has fewer than two columns"
             )
-        writer.writerow(row[:2])
+
+        ocdid = row[0].strip()
+        name = row[1].strip()
+        if ocdid.lower() in {"id", "ocdid"} and name.lower() == "name":
+            continue
+        if not ocdid.startswith(("ocd-division/", "ocd-jurisdiction/")):
+            raise BatchCaptureError(
+                f"state-local CSV row {row_number} has invalid OCD ID {ocdid!r}"
+            )
+        writer.writerow([ocdid, name])
     return output.getvalue().encode("utf-8")
 
 
@@ -95,7 +104,10 @@ def _ensure_sources_for_states(
         "states": states,
         "local_csv_normalization": {
             "columns": ["id", "name"],
-            "strategy": "parse CSV and retain the first two fields",
+            "strategy": (
+                "parse CSV, skip a recognized id/name header, validate OCD IDs, "
+                "and retain the first two fields"
+            ),
         },
         "files": {
             key: {
