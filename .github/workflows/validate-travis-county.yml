@@ -53,6 +53,7 @@ jobs:
               --out-fields PRECINCT,COMMISSIONER \
               --geometry-precision 6 \
               --max-allowable-offset 0.00001 \
+              --response-format esri-json \
               --raw-output "build/travis-county/precincts/parts/raw-$precinct.geojson" \
               --output "build/travis-county/precincts/parts/canonical-$precinct.geojson"
           done
