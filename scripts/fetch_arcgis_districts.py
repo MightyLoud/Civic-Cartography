@@ -58,14 +58,15 @@ def normalize_identifier(value: Any) -> str | None:
 def fetch_layer(
     layer_url: str,
     *,
+    where: str = "1=1",
     out_fields: str = "*",
     geometry_precision: int | None = None,
     timeout: int = 60,
 ) -> tuple[dict[str, Any], str]:
-    """Fetch all layer features as WGS84 GeoJSON."""
+    """Fetch layer features as WGS84 GeoJSON."""
     query_url = f"{layer_url.rstrip('/')}/query"
     params = {
-        "where": "1=1",
+        "where": where,
         "outFields": out_fields,
         "returnGeometry": "true",
         "outSR": "4326",
@@ -237,6 +238,11 @@ def main() -> int:
     parser.add_argument("--source-agency", required=True)
     parser.add_argument("--retrieved-at", required=True)
     parser.add_argument(
+        "--where",
+        default="1=1",
+        help="ArcGIS SQL where clause; defaults to the legacy all-features query.",
+    )
+    parser.add_argument(
         "--out-fields",
         default="*",
         help="Comma-separated ArcGIS attributes to request; defaults to all fields.",
@@ -266,6 +272,7 @@ def main() -> int:
 
     payload, request_url = fetch_layer(
         args.layer_url,
+        where=args.where,
         out_fields=args.out_fields,
         geometry_precision=args.geometry_precision,
         timeout=args.timeout,
