@@ -3,7 +3,8 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EVIDENCE = ROOT / "data/raw/collin-county/current-commissioners-court.csv"
+COURT_EVIDENCE = ROOT / "data/raw/collin-county/current-commissioners-court.csv"
+COUNTYWIDE_EVIDENCE = ROOT / "data/raw/collin-county/current-countywide-constitutional-offices.csv"
 MANIFEST = ROOT / "data/raw/collin-county/source-manifest.csv"
 NORMALIZED = ROOT / "data/normalized/collin_county_commissioners_court.csv"
 PRECINCTS = ROOT / "data/geojson/collin_county_commissioner_precincts.geojson"
@@ -12,20 +13,38 @@ OPERATIONAL_LAYER = "https://maps.collincountytx.gov/server/rest/services/Intera
 
 
 def test_collin_county_stale_narrative_and_operational_gis_contract() -> None:
-    expected = {
+    expected_court = {
         "County Judge": "Chris Hill",
         "County Commissioner Precinct 1": "Susan Fletcher",
         "County Commissioner Precinct 2": "Cheryl Williams",
         "County Commissioner Precinct 3": "Darrell Hale",
         "County Commissioner Precinct 4": "Duncan Webb",
     }
+    expected_countywide = {
+        "Sheriff": "Jim Skinner",
+        "County Clerk": "Stacey Kemp",
+        "District Clerk": "Michael Gould",
+        "Tax Assessor-Collector": "Scott Grigg",
+    }
 
-    with EVIDENCE.open(newline="", encoding="utf-8") as handle:
-        evidence = list(csv.DictReader(handle))
-    assert len(evidence) == 5
-    assert {row["office_name"]: row["officeholder"] for row in evidence} == expected
-    assert {row["geography_id"] for row in evidence} == {"COUNTYWIDE", "1", "2", "3", "4"}
-    assert len({row["officeholder"] for row in evidence}) == 5
+    with COURT_EVIDENCE.open(newline="", encoding="utf-8") as handle:
+        court_evidence = list(csv.DictReader(handle))
+    assert len(court_evidence) == 5
+    assert {row["office_name"]: row["officeholder"] for row in court_evidence} == expected_court
+    assert {row["geography_id"] for row in court_evidence} == {"COUNTYWIDE", "1", "2", "3", "4"}
+
+    with COUNTYWIDE_EVIDENCE.open(newline="", encoding="utf-8") as handle:
+        countywide_evidence = list(csv.DictReader(handle))
+    assert len(countywide_evidence) == 4
+    assert {row["office_name"]: row["officeholder"] for row in countywide_evidence} == expected_countywide
+    assert {row["geography_type"] for row in countywide_evidence} == {"countywide"}
+    assert {row["geography_id"] for row in countywide_evidence} == {"COUNTYWIDE"}
+    assert all("elected" in row["notes"].lower() for row in countywide_evidence)
+    assert not any("Treasurer" in row["office_name"] for row in countywide_evidence)
+
+    all_officeholders = [row["officeholder"] for row in court_evidence + countywide_evidence]
+    assert len(all_officeholders) == 9
+    assert len(set(all_officeholders)) == 9
 
     with NORMALIZED.open(newline="", encoding="utf-8") as handle:
         normalized = list(csv.DictReader(handle))
@@ -34,6 +53,15 @@ def test_collin_county_stale_narrative_and_operational_gis_contract() -> None:
     assert {row["parity_ok"] for row in normalized} == {"TRUE"}
     assert {row["district_id"] for row in normalized} == {"COUNTYWIDE", "1", "2", "3", "4"}
     assert len({row["geometry_id"] for row in normalized}) == 5
+
+    countywide_row = next(row for row in normalized if row["district_type"] == "countywide")
+    assert countywide_row["office_name"] == (
+        "County Judge + Sheriff + County Clerk + District Clerk + Tax Assessor-Collector"
+    )
+    assert "County Treasurer office was abolished" in countywide_row["notes"]
+    assert "not a vacancy" in countywide_row["notes"]
+    assert "County Clerk Treasury division" in countywide_row["notes"]
+
     commissioner_rows = [row for row in normalized if row["district_type"] == "commissioner_precinct"]
     assert len(commissioner_rows) == 4
     assert {row["geometry_source_url"] for row in commissioner_rows} == {OPERATIONAL_LAYER}
@@ -43,7 +71,8 @@ def test_collin_county_stale_narrative_and_operational_gis_contract() -> None:
 
     with MANIFEST.open(newline="", encoding="utf-8") as handle:
         manifest = {row["source_id"]: row for row in csv.DictReader(handle)}
-    assert len(manifest) == 13
+    assert len(manifest) == 24
+
     stale = manifest["collin-county-stale-precinct-page"]["use"]
     assert "September 6, 2011" in stale
     assert "January 1, 2012" in stale
@@ -57,6 +86,14 @@ def test_collin_county_stale_narrative_and_operational_gis_contract() -> None:
     for field in ("COMMISH", "COMMISH_N"):
         assert field in app
         assert field in metadata
+
+    abolition = manifest["texas-1984-collin-treasurer-abolition"]["use"]
+    assert "November 6, 1984" in abolition
+    assert "abolishing the office of County Treasurer" in abolition
+    assert "no Treasurer vacancy" in abolition
+    treasury = manifest["collin-county-county-clerk-treasury"]["use"]
+    assert "County Clerk Treasury division" in treasury
+    assert "not a separate elected office" in treasury
 
     county = json.loads(COUNTY.read_text(encoding="utf-8"))
     assert len(county["features"]) == 1
