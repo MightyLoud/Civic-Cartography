@@ -15,7 +15,31 @@ def _replace_once(text: str, old: str, new: str, label: str) -> str:
     return text.replace(old, new, 1)
 
 
-def apply_draft(upstream_root: Path) -> None:
+def _apply_pipeline_compat(upstream_root: Path) -> None:
+    path = upstream_root / "src" / "init_migration" / "generate_pipeline.py"
+    text = path.read_text(encoding="utf-8")
+    text = _replace_once(
+        text,
+        """        exact_override = getattr(self.req, \"jurisdiction_override\", None) or (
+            self.data.raw_record.get(\"_jurisdiction_override\")
+            if isinstance(self.data.raw_record, dict)
+            else None
+        )
+""",
+        """        data = getattr(self, \"data\", None)
+        raw_record = getattr(data, \"raw_record\", {})
+        exact_override = getattr(self.req, \"jurisdiction_override\", None) or (
+            raw_record.get(\"_jurisdiction_override\")
+            if isinstance(raw_record, dict)
+            else None
+        )
+""",
+        "pipeline override compatibility",
+    )
+    path.write_text(text, encoding="utf-8")
+
+
+def _apply_jurisdiction_output(upstream_root: Path) -> None:
     path = upstream_root / "src" / "init_migration" / "generate_jurisdiction.py"
     text = path.read_text(encoding="utf-8")
 
@@ -87,6 +111,11 @@ def apply_draft(upstream_root: Path) -> None:
     )
 
     path.write_text(text, encoding="utf-8")
+
+
+def apply_draft(upstream_root: Path) -> None:
+    _apply_pipeline_compat(upstream_root)
+    _apply_jurisdiction_output(upstream_root)
 
 
 def main() -> int:
