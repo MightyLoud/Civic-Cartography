@@ -2,7 +2,7 @@
 
 ## Status
 
-Ten-role release candidate pending final Bexar County and repository-wide validation.
+Verified ten-role release package. Pre-merge validation succeeded in Bexar County workflow run #18 and repository workflow run #532.
 
 ## Purpose
 
@@ -94,6 +94,20 @@ TX:county:bexar:commissioner_precinct:4    -> bexar-county-commissioner-precinct
 | Extra joins | 0 |
 
 All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
+
+## Validation evidence
+
+- Bexar County workflow run #18: success
+- Repository workflow run #532: success
+- Automated tests: 49 passed
+- Normalized datasets validated: 17 files
+- Current Census snapshot comparison: passed
+- Current Bexar County GIS snapshot comparison: passed
+- Live `Comm`, `ComName`, and `Website` contract: passed
+- Consolidated Treasurer-role regression: passed
+- Geometry joins: passed
+- Geometry changes: 0
+- Combined canonical SHA-256 remains `a41cb19220f74771bb373e6babeff0d4f8396074b02fcdaf7fe40836c1485216`
 
 ## Release files
 
