@@ -36,6 +36,25 @@ def _apply_pipeline_compat(upstream_root: Path) -> None:
 """,
         "pipeline override compatibility",
     )
+    text = _replace_once(
+        text,
+        """        self.division.jurisdiction_id = jurisdiction_ocdid
+        div_gen = DivGenerator(self.req)
+        div_gen.division = self.division
+        response.division_path = str(
+            div_gen.dump_division(output_dir=self.division_output_dir)
+        )
+""",
+        """        self.division.jurisdiction_id = jurisdiction_ocdid
+        if getattr(self.req, \"data\", None) is not None:
+            div_gen = DivGenerator(self.req)
+            div_gen.division = self.division
+            response.division_path = str(
+                div_gen.dump_division(output_dir=self.division_output_dir)
+            )
+""",
+        "guard Division persistence",
+    )
     path.write_text(text, encoding="utf-8")
 
 
@@ -113,9 +132,33 @@ def _apply_jurisdiction_output(upstream_root: Path) -> None:
     path.write_text(text, encoding="utf-8")
 
 
+def _apply_override_test_compat(upstream_root: Path) -> None:
+    path = (
+        upstream_root
+        / "tests"
+        / "src"
+        / "init_migration"
+        / "test_authoritative_jurisdiction_override.py"
+    )
+    text = path.read_text(encoding="utf-8")
+    text = _replace_once(
+        text,
+        """    pipeline.req = SimpleNamespace(jurisdiction_override=None)
+""",
+        """    pipeline.req = SimpleNamespace(
+        jurisdiction_override=None,
+        data=SimpleNamespace(),
+    )
+""",
+        "authoritative override test request data",
+    )
+    path.write_text(text, encoding="utf-8")
+
+
 def apply_draft(upstream_root: Path) -> None:
     _apply_pipeline_compat(upstream_root)
     _apply_jurisdiction_output(upstream_root)
+    _apply_override_test_compat(upstream_root)
 
 
 def main() -> int:
