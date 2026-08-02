@@ -1,0 +1,227 @@
+name: Validate Tarrant County Commissioners Court
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-tarrant-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Validate Tarrant County ArcGIS metadata hierarchy
+        run: |
+          python - <<'PY'
+          import json
+          import time
+          import urllib.request
+
+          urls = {
+              'controlling': 'https://mapit.tarrantcounty.com/arcgis/rest/services/BondProject/BondProjects/MapServer/3?f=json',
+              'general': 'https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/CommissionerPrecinct/MapServer/0?f=json',
+              'stale_2010': 'https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/CommPct_Outline/MapServer?f=json',
+          }
+
+          def fetch(url):
+              request = urllib.request.Request(url, headers={'User-Agent': 'Civic-Cartography-validator/1.0'})
+              last_error = None
+              for attempt in range(1, 6):
+                  try:
+                      with urllib.request.urlopen(request, timeout=45) as response:
+                          return json.load(response)
+                  except Exception as exc:
+                      last_error = exc
+                      if attempt == 5:
+                          raise
+                      time.sleep(attempt * 5)
+              raise last_error
+
+          controlling = fetch(urls['controlling'])
+          general = fetch(urls['general'])
+          stale = fetch(urls['stale_2010'])
+
+          description = str(controlling.get('description') or '')
+          if 'June 3rd 2025' not in description and 'June 3, 2025' not in description:
+              raise SystemExit(f'Controlling layer lost effective-date description: {description!r}')
+          if controlling.get('geometryType') != 'esriGeometryPolygon':
+              raise SystemExit(f'Unexpected controlling geometry type: {controlling.get("geometryType")!r}')
+          controlling_fields = {field.get('name') for field in controlling.get('fields', [])}
+          general_fields = {field.get('name') for field in general.get('fields', [])}
+          if 'District_N' not in controlling_fields or 'District_N' not in general_fields:
+              raise SystemExit('Tarrant County District_N field is missing from an official layer.')
+          stale_text = ' '.join(str(stale.get(key) or '') for key in ('serviceDescription', 'description', 'mapName'))
+          if '2010' not in stale_text:
+              raise SystemExit(f'Explicit 2010 stale-service marker is missing: {stale_text!r}')
+          print('Tarrant County ArcGIS metadata hierarchy matches the release contract.')
+          PY
+
+      - name: Fetch controlling June 3 2025 Tarrant County precinct layer
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/tarrant-county/effective-2025
+            if python scripts/fetch_arcgis_districts.py \
+              --layer-url https://mapit.tarrantcounty.com/arcgis/rest/services/BondProject/BondProjects/MapServer/3 \
+              --district-ids 1,2,3,4 \
+              --district-field District_N \
+              --district-type commissioner_precinct \
+              --district-name-prefix "Commissioner Precinct" \
+              --jurisdiction-name "Tarrant County" \
+              --record-id-prefix TX:county:tarrant:commissioner_precinct \
+              --geometry-id-prefix tarrant-county-commissioner-precinct \
+              --source-agency "Tarrant County Elections" \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/tarrant-county/effective-2025/raw/commissioner-precincts-1-4.geojson \
+              --output build/tarrant-county/effective-2025/geojson/tarrant_county_commissioner_precincts.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then
+              exit 1
+            fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Fetch undated general-purpose Tarrant County precinct layer
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/tarrant-county/general-layer
+            if python scripts/fetch_arcgis_districts.py \
+              --layer-url https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/CommissionerPrecinct/MapServer/0 \
+              --district-ids 1,2,3,4 \
+              --district-field District_N \
+              --district-type commissioner_precinct \
+              --district-name-prefix "Commissioner Precinct" \
+              --jurisdiction-name "Tarrant County" \
+              --record-id-prefix TX:county:tarrant:commissioner_precinct \
+              --geometry-id-prefix tarrant-county-commissioner-precinct \
+              --source-agency "Tarrant County GIS" \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/tarrant-county/general-layer/raw/commissioner-precincts-1-4.geojson \
+              --output build/tarrant-county/general-layer/geojson/tarrant_county_commissioner_precincts.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then
+              exit 1
+            fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Validate the geometry-source divergence contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          controlling = json.loads(Path('build/tarrant-county/effective-2025/geojson/tarrant_county_commissioner_precincts.geojson').read_text(encoding='utf-8'))
+          general = json.loads(Path('build/tarrant-county/general-layer/geojson/tarrant_county_commissioner_precincts.geojson').read_text(encoding='utf-8'))
+
+          def geometry_map(payload):
+              return {
+                  str(feature['properties']['district_id']): feature['geometry']
+                  for feature in payload['features']
+              }
+
+          controlling_map = geometry_map(controlling)
+          general_map = geometry_map(general)
+          expected = {'1', '2', '3', '4'}
+          if set(controlling_map) != expected or set(general_map) != expected:
+              raise SystemExit('Tarrant County official layers no longer expose exactly districts 1 through 4.')
+          comparison = {
+              district_id: controlling_map[district_id] == general_map[district_id]
+              for district_id in sorted(controlling_map)
+          }
+          output = Path('build/tarrant-county/geometry-source-divergence.json')
+          output.write_text(json.dumps(comparison, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          print(json.dumps(comparison, indent=2, sort_keys=True))
+          if any(comparison.values()):
+              raise SystemExit('The undated general layer converged with the controlling June 3, 2025 layer; review the source hierarchy.')
+          PY
+
+      - name: Verify committed Tarrant County precincts match controlling source
+        run: |
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/tarrant-county/commissioner-precincts-1-4.geojson \
+            --fresh-raw build/tarrant-county/effective-2025/raw/commissioner-precincts-1-4.geojson \
+            --committed-canonical data/geojson/tarrant_county_commissioner_precincts.geojson \
+            --fresh-canonical build/tarrant-county/effective-2025/geojson/tarrant_county_commissioner_precincts.geojson
+
+      - name: Fetch current Tarrant County boundary
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/tarrant-county/county
+            if python scripts/fetch_tigerweb_county.py \
+              --geoid 48439 \
+              --record-id TX:county:tarrant:countywide:COUNTYWIDE \
+              --geometry-id tarrant-county-countywide \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/tarrant-county/county/raw/tigerweb-county-48439.geojson \
+              --output build/tarrant-county/county/geojson/tarrant_county_countywide.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then
+              exit 1
+            fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Tarrant County boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/tarrant-county/tigerweb-county-48439.geojson \
+            --fresh-raw build/tarrant-county/county/raw/tigerweb-county-48439.geojson \
+            --committed-canonical data/geojson/tarrant_county_countywide.geojson \
+            --fresh-canonical build/tarrant-county/county/geojson/tarrant_county_countywide.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Calculate Tarrant County combined canonical digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          paths = [
+              Path('data/geojson/tarrant_county_countywide.geojson'),
+              Path('data/geojson/tarrant_county_commissioner_precincts.geojson'),
+          ]
+          digest = hashlib.sha256()
+          for path in sorted(paths, key=lambda item: item.name):
+              digest.update(path.name.encode('utf-8'))
+              digest.update(b'\0')
+              digest.update(path.read_bytes())
+              digest.update(b'\0')
+          value = digest.hexdigest()
+          output = Path('build/tarrant-county/release-sha256.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(value + '\n', encoding='utf-8')
+          print(f'Tarrant County combined canonical SHA-256: {value}')
+          PY
+
+      - name: Upload Tarrant County validation check
+        uses: actions/upload-artifact@v4
+        with:
+          name: tarrant-county-validation
+          path: build/tarrant-county/
+          if-no-files-found: error
