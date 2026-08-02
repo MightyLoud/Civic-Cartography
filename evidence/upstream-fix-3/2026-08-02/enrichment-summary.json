@@ -1,0 +1,66 @@
+{
+  "acceptance_semantics": {
+    "enrichment_rule": "upstream response status is recorded separately and partial enrichment does not negate complete artifact generation",
+    "generation_rule": "generated when every selected candidate has Division and Jurisdiction artifact paths",
+    "version": 1
+  },
+  "evaluation_id": "63323d36b8a7d07eb265",
+  "run_id": "cc9fa7a98a3d22e8cc21",
+  "targets": [
+    {
+      "enrichment_reasons": [],
+      "enrichment_status": "complete",
+      "exception_class": null,
+      "generation_status": "generated",
+      "jurisdiction_name": "Seattle",
+      "target_id": "BP25-001"
+    },
+    {
+      "enrichment_reasons": [],
+      "enrichment_status": "complete",
+      "exception_class": null,
+      "generation_status": "generated",
+      "jurisdiction_name": "Tacoma",
+      "target_id": "BP25-002"
+    },
+    {
+      "enrichment_reasons": [
+        "ocd-division/country:us/state:wa/county:pierce: status=partial; error=No validation match found"
+      ],
+      "enrichment_status": "partial",
+      "exception_class": null,
+      "generation_status": "generated",
+      "jurisdiction_name": "Pierce County",
+      "target_id": "BP25-009"
+    },
+    {
+      "enrichment_reasons": [
+        "ocd-division/country:us/state:co/county:el_paso/school_district:colorado_springs_school_district_no._11: status=partial; error=No validation match found"
+      ],
+      "enrichment_status": "partial",
+      "exception_class": null,
+      "generation_status": "generated",
+      "jurisdiction_name": "Colorado Springs School District 11",
+      "target_id": "BP25-014"
+    },
+    {
+      "enrichment_reasons": [],
+      "enrichment_status": "not_run",
+      "exception_class": "upstream_target_not_found",
+      "generation_status": "skipped",
+      "jurisdiction_name": "Regional Transportation District",
+      "target_id": "BP25-018"
+    },
+    {
+      "enrichment_reasons": [
+        "ocd-division/country:us/state:co/county:denver: status=partial; error=No validation match found"
+      ],
+      "enrichment_status": "partial",
+      "exception_class": "upstream_alias_noncanonical",
+      "generation_status": "generated",
+      "jurisdiction_name": "City and County of Denver",
+      "target_id": "BP25-022"
+    }
+  ],
+  "version": 1
+}
