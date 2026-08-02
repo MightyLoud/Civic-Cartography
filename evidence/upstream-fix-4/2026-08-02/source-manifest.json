@@ -1,0 +1,29 @@
+{
+  "files": {
+    "co_local": {
+      "path": "state-co-local_gov.csv",
+      "sha256": "1756b628a7d664b6d8f2da42a9a9e8bf77715eb0a73ef2abfd36277e297a2bda",
+      "size_bytes": 23545,
+      "url": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us/state-co-local_gov.csv"
+    },
+    "master": {
+      "path": "country-us.csv",
+      "sha256": "f1297a1d2dbe1f1b691a9ebeb0cff3808228a466d95b3d13336a4e55a9f53388",
+      "size_bytes": 21964847,
+      "url": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv"
+    },
+    "validation": {
+      "path": "nested-divisions-validation.csv",
+      "sha256": "d937e55d6b6859391f8b6024c9d4d8c9912b2c86278437f11d32138d0a28bbbb",
+      "size_bytes": 18944813,
+      "url": "https://docs.google.com/spreadsheets/d/139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI/export?format=csv&gid=1481694121"
+    },
+    "wa_local": {
+      "path": "state-wa-local_gov.csv",
+      "sha256": "149f8f7456892c8c1852be750b02978f8f1149b32570be6a9b7e385d5e54a5f2",
+      "size_bytes": 15798,
+      "url": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us/state-wa-local_gov.csv"
+    }
+  },
+  "version": 1
+}
