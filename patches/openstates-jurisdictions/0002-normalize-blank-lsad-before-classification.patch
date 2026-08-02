@@ -1,9 +1,9 @@
 diff --git a/ai_tools/planning/2026-08-02-blank-lsad-normalization-design.md b/ai_tools/planning/2026-08-02-blank-lsad-normalization-design.md
 new file mode 100644
-index 0000000..1111111
+index 0000000..3378196
 --- /dev/null
 +++ b/ai_tools/planning/2026-08-02-blank-lsad-normalization-design.md
-@@ -0,0 +1,43 @@
+@@ -0,0 +1,42 @@
 +# Normalize blank LSAD values before jurisdiction classification
 +
 +## Tracking
@@ -48,10 +48,10 @@ index 0000000..1111111
 +- Do not change enrichment or generation status semantics.
 diff --git a/ai_tools/planning/2026-08-02-blank-lsad-normalization-implementation.md b/ai_tools/planning/2026-08-02-blank-lsad-normalization-implementation.md
 new file mode 100644
-index 0000000..2222222
+index 0000000..5a862aa
 --- /dev/null
 +++ b/ai_tools/planning/2026-08-02-blank-lsad-normalization-implementation.md
-@@ -0,0 +1,31 @@
+@@ -0,0 +1,28 @@
 +# Blank LSAD normalization implementation plan
 +
 +## Scope
@@ -81,17 +81,18 @@ index 0000000..2222222
 +The capture should remain deterministic and should not regress any fix-1
 +Jurisdiction paths.
 diff --git a/src/init_migration/jurisdiction_seed.py b/src/init_migration/jurisdiction_seed.py
-index 83dfca3..3333333 100644
+index 83dfca3..a63a69b 100644
 --- a/src/init_migration/jurisdiction_seed.py
 +++ b/src/init_migration/jurisdiction_seed.py
-@@ -59,6 +59,7 @@ from pydantic import BaseModel
+@@ -70,6 +70,7 @@ from pydantic import BaseModel
+ 
  from src.models.jurisdiction import ClassificationEnum
  from src.utils.ocdid import ocdid_parser
 +from src.utils.place_name import coerce_lsad_code
  from src.data.lsad_mapper import get_lsad_map, LSADCode
  
  
-@@ -203,11 +204,17 @@ def _split_associated_entities(entity_text: str) -> set[str]:
+@@ -202,6 +203,11 @@ def _split_associated_entities(entity_text: str) -> set[str]:
      return {entity.strip() for entity in entity_text.split(",") if entity.strip()}
  
  
@@ -103,10 +104,7 @@ index 83dfca3..3333333 100644
  def _resolve_lsad_code(lsad_code: str | None, ocdid: str) -> LSADCode | None:
      if lsad_code is None:
          return None
- 
-     if lsad_code not in LSAD_CODES:
-         raise ValueError(f"Unknown LSAD code '{lsad_code}' for OCD ID '{ocdid}'")
-@@ -266,7 +273,8 @@ def infer_jurisdiction_seed(
+@@ -263,7 +269,8 @@ def infer_jurisdiction_seed(
      Returns:
          JurisdictionSeed with classification and creation decision.
      """
@@ -116,7 +114,7 @@ index 83dfca3..3333333 100644
  
      # 1. Exact override always wins.
      # Use this to handle updates to specific records based on manual review and challenges
-@@ -329,7 +337,7 @@ def infer_jurisdiction_seed(
+@@ -324,7 +331,7 @@ def infer_jurisdiction_seed(
      # 6: LSAD code "27" (sub-county district)
      # because it is sometimes a legal entity (an incorporated place) and sometimes just a statistical or
      # economic area. This needs a special AI lookup to determine what it is.
@@ -126,10 +124,10 @@ index 83dfca3..3333333 100644
              lsad_code=lsad_code_obj,
              ocdid_parsed=parsed,
 diff --git a/tests/src/init_migration/test_jurisdiction_seed.py b/tests/src/init_migration/test_jurisdiction_seed.py
-index c22a3cf..4444444 100644
+index c22a3cf..ee88368 100644
 --- a/tests/src/init_migration/test_jurisdiction_seed.py
 +++ b/tests/src/init_migration/test_jurisdiction_seed.py
-@@ -38,3 +38,50 @@ def test_infer_jurisdiction_seed_keeps_census_area_lsad_statistical() -> None:
+@@ -41,3 +41,48 @@ def test_infer_jurisdiction_seed_keeps_census_area_lsad_statistical() -> None:
  
      assert seed.has_jurisdiction is False
      assert seed.reason == "statistical geography"
