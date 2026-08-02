@@ -5,7 +5,7 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   bootstrap-bexar-county:
@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'push' && github.ref_name || github.sha }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -72,6 +74,27 @@ jobs:
             --retrieved-at 2026-08-02 \
             --raw-output build/bexar-county/county/raw/tigerweb-county-48029.geojson \
             --output build/bexar-county/county/geojson/bexar_county_countywide.geojson
+
+      - name: Commit generated Bexar County snapshots
+        if: github.event_name == 'push'
+        run: |
+          mkdir -p data/raw/bexar-county data/geojson
+          cp build/bexar-county/county/raw/tigerweb-county-48029.geojson data/raw/bexar-county/tigerweb-county-48029.geojson
+          cp build/bexar-county/county/geojson/bexar_county_countywide.geojson data/geojson/bexar_county_countywide.geojson
+          cp build/bexar-county/precincts/raw/commissioner-precincts-1-4.geojson data/raw/bexar-county/commissioner-precincts-1-4.geojson
+          cp build/bexar-county/precincts/geojson/bexar_county_commissioner_precincts.geojson data/geojson/bexar_county_commissioner_precincts.geojson
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add data/raw/bexar-county/tigerweb-county-48029.geojson \
+            data/raw/bexar-county/commissioner-precincts-1-4.geojson \
+            data/geojson/bexar_county_countywide.geojson \
+            data/geojson/bexar_county_commissioner_precincts.geojson
+          if git diff --cached --quiet; then
+            echo "Bexar County snapshots already match generated output."
+            exit 0
+          fi
+          git commit -m "Add Bexar County source snapshots"
+          git push origin HEAD:${{ github.ref_name }}
 
       - name: Upload Bexar County bootstrap
         uses: actions/upload-artifact@v4
