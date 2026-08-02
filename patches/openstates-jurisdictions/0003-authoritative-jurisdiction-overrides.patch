@@ -15,7 +15,7 @@ diff --git a/src/init_migration/generate_pipeline.py b/src/init_migration/genera
 index b6c74a1..2222222 100644
 --- a/src/init_migration/generate_pipeline.py
 +++ b/src/init_migration/generate_pipeline.py
-@@ -369,10 +369,16 @@ class GeneratePipeline:
+@@ -369,10 +369,20 @@ class GeneratePipeline:
 -        seed = infer_jurisdiction_seed(
 -            ocdid=self.division.ocdid,
 -            lsad_code=lsad_code,
@@ -24,12 +24,16 @@ index b6c74a1..2222222 100644
 +            "ocdid": self.division.ocdid,
 +            "lsad_code": lsad_code,
 +        }
-+        exact_override = getattr(self.req, "jurisdiction_override", None)
++        exact_override = getattr(self.req, "jurisdiction_override", None) or (
++            self.data.raw_record.get("_jurisdiction_override")
++            if isinstance(self.data.raw_record, dict)
++            else None
++        )
 +        if exact_override:
 +            infer_kwargs["exact_override"] = exact_override
 +        seed = infer_jurisdiction_seed(**infer_kwargs)
          if not seed.has_jurisdiction:
-@@ -389,6 +395,13 @@ class GeneratePipeline:
+@@ -389,6 +399,13 @@ class GeneratePipeline:
          jurisdiction_ocdid = self._derive_jurisdiction_ocdid(
              self.division.ocdid, classification
          )
@@ -46,11 +50,20 @@ diff --git a/src/init_migration/generate_division.py b/src/init_migration/genera
 index 229cfae..3333333 100644
 --- a/src/init_migration/generate_division.py
 +++ b/src/init_migration/generate_division.py
-@@ -142,12 +142,21 @@ class DivGenerator:
+@@ -142,12 +142,31 @@ class DivGenerator:
              raw_ocdid = self.data.ocdid.raw_ocdid
              parsed = ocdid_parser(raw_ocdid)
  
-+            jurisdiction_override = getattr(self.req, "jurisdiction_override", None) or {}
++            jurisdiction_override = getattr(self.req, "jurisdiction_override", None) or (
++                self.data.raw_record.get("_jurisdiction_override")
++                if isinstance(self.data.raw_record, dict)
++                else None
++            ) or {}
++            source_override = getattr(self.req, "source_override", None) or (
++                self.data.raw_record.get("_source_override")
++                if isinstance(self.data.raw_record, dict)
++                else None
++            ) or {}
 +            override_name = jurisdiction_override.get("jurisdiction_name")
 +            raw_name = self.data.raw_record.get("name")
              cd_name = _council_district_display_name(parsed)
@@ -64,11 +77,9 @@ index 229cfae..3333333 100644
              else:
                  place = parsed.get("place", "")
                  display_name = place.replace("_", " ").title() if place else "Unknown"
-+
-+            source_override = getattr(self.req, "source_override", None) or {}
- 
+-
              if self._division_exists(raw_ocdid):
-@@ -185,15 +194,18 @@ class DivGenerator:
+@@ -185,15 +204,18 @@ class DivGenerator:
                  },
                  sourcing=[
                      {
@@ -95,14 +106,22 @@ diff --git a/src/init_migration/generate_jurisdiction.py b/src/init_migration/ge
 index beb0856..4444444 100644
 --- a/src/init_migration/generate_jurisdiction.py
 +++ b/src/init_migration/generate_jurisdiction.py
-@@ -128,6 +128,8 @@ class JurGenerator:
+@@ -128,6 +128,18 @@ class JurGenerator:
  
              ai = self._ai_lookup(division)
-+            jurisdiction_override = getattr(self.req, "jurisdiction_override", None) or {}
-+            source_override = getattr(self.req, "source_override", None) or {}
++            jurisdiction_override = getattr(self.req, "jurisdiction_override", None) or (
++                self.data.raw_record.get("_jurisdiction_override")
++                if isinstance(self.data.raw_record, dict)
++                else None
++            ) or {}
++            source_override = getattr(self.req, "source_override", None) or (
++                self.data.raw_record.get("_source_override")
++                if isinstance(self.data.raw_record, dict)
++                else None
++            ) or {}
  
              if classification == "government":
-@@ -138,8 +140,12 @@ class JurGenerator:
+@@ -138,8 +150,12 @@ class JurGenerator:
              fallback_url = f"https://opencivicdata.org/division/{division.ocdid}"
  
              # --- Name / URL ---
@@ -114,7 +133,7 @@ index beb0856..4444444 100644
 +                or fallback_name
 +            )
 +            url = jurisdiction_override.get("url") or (ai or {}).get("url") or fallback_url
-@@ -161,13 +167,19 @@ class JurGenerator:
+@@ -161,13 +177,19 @@ class JurGenerator:
                  sourcing=[
                      {
                          "field": ["ocdid", "name", "classification"],
@@ -142,7 +161,7 @@ new file mode 100644
 index 0000000..5555555
 --- /dev/null
 +++ b/tests/src/init_migration/test_authoritative_jurisdiction_override.py
-@@ -0,0 +1,97 @@
+@@ -0,0 +1,104 @@
 +from types import SimpleNamespace
 +from uuid import UUID
 +
@@ -157,7 +176,7 @@ index 0000000..5555555
 +TEST_UUID = UUID("ac8f7f0d-fdb4-59d2-9915-187f34b32a89")
 +
 +
-+def test_pipeline_passes_exact_override_and_updates_division_reference(
++def test_pipeline_passes_embedded_override_and_updates_division_reference(
 +    monkeypatch,
 +    tmp_path,
 +) -> None:
@@ -168,8 +187,10 @@ index 0000000..5555555
 +        "jurisdiction_type_suffix": "transit_authority",
 +        "url": "https://www.rtd-denver.com/",
 +    }
++    raw_record = {"_jurisdiction_override": override}
 +    pipeline = GeneratePipeline.__new__(GeneratePipeline)
-+    pipeline.req = SimpleNamespace(jurisdiction_override=override)
++    pipeline.req = SimpleNamespace(jurisdiction_override=None)
++    pipeline.data = SimpleNamespace(raw_record=raw_record)
 +    pipeline.uuid = TEST_UUID
 +    pipeline.division = SimpleNamespace(ocdid=RTD_OCDID, jurisdiction_id=None)
 +    pipeline.jurisdiction = None
