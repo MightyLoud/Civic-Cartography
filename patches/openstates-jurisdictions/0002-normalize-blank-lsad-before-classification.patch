@@ -1,0 +1,180 @@
+diff --git a/ai_tools/planning/2026-08-02-blank-lsad-normalization-design.md b/ai_tools/planning/2026-08-02-blank-lsad-normalization-design.md
+new file mode 100644
+index 0000000..1111111
+--- /dev/null
++++ b/ai_tools/planning/2026-08-02-blank-lsad-normalization-design.md
+@@ -0,0 +1,43 @@
++# Normalize blank LSAD values before jurisdiction classification
++
++## Tracking
++
++An upstream issue is required before submission. The connected integration is
++read-only for `openstates/jurisdictions`; external evidence is tracked in
++`MightyLoud/Civic-Cartography#43`.
++
++## Problem
++
++`infer_jurisdiction_seed()` sends the raw LSAD value directly to
++`_resolve_lsad_code()`. Empty strings and null-like CSV strings therefore raise
++as unknown LSAD codes before reusable OCD division-type rules can run.
++
++The repository already owns the canonical normalization behavior in
++`src.utils.place_name.coerce_lsad_code()`. The classifier should reuse that
++boundary rather than defining a second interpretation of blank LSAD cells.
++
++## Decision
++
++Normalize LSAD input once at the start of `infer_jurisdiction_seed()`:
++
++1. use `coerce_lsad_code()`;
++2. convert its empty result to `None`;
++3. resolve only non-empty normalized codes; and
++4. use the normalized value for the LSAD `27` branch.
++
++## Guarantees
++
++- `None`, empty, whitespace-only, `"None"`, and `"null"` behave as no LSAD.
++- OCD division types still determine county and school-system classifications.
++- known LSAD codes retain their current behavior.
++- unknown nonblank codes still raise a `ValueError`.
++- list-repr LSAD cells use the existing first-code coercion behavior.
++
++## Non-goals
++
++- Do not weaken validation for real unknown codes.
++- Do not change classification sets.
++- Do not add target-specific overrides.
++- Do not modify core models, integration tests, or sample output.
++- Do not change enrichment or generation status semantics.
+diff --git a/ai_tools/planning/2026-08-02-blank-lsad-normalization-implementation.md b/ai_tools/planning/2026-08-02-blank-lsad-normalization-implementation.md
+new file mode 100644
+index 0000000..2222222
+--- /dev/null
++++ b/ai_tools/planning/2026-08-02-blank-lsad-normalization-implementation.md
+@@ -0,0 +1,31 @@
++# Blank LSAD normalization implementation plan
++
++## Scope
++
++Implement the design in
++`2026-08-02-blank-lsad-normalization-design.md`.
++
++## Tasks
++
++1. Import the existing `coerce_lsad_code()` utility.
++2. Add a private normalization helper returning `str | None`.
++3. Normalize before LSAD lookup and before the LSAD `27` branch.
++4. Keep unknown nonblank-code rejection unchanged.
++5. Extend unit tests for blank, null-like, list-repr, known, and unknown values.
++
++## Validation
++
++Run:
++
++```bash
++uv run pytest tests/src/init_migration/test_jurisdiction_seed.py
++uv run pytest tests/src/init_migration/test_generate_pipeline_stub_classification.py
++uv run ruff check src/init_migration/jurisdiction_seed.py tests/src/init_migration/test_jurisdiction_seed.py
++```
++
++Then repeat the pinned six-fixture capture after applying patch 1 and patch 2.
++The capture should remain deterministic and should not regress any fix-1
++Jurisdiction paths.
+diff --git a/src/init_migration/jurisdiction_seed.py b/src/init_migration/jurisdiction_seed.py
+index 83dfca3..3333333 100644
+--- a/src/init_migration/jurisdiction_seed.py
++++ b/src/init_migration/jurisdiction_seed.py
+@@ -59,6 +59,7 @@ from pydantic import BaseModel
+ from src.models.jurisdiction import ClassificationEnum
+ from src.utils.ocdid import ocdid_parser
++from src.utils.place_name import coerce_lsad_code
+ from src.data.lsad_mapper import get_lsad_map, LSADCode
+ 
+ 
+@@ -203,11 +204,17 @@ def _split_associated_entities(entity_text: str) -> set[str]:
+     return {entity.strip() for entity in entity_text.split(",") if entity.strip()}
+ 
+ 
++def _normalize_lsad_code(lsad_code: str | None) -> str | None:
++    normalized = coerce_lsad_code(lsad_code)
++    return normalized or None
++
++
+ def _resolve_lsad_code(lsad_code: str | None, ocdid: str) -> LSADCode | None:
+     if lsad_code is None:
+         return None
+ 
+     if lsad_code not in LSAD_CODES:
+         raise ValueError(f"Unknown LSAD code '{lsad_code}' for OCD ID '{ocdid}'")
+@@ -266,7 +273,8 @@ def infer_jurisdiction_seed(
+     Returns:
+         JurisdictionSeed with classification and creation decision.
+     """
+-    lsad_code_obj = _resolve_lsad_code(lsad_code, ocdid)
++    normalized_lsad_code = _normalize_lsad_code(lsad_code)
++    lsad_code_obj = _resolve_lsad_code(normalized_lsad_code, ocdid)
+ 
+     # 1. Exact override always wins.
+     # Use this to handle updates to specific records based on manual review and challenges
+@@ -329,7 +337,7 @@ def infer_jurisdiction_seed(
+     # 6: LSAD code "27" (sub-county district)
+     # because it is sometimes a legal entity (an incorporated place) and sometimes just a statistical or
+     # economic area. This needs a special AI lookup to determine what it is.
+-    if lsad_code == "27":
++    if normalized_lsad_code == "27":
+         return disambiguate_subcounty_district(
+             lsad_code=lsad_code_obj,
+             ocdid_parsed=parsed,
+diff --git a/tests/src/init_migration/test_jurisdiction_seed.py b/tests/src/init_migration/test_jurisdiction_seed.py
+index c22a3cf..4444444 100644
+--- a/tests/src/init_migration/test_jurisdiction_seed.py
++++ b/tests/src/init_migration/test_jurisdiction_seed.py
+@@ -38,3 +38,50 @@ def test_infer_jurisdiction_seed_keeps_census_area_lsad_statistical() -> None:
+ 
+     assert seed.has_jurisdiction is False
+     assert seed.reason == "statistical geography"
++
++
++@pytest.mark.parametrize("blank_lsad", [None, "", "   ", "None", "null"])
++def test_infer_jurisdiction_seed_treats_blank_lsad_as_absent(
++    blank_lsad: str | None,
++) -> None:
++    seed = infer_jurisdiction_seed(
++        "ocd-division/country:us/state:wa/county:pierce",
++        lsad_code=blank_lsad,
++    )
++
++    assert seed.has_jurisdiction is True
++    assert seed.classification == ClassificationEnum.GOVERNMENT.value
++    assert seed.reason == "general government fallback"
++
++
++@pytest.mark.parametrize("blank_lsad", ["", "None", "null"])
++def test_blank_lsad_allows_school_district_classification(blank_lsad: str) -> None:
++    seed = infer_jurisdiction_seed(
++        "ocd-division/country:us/state:co/county:el_paso/"
++        "school_district:colorado_springs_school_district_no._11",
++        lsad_code=blank_lsad,
++    )
++
++    assert seed.has_jurisdiction is True
++    assert seed.classification == ClassificationEnum.SCHOOL_SYSTEM.value
++    assert seed.reason == "school district geography"
++
++
++def test_lsad_list_repr_uses_first_normalized_code() -> None:
++    seed = infer_jurisdiction_seed(
++        "ocd-division/country:us/state:ca/place:example",
++        lsad_code="['57', '25']",
++    )
++
++    assert seed.has_jurisdiction is False
++    assert seed.reason == "statistical geography"
++
++
++def test_normalization_does_not_hide_unknown_nonblank_lsad() -> None:
++    with pytest.raises(ValueError, match="Unknown LSAD code 'ZZ'"):
++        infer_jurisdiction_seed(
++            "ocd-division/country:us/state:ca/place:example",
++            lsad_code=" ZZ ",
++        )
