@@ -88,7 +88,7 @@ jobs:
         id: fixture_gate
         continue-on-error: true
         run: |
-          python scripts/check_regression_fixtures.py \
+          PYTHONPATH=. python scripts/check_regression_fixtures.py \
             --target-manifest tests/fixtures/batch_pilot_25.yml \
             --first-report build/run-1/report.json \
             --second-report build/run-2/report.json \
