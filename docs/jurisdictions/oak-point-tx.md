@@ -14,7 +14,8 @@ Oak Point is the Civic Cartography proof for a contested multi-seat election in 
 - Election model: five candidates competing for three at-large seats; the three highest vote-getters are elected
 - Term model: two-year staggered council terms
 - Geometry source: U.S. Census Bureau TIGERweb Current Incorporated Places (`MapServer/28`)
-- Expected Census GEOID: `4853130`, subject to live-fetch verification
+- Verified Census GEOID: `4853130`
+- Verified Census feature name: `Oak Point city`
 
 ## Certified May 2, 2026 result
 
@@ -35,9 +36,9 @@ record_id:   TX:municipality:oak-point:at_large:CITYWIDE
 geometry_id: oak-point-citywide
 ```
 
-## Target parity
+## Verified repository package
 
-| Layer | Expected count |
+| Layer | Verified count |
 |---|---:|
 | Candidate/result evidence rows | 5 |
 | Seats filled | 3 |
@@ -45,6 +46,8 @@ geometry_id: oak-point-citywide
 | Canonical GeoJSON features | 1 |
 | Missing joins | 0 |
 | Extra joins | 0 |
+
+The normalized record is approved with `parity_ok = TRUE`. The permanent read-only workflow regenerates the Oak Point feature from current TIGERweb data and compares committed raw geometry, committed canonical geometry, and the fresh canonical result.
 
 ## Source and QA rules
 
@@ -57,6 +60,6 @@ geometry_id: oak-point-citywide
 7. Current-source drift must fail CI when geometry, GEOID, stable source attributes, or the canonical join changes.
 8. The simultaneous sales-tax proposition remains outside this bounded council release.
 
-## Completion rule
+## Release status
 
-Oak Point is not complete until the certified candidate ranking, raw Census geometry, one normalized record, one canonical feature, approved QA, `parity_ok = TRUE`, green CI, a merged pull request, and the Jurisdiction Portfolio all agree.
+The repository package is complete and ready to merge. Operational release is complete only after the verified pull request is merged and the Jurisdiction Portfolio records the same approved parity state.
