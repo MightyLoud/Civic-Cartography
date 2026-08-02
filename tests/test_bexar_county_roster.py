@@ -4,6 +4,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "data/raw/bexar-county/current-commissioners-court.csv"
+COUNTYWIDE_EVIDENCE = (
+    ROOT / "data/raw/bexar-county/current-countywide-constitutional-offices.csv"
+)
 MANIFEST = ROOT / "data/raw/bexar-county/source-manifest.csv"
 NORMALIZED = ROOT / "data/normalized/bexar_county_commissioners_court.csv"
 PRECINCTS = ROOT / "data/geojson/bexar_county_commissioner_precincts.geojson"
@@ -39,7 +42,7 @@ def test_bexar_county_roster_and_geometry_contract() -> None:
 
     with MANIFEST.open(newline="", encoding="utf-8") as handle:
         manifest = {row["source_id"]: row for row in csv.DictReader(handle)}
-    assert len(manifest) == 11
+    assert len(manifest) == 18
     assert "bexar-county-obsolete-finance-roster" in manifest
     stale = manifest["bexar-county-obsolete-finance-roster"]["use"]
     assert "Nelson W. Wolff" in stale
@@ -79,3 +82,71 @@ def test_bexar_county_roster_and_geometry_contract() -> None:
         "3": "https://www.bexar.org/commissionerpct3",
         "4": "https://www.bexar.org/commissionerpct4",
     }
+
+
+def test_bexar_countywide_roles_share_one_geometry() -> None:
+    expected = {
+        "Sheriff": "Javier Salazar",
+        "County Clerk": "Lucy Adame-Clark",
+        "District Clerk": "Gloria A. Martinez",
+        "Tax Assessor-Collector": "Albert Uresti",
+        "County Treasurer Duties": "Lucy Adame-Clark",
+    }
+
+    with COUNTYWIDE_EVIDENCE.open(newline="", encoding="utf-8") as handle:
+        evidence = list(csv.DictReader(handle))
+    assert len(evidence) == 5
+    assert {row["office_name"]: row["officeholder"] for row in evidence} == expected
+    assert {row["geography_id"] for row in evidence} == {"COUNTYWIDE"}
+    assert {row["geography_type"] for row in evidence} == {"countywide"}
+    assert len({row["officeholder"] for row in evidence}) == 4
+
+    treasurer = next(row for row in evidence if row["office_name"] == "County Treasurer Duties")
+    assert treasurer["officeholder"] == "Lucy Adame-Clark"
+    assert "abolished" in treasurer["notes"]
+    assert "November 6, 1984" in treasurer["notes"]
+    assert "not a separately elected position" in treasurer["notes"]
+
+    with NORMALIZED.open(newline="", encoding="utf-8") as handle:
+        normalized = list(csv.DictReader(handle))
+    assert len(normalized) == 5
+
+    countywide = [row for row in normalized if row["district_type"] == "countywide"]
+    assert len(countywide) == 1
+    row = countywide[0]
+    assert row["record_id"] == "TX:county:bexar:countywide:COUNTYWIDE"
+    assert row["geometry_id"] == "bexar-county-countywide"
+    assert row["qa_status"] == "approved"
+    assert row["parity_ok"] == "TRUE"
+    for office in [
+        "County Judge",
+        "Sheriff",
+        "County Clerk",
+        "District Clerk",
+        "Tax Assessor-Collector",
+        "County Treasurer Duties",
+    ]:
+        assert office in row["office_name"]
+    assert "abolished the separate Treasurer office in 1984" in row["notes"]
+    assert "does not create a second countywide normalized row" in row["notes"]
+
+    precincts = [row for row in normalized if row["district_type"] == "commissioner_precinct"]
+    assert len(precincts) == 4
+    assert {row["district_id"] for row in precincts} == {"1", "2", "3", "4"}
+
+    with MANIFEST.open(newline="", encoding="utf-8") as handle:
+        manifest = {row["source_id"]: row for row in csv.DictReader(handle)}
+    assert len(manifest) == 18
+    assert "bexar-county-administrators" in manifest
+    assert "bexar-county-sheriff" in manifest
+    assert "bexar-county-clerk" in manifest
+    assert "bexar-county-district-clerk" in manifest
+    assert "bexar-county-tax-assessor-collector" in manifest
+    assert "texas-bexar-treasurer-abolition" in manifest
+    abolition = manifest["texas-bexar-treasurer-abolition"]["use"]
+    assert "November 6, 1984" in abolition
+    assert "abolishing the office of county treasurer" in abolition
+    assert "bexar-county-elected-officials" in manifest
+    assert "omits a separately elected County Treasurer" in manifest[
+        "bexar-county-elected-officials"
+    ]["use"]
