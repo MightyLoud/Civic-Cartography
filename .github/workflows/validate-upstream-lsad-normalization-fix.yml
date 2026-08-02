@@ -52,7 +52,7 @@ jobs:
           cd upstream
           uv sync --frozen
 
-      - name: Apply fix 1 and normalize standalone fix 2
+      - name: Apply fix 1 and verify standalone fix 2
         run: |
           git -C upstream apply --check "../$PATCH_1"
           git -C upstream apply "../$PATCH_1"
@@ -62,10 +62,12 @@ jobs:
             -c user.email="civic-cartography@example.invalid" \
             commit -m "Apply validated fix 1 baseline"
 
-          git -C upstream apply --recount "../$PATCH_2"
+          git -C upstream apply --check "../$PATCH_2"
+          git -C upstream apply "../$PATCH_2"
           git -C upstream add -N .
           git -C upstream diff --check
           git -C upstream diff --binary > build-normalized-fix-2.patch
+          cmp --silent build-normalized-fix-2.patch "$PATCH_2"
 
       - name: Run targeted upstream tests and lint
         run: |
