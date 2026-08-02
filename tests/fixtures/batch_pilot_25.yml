@@ -1,0 +1,247 @@
+version: 1
+name: batch_pilot_25
+description: Deliberate acceptance set for target-manifest infrastructure and archetype regression work.
+targets:
+- target_id: BP25-001
+  jurisdiction_name: Seattle
+  state: wa
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:wa/place:seattle
+  expected_archetype: AR-001
+  expected_classification: government
+  category: regression_fixture
+- target_id: BP25-002
+  jurisdiction_name: Tacoma
+  state: wa
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:wa/place:tacoma
+  expected_archetype: AR-001
+  expected_classification: government
+  category: regression_fixture
+- target_id: BP25-003
+  jurisdiction_name: Spokane
+  state: wa
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:wa/place:spokane
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: BP25-004
+  jurisdiction_name: Albuquerque
+  state: nm
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:nm/place:albuquerque
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: BP25-005
+  jurisdiction_name: Boston
+  state: ma
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:ma/place:boston
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: BP25-006
+  jurisdiction_name: Phoenix
+  state: az
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:az/place:phoenix
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: BP25-007
+  jurisdiction_name: San Antonio
+  state: tx
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:tx/place:san_antonio
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: BP25-008
+  jurisdiction_name: Charlotte
+  state: nc
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:nc/place:charlotte
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: BP25-009
+  jurisdiction_name: Pierce County
+  state: wa
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:wa/county:pierce
+  expected_archetype: AR-002
+  expected_classification: government
+  category: regression_fixture
+- target_id: BP25-010
+  jurisdiction_name: King County
+  state: wa
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:wa/county:king
+  expected_archetype: AR-002
+  expected_classification: government
+  category: new_known_archetype
+- target_id: BP25-011
+  jurisdiction_name: Cuyahoga County
+  state: oh
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:oh/county:cuyahoga
+  expected_archetype: AR-002
+  expected_classification: government
+  category: new_known_archetype
+- target_id: BP25-012
+  jurisdiction_name: Miami-Dade County
+  state: fl
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:fl/county:miami_dade
+  expected_archetype: AR-002
+  expected_classification: government
+  category: new_known_archetype
+- target_id: BP25-013
+  jurisdiction_name: Allegheny County
+  state: pa
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:pa/county:allegheny
+  expected_archetype: AR-002
+  expected_classification: government
+  category: new_known_archetype
+- target_id: BP25-014
+  jurisdiction_name: Colorado Springs School District 11
+  state: co
+  selector:
+    type: explicit_lookup
+    name: Colorado Springs School District 11
+    resolution_policy: override_or_exception
+  expected_archetype: AR-003
+  expected_classification: school_system
+  category: regression_fixture
+- target_id: BP25-015
+  jurisdiction_name: Denver Public Schools
+  state: co
+  selector:
+    type: explicit_lookup
+    name: School District No. 1 in the City and County of Denver
+    resolution_policy: override_or_exception
+  expected_archetype: AR-003
+  expected_classification: school_system
+  category: new_known_archetype
+- target_id: BP25-016
+  jurisdiction_name: Seattle Public Schools
+  state: wa
+  selector:
+    type: explicit_lookup
+    name: Seattle School District No. 1
+    resolution_policy: override_or_exception
+  expected_archetype: AR-003
+  expected_classification: school_system
+  category: new_known_archetype
+- target_id: BP25-017
+  jurisdiction_name: Clark County School District
+  state: nv
+  selector:
+    type: explicit_lookup
+    name: Clark County School District
+    resolution_policy: override_or_exception
+  expected_archetype: AR-003
+  expected_classification: school_system
+  category: new_known_archetype
+- target_id: BP25-018
+  jurisdiction_name: Regional Transportation District
+  state: co
+  selector:
+    type: explicit_lookup
+    name: Regional Transportation District
+    resolution_policy: override_or_exception
+  expected_archetype: AR-004
+  expected_classification: transit_authority
+  category: regression_fixture
+- target_id: BP25-019
+  jurisdiction_name: Bay Area Rapid Transit District
+  state: ca
+  selector:
+    type: explicit_lookup
+    name: Bay Area Rapid Transit District
+    resolution_policy: override_or_exception
+  expected_archetype: AR-004
+  expected_classification: transit_authority
+  category: discovery
+- target_id: BP25-020
+  jurisdiction_name: Metropolitan Water Reclamation District of Greater Chicago
+  state: il
+  selector:
+    type: explicit_lookup
+    name: Metropolitan Water Reclamation District of Greater Chicago
+    resolution_policy: override_or_exception
+  expected_archetype: AR-D01
+  expected_classification: special_purpose_district
+  category: discovery
+- target_id: BP25-021
+  jurisdiction_name: Port of Seattle
+  state: wa
+  selector:
+    type: explicit_lookup
+    name: Port of Seattle
+    resolution_policy: override_or_exception
+  expected_archetype: AR-D01
+  expected_classification: special_purpose_district
+  category: discovery
+- target_id: BP25-022
+  jurisdiction_name: City and County of Denver
+  state: co
+  selector:
+    type: alias_group
+    members:
+    - ocd-division/country:us/state:co/place:denver
+    - ocd-division/country:us/state:co/county:denver
+    canonical_rule: maintained_alias
+  expected_archetype: AR-005
+  expected_classification: government
+  category: regression_fixture
+- target_id: BP25-023
+  jurisdiction_name: City and County of San Francisco
+  state: ca
+  selector:
+    type: alias_group
+    members:
+    - ocd-division/country:us/state:ca/place:san_francisco
+    - ocd-division/country:us/state:ca/county:san_francisco
+    canonical_rule: maintained_alias
+  expected_archetype: AR-005
+  expected_classification: government
+  category: new_known_archetype
+- target_id: BP25-024
+  jurisdiction_name: City and County of Broomfield
+  state: co
+  selector:
+    type: alias_group
+    members:
+    - ocd-division/country:us/state:co/place:broomfield
+    - ocd-division/country:us/state:co/county:broomfield
+    canonical_rule: maintained_alias
+  expected_archetype: AR-005
+  expected_classification: government
+  category: new_known_archetype
+- target_id: BP25-025
+  jurisdiction_name: Metropolitan Government of Nashville and Davidson County
+  state: tn
+  selector:
+    type: explicit_lookup
+    name: Nashville-Davidson metropolitan government
+    resolution_policy: override_or_exception
+  expected_archetype: AR-D02
+  expected_classification: government
+  category: discovery
