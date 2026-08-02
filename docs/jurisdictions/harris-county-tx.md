@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate pending final Harris County and repository-wide validation.
+Verified release package. Harris County workflow run #4 and repository workflow run #569 completed successfully.
 
 ## Purpose
 
@@ -78,6 +78,18 @@ TX:county:harris:commissioner_precinct:4    -> harris-county-commissioner-precin
 | Extra joins | 0 |
 
 All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
+
+## Validation evidence
+
+- Harris County workflow run #4: success
+- Repository workflow run #569: success
+- Automated tests: 50 passed
+- Normalized datasets validated: 18 files
+- Current Census snapshot comparison: passed
+- Current Harris County FeatureServer snapshot comparison: passed
+- Live `PCT_NO`, `COMMISSION`, and `URL` contract: passed
+- Geometry joins: passed
+- Combined canonical SHA-256: `9d2d53995461f9f1f573858eff696fc92be7542b6623a9513d6b6d1aff690d28`
 
 ## Release files
 
