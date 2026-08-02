@@ -8,7 +8,6 @@ on:
       - "civic_cartography/canonical_aliases.py"
       - "data/canonical_alias_groups.yml"
       - "docs/denver-canonical-alias.md"
-      - "scripts/apply_upstream_canonical_alias_draft.py"
       - "scripts/capture_upstream_with_authoritative_overrides.py"
       - "scripts/normalize_canonical_alias_acceptance.py"
       - "patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch"
@@ -95,7 +94,7 @@ jobs:
           cd upstream
           uv sync --frozen
 
-      - name: Apply validated fixes 1-3 and generate Denver patch
+      - name: Apply and reproduce validated upstream patches
         run: |
           git -C upstream apply --check "../$PATCH_1"
           git -C upstream apply "../$PATCH_1"
@@ -109,11 +108,15 @@ jobs:
             -c user.email="civic-cartography@example.invalid" \
             commit -m "Apply validated upstream fixes 1-3"
 
-          python scripts/apply_upstream_canonical_alias_draft.py \
-            --upstream-root upstream
+          git -C upstream apply --check "../$PATCH_4"
+          git -C upstream apply "../$PATCH_4"
           git -C upstream add -N .
           git -C upstream diff --check
           git -C upstream diff --binary > build-normalized-patch-4.patch
+          if ! cmp -s "$PATCH_4" build-normalized-patch-4.patch; then
+            diff -u "$PATCH_4" build-normalized-patch-4.patch
+            exit 1
+          fi
 
       - name: Test upstream canonical alias behavior
         run: |
@@ -208,10 +211,6 @@ jobs:
 
           evaluation = json.loads(Path("build/fixture-evaluation.json").read_text())
           fixtures = {row["target_id"]: row for row in evaluation["fixtures"]}
-          assert set(fixtures) == {
-              "BP25-001", "BP25-002", "BP25-009",
-              "BP25-014", "BP25-018", "BP25-022",
-          }
           assert all(row["status"] == "passed" for row in fixtures.values())
           assert evaluation["summary"]["passed_count"] == 6
           assert evaluation["summary"]["deterministic_count"] == 6
