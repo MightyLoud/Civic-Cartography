@@ -1,0 +1,56 @@
+name: Validate Irving runoff proof
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-irving:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Fetch official Irving City Council District 3
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://services5.arcgis.com/54falWtcpty3V47Z/arcgis/rest/services/Council_Districts/FeatureServer/0 \
+            --district-ids 3 \
+            --district-field DISTNUM \
+            --jurisdiction-name Irving \
+            --record-id-prefix TX:municipality:irving:district \
+            --geometry-id-prefix irving-district \
+            --source-agency "City of Irving" \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/irving/raw/city-council-district-3.geojson \
+            --output build/irving/geojson/irving_district_3.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate released normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate released geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Upload Irving boundary check
+        uses: actions/upload-artifact@v4
+        with:
+          name: irving-runoff-boundary-check
+          path: build/irving/
+          if-no-files-found: error
