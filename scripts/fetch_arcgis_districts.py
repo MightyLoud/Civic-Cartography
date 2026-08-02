@@ -68,9 +68,6 @@ def fetch_layer(
         "where": "1=1",
         "outFields": out_fields,
         "returnGeometry": "true",
-        "returnZ": "false",
-        "returnM": "false",
-        "returnTrueCurves": "false",
         "outSR": "4326",
         "f": "geojson",
     }
