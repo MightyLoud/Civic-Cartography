@@ -106,7 +106,7 @@ targets:
   state: fl
   selector:
     type: ocdid
-    value: ocd-division/country:us/state:fl/county:miami_dade
+    value: ocd-division/country:us/state:fl/county:miami-dade
   expected_archetype: AR-002
   expected_classification: government
   category: new_known_archetype
