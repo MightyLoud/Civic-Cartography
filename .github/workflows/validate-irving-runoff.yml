@@ -28,9 +28,8 @@ jobs:
       - name: Fetch official Irving City Council District 3
         run: |
           python scripts/fetch_arcgis_districts.py \
-            --layer-url https://services5.arcgis.com/54falWtcpty3V47Z/arcgis/rest/services/Council_Districts/FeatureServer/0 \
+            --layer-url https://services3.arcgis.com/OfsJXUlu8pSkbl7B/arcgis/rest/services/CityCouncilDistricts2022/FeatureServer/0 \
             --district-ids 3 \
-            --district-field DISTNUM \
             --jurisdiction-name Irving \
             --record-id-prefix TX:municipality:irving:district \
             --geometry-id-prefix irving-district \
