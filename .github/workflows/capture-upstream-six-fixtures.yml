@@ -1,0 +1,155 @@
+name: Capture upstream six fixtures
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/capture-upstream-six-fixtures.yml"
+      - "scripts/capture_upstream_fixtures.py"
+      - "tests/fixtures/batch_pilot_25.yml"
+      - "civic_cartography/fixture_harness.py"
+      - "civic_cartography/target_manifest.py"
+
+permissions:
+  contents: read
+
+env:
+  UPSTREAM_REPOSITORY: openstates/jurisdictions
+  UPSTREAM_REVISION: 6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705
+  RUN_ASOF: 2026-08-02T15:00:00Z
+
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+
+      - name: Check out pinned upstream generator
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM_REPOSITORY }}
+          ref: ${{ env.UPSTREAM_REVISION }}
+          path: upstream
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install Civic-Cartography test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Install uv and pinned upstream dependencies
+        run: |
+          python -m pip install uv
+          cd upstream
+          uv sync --frozen
+
+      - name: Capture clean upstream run 1
+        run: |
+          upstream/.venv/bin/python scripts/capture_upstream_fixtures.py \
+            --upstream-root upstream \
+            --target-manifest tests/fixtures/batch_pilot_25.yml \
+            --run-asof "$RUN_ASOF" \
+            --source-dir build/upstream-source \
+            --work-dir build/run-1 \
+            --execution-results build/run-1/execution-results.json \
+            --diagnostics build/run-1/diagnostics.json
+          python scripts/run_target_manifest.py \
+            --target-manifest tests/fixtures/batch_pilot_25.yml \
+            --run-asof "$RUN_ASOF" \
+            --execution-results build/run-1/execution-results.json \
+            --artifact-root build/run-1/artifacts \
+            --result-path build/run-1/report.json
+
+      - name: Capture clean upstream run 2
+        run: |
+          upstream/.venv/bin/python scripts/capture_upstream_fixtures.py \
+            --upstream-root upstream \
+            --target-manifest tests/fixtures/batch_pilot_25.yml \
+            --run-asof "$RUN_ASOF" \
+            --source-dir build/upstream-source \
+            --work-dir build/run-2 \
+            --execution-results build/run-2/execution-results.json \
+            --diagnostics build/run-2/diagnostics.json
+          python scripts/run_target_manifest.py \
+            --target-manifest tests/fixtures/batch_pilot_25.yml \
+            --run-asof "$RUN_ASOF" \
+            --execution-results build/run-2/execution-results.json \
+            --artifact-root build/run-2/artifacts \
+            --result-path build/run-2/report.json
+
+      - name: Evaluate six-fixture gate
+        id: fixture_gate
+        continue-on-error: true
+        run: |
+          PYTHONPATH=. python scripts/check_regression_fixtures.py \
+            --target-manifest tests/fixtures/batch_pilot_25.yml \
+            --first-report build/run-1/report.json \
+            --second-report build/run-2/report.json \
+            --upstream-repository "$UPSTREAM_REPOSITORY" \
+            --upstream-revision "$UPSTREAM_REVISION" \
+            --result-path build/fixture-evaluation.json
+
+      - name: Write capture summary
+        if: always()
+        run: |
+          if [[ -f build/fixture-evaluation.json ]]; then
+            python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path("build/fixture-evaluation.json").read_text())
+          summary = report["summary"]
+          lines = [
+              "## Real upstream six-fixture capture",
+              "",
+              f"- Upstream: `{report['upstream']['repository']}@{report['upstream']['revision']}`",
+              f"- Fixtures passed: **{summary['passed_count']}/{summary['fixture_count']}**",
+              f"- Deterministic fixtures: **{summary['deterministic_count']}/{summary['fixture_count']}**",
+              f"- Full report match: **{summary['report_content_match']}**",
+              f"- Gate passed: **{summary['gate_passed']}**",
+              "",
+              "| Fixture | Status | Generation | Exception |",
+              "|---|---|---|---|",
+          ]
+          for fixture in report["fixtures"]:
+              lines.append(
+                  f"| {fixture['jurisdiction_name']} | {fixture['status']} | "
+                  f"{fixture.get('generation_status')} | {fixture.get('exception_class') or ''} |"
+              )
+          Path("capture-summary.md").write_text("\n".join(lines) + "\n")
+          PY
+            cat capture-summary.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## Real upstream six-fixture capture" >> "$GITHUB_STEP_SUMMARY"
+            echo "Capture failed before the evaluation report was written." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload capture evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: upstream-six-fixture-capture
+          path: |
+            build/upstream-source/source-manifest.json
+            build/run-1/execution-results.json
+            build/run-1/diagnostics.json
+            build/run-1/report.json
+            build/run-1/artifacts
+            build/run-2/execution-results.json
+            build/run-2/diagnostics.json
+            build/run-2/report.json
+            build/run-2/artifacts
+            build/fixture-evaluation.json
+            capture-summary.md
+          if-no-files-found: warn
+
+      - name: Enforce fixture gate result
+        if: steps.fixture_gate.outcome == 'failure' && github.event_name == 'workflow_dispatch'
+        run: exit 1
