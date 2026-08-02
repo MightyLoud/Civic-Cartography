@@ -1,12 +1,12 @@
-# Harris County, Texas — Commissioners Court
+# Harris County, Texas — Commissioners Court and Countywide Constitutional Offices
 
 ## Status
 
-Verified release package. Harris County workflow run #4 and repository workflow run #569 completed successfully.
+Verified ten-office release package. Pre-merge validation succeeded in Harris County workflow run #32 and repository workflow run #597.
 
 ## Purpose
 
-Harris County tests the county template against a current authoritative FeatureServer whose district geometry and roster attributes are maintained together, while the current court roster is independently cross-checked through official county pages. It also tests explicit preservation of a still-live official ArcGIS item that describes the obsolete 2011 precinct boundaries.
+Harris County first proved the county template against a current authoritative FeatureServer whose district geometry and roster attributes are maintained together. This extension adds five separately elected countywide constitutional offices while preserving the existing one-countywide-plus-four-precinct geometry package and explicitly documenting the Tax Assessor-Collector transition from Ann Harris Bennett to Annette Ramirez.
 
 ## Jurisdiction identity
 
@@ -15,7 +15,8 @@ Harris County tests the county template against a current authoritative FeatureS
 - Jurisdiction type: county
 - County FIPS: `201`
 - Census GEOID: `48201`
-- Representation model: one County Judge elected countywide plus four Commissioners elected from precincts
+- Representation model: six countywide elected offices plus four Commissioners elected from precincts
+- Separately elected positions in scope: ten
 - County geometry source: U.S. Census Bureau TIGERweb Current Counties (`MapServer/82`)
 - Precinct geometry source: Harris County GIS `Commissioner_Precincts/FeatureServer/0`
 - Current ArcGIS item: `a51b563da9ad479786a05f5c9f946e4c`
@@ -26,21 +27,32 @@ Harris County tests the county template against a current authoritative FeatureS
 
 ## Current official scope
 
-| Office | Representative geography | Officeholder | GIS value |
+| Office | Representative geography | Officeholder | Selection structure |
 |---|---|---|---|
-| County Judge | Countywide | Lina Hidalgo | Not applicable |
-| Commissioner Precinct 1 | Precinct 1 | Rodney Ellis | Rodney Ellis |
-| Commissioner Precinct 2 | Precinct 2 | Adrian Garcia | Adrian Garcia |
-| Commissioner Precinct 3 | Precinct 3 | Tom S. Ramsey | Tom S. Ramsey |
-| Commissioner Precinct 4 | Precinct 4 | Lesley Briones | Lesley Briones |
+| County Judge | Countywide | Lina Hidalgo | Separately elected |
+| Sheriff | Countywide | Ed Gonzalez | Separately elected |
+| County Clerk | Countywide | Teneshia Hudspeth | Separately elected |
+| District Clerk | Countywide | Marilyn Burgess | Separately elected |
+| Tax Assessor-Collector | Countywide | Annette Ramirez | Separately elected |
+| County Treasurer | Countywide | Carla L. Wyatt | Separately elected |
+| Commissioner Precinct 1 | Precinct 1 | Rodney Ellis | Separately elected from precinct |
+| Commissioner Precinct 2 | Precinct 2 | Adrian Garcia | Separately elected from precinct |
+| Commissioner Precinct 3 | Precinct 3 | Tom S. Ramsey | Separately elected from precinct |
+| Commissioner Precinct 4 | Precinct 4 | Lesley Briones | Separately elected from precinct |
 
-The live `COMMISSION` field agrees with the current official roster for all four precincts.
+All six countywide offices share the single Census county feature. Commissioners Precincts 1 through 4 retain their four current official FeatureServer polygons.
+
+## Tax Assessor-Collector transition
+
+Annette Ramirez was sworn in as Harris County Tax Assessor-Collector on January 1, 2025. The current elected-official directory and current Tax Office pages identify Ramirez.
+
+A still-live Tax Office voter-registration page displays Annette Ramirez in its current header but states in the body that Ann Harris Bennett serves as Tax Assessor-Collector. The release preserves that page as stale embedded-content evidence and does not allow it to override the current officeholder record.
 
 ## Legacy URL and stale geometry handling
 
 The live FeatureServer's Precinct 4 `URL` value remains `https://www.hcp4.net/`, while the current official office site is `https://cp4.harriscountytx.gov/`. The release preserves the GIS value as a legacy URL alias and uses the current official biography as controlling roster evidence.
 
-A separate still-live official ArcGIS item, `44771fa82aef4656a02879effbe52e60`, describes the court-approved 2011 Commissioner precinct boundaries and was last updated in 2019. It is preserved in the source manifest as stale-geometry evidence and does not control the current release. The current authoritative item was updated in July 2026, and its data and schema were updated in May 2026.
+A separate still-live official ArcGIS item, `44771fa82aef4656a02879effbe52e60`, describes the court-approved 2011 Commissioner precinct boundaries and was last updated in 2019. It remains in the source manifest as stale-geometry evidence and does not control the current release.
 
 ## GIS source contract
 
@@ -49,7 +61,7 @@ A separate still-live official ArcGIS item, `44771fa82aef4656a02879effbe52e60`, 
 3. `COMMISSION` must resolve to Rodney Ellis, Adrian Garcia, Tom S. Ramsey, and Lesley Briones.
 4. `URL` must resolve to the four committed source values, including the legacy Precinct 4 domain.
 5. Direct GeoJSON regeneration must match the committed raw and canonical snapshots.
-6. The County Judge must join only to the Census county feature.
+6. All six countywide offices must share the single Census county feature.
 7. Every normalized row must join exactly one canonical feature.
 8. The obsolete 2011 ArcGIS item must remain documented but must never replace the current FeatureServer.
 
@@ -67,9 +79,10 @@ TX:county:harris:commissioner_precinct:4    -> harris-county-commissioner-precin
 
 | Layer | Count |
 |---|---:|
-| Current-officeholder evidence rows | 5 |
-| Official source records | 12 |
-| Scoped offices | 5 |
+| Current-officeholder evidence rows | 10 |
+| Official source records | 20 |
+| Scoped elected offices | 10 |
+| Unique current officeholders | 10 |
 | Normalized geography rows | 5 |
 | Canonical GeoJSON features | 5 |
 | Countywide features | 1 |
@@ -81,19 +94,21 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Validation evidence
 
-- Harris County workflow run #4: success
-- Repository workflow run #569: success
-- Automated tests: 50 passed
+- Harris County workflow run #32: success
+- Repository workflow run #597: success
+- Automated tests: 51 passed
 - Normalized datasets validated: 18 files
 - Current Census snapshot comparison: passed
 - Current Harris County FeatureServer snapshot comparison: passed
 - Live `PCT_NO`, `COMMISSION`, and `URL` contract: passed
 - Geometry joins: passed
+- Geometry changes: 0
 - Combined canonical SHA-256: `9d2d53995461f9f1f573858eff696fc92be7542b6623a9513d6b6d1aff690d28`
 
 ## Release files
 
-- Current roster: `data/raw/harris-county/current-commissioners-court.csv`
+- Commissioners Court roster: `data/raw/harris-county/current-commissioners-court.csv`
+- Countywide constitutional-office roster: `data/raw/harris-county/current-countywide-constitutional-offices.csv`
 - Source manifest: `data/raw/harris-county/source-manifest.csv`
 - Raw Census county snapshot: `data/raw/harris-county/tigerweb-county-48201.geojson`
 - Raw Commissioner precinct snapshot: `data/raw/harris-county/commissioner-precincts-1-4.geojson`
@@ -105,4 +120,4 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Result
 
-Harris County contains five scoped elected offices represented by five verified geometries: one countywide Census feature for the County Judge and four current official Commissioner precinct polygons. The release treats `PCT_NO` as the stable join field, validates the current `COMMISSION` roster attributes, preserves the Precinct 4 legacy URL, and keeps the obsolete 2011-boundary item explicit as stale-source evidence.
+Harris County now contains ten scoped elected offices represented by five verified geometries: one countywide Census feature shared by six countywide offices and four current official Commissioner precinct polygons. The release preserves the Tax Assessor-Collector transition, the Precinct 4 legacy URL, and the obsolete 2011-boundary item without weakening current-officeholder or geometry validation.
