@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "target_id": "BP25-012",
+  "jurisdiction_name": "Miami-Dade County",
+  "root_cause": {
+    "incorrect_selector": "ocd-division/country:us/state:fl/county:miami_dade",
+    "canonical_selector": "ocd-division/country:us/state:fl/county:miami-dade",
+    "resolution": "Correct the exact manifest OCDID; no override or fuzzy matching rule is required."
+  },
+  "source_evidence": {
+    "master_source": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us.csv",
+    "florida_local_source": "https://raw.githubusercontent.com/opencivicdata/ocd-division-ids/master/identifiers/country-us/state-fl-local_gov.csv",
+    "local_child_prefix": "ocd-division/country:us/state:fl/county:miami-dade/",
+    "observed_child_counts": {
+      "council_districts": 13,
+      "school_board_districts": 9
+    }
+  },
+  "acceptance": {
+    "workflow_run_id": 30770619971,
+    "artifact_id": 8840429526,
+    "artifact_digest": "sha256:54d00b09eb6117ed58c40c5e626c1463bda7c0e6f0bc1d701f8a1fa4ed5ecc1e",
+    "target_count": 25,
+    "known_classified_count": 13,
+    "known_generated_count": 13,
+    "known_classification_rate": 0.8666666666666667,
+    "known_generation_rate": 0.8666666666666667,
+    "deterministic_count": 25,
+    "reports_identical": true,
+    "gate_passed": true
+  },
+  "target_result": {
+    "resolved_ocdids": [
+      "ocd-division/country:us/state:fl/county:miami-dade"
+    ],
+    "match_status": "matched",
+    "inferred_classification": "government",
+    "classification_status": "matched",
+    "generation_status": "generated",
+    "enrichment_status": "partial",
+    "exception_class": null,
+    "review_reason": null,
+    "division_path": "divisions/fl/local/miami-dade_county__aa54aea7-57a7-5651-ae63-1c5bcb51f42d.yaml",
+    "jurisdiction_path": "jurisdictions/fl/local/miami-dade_549b9fb6-8abb-57c2-a8be-dabc11afe2bb.yaml",
+    "division_sha256": "c07b3a7ceb34813d507837be72140a2361542aae95451cc580ccbcd44a80d25a",
+    "jurisdiction_sha256": "91a59d7eb3ac6be2921b7a486fd7b71296d89052c751199f755d78a285adc1fd",
+    "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:fl/county:miami-dade/government",
+    "jurisdiction_name": "Miami-Dade County Government",
+    "jurisdiction_classification": "government"
+  },
+  "constraints": {
+    "authoritative_override_added": false,
+    "fuzzy_matching_added": false,
+    "target_only_production_patch_added": false,
+    "six_fixture_gate_passed": true
+  }
+}
