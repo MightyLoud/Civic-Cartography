@@ -32,9 +32,9 @@ record_id:   TX:municipality:corinth:at_large:CITYWIDE
 geometry_id: corinth-citywide
 ```
 
-## Target parity
+## Verified parity
 
-| Layer | Expected count |
+| Layer | Verified count |
 |---|---:|
 | Candidate evidence rows | 5 |
 | Scoped offices | 3 |
@@ -42,6 +42,12 @@ geometry_id: corinth-citywide
 | Canonical GeoJSON features | 1 |
 | Missing joins | 0 |
 | Extra joins | 0 |
+
+- `qa_status = approved`
+- `parity_ok = TRUE`
+- Census GEOID: `4816696`
+- Permanent current-source validation: enabled
+- GitHub Actions verification: run #162 passed
 
 ## Source and QA rules
 
@@ -52,9 +58,9 @@ geometry_id: corinth-citywide
 5. Use the official current council roster and official term pages to confirm the resulting officeholders.
 6. Fetch the current Census incorporated-place feature by GEOID `4816696`.
 7. Keep the raw TIGERweb response separate from canonical map-ready GeoJSON.
-8. The canonical feature must carry `geometry_id = corinth-citywide` and its matching `record_id`.
-9. Current-source drift must fail CI when geometry, GEOID, stable source attributes, or the canonical join changes.
+8. The canonical feature carries `geometry_id = corinth-citywide` and its matching `record_id`.
+9. Current-source drift fails CI when geometry, GEOID, stable source attributes, or the canonical join changes.
 
-## Completion rule
+## Release result
 
-Corinth is not complete until candidate evidence, raw Census geometry, one normalized record, one canonical feature, approved QA, `parity_ok = TRUE`, green CI, a merged pull request, and the Jurisdiction Portfolio all agree.
+Corinth proves that one citywide geography can retain multiple office contests without flattening their election semantics. The general-election offices retain May 2029 term expirations, while the Place 2 special election retains its May 2028 unexpired-term endpoint.
