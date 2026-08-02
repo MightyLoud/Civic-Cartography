@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "target_id": "BP25-015",
+  "jurisdiction_name": "Denver Public Schools",
+  "state": "co",
+  "selector": {
+    "type": "explicit_lookup",
+    "name": "School District No. 1",
+    "resolution_policy": "override_or_exception"
+  },
+  "source_record": {
+    "repository": "opencivicdata/ocd-division-ids",
+    "revision": "a52719a15852fc8c8418194016c16657591930ad",
+    "path": "identifiers/country-us.csv",
+    "ocdid": "ocd-division/country:us/state:co/county:denver/school_district:school_district_no._1",
+    "name": "school district no. 1",
+    "federal_district_id": "0803360"
+  },
+  "result": {
+    "match_status": "matched",
+    "resolved_ocdids": [
+      "ocd-division/country:us/state:co/county:denver/school_district:school_district_no._1"
+    ],
+    "expected_classification": "school_system",
+    "inferred_classification": "school_system",
+    "classification_status": "matched",
+    "generation_status": "generated",
+    "exception_class": null,
+    "review_reason": null,
+    "enrichment_status": "partial",
+    "enrichment_reason": "No validation match found",
+    "division_path": "divisions/co/local/school_district_no._1__6a306d74-9af3-5e1e-b315-16fd41a7b53f.yaml",
+    "division_sha256": "ab4a773f878a4c9d7acb529252a89d046441a9a6ca099d49f358645fe89a66f9",
+    "jurisdiction_path": "jurisdictions/co/local/school_district_no._1_6c138fd0-81cd-5a13-8bb3-e9b1075c985a.yaml",
+    "jurisdiction_sha256": "adc8b5fdb908d14ee515bd6ad7de29608589a0be32ae7112e72ce03a40d1c96b",
+    "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:co/county:denver/school_district:school_district_no._1/school_system"
+  },
+  "batch_acceptance": {
+    "evaluation_id": "280fea34400a15fd76f1",
+    "first_run_id": "70b8a6ebb2bbcf87b91f",
+    "second_run_id": "70b8a6ebb2bbcf87b91f",
+    "run_asof": "2026-08-02T15:00:00Z",
+    "known_classified_count": 14,
+    "known_generated_count": 14,
+    "known_archetype_count": 15,
+    "known_classification_rate": 0.9333333333333333,
+    "known_generation_rate": 0.9333333333333333,
+    "deterministic_count": 25,
+    "reports_identical": true,
+    "regression_fixture_count": 6,
+    "regression_fixtures_passed": 6,
+    "target_only_patch_count": 0,
+    "gate_passed": true
+  },
+  "workflow_evidence": {
+    "run_id": 30773091283,
+    "artifact_id": 8841186335,
+    "artifact_digest": "sha256:c4885204812628a56202f4a89fd83856cf543e17d0eba3ffcd9f26f4c2bd46a0"
+  },
+  "decision": "Use the exact upstream source name as the maintained selector while retaining Denver Public Schools as the human-facing jurisdiction name. No fuzzy matching, override, or target-only production patch is required."
+}
