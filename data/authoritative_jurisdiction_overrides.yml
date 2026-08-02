@@ -30,3 +30,40 @@ overrides:
       current OCD identifier inputs do not contain RTD. The classification is
       transit_authority because RTD is the elected regional public body that
       develops, maintains, and operates the district mass-transit system.
+
+  - override_id: co-denver-county-1
+    state: co
+    canonical_name: Denver County 1
+    aliases:
+      - Denver County 1
+      - Denver Public Schools
+      - Denver 1
+      - School District No. 1 in the City and County of Denver
+    ocdid: ocd-division/country:us/state:co/school_district:denver_county_1
+    jurisdiction:
+      has_jurisdiction: true
+      classification: school_system
+      jurisdiction_name: Denver Public Schools
+      jurisdiction_type_suffix: school_system
+      url: https://www.dpsk12.org/
+    source:
+      source_name: Colorado Department of Education and Denver Public Schools
+      source_url:
+        official_website: https://www.dpsk12.org/
+        cde_district_directory: https://ed.cde.state.co.us/district-and-boces-websites-and-maps
+        cde_district_profile: https://sites.cde.state.co.us/schoolview/explore/profile/0880
+      source_description: >-
+        Colorado Department of Education records identify the local education
+        agency as Denver County 1 with district code 0880 and connect that unit
+        to the Denver Public Schools website, address, schools, and district
+        profile.
+    verified_asof: '2026-08-02'
+    evidence_notes: >-
+      The pinned OCD identifier inputs contain no matching Denver school-system
+      root record. This maintained OCDID uses the reusable school_district
+      segment and the official CDE district name Denver County 1. CDE code 0880
+      is retained as the authoritative external identifier in this provenance
+      record. Exact maintained aliases cover the CDE name, public-facing DPS
+      name, short administrative name, and the legal-style name already used by
+      the Batch Pilot manifest. No fuzzy resolution or target-only production
+      patch is used.
