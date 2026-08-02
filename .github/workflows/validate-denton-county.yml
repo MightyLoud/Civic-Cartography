@@ -1,0 +1,67 @@
+name: Validate Denton County proof
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-denton-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Fetch current Denton County boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48121 \
+            --record-id TX:county:denton:countywide:COUNTYWIDE \
+            --geometry-id denton-county-countywide \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/denton-county/county/raw/tigerweb-county-48121.geojson \
+            --output build/denton-county/county/geojson/denton_county_countywide.geojson
+
+      - name: Fetch current Denton County commissioner precincts
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://gis.dentoncounty.gov/arcgis/rest/services/PoliticalBoundaries_GC/MapServer/4 \
+            --district-ids 1,2,3,4 \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Denton County" \
+            --record-id-prefix TX:county:denton:commissioner_precinct \
+            --geometry-id-prefix denton-county-commissioner-precinct \
+            --source-agency "Denton County GIS" \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/denton-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --output build/denton-county/precincts/geojson/denton_county_commissioner_precincts.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate released normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate released geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Upload Denton County build check
+        uses: actions/upload-artifact@v4
+        with:
+          name: denton-county-boundary-check
+          path: build/denton-county/
+          if-no-files-found: error
