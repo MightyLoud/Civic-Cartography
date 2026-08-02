@@ -1,0 +1,60 @@
+name: Validate Oak Point top-N proof
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-oak-point:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Fetch current Oak Point boundary
+        run: |
+          python scripts/fetch_tigerweb_place.py \
+            --geoid 4853130 \
+            --record-id TX:municipality:oak-point:at_large:CITYWIDE \
+            --geometry-id oak-point-citywide \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/oak-point/raw/tigerweb-incorporated-place-4853130.geojson \
+            --output build/oak-point/geojson/oak_point_citywide.geojson
+
+      - name: Verify committed Oak Point boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/oak-point/tigerweb-incorporated-place-4853130.geojson \
+            --fresh-raw build/oak-point/raw/tigerweb-incorporated-place-4853130.geojson \
+            --committed-canonical data/geojson/oak_point_citywide.geojson \
+            --fresh-canonical build/oak-point/geojson/oak_point_citywide.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Upload Oak Point boundary check
+        uses: actions/upload-artifact@v4
+        with:
+          name: oak-point-top-n-boundary-check
+          path: build/oak-point/
+          if-no-files-found: error

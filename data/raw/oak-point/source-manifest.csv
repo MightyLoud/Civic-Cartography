@@ -1,0 +1,7 @@
+source_id,source_type,agency,title,url,retrieved_at,confidence,use
+oak-point-certified-canvass,election_results,City of Oak Point,Ordinance 2026-05-675 certified general-election canvass,https://oakpointtexas.com/AgendaCenter/ViewFile/Agenda/_05132026-590,2026-08-01,high,"Complete five-candidate vote tabulation, three-seat cutoff, winners, and two-year terms."
+oak-point-council-structure,governance,City of Oak Point,Mayor and Council,https://www.oakpointtexas.com/195/Mayor-Council,2026-08-01,high,"Confirms six council members are elected at large and serve staggered two-year terms."
+oak-point-current-council,current_officeholder,City of Oak Point,City Council staff directory,https://www.oakpointtexas.com/Directory.aspx?DID=13,2026-08-01,high,"Confirms John Lusk, Kirk Hawrysio, and Scott Dufford currently serve on council."
+oak-point-lusk-term,current_officeholder,City of Oak Point,John Lusk,https://www.oakpointtexas.com/198/John-Lusk,2026-08-01,high,"Confirms May 2026 to May 2028 term and 2026 reelection."
+oak-point-dufford-term,current_officeholder,City of Oak Point,Scott Dufford,https://www.oakpointtexas.com/201/Scott-Dufford,2026-08-01,high,"Confirms May 2026 to May 2028 term."
+oak-point-census-geometry,geometry,U.S. Census Bureau,TIGERweb Current Incorporated Places,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/28,2026-08-01,high,"Official incorporated-place geometry; expected Oak Point GEOID 4853130 must be verified by the live fetch."
