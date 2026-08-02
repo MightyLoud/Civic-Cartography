@@ -15,7 +15,9 @@ Williamson County is the second county-level Civic Cartography proof. It tests w
 - Representation model: one County Judge elected countywide and four County Commissioners elected from precincts
 - County geometry source: U.S. Census Bureau TIGERweb Current Counties (`MapServer/82`)
 - Precinct geometry source: Williamson County GIS `Commissioner, Constable, JP Precincts` (`public/county_elections/MapServer/1`)
-- Stable precinct source field: `PCT_NUMBER`
+- Stable queryable precinct source field: `LABEL_NAME`
+- Stable query values: `PCT 1`, `PCT 2`, `PCT 3`, `PCT 4`
+- Source quirk: the layer renderer references hidden field `PCT_NUMBER`, but that field is not exposed by the query API
 
 ## Current official roster
 
@@ -56,12 +58,13 @@ TX:county:williamson:commissioner_precinct:4     -> williamson-county-commission
 2. Model the County Judge as countywide and each Commissioner as precinct-based.
 3. Use the Census county feature for GEOID `48491`.
 4. Use Williamson County GIS `public/county_elections/MapServer/1` for precinct geometry.
-5. Resolve precincts through stable source field `PCT_NUMBER` and require IDs 1–4 exactly once.
-6. Do not reuse Denton County's `COMMISH` schema or any Denton-specific attributes.
-7. Keep raw source responses separate from canonical map-ready GeoJSON.
-8. Every normalized record must join exactly one canonical feature.
-9. Current-source drift must fail CI when geometry, stable source attributes, precinct IDs, GEOID, or canonical joins change.
-10. Constables, Justices of the Peace, and other county offices remain outside this bounded release.
+5. Resolve precincts through queryable source field `LABEL_NAME` and require `PCT 1` through `PCT 4` exactly once.
+6. Preserve the source inconsistency where the renderer references hidden field `PCT_NUMBER` but the query API exposes `LABEL_NAME`.
+7. Do not reuse Denton County's `COMMISH` schema or any Denton-specific attributes.
+8. Keep raw source responses separate from canonical map-ready GeoJSON.
+9. Every normalized record must join exactly one canonical feature.
+10. Current-source drift must fail CI when geometry, stable source attributes, precinct IDs, GEOID, or canonical joins change.
+11. Constables, Justices of the Peace, and other county offices remain outside this bounded release.
 
 ## Completion rule
 
