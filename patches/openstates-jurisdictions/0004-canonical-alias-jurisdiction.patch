@@ -1,0 +1,195 @@
+diff --git a/src/init_migration/generate_pipeline.py b/src/init_migration/generate_pipeline.py
+index 23a110b..4afaa39 100644
+--- a/src/init_migration/generate_pipeline.py
++++ b/src/init_migration/generate_pipeline.py
+@@ -386,7 +386,22 @@ class GeneratePipeline:
+             return
+ 
+         classification = seed.classification or "government"
+-        jurisdiction_ocdid = self._derive_jurisdiction_ocdid(
++        canonical_jurisdiction_id = getattr(
++            self.req, "canonical_jurisdiction_id", None
++        ) or (
++            raw_record.get("_canonical_jurisdiction_ocdid")
++            if isinstance(raw_record, dict)
++            else None
++        )
++        suppress_jurisdiction_generation = bool(
++            getattr(self.req, "suppress_jurisdiction_generation", False)
++            or (
++                raw_record.get("_suppress_jurisdiction_generation", False)
++                if isinstance(raw_record, dict)
++                else False
++            )
++        )
++        jurisdiction_ocdid = canonical_jurisdiction_id or self._derive_jurisdiction_ocdid(
+             self.division.ocdid, classification
+         )
+         self.division.jurisdiction_id = jurisdiction_ocdid
+@@ -397,6 +412,16 @@ class GeneratePipeline:
+                 div_gen.dump_division(output_dir=self.division_output_dir)
+             )
+ 
++        if suppress_jurisdiction_generation:
++            logger.info(
++                "Canonical alias member references shared Jurisdiction without duplicate generation",
++                extra={
++                    "division_ocdid": self.division.ocdid,
++                    "canonical_jurisdiction_ocdid": jurisdiction_ocdid,
++                },
++            )
++            return
++
+         if self.jurisdiction_exists(jurisdiction_ocdid):
+             logger.info(
+                 "Jurisdiction already exists",
+diff --git a/src/init_migration/pipeline_models.py b/src/init_migration/pipeline_models.py
+index be9d550..a7add16 100644
+--- a/src/init_migration/pipeline_models.py
++++ b/src/init_migration/pipeline_models.py
+@@ -34,6 +34,8 @@ class GeneratorReq(BaseModel):
+     )
+     jurisdiction_override: dict[str, Any] | None = None
+     source_override: dict[str, Any] | None = None
++    canonical_jurisdiction_id: str | None = None
++    suppress_jurisdiction_generation: bool = False
+     asof_datetime: datetime = Field(default_factory=lambda: datetime.now(tz=UTC))
+ 
+ 
+diff --git a/tests/src/init_migration/test_canonical_alias_generation.py b/tests/src/init_migration/test_canonical_alias_generation.py
+new file mode 100644
+index 0000000..da0e971
+--- /dev/null
++++ b/tests/src/init_migration/test_canonical_alias_generation.py
+@@ -0,0 +1,131 @@
++from types import SimpleNamespace
++from uuid import UUID
++
++import src.init_migration.generate_pipeline as generate_pipeline
++from src.init_migration.generate_pipeline import GeneratePipeline
++
++
++PLACE = "ocd-division/country:us/state:co/place:denver"
++COUNTY = "ocd-division/country:us/state:co/county:denver"
++JURISDICTION = "ocd-jurisdiction/country:us/state:co/place:denver/government"
++TEST_UUID = UUID("9e7f9899-e6e9-5a53-a12f-723bb5542fed")
++
++
++def _pipeline(raw_record, division, tmp_path):
++    pipeline = GeneratePipeline.__new__(GeneratePipeline)
++    pipeline.req = SimpleNamespace(
++        data=SimpleNamespace(),
++        jurisdiction_override=None,
++        canonical_jurisdiction_id=None,
++        suppress_jurisdiction_generation=False,
++    )
++    pipeline.data = SimpleNamespace(raw_record=raw_record)
++    pipeline.uuid = TEST_UUID
++    pipeline.division = division
++    pipeline.jurisdiction = None
++    pipeline.created_jurisdictions = set()
++    pipeline.division_output_dir = tmp_path
++    pipeline.jurisdiction_output_dir = tmp_path
++    return pipeline
++
++
++def _seed(**kwargs):
++    return SimpleNamespace(
++        has_jurisdiction=True,
++        classification="government",
++        reason="general government fallback",
++    )
++
++
++def test_secondary_alias_member_references_canonical_without_duplicate(
++    monkeypatch,
++    tmp_path,
++):
++    raw_record = {
++        "_canonical_jurisdiction_ocdid": JURISDICTION,
++        "_suppress_jurisdiction_generation": True,
++    }
++    division = SimpleNamespace(ocdid=COUNTY, jurisdiction_id=None)
++    pipeline = _pipeline(raw_record, division, tmp_path)
++    response = SimpleNamespace(division_path=None, jurisdiction_path=None)
++    division_path = tmp_path / "divisions/co/local/denver_county.yaml"
++
++    class FakeDivGenerator:
++        def __init__(self, req):
++            assert req is pipeline.req
++            self.division = None
++
++        def dump_division(self, output_dir):
++            assert self.division is division
++            assert output_dir == tmp_path
++            return division_path
++
++    class DuplicateJurisdictionGenerator:
++        def __init__(self, *args, **kwargs):
++            raise AssertionError("secondary alias member generated a duplicate Jurisdiction")
++
++    monkeypatch.setattr(generate_pipeline, "infer_jurisdiction_seed", _seed)
++    monkeypatch.setattr(generate_pipeline, "DivGenerator", FakeDivGenerator)
++    monkeypatch.setattr(
++        generate_pipeline,
++        "JurGenerator",
++        DuplicateJurisdictionGenerator,
++    )
++
++    pipeline._generate_jurisdiction_for_division(response, lsad_code=None)
++
++    assert division.jurisdiction_id == JURISDICTION
++    assert response.division_path == str(division_path)
++    assert response.jurisdiction_path is None
++    assert pipeline.created_jurisdictions == set()
++
++
++def test_canonical_alias_member_generates_shared_jurisdiction(
++    monkeypatch,
++    tmp_path,
++):
++    raw_record = {
++        "_canonical_jurisdiction_ocdid": JURISDICTION,
++        "_suppress_jurisdiction_generation": False,
++    }
++    division = SimpleNamespace(ocdid=PLACE, jurisdiction_id=None)
++    pipeline = _pipeline(raw_record, division, tmp_path)
++    response = SimpleNamespace(division_path=None, jurisdiction_path=None)
++    division_path = tmp_path / "divisions/co/local/denver_place.yaml"
++    jurisdiction_path = tmp_path / "jurisdictions/co/local/denver.yaml"
++
++    class FakeDivGenerator:
++        def __init__(self, req):
++            assert req is pipeline.req
++            self.division = None
++
++        def dump_division(self, output_dir):
++            assert self.division is division
++            assert output_dir == tmp_path
++            return division_path
++
++    class FakeJurGenerator:
++        def __init__(self, req, division):
++            assert req is pipeline.req
++            assert division is pipeline.division
++
++        def generate_jurisdiction(self, *, division, uuid, classification):
++            assert division is pipeline.division
++            assert uuid == TEST_UUID
++            assert classification == "government"
++            return SimpleNamespace()
++
++        def dump_jurisdiction(self, output_dir):
++            assert output_dir == tmp_path
++            return jurisdiction_path
++
++    monkeypatch.setattr(generate_pipeline, "infer_jurisdiction_seed", _seed)
++    monkeypatch.setattr(generate_pipeline, "DivGenerator", FakeDivGenerator)
++    monkeypatch.setattr(generate_pipeline, "JurGenerator", FakeJurGenerator)
++
++    pipeline._generate_jurisdiction_for_division(response, lsad_code=None)
++
++    assert division.jurisdiction_id == JURISDICTION
++    assert response.division_path == str(division_path)
++    assert response.jurisdiction_path == str(jurisdiction_path)
++    assert pipeline.created_jurisdictions == {JURISDICTION}

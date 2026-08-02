@@ -1,0 +1,80 @@
+{
+  "alias_id": "co-denver-consolidated-city-county",
+  "attempts": [
+    {
+      "canonical_alias_id": "co-denver-consolidated-city-county",
+      "canonical_alias_is_canonical": true,
+      "canonical_alias_member": "ocd-division/country:us/state:co/place:denver",
+      "canonical_alias_verified_asof": "2026-08-02",
+      "canonical_division_ocdid": "ocd-division/country:us/state:co/place:denver",
+      "canonical_jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:co/place:denver/government",
+      "division_path": "divisions/co/local/denver_0820000_eac2c839-9df8-52a4-b0c0-b991e823cd53.yaml",
+      "error": null,
+      "jurisdiction_path": "jurisdictions/co/local/denver_c9595597-9ec3-5c12-a4a6-d5d9665ad7c5.yaml",
+      "name": "Denver city",
+      "ocdid": "ocd-division/country:us/state:co/place:denver",
+      "seed_reason": null,
+      "source": "master_orphan",
+      "status": "success",
+      "suppress_jurisdiction_generation": false
+    },
+    {
+      "canonical_alias_id": "co-denver-consolidated-city-county",
+      "canonical_alias_is_canonical": false,
+      "canonical_alias_member": "ocd-division/country:us/state:co/county:denver",
+      "canonical_alias_verified_asof": "2026-08-02",
+      "canonical_division_ocdid": "ocd-division/country:us/state:co/place:denver",
+      "canonical_jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:co/place:denver/government",
+      "division_path": "divisions/co/local/denver_county__dfec8fbb-dfe0-5c67-8201-3fa6efbfa3a3.yaml",
+      "error": "No validation match found",
+      "jurisdiction_path": null,
+      "name": "Denver County",
+      "ocdid": "ocd-division/country:us/state:co/county:denver",
+      "seed_reason": "general government fallback",
+      "source": "master_orphan",
+      "status": "partial",
+      "suppress_jurisdiction_generation": true
+    }
+  ],
+  "canonical_jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:co/place:denver/government",
+  "canonical_member": "ocd-division/country:us/state:co/place:denver",
+  "division_paths": [
+    "divisions/co/local/denver_0820000_eac2c839-9df8-52a4-b0c0-b991e823cd53.yaml",
+    "divisions/co/local/denver_county__dfec8fbb-dfe0-5c67-8201-3fa6efbfa3a3.yaml"
+  ],
+  "enrichment_reasons": [
+    "ocd-division/country:us/state:co/county:denver: status=partial; error=No validation match found"
+  ],
+  "enrichment_status": "partial",
+  "evaluation_id": "00393166e15f0391dd34",
+  "first_run_id": "e80831a5710aca262c9b",
+  "fixture_target_id": "BP25-022",
+  "gate_result": {
+    "deterministic_count": 6,
+    "failed_count": 0,
+    "fixture_count": 6,
+    "gate_passed": true,
+    "human_review_gate": "passed",
+    "median_human_minutes": 0.0,
+    "passed_count": 6,
+    "report_content_match": true
+  },
+  "generation_status": "generated",
+  "inferred_classification": "government",
+  "invariant_errors": [],
+  "jurisdiction_name": "City and County of Denver",
+  "jurisdiction_paths": [
+    "jurisdictions/co/local/denver_c9595597-9ec3-5c12-a4a6-d5d9665ad7c5.yaml"
+  ],
+  "members": [
+    "ocd-division/country:us/state:co/place:denver",
+    "ocd-division/country:us/state:co/county:denver"
+  ],
+  "output_hashes": {
+    "divisions/co/local/denver_0820000_eac2c839-9df8-52a4-b0c0-b991e823cd53.yaml": "89fa44f1a7c11d17d29183dc72a4d55950b96c3defaaee02cadcd1c49a776145",
+    "divisions/co/local/denver_county__dfec8fbb-dfe0-5c67-8201-3fa6efbfa3a3.yaml": "3d65db2a68c5e6e80ae0486848bf501a211e2ca703a9783a7eefdae6034c8808",
+    "jurisdictions/co/local/denver_c9595597-9ec3-5c12-a4a6-d5d9665ad7c5.yaml": "880b2462b186959f35d583e1b35317c87ee370aaf3fe42ed9960bc13c9adbff0"
+  },
+  "second_run_id": "e80831a5710aca262c9b",
+  "version": 1
+}

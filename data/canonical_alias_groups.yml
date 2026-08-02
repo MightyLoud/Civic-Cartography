@@ -1,0 +1,30 @@
+version: 1
+aliases:
+  - alias_id: co-denver-consolidated-city-county
+    state: co
+    canonical_name: City and County of Denver
+    members:
+      - ocd-division/country:us/state:co/place:denver
+      - ocd-division/country:us/state:co/county:denver
+    canonical_member: ocd-division/country:us/state:co/place:denver
+    classification: government
+    jurisdiction_name: City and County of Denver
+    url: https://www.denvergov.org/
+    source:
+      source_name: City and County of Denver
+      source_url:
+        official_website: https://www.denvergov.org/
+        census_coextensive_record: https://www.census.gov/programs-surveys/geography/technical-documentation/county-changes.1980.html
+        colorado_constitution: https://leg.colorado.gov/laws/colorado-constitution
+      source_description: >-
+        Official Denver materials identify one City and County government, and
+        the U.S. Census Bureau records Denver County as coextensive with Denver
+        city. The maintained alias joins the two geographic Divisions to one
+        governing Jurisdiction without removing either geography.
+    verified_asof: '2026-08-02'
+    evidence_notes: >-
+      The place Division is the maintained canonical representative because the
+      shared government is officially styled the City and County of Denver and
+      the manifest lists the incorporated-place member first. The county
+      Division remains a first-class geographic record and points to the same
+      canonical government Jurisdiction.
