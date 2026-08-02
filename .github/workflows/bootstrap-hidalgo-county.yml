@@ -27,200 +27,82 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install -r requirements-dev.txt
 
-      - name: Resolve official Hidalgo County Commissioner layer
-        id: source
+      - name: Validate reviewed Hidalgo County source contract
         run: |
           python - <<'PY'
           import json
-          import os
-          import re
           import time
           import urllib.parse
           import urllib.request
           from pathlib import Path
 
-          USER_AGENT = 'Civic-Cartography-bootstrap/1.0'
-          SEARCH = 'https://www.arcgis.com/sharing/rest/search'
+          ITEM_ID = 'bc95c6e0bbed4ba98a16b303219de88a'
+          ITEM_URL = f'https://www.arcgis.com/sharing/rest/content/items/{ITEM_ID}'
+          LAYER_URL = 'https://services9.arcgis.com/dwMDP55HTfoj4n1c/arcgis/rest/services/County_Commissioners_View/FeatureServer/0'
+          DISTRICT_FIELD = 'DISTRICT'
 
-          def fetch_json(url, attempts=2):
-              request = urllib.request.Request(url, headers={'User-Agent': USER_AGENT})
+          def fetch_json(url):
+              request = urllib.request.Request(url, headers={'User-Agent': 'Civic-Cartography-bootstrap/1.0'})
               last_error = None
-              for attempt in range(1, attempts + 1):
+              for attempt in range(1, 6):
                   try:
-                      with urllib.request.urlopen(request, timeout=25) as response:
+                      with urllib.request.urlopen(request, timeout=45) as response:
                           return json.load(response)
                   except Exception as exc:
                       last_error = exc
-                      if attempt == attempts:
+                      if attempt == 5:
                           raise
-                      time.sleep(3)
+                      time.sleep(attempt * 5)
               raise last_error
 
-          queries = [
-              'title:"Commissioner Precincts" AND tags:"HIDALGO COUNTY"',
-              'title:"Hidalgo County Basemap"',
-              'title:"Hidalgo County Pct.2 Basemap"',
-          ]
-          items = {}
-          for query_text in queries:
-              query = urllib.parse.urlencode({'q': query_text, 'num': 25, 'f': 'json'})
-              payload = fetch_json(f'{SEARCH}?{query}')
-              for item in payload.get('results', []):
-                  if item.get('id'):
-                      items[item['id']] = item
+          item = fetch_json(f'{ITEM_URL}?f=json')
+          if item.get('id') != ITEM_ID or item.get('title') != 'Hidalgo County Basemap' or item.get('owner') != 'rpresas':
+              raise SystemExit(f'Unexpected Hidalgo County ArcGIS item metadata: {item!r}')
 
-          prioritized = []
-          for item in items.values():
-              title = str(item.get('title') or '')
-              tags = ' '.join(str(value) for value in item.get('tags', []))
-              text = f'{title} {tags}'.lower()
-              if 'hidalgo' in text or 'commissioner precinct' in text:
-                  prioritized.append(item)
-          prioritized = prioritized[:40]
-          print(f'Inspecting {len(prioritized)} prioritized Hidalgo County ArcGIS items.')
+          metadata = fetch_json(f'{LAYER_URL}?f=json')
+          if metadata.get('geometryType') != 'esriGeometryPolygon':
+              raise SystemExit(f'Unexpected Hidalgo County geometry type: {metadata.get("geometryType")!r}')
+          fields = {field.get('name') for field in metadata.get('fields', [])}
+          if DISTRICT_FIELD not in fields:
+              raise SystemExit(f'Hidalgo County layer lost {DISTRICT_FIELD}: {sorted(fields)}')
+          query = urllib.parse.urlencode({
+              'where': '1=1',
+              'outFields': DISTRICT_FIELD,
+              'returnGeometry': 'false',
+              'orderByFields': DISTRICT_FIELD,
+              'f': 'json',
+          })
+          payload = fetch_json(f'{LAYER_URL}/query?{query}')
+          values = sorted({str(feature['attributes'][DISTRICT_FIELD]) for feature in payload.get('features', [])})
+          if values != ['1', '2', '3', '4']:
+              raise SystemExit(f'Unexpected Hidalgo County Commissioner precinct values: {values}')
 
-          direct = []
-          roots = []
-          for item in prioritized:
-              item_type = item.get('type')
-              url = item.get('url')
-              if item_type == 'Web Map':
-                  try:
-                      data = fetch_json(f"https://www.arcgis.com/sharing/rest/content/items/{item['id']}/data?f=json")
-                  except Exception as exc:
-                      print(f"Skipping web map {item.get('id')} data: {exc}")
-                      data = {}
-                  stack = list(data.get('operationalLayers') or [])
-                  while stack:
-                      layer = stack.pop()
-                      if not isinstance(layer, dict):
-                          continue
-                      stack.extend(layer.get('layers') or [])
-                      layer_url = layer.get('url')
-                      if isinstance(layer_url, str):
-                          layer_url = layer_url.rstrip('/')
-                          if re.search(r'/(?:MapServer|FeatureServer)/\d+$', layer_url, re.I):
-                              direct.append((item, layer_url))
-                              roots.append((item, layer_url.rsplit('/', 1)[0]))
-                          elif re.search(r'/(?:MapServer|FeatureServer)$', layer_url, re.I):
-                              roots.append((item, layer_url))
-              if isinstance(url, str):
-                  url = url.rstrip('/')
-                  if re.search(r'/(?:MapServer|FeatureServer)/\d+$', url, re.I):
-                      direct.append((item, url))
-                      roots.append((item, url.rsplit('/', 1)[0]))
-                  elif re.search(r'/(?:MapServer|FeatureServer)$', url, re.I):
-                      roots.append((item, url))
-
-          unique_roots = []
-          seen_roots = set()
-          for item, root in roots:
-              if root not in seen_roots:
-                  seen_roots.add(root)
-                  unique_roots.append((item, root))
-          for item, root in unique_roots[:30]:
-              try:
-                  service = fetch_json(f'{root}?f=json')
-              except Exception as exc:
-                  print(f'Skipping service {root}: {exc}')
-                  continue
-              for layer in service.get('layers', []):
-                  name = str(layer.get('name') or '')
-                  if 'commission' in name.lower() or 'precinct' in name.lower():
-                      direct.append((item, f"{root}/{layer['id']}"))
-
-          seen = set()
-          ranked = []
-          field_tokens = ('PRECINCT', 'PREC', 'PCT', 'DISTRICT', 'DIST', 'COMMISH')
-          for item, layer_url in direct[:60]:
-              if layer_url in seen:
-                  continue
-              seen.add(layer_url)
-              try:
-                  metadata = fetch_json(f'{layer_url}?f=json')
-              except Exception as exc:
-                  print(f'Skipping layer {layer_url}: {exc}')
-                  continue
-              if metadata.get('geometryType') != 'esriGeometryPolygon':
-                  continue
-              layer_name = str(metadata.get('name') or '')
-              fields = [str(field.get('name') or '') for field in metadata.get('fields', [])]
-              for field in fields:
-                  upper = field.upper()
-                  if not any(token in upper for token in field_tokens):
-                      continue
-                  query = urllib.parse.urlencode({
-                      'where': '1=1',
-                      'outFields': field,
-                      'returnGeometry': 'false',
-                      'f': 'json',
-                  })
-                  try:
-                      payload = fetch_json(f'{layer_url}/query?{query}')
-                  except Exception:
-                      continue
-                  values = []
-                  for feature in payload.get('features', []):
-                      raw = feature.get('attributes', {}).get(field)
-                      text = str(raw).strip() if raw is not None else ''
-                      match = re.search(r'(?<!\d)([1-4])(?!\d)', text)
-                      if match:
-                          values.append(match.group(1))
-                  if sorted(set(values)) != ['1', '2', '3', '4']:
-                      continue
-                  title = str(item.get('title') or '')
-                  tags = ' '.join(str(value) for value in item.get('tags', []))
-                  score = 100
-                  if 'commission' in layer_name.lower(): score += 30
-                  if 'commission' in title.lower(): score += 25
-                  if 'hidalgo county' in f'{title} {tags}'.lower(): score += 20
-                  if upper in {'PRECINCT', 'PRECINCT_NO', 'PCT', 'PCT_NO', 'DISTRICT'}: score += 15
-                  ranked.append((score, layer_url, field, item, metadata))
-
-          ranked.sort(key=lambda value: (value[0], value[1], value[2]), reverse=True)
-          if not ranked:
-              summary = [(item.get('id'), item.get('title'), item.get('type'), item.get('owner'), item.get('url')) for item in prioritized]
-              raise SystemExit(f'No Hidalgo County Commissioner polygon layer resolved values 1-4. Items: {summary!r}')
-
-          score, layer_url, district_field, item, metadata = ranked[0]
           contract = {
-              'search_queries': queries,
-              'selected_item': item,
-              'operational_layer_url': layer_url,
-              'district_field': district_field,
+              'item_id': ITEM_ID,
+              'item_title': item.get('title'),
+              'item_owner': item.get('owner'),
+              'item_type': item.get('type'),
+              'item_url': item.get('url'),
+              'operational_layer_url': LAYER_URL,
               'layer_name': metadata.get('name'),
-              'ranked_candidates': [
-                  {
-                      'score': candidate_score,
-                      'layer_url': candidate_url,
-                      'district_field': candidate_field,
-                      'item_id': candidate_item.get('id'),
-                      'item_title': candidate_item.get('title'),
-                      'item_owner': candidate_item.get('owner'),
-                      'layer_name': candidate_metadata.get('name'),
-                  }
-                  for candidate_score, candidate_url, candidate_field, candidate_item, candidate_metadata in ranked
-              ],
+              'district_field': DISTRICT_FIELD,
+              'district_values': values,
+              'source_classification': 'county-associated ArcGIS source controlled by official Hidalgo County roster and 2021 redistricting evidence',
           }
           output = Path('build/hidalgo-county/portal-source-contract.json')
           output.parent.mkdir(parents=True, exist_ok=True)
           output.write_text(json.dumps(contract, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
-              handle.write(f'layer_url={layer_url}\n')
-              handle.write(f'district_field={district_field}\n')
-              handle.write(f'item_id={item.get("id")}\n')
-              handle.write(f'item_owner={item.get("owner")}\n')
-          print(f'Hidalgo County item: {item.get("id")} / {item.get("owner")} / {item.get("title")}')
-          print(f'Hidalgo County operational layer: {layer_url}')
-          print(f'Hidalgo County district field: {district_field}')
+          print(f'Hidalgo County item: {ITEM_ID} / {item.get("owner")} / {item.get("title")}')
+          print(f'Hidalgo County operational layer: {LAYER_URL}')
+          print(f'Hidalgo County district field: {DISTRICT_FIELD}')
           PY
 
       - name: Fetch current Hidalgo County Commissioner precincts
         run: |
           python scripts/fetch_arcgis_districts.py \
-            --layer-url "${{ steps.source.outputs.layer_url }}" \
+            --layer-url https://services9.arcgis.com/dwMDP55HTfoj4n1c/arcgis/rest/services/County_Commissioners_View/FeatureServer/0 \
             --district-ids 1,2,3,4 \
-            --district-field "${{ steps.source.outputs.district_field }}" \
+            --district-field DISTRICT \
             --district-type commissioner_precinct \
             --district-name-prefix "Commissioner Precinct" \
             --jurisdiction-name "Hidalgo County" \
