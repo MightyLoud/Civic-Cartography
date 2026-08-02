@@ -1,0 +1,211 @@
+name: Validate El Paso County complete schema
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-el-paso-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Validate roster, alias, bilingual, and portal contracts
+        run: |
+          python - <<'PY'
+          import json
+          import time
+          import urllib.parse
+          import urllib.request
+
+          DIRECTORY = 'https://epcountyvotes.com/elected-officials-and-candidate-information/elected-officials/print'
+          PRECINCT_1 = 'https://www.epcountytx.gov/194/Commissioner-Precinct-1'
+          PRECINCT_3 = 'https://www.epcountytx.gov/196/Commissioner-Precinct-3'
+          SPANISH_MAPS = 'https://es.epcountyvotes.com/maps/county-commissioner-maps'
+          PORTAL = 'https://maps.epcounty.com/portal'
+          ITEM_ID = '0b4e626d91684cecb1e35828cf52092f'
+          LAYER = 'https://maps.epcounty.com/arcgis/rest/services/Website_Basemap/MapServer/10'
+
+          def fetch(url, json_response=False):
+              request = urllib.request.Request(url, headers={'User-Agent': 'Civic-Cartography-validator/1.0'})
+              last_error = None
+              for attempt in range(1, 6):
+                  try:
+                      with urllib.request.urlopen(request, timeout=45) as response:
+                          if json_response:
+                              return json.load(response)
+                          return response.read().decode('utf-8', errors='replace')
+                  except Exception as exc:
+                      last_error = exc
+                      if attempt == 5:
+                          raise
+                      time.sleep(attempt * 5)
+              raise last_error
+
+          directory = fetch(DIRECTORY)
+          for value in (
+              'Ricardo Samaniego', 'Jacqueline Butler', 'David Stout', 'Iliana Holguin',
+              'Sergio Coronado', 'Oscar Ugarte', 'Delia Briones',
+              'Norma Favela Barceleau', 'Ruben P. Gonzalez',
+          ):
+              if value not in directory:
+                  raise SystemExit(f'El Paso County Elections directory lost current holder: {value}')
+          if 'County Treasurer' in directory:
+              raise SystemExit('El Paso County Elections directory unexpectedly lists a County Treasurer.')
+
+          precinct_1 = fetch(PRECINCT_1)
+          if 'Jackie Butler' not in precinct_1:
+              raise SystemExit('El Paso County Precinct 1 page lost Jackie Butler alias.')
+          precinct_3 = fetch(PRECINCT_3)
+          for value in ('Mission Statement', 'Nuestra misión'):
+              if value not in precinct_3:
+                  raise SystemExit(f'El Paso County Precinct 3 bilingual marker changed: {value}')
+          spanish = fetch(SPANISH_MAPS)
+          if 'Mapas de los Precinctos 1-4' not in spanish:
+              raise SystemExit('El Paso County Spanish Commissioner map marker changed.')
+
+          item_url = f'{PORTAL}/sharing/rest/content/items/{ITEM_ID}'
+          item = fetch(f'{item_url}?f=json', json_response=True)
+          data = fetch(f'{item_url}/data?f=json', json_response=True)
+          urls = []
+          def walk(layers):
+              for layer in layers or []:
+                  if isinstance(layer, dict):
+                      url = layer.get('url')
+                      if isinstance(url, str): urls.append(url.rstrip('/'))
+                      walk(layer.get('layers'))
+          walk(data.get('operationalLayers'))
+          if not any(url == LAYER or url == LAYER.rsplit('/', 1)[0] for url in urls):
+              raise SystemExit(f'El Paso County portal item no longer exposes expected operational layer: {urls!r}')
+          if item.get('id') != ITEM_ID:
+              raise SystemExit(f'Unexpected El Paso County portal item metadata: {item!r}')
+
+          metadata = fetch(f'{LAYER}?f=json', json_response=True)
+          if metadata.get('geometryType') != 'esriGeometryPolygon':
+              raise SystemExit(f'Unexpected El Paso County geometry type: {metadata.get("geometryType")!r}')
+          fields = {field.get('name') for field in metadata.get('fields', [])}
+          if 'Precinct' not in fields:
+              raise SystemExit('El Paso County operational layer lost Precinct field.')
+          query = urllib.parse.urlencode({
+              'where': '1=1',
+              'outFields': 'Precinct',
+              'returnGeometry': 'false',
+              'orderByFields': 'Precinct',
+              'f': 'json',
+          })
+          payload = fetch(f'{LAYER}/query?{query}', json_response=True)
+          values = sorted({str(feature['attributes']['Precinct']) for feature in payload.get('features', [])})
+          if values != ['1', '2', '3', '4']:
+              raise SystemExit(f'Unexpected El Paso County precinct IDs: {values}')
+          print('El Paso County roster, alias, bilingual, portal, and layer contracts match the release.')
+          PY
+
+      - name: Fetch current El Paso County Commissioner precincts
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/el-paso-county/precincts
+            if python scripts/fetch_arcgis_districts.py \
+              --layer-url https://maps.epcounty.com/arcgis/rest/services/Website_Basemap/MapServer/10 \
+              --district-ids 1,2,3,4 \
+              --district-field Precinct \
+              --district-type commissioner_precinct \
+              --district-name-prefix "Commissioner Precinct" \
+              --jurisdiction-name "El Paso County" \
+              --record-id-prefix TX:county:el_paso:commissioner_precinct \
+              --geometry-id-prefix el-paso-county-commissioner-precinct \
+              --source-agency "El Paso County GIS" \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/el-paso-county/precincts/raw/commissioner-precincts-1-4.geojson \
+              --output build/el-paso-county/precincts/geojson/el_paso_county_commissioner_precincts.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed El Paso County precincts match official source
+        run: |
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/el-paso-county/commissioner-precincts-1-4.geojson \
+            --fresh-raw build/el-paso-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --committed-canonical data/geojson/el_paso_county_commissioner_precincts.geojson \
+            --fresh-canonical build/el-paso-county/precincts/geojson/el_paso_county_commissioner_precincts.geojson
+
+      - name: Fetch current El Paso County boundary
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/el-paso-county/county
+            if python scripts/fetch_tigerweb_county.py \
+              --geoid 48141 \
+              --record-id TX:county:el_paso:countywide:COUNTYWIDE \
+              --geometry-id el-paso-county-countywide \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/el-paso-county/county/raw/tigerweb-county-48141.geojson \
+              --output build/el-paso-county/county/geojson/el_paso_county_countywide.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed El Paso County boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/el-paso-county/tigerweb-county-48141.geojson \
+            --fresh-raw build/el-paso-county/county/raw/tigerweb-county-48141.geojson \
+            --committed-canonical data/geojson/el_paso_county_countywide.geojson \
+            --fresh-canonical build/el-paso-county/county/geojson/el_paso_county_countywide.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Calculate El Paso County combined canonical digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          paths = [
+              Path('data/geojson/el_paso_county_countywide.geojson'),
+              Path('data/geojson/el_paso_county_commissioner_precincts.geojson'),
+          ]
+          digest = hashlib.sha256()
+          for path in sorted(paths, key=lambda item: item.name):
+              digest.update(path.name.encode('utf-8'))
+              digest.update(b'\0')
+              digest.update(path.read_bytes())
+              digest.update(b'\0')
+          value = digest.hexdigest()
+          output = Path('build/el-paso-county/release-sha256.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(value + '\n', encoding='utf-8')
+          print(f'El Paso County combined canonical SHA-256: {value}')
+          PY
+
+      - name: Upload El Paso County validation check
+        uses: actions/upload-artifact@v4
+        with:
+          name: el-paso-county-validation
+          path: build/el-paso-county/
+          if-no-files-found: error
