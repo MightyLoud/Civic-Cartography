@@ -32,17 +32,27 @@ jobs:
           from pathlib import Path
           path = Path('build/travis-county/precincts/raw/hub-download.geojson')
           payload = json.loads(path.read_text(encoding='utf-8'))
-          if payload.get('type') != 'FeatureCollection':
+          features = payload.get('features', [])
+          if payload.get('type') != 'FeatureCollection' or len(features) != 4:
               raise SystemExit(f'Unexpected Hub response: {payload!r}')
-          print(f"Downloaded {len(payload.get('features', []))} Hub geometry features.")
+          object_ids = sorted(
+              int(feature['properties']['OBJECTID'])
+              for feature in features
+          )
+          Path('build/travis-county/precincts/raw/object-ids.txt').write_text(
+              ','.join(str(value) for value in object_ids),
+              encoding='utf-8',
+          )
+          print(f"Downloaded four Hub geometry features with object IDs {object_ids}.")
           PY
 
       - name: Fetch current Travis County precinct attributes
         run: |
+          object_ids="$(cat build/travis-county/precincts/raw/object-ids.txt)"
           curl --fail-with-body --location --silent --show-error --compressed \
-            --connect-timeout 30 --max-time 120 --retry 3 --retry-all-errors \
+            --connect-timeout 30 --max-time 90 --retry 1 --retry-all-errors \
             --get "https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/FeatureServer/0/query" \
-            --data-urlencode "where=1=1" \
+            --data-urlencode "objectIds=${object_ids}" \
             --data-urlencode "outFields=*" \
             --data-urlencode "returnGeometry=false" \
             --data-urlencode "orderByFields=PRECINCT" \
@@ -79,7 +89,8 @@ jobs:
 
           hub_url = "https://hub.arcgis.com/api/v3/datasets/1fd888e1d8124c1dbd35b5dac25a0a5a_0/downloads/data?format=geojson&spatialRefId=4326&where=1%3D1"
           layer_url = "https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/FeatureServer/0"
-          live_query_url = f"{layer_url}/query?where=1%3D1&outFields=%2A&returnGeometry=false&orderByFields=PRECINCT&f=json"
+          object_ids = Path("build/travis-county/precincts/raw/object-ids.txt").read_text(encoding="utf-8")
+          live_query_url = f"{layer_url}/query?objectIds={object_ids}&outFields=%2A&returnGeometry=false&orderByFields=PRECINCT&f=json"
 
           hub_payload = json.loads(
               Path("build/travis-county/precincts/raw/hub-download.geojson").read_text(encoding="utf-8")
