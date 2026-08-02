@@ -1,0 +1,32 @@
+version: 1
+overrides:
+  - override_id: co-regional-transportation-district
+    state: co
+    canonical_name: Regional Transportation District
+    aliases:
+      - Regional Transportation District
+      - RTD
+      - Denver Regional Transportation District
+    ocdid: ocd-division/country:us/state:co/special_district:regional_transportation_district
+    jurisdiction:
+      has_jurisdiction: true
+      classification: transit_authority
+      jurisdiction_name: Regional Transportation District
+      jurisdiction_type_suffix: transit_authority
+      url: https://www.rtd-denver.com/
+    source:
+      source_name: Regional Transportation District
+      source_url:
+        official_website: https://www.rtd-denver.com/
+        governance_materials: https://www.rtd-denver.com/about-rtd/board-of-directors/governance-materials
+        statutory_identity: https://www.rtd-denver.com/service-development/faqs
+      source_description: >-
+        Official RTD materials identify the Regional Transportation District as
+        a Colorado state-created public body governed under the Regional
+        Transportation District Act, C.R.S. 32-9-101 et seq.
+    verified_asof: '2026-08-02'
+    evidence_notes: >-
+      The maintained OCDID uses a reusable special_district segment because the
+      current OCD identifier inputs do not contain RTD. The classification is
+      transit_authority because RTD is the elected regional public body that
+      develops, maintains, and operates the district mass-transit system.
