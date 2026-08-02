@@ -1,0 +1,6 @@
+office_name,geography_type,geography_id,officeholder,source_url,source_retrieved_at,notes
+County Judge,countywide,COUNTYWIDE,Andy Eads,https://www.dentoncounty.gov/165/Commissioners-Court,2026-08-01,"Countywide elected presiding member of Commissioners Court."
+County Commissioner Precinct 1,commissioner_precinct,1,Ryan Williams,https://www.dentoncounty.gov/165/Commissioners-Court,2026-08-01,"Elected from Commissioner Precinct 1."
+County Commissioner Precinct 2,commissioner_precinct,2,Kevin Falconer,https://www.dentoncounty.gov/165/Commissioners-Court,2026-08-01,"Elected from Commissioner Precinct 2."
+County Commissioner Precinct 3,commissioner_precinct,3,Bobbie J. Mitchell,https://www.dentoncounty.gov/165/Commissioners-Court,2026-08-01,"Elected from Commissioner Precinct 3."
+County Commissioner Precinct 4,commissioner_precinct,4,Dianne Edmondson,https://www.dentoncounty.gov/165/Commissioners-Court,2026-08-01,"Elected from Commissioner Precinct 4."
