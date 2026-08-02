@@ -1,0 +1,92 @@
+name: Validate Williamson County transfer proof
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-williamson-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Fetch current Williamson County boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48491 \
+            --record-id TX:county:williamson:countywide:COUNTYWIDE \
+            --geometry-id williamson-county-countywide \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/williamson-county/county/raw/tigerweb-county-48491.geojson \
+            --output build/williamson-county/county/geojson/williamson_county_countywide.geojson
+
+      - name: Fetch current Williamson County commissioner precincts
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://gis.wilco.org/arcgis/rest/services/public/county_elections/MapServer/1 \
+            --district-ids 1,2,3,4 \
+            --district-field PCT_NUMBER \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Williamson County" \
+            --record-id-prefix TX:county:williamson:commissioner_precinct \
+            --geometry-id-prefix williamson-county-commissioner-precinct \
+            --source-agency "Williamson County GIS" \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/williamson-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --output build/williamson-county/precincts/geojson/williamson_county_commissioner_precincts.geojson
+
+      - name: Verify Williamson County build contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          county = json.loads(Path('build/williamson-county/county/geojson/williamson_county_countywide.geojson').read_text())
+          precincts = json.loads(Path('build/williamson-county/precincts/geojson/williamson_county_commissioner_precincts.geojson').read_text())
+
+          if len(county.get('features', [])) != 1:
+              raise SystemExit('Expected exactly one Williamson County feature')
+          features = precincts.get('features', [])
+          if len(features) != 4:
+              raise SystemExit(f'Expected four commissioner precincts, found {len(features)}')
+          ids = sorted(str((feature.get('properties') or {}).get('district_id')) for feature in features)
+          if ids != ['1', '2', '3', '4']:
+              raise SystemExit(f'Unexpected precinct IDs: {ids!r}')
+          for feature in features:
+              props = feature.get('properties') or {}
+              if props.get('source_district_field') != 'PCT_NUMBER':
+                  raise SystemExit(f"Unexpected source field: {props.get('source_district_field')!r}")
+          print('Verified one county feature and four PCT_NUMBER commissioner precincts.')
+          PY
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate released normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate released geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Upload Williamson County build check
+        uses: actions/upload-artifact@v4
+        with:
+          name: williamson-county-boundary-check
+          path: build/williamson-county/
+          if-no-files-found: error
