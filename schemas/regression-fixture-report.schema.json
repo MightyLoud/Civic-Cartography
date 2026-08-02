@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://civic-cartography.local/schemas/regression-fixture-report.schema.json",
+  "title": "Regression fixture evaluation report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_name",
+    "manifest_sha256",
+    "run_asof",
+    "evaluation_id",
+    "upstream",
+    "first_run_id",
+    "second_run_id",
+    "summary",
+    "fixtures"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "manifest_name": {"type": "string", "minLength": 1},
+    "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "run_asof": {"type": "string", "format": "date-time"},
+    "evaluation_id": {"type": "string", "pattern": "^[0-9a-f]{20}$"},
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "revision"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "first_run_id": {"type": "string", "minLength": 1},
+    "second_run_id": {"type": "string", "minLength": 1},
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_count",
+        "passed_count",
+        "failed_count",
+        "deterministic_count",
+        "report_content_match",
+        "median_human_minutes",
+        "human_review_gate",
+        "gate_passed"
+      ],
+      "properties": {
+        "fixture_count": {"type": "integer", "minimum": 1},
+        "passed_count": {"type": "integer", "minimum": 0},
+        "failed_count": {"type": "integer", "minimum": 0},
+        "deterministic_count": {"type": "integer", "minimum": 0},
+        "report_content_match": {"type": "boolean"},
+        "median_human_minutes": {
+          "type": ["number", "null"],
+          "minimum": 0
+        },
+        "human_review_gate": {
+          "enum": ["passed", "failed", "not_evaluated"]
+        },
+        "gate_passed": {"type": "boolean"}
+      }
+    },
+    "fixtures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target_id",
+          "jurisdiction_name",
+          "expected_archetype",
+          "expected_classification",
+          "status",
+          "deterministic",
+          "resolved_ocdids",
+          "inferred_classification",
+          "generation_status",
+          "division_paths",
+          "jurisdiction_paths",
+          "output_hashes",
+          "exception_class",
+          "review_reason",
+          "human_minutes",
+          "failures"
+        ],
+        "properties": {
+          "target_id": {"type": "string", "minLength": 1},
+          "jurisdiction_name": {"type": "string", "minLength": 1},
+          "expected_archetype": {"type": "string", "minLength": 1},
+          "expected_classification": {"type": "string", "minLength": 1},
+          "status": {"enum": ["passed", "failed"]},
+          "deterministic": {"type": "boolean"},
+          "resolved_ocdids": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          },
+          "inferred_classification": {"type": ["string", "null"]},
+          "generation_status": {"type": ["string", "null"]},
+          "division_paths": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          },
+          "jurisdiction_paths": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          },
+          "output_hashes": {
+            "type": "object",
+            "propertyNames": {"minLength": 1},
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "exception_class": {"type": ["string", "null"]},
+          "review_reason": {"type": ["string", "null"]},
+          "human_minutes": {"type": ["number", "null"], "minimum": 0},
+          "failures": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    }
+  }
+}
