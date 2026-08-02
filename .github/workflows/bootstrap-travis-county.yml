@@ -5,7 +5,7 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   bootstrap-travis-county:
@@ -155,6 +155,32 @@ jobs:
           )
           print("Combined four official precinct geometries with the current live renderer roster.")
           PY
+
+      - name: Commit Travis County geometry snapshots
+        if: github.event_name == 'push' && github.ref == 'refs/heads/data/travis-county-commissioners-court'
+        run: |
+          mkdir -p data/raw/travis-county data/geojson
+          cp build/travis-county/county/raw/tigerweb-county-48453.geojson \
+            data/raw/travis-county/tigerweb-county-48453.geojson
+          cp build/travis-county/county/geojson/travis_county_countywide.geojson \
+            data/geojson/travis_county_countywide.geojson
+          cp build/travis-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            data/raw/travis-county/commissioner-precincts-1-4.geojson
+          cp build/travis-county/precincts/geojson/travis_county_commissioner_precincts.geojson \
+            data/geojson/travis_county_commissioner_precincts.geojson
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/raw/travis-county/tigerweb-county-48453.geojson \
+            data/geojson/travis_county_countywide.geojson \
+            data/raw/travis-county/commissioner-precincts-1-4.geojson \
+            data/geojson/travis_county_commissioner_precincts.geojson
+          if git diff --cached --quiet; then
+            echo "Committed Travis County snapshots already match the generated artifacts."
+          else
+            git commit -m "Add Travis County geometry snapshots"
+            git push origin HEAD:data/travis-county-commissioners-court
+          fi
 
       - name: Upload Travis County bootstrap artifacts
         if: always()
