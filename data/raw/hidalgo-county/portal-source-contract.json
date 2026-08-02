@@ -1,94 +1,17 @@
 {
   "district_field": "DISTRICT",
+  "district_values": [
+    "1",
+    "2",
+    "3",
+    "4"
+  ],
+  "item_id": "bc95c6e0bbed4ba98a16b303219de88a",
+  "item_owner": "rpresas",
+  "item_title": "Hidalgo County Basemap",
+  "item_type": "Web Map",
+  "item_url": "",
   "layer_name": "County Commissioners",
   "operational_layer_url": "https://services9.arcgis.com/dwMDP55HTfoj4n1c/arcgis/rest/services/County_Commissioners_View/FeatureServer/0",
-  "ranked_candidates": [
-    {
-      "district_field": "DISTRICT",
-      "item_id": "bc95c6e0bbed4ba98a16b303219de88a",
-      "item_owner": "rpresas",
-      "item_title": "Hidalgo County Basemap",
-      "layer_name": "County Commissioners",
-      "layer_url": "https://services9.arcgis.com/dwMDP55HTfoj4n1c/arcgis/rest/services/County_Commissioners_View/FeatureServer/0",
-      "score": 165
-    },
-    {
-      "district_field": "PCT",
-      "item_id": "bc95c6e0bbed4ba98a16b303219de88a",
-      "item_owner": "rpresas",
-      "item_title": "Hidalgo County Basemap",
-      "layer_name": "Hidalgo County Parks",
-      "layer_url": "https://services9.arcgis.com/dwMDP55HTfoj4n1c/arcgis/rest/services/Hidalgo_County_Parks_2022/FeatureServer/2",
-      "score": 135
-    }
-  ],
-  "search_queries": [
-    "title:\"Commissioner Precincts\" AND tags:\"HIDALGO COUNTY\"",
-    "title:\"Hidalgo County Basemap\"",
-    "title:\"Hidalgo County Pct.2 Basemap\""
-  ],
-  "selected_item": {
-    "access": "public",
-    "accessInformation": "",
-    "advancedSettings": null,
-    "apiToken1ExpirationDate": -1,
-    "apiToken2ExpirationDate": -1,
-    "appCategories": [],
-    "avgRating": 0,
-    "banner": null,
-    "categories": [],
-    "classification": null,
-    "created": 1609365891000,
-    "culture": "en-us",
-    "description": "",
-    "documentation": null,
-    "extent": [
-      [
-        -99.2115962402331,
-        25.854853369588366
-      ],
-      [
-        -97.2368037597636,
-        26.96303736171231
-      ]
-    ],
-    "groupDesignations": null,
-    "guid": null,
-    "id": "bc95c6e0bbed4ba98a16b303219de88a",
-    "industries": [],
-    "languages": [],
-    "largeThumbnail": null,
-    "lastViewed": 1785704400000,
-    "licenseInfo": "",
-    "listed": false,
-    "modified": 1773322689000,
-    "name": null,
-    "numComments": 0,
-    "numRatings": 0,
-    "numViews": 139965,
-    "owner": "rpresas",
-    "properties": null,
-    "proxyFilter": null,
-    "scoreCompleteness": 35,
-    "screenshots": [],
-    "size": -1,
-    "snippet": "Basemap",
-    "spatialReference": "",
-    "subInfo": 0,
-    "tags": [
-      "Hidalgo County"
-    ],
-    "thumbnail": "thumbnail/ago_downloaded.png",
-    "title": "Hidalgo County Basemap",
-    "type": "Web Map",
-    "typeKeywords": [
-      "ArcGIS API for JavaScript",
-      "ArcGIS Online",
-      "Explorer Web Map",
-      "Map",
-      "Online Map",
-      "Web Map"
-    ],
-    "url": ""
-  }
+  "source_classification": "county-associated ArcGIS source controlled by official Hidalgo County roster and 2021 redistricting evidence"
 }
