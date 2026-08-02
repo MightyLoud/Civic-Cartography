@@ -45,34 +45,35 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-dev.txt
 
-      - name: Install Civic-Cartography dependencies
-        run: python -m pip install -r requirements-dev.txt
-
-      - name: Install upstream dependencies
+      - name: Install dependencies
         run: |
+          python -m pip install -r requirements-dev.txt
           python -m pip install uv
           cd upstream
           uv sync --frozen
 
-      - name: Apply fix 1 and draft fix 2
+      - name: Apply fix 1 and normalize standalone fix 2
         run: |
           git -C upstream apply --check "../$PATCH_1"
           git -C upstream apply "../$PATCH_1"
+          git -C upstream add -A
+          git -C upstream \
+            -c user.name="Civic Cartography" \
+            -c user.email="civic-cartography@example.invalid" \
+            commit -m "Apply validated fix 1 baseline"
+
           git -C upstream apply --recount "../$PATCH_2"
+          git -C upstream add -N .
           git -C upstream diff --check
           git -C upstream diff --binary > build-normalized-fix-2.patch
 
-      - name: Run targeted upstream unit tests
+      - name: Run targeted upstream tests and lint
         run: |
           cd upstream
           uv run pytest \
             tests/src/init_migration/test_generate_pipeline_stub_classification.py \
             tests/src/init_migration/test_jurisdiction_seed.py \
             --color=yes
-
-      - name: Run upstream lint
-        run: |
-          cd upstream
           uv run ruff check \
             src/init_migration/generate_pipeline.py \
             src/init_migration/jurisdiction_seed.py \
@@ -91,11 +92,13 @@ jobs:
               "school_district:colorado_springs_school_district_no._11"
           )
           for value in (None, "", "   ", "None", "null"):
-              seed = infer_jurisdiction_seed(county, lsad_code=value)
-              assert seed.classification == "government"
+              assert infer_jurisdiction_seed(
+                  county, lsad_code=value
+              ).classification == "government"
           for value in ("", "None", "null"):
-              seed = infer_jurisdiction_seed(school, lsad_code=value)
-              assert seed.classification == "school_system"
+              assert infer_jurisdiction_seed(
+                  school, lsad_code=value
+              ).classification == "school_system"
           try:
               infer_jurisdiction_seed(county, lsad_code=" ZZ ")
           except ValueError as exc:
@@ -138,9 +141,7 @@ jobs:
             --artifact-root build/run-2/artifacts \
             --result-path build/run-2/report.json
 
-      - name: Evaluate six-fixture gate
-        id: fixture_gate
-        continue-on-error: true
+      - name: Evaluate and assert no fixture regression
         run: |
           PYTHONPATH=. python scripts/check_regression_fixtures.py \
             --target-manifest tests/fixtures/batch_pilot_25.yml \
@@ -148,10 +149,8 @@ jobs:
             --second-report build/run-2/report.json \
             --upstream-repository "$UPSTREAM_REPOSITORY" \
             --upstream-revision "$UPSTREAM_REVISION" \
-            --result-path build/fixture-evaluation.json
+            --result-path build/fixture-evaluation.json || true
 
-      - name: Assert no fixture regression
-        run: |
           python - <<'PY'
           import json
           from pathlib import Path
@@ -179,29 +178,14 @@ jobs:
           summary = evaluation["summary"]
           assert summary["deterministic_count"] == 6
           assert summary["report_content_match"] is True
+          Path("fix-2-summary.md").write_text(
+              "## Upstream fix 2: normalize blank LSAD values\n\n"
+              f"- Strict fixtures passing: **{summary['passed_count']}/{summary['fixture_count']}**\n"
+              f"- Deterministic fixtures: **{summary['deterministic_count']}/{summary['fixture_count']}**\n"
+              f"- Full report match: **{summary['report_content_match']}**\n"
+          )
           PY
-
-      - name: Write fix summary
-        if: always()
-        run: |
-          if [[ -f build/fixture-evaluation.json ]]; then
-            python - <<'PY'
-          import json
-          from pathlib import Path
-
-          report = json.loads(Path("build/fixture-evaluation.json").read_text())
-          summary = report["summary"]
-          lines = [
-              "## Upstream fix 2: normalize blank LSAD values",
-              "",
-              f"- Strict fixtures passing: **{summary['passed_count']}/{summary['fixture_count']}**",
-              f"- Deterministic fixtures: **{summary['deterministic_count']}/{summary['fixture_count']}**",
-              f"- Full report match: **{summary['report_content_match']}**",
-          ]
-          Path("fix-2-summary.md").write_text("\n".join(lines) + "\n")
-          PY
-            cat fix-2-summary.md >> "$GITHUB_STEP_SUMMARY"
-          fi
+          cat fix-2-summary.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload fix 2 evidence
         if: always()
