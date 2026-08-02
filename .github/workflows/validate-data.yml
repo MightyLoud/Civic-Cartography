@@ -5,17 +5,15 @@ on:
   pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository branch
+      - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -143,34 +141,23 @@ jobs:
             --committed-canonical data/geojson/coppell_isd_districtwide.geojson \
             --fresh-canonical build/coppell-isd/geojson/coppell_isd_districtwide.geojson
 
-      - name: Generate Poth ISD release geometry
+      - name: Fetch current Poth ISD unified-school-district boundary
         run: |
           python scripts/fetch_tigerweb_school_district.py \
             --name-token Poth \
             --record-id TX:school_district:poth-isd:at_large:DISTRICTWIDE \
             --geometry-id poth-isd-districtwide \
             --retrieved-at 2026-08-01 \
-            --raw-output data/raw/poth-isd/tigerweb-unified-school-district-4835550.geojson \
-            --output data/geojson/poth_isd_districtwide.geojson
+            --raw-output build/poth-isd/raw/tigerweb-unified-school-district-4835550.geojson \
+            --output build/poth-isd/geojson/poth_isd_districtwide.geojson
 
-      - name: Commit Poth ISD release files once
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+      - name: Verify committed Poth ISD boundary matches Census
         run: |
-          mkdir -p data/normalized
-          cat > data/normalized/poth_isd_2026.csv <<'CSV'
-          record_id,state_fips,state_abbr,jurisdiction_type,jurisdiction_name,district_type,district_id,district_name,source_url,source_retrieved_at,source_confidence,qa_status,parity_ok,office_name,election_date,geometry_source_url,geometry_id,parent_record_id,notes
-          TX:school_district:poth-isd:at_large:DISTRICTWIDE,48,TX,school_district,Poth Independent School District,at_large,DISTRICTWIDE,Districtwide,https://www.pothisd.us/board-of-trustees/elections,2026-08-01,high,approved,TRUE,Board of Trustees — 2026 Three-Seat Slate,2026-05-02,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14,poth-isd-districtwide,,"The May 2 2026 election was canceled after certification of three unopposed candidates. The seven-member board is elected at large using cumulative voting. Census GEOID 4835550."
-          CSV
-          sed -i 's/^          //' data/normalized/poth_isd_2026.csv
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/raw/poth-isd/tigerweb-unified-school-district-4835550.geojson \
-            data/geojson/poth_isd_districtwide.geojson \
-            data/normalized/poth_isd_2026.csv
-          if ! git diff --cached --quiet; then
-            git commit -m "Add Poth ISD release files"
-            git push
-          fi
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/poth-isd/tigerweb-unified-school-district-4835550.geojson \
+            --fresh-raw build/poth-isd/raw/tigerweb-unified-school-district-4835550.geojson \
+            --committed-canonical data/geojson/poth_isd_districtwide.geojson \
+            --fresh-canonical build/poth-isd/geojson/poth_isd_districtwide.geojson
 
       - name: Run automated tests
         run: pytest -q
