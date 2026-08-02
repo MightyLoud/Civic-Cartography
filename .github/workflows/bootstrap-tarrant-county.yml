@@ -1,0 +1,132 @@
+name: Bootstrap Tarrant County Commissioners Court
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap-tarrant-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'push' && github.ref_name || github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Fetch current Tarrant County Commissioner precincts
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/CommissionerPrecinct/MapServer/0 \
+            --district-ids 1,2,3,4 \
+            --district-field District_N \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Tarrant County" \
+            --record-id-prefix TX:county:tarrant:commissioner_precinct \
+            --geometry-id-prefix tarrant-county-commissioner-precinct \
+            --source-agency "Tarrant County GIS" \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/tarrant-county/current/raw/commissioner-precincts-1-4.geojson \
+            --output build/tarrant-county/current/geojson/tarrant_county_commissioner_precincts.geojson
+
+      - name: Fetch effective June 3 2025 cross-check layer
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://mapit.tarrantcounty.com/arcgis/rest/services/BondProject/BondProjects/MapServer/3 \
+            --district-ids 1,2,3,4 \
+            --district-field District_N \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Tarrant County" \
+            --record-id-prefix TX:county:tarrant:commissioner_precinct \
+            --geometry-id-prefix tarrant-county-commissioner-precinct \
+            --source-agency "Tarrant County Elections" \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/tarrant-county/effective-2025/raw/commissioner-precincts-1-4.geojson \
+            --output build/tarrant-county/effective-2025/geojson/tarrant_county_commissioner_precincts.geojson
+
+      - name: Compare current and effective-2025 Tarrant County geometries
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          current = json.loads(Path('build/tarrant-county/current/geojson/tarrant_county_commissioner_precincts.geojson').read_text(encoding='utf-8'))
+          effective = json.loads(Path('build/tarrant-county/effective-2025/geojson/tarrant_county_commissioner_precincts.geojson').read_text(encoding='utf-8'))
+
+          def geometry_map(payload):
+              return {
+                  str(feature['properties']['district_id']): feature['geometry']
+                  for feature in payload['features']
+              }
+
+          current_map = geometry_map(current)
+          effective_map = geometry_map(effective)
+          if set(current_map) != {'1', '2', '3', '4'}:
+              raise SystemExit(f'Unexpected current IDs: {sorted(current_map)}')
+          if set(effective_map) != {'1', '2', '3', '4'}:
+              raise SystemExit(f'Unexpected effective-2025 IDs: {sorted(effective_map)}')
+          comparison = {
+              district_id: current_map[district_id] == effective_map[district_id]
+              for district_id in sorted(current_map)
+          }
+          Path('build/tarrant-county/geometry-crosscheck.json').write_text(
+              json.dumps(comparison, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          print(json.dumps(comparison, indent=2, sort_keys=True))
+          if not all(comparison.values()):
+              raise SystemExit('Current and effective-2025 Tarrant County geometries differ.')
+          PY
+
+      - name: Fetch current Tarrant County boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48439 \
+            --record-id TX:county:tarrant:countywide:COUNTYWIDE \
+            --geometry-id tarrant-county-countywide \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/tarrant-county/county/raw/tigerweb-county-48439.geojson \
+            --output build/tarrant-county/county/geojson/tarrant_county_countywide.geojson
+
+      - name: Commit generated Tarrant County snapshots
+        if: github.event_name == 'push'
+        run: |
+          mkdir -p data/raw/tarrant-county data/geojson
+          cp build/tarrant-county/county/raw/tigerweb-county-48439.geojson data/raw/tarrant-county/tigerweb-county-48439.geojson
+          cp build/tarrant-county/county/geojson/tarrant_county_countywide.geojson data/geojson/tarrant_county_countywide.geojson
+          cp build/tarrant-county/current/raw/commissioner-precincts-1-4.geojson data/raw/tarrant-county/commissioner-precincts-1-4.geojson
+          cp build/tarrant-county/current/geojson/tarrant_county_commissioner_precincts.geojson data/geojson/tarrant_county_commissioner_precincts.geojson
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add data/raw/tarrant-county/tigerweb-county-48439.geojson \
+            data/raw/tarrant-county/commissioner-precincts-1-4.geojson \
+            data/geojson/tarrant_county_countywide.geojson \
+            data/geojson/tarrant_county_commissioner_precincts.geojson
+          if git diff --cached --quiet; then
+            echo "Tarrant County snapshots already match generated output."
+            exit 0
+          fi
+          git commit -m "Add Tarrant County source snapshots"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Upload Tarrant County bootstrap
+        uses: actions/upload-artifact@v4
+        with:
+          name: tarrant-county-bootstrap
+          path: build/tarrant-county/
+          if-no-files-found: error
