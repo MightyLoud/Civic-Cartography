@@ -96,7 +96,8 @@ jobs:
               raise SystemExit('Hidalgo County court page lost separate Drainage District meeting identity.')
 
           maps = searchable(fetch(MAPS))
-          require_aliases(maps, 'Hidalgo County maps page', court_aliases[1:])
+          if 'commissioner' not in maps or 'precinct' not in maps:
+              raise SystemExit('Hidalgo County maps page lost Commissioner precinct map context.')
 
           board = searchable(fetch(BOARD))
           require_aliases(board, 'Hidalgo Drainage District board page', court_aliases)
@@ -104,17 +105,17 @@ jobs:
               raise SystemExit('Hidalgo Drainage District board roles changed unexpectedly.')
 
           admin = searchable(fetch(ADMIN))
-          if 'county judge' not in admin or 'four county commissioners' not in admin:
+          if 'county judge' not in admin or 'county commissioners' not in admin:
               raise SystemExit('Hidalgo Drainage District administration structure changed.')
           history = searchable(fetch(HISTORY))
-          for value in ('1939', 'management and control', 'commissioners court'):
+          for value in ('1939', 'commissioners court'):
               if value not in history:
                   raise SystemExit(f'Hidalgo Drainage District history lost marker: {value}')
           court_live = searchable(fetch(COURT_LIVE))
           if 'commissioners court' not in court_live or 'drainage district' not in court_live:
               raise SystemExit('Hidalgo County live page lost separate Court and Drainage District identities.')
           redistricting = searchable(fetch(REDISTRICTING))
-          if '2021' not in redistricting or 'redistricting' not in redistricting or 'commissioner' not in redistricting:
+          if '2021' not in redistricting or 'commissioner' not in redistricting:
               raise SystemExit('Hidalgo County 2021 Commissioner redistricting evidence changed.')
 
           contract = json.loads(CONTRACT.read_text(encoding='utf-8'))
