@@ -25,7 +25,7 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install -r requirements-dev.txt
 
-      - name: Validate stale official narrative and current operational layer
+      - name: Validate stale narrative, operational layer, and adoption metadata
         run: |
           python - <<'PY'
           import json
@@ -35,7 +35,8 @@ jobs:
 
           PAGE_URL = 'https://www.collincountytx.gov/government/commissioners-court/precincts'
           APP_URL = 'https://maps.collincountytx.gov/ccmap_commissioners/'
-          LAYER_URL = 'https://maps.collincountytx.gov/server/rest/services/Election/VotingPrecincts_Edited_PlanC2333/FeatureServer/3'
+          OPERATIONAL_LAYER = 'https://maps.collincountytx.gov/server/rest/services/InteractiveMap/Election/MapServer/1'
+          ADOPTION_LAYER = 'https://maps.collincountytx.gov/server/rest/services/Election/VotingPrecincts_Edited_PlanC2333/FeatureServer/3'
 
           def fetch(url, json_response=False):
               request = urllib.request.Request(url, headers={'User-Agent': 'Civic-Cartography-validator/1.0'})
@@ -61,17 +62,24 @@ jobs:
           if not app.strip():
               raise SystemExit('Collin County Commissioner application returned empty content.')
 
-          layer = fetch(f'{LAYER_URL}?f=json', json_response=True)
-          if layer.get('geometryType') != 'esriGeometryPolygon':
-              raise SystemExit(f'Unexpected Collin County geometry type: {layer.get("geometryType")!r}')
-          description = layer.get('description') or ''
+          operational = fetch(f'{OPERATIONAL_LAYER}?f=json', json_response=True)
+          if operational.get('geometryType') != 'esriGeometryPolygon':
+              raise SystemExit(f'Unexpected Collin County operational geometry type: {operational.get("geometryType")!r}')
+          operational_fields = {field.get('name') for field in operational.get('fields', [])}
+          required = {'COMMISH', 'COMMISH_N'}
+          if not required.issubset(operational_fields):
+              raise SystemExit(f'Collin County operational layer lost fields: {sorted(required - operational_fields)}')
+
+          adoption = fetch(f'{ADOPTION_LAYER}?f=json', json_response=True)
+          if adoption.get('geometryType') != 'esriGeometryPolygon':
+              raise SystemExit(f'Unexpected Collin County adoption geometry type: {adoption.get("geometryType")!r}')
+          description = adoption.get('description') or ''
           for value in ('November 1, 2021', '2021-1127-11-01'):
               if value not in description:
-                  raise SystemExit(f'Collin County operational layer lost adoption marker: {value}')
-          fields = {field.get('name') for field in layer.get('fields', [])}
-          required = {'COMMISH', 'COMMISH_N'}
-          if not required.issubset(fields):
-              raise SystemExit(f'Collin County layer lost fields: {sorted(required - fields)}')
+                  raise SystemExit(f'Collin County adoption layer lost marker: {value}')
+          adoption_fields = {field.get('name') for field in adoption.get('fields', [])}
+          if not required.issubset(adoption_fields):
+              raise SystemExit(f'Collin County adoption layer lost fields: {sorted(required - adoption_fields)}')
 
           query = urllib.parse.urlencode({
               'where': '1=1',
@@ -80,17 +88,22 @@ jobs:
               'orderByFields': 'COMMISH',
               'f': 'json',
           })
-          payload = fetch(f'{LAYER_URL}/query?{query}', json_response=True)
-          rows = {str(feature['attributes']['COMMISH']): feature['attributes']['COMMISH_N'] for feature in payload.get('features', [])}
+          payload = fetch(f'{OPERATIONAL_LAYER}/query?{query}', json_response=True)
+          rows = {str(feature['attributes']['COMMISH']): str(feature['attributes']['COMMISH_N'] or '').strip() for feature in payload.get('features', [])}
           expected = {
               '1': 'Susan Fletcher',
               '2': 'Cheryl Williams',
               '3': 'Darrell Hale',
               '4': 'Duncan Webb',
           }
-          if rows != expected:
-              raise SystemExit(f'Collin County operational roster drift: {rows!r}')
-          print('Collin County stale narrative and current operational layer match the release contract.')
+          if set(rows) != set(expected):
+              raise SystemExit(f'Unexpected Collin County precinct IDs: {sorted(rows)}')
+          for precinct_id, officeholder in expected.items():
+              if rows[precinct_id].casefold() != officeholder.casefold():
+                  raise SystemExit(f'Collin County operational roster drift for precinct {precinct_id}: {rows[precinct_id]!r}')
+              if rows[precinct_id] != rows[precinct_id].upper():
+                  raise SystemExit(f'Collin County source-label casing changed for precinct {precinct_id}: {rows[precinct_id]!r}')
+          print('Collin County stale narrative, app-resolved operational layer, and 2021 adoption metadata match the release contract.')
           PY
 
       - name: Fetch current Collin County Commissioner precincts
@@ -98,7 +111,7 @@ jobs:
           for attempt in 1 2 3 4 5; do
             rm -rf build/collin-county/precincts
             if python scripts/fetch_arcgis_districts.py \
-              --layer-url https://maps.collincountytx.gov/server/rest/services/Election/VotingPrecincts_Edited_PlanC2333/FeatureServer/3 \
+              --layer-url https://maps.collincountytx.gov/server/rest/services/InteractiveMap/Election/MapServer/1 \
               --district-ids 1,2,3,4 \
               --district-field COMMISH \
               --district-type commissioner_precinct \
