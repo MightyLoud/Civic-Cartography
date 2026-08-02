@@ -1,0 +1,6 @@
+office_name,geography_type,geography_id,officeholder,source_url,source_retrieved_at,notes
+County Judge,countywide,COUNTYWIDE,Andy Brown,https://www.traviscountytx.gov/commissioners-court/county-judge,2026-08-02,"Current Travis County Judge; presides over Commissioners Court and represents the countywide geography."
+County Commissioner Precinct 1,commissioner_precinct,1,Jeff Travillion,https://www.traviscountytx.gov/commissioners-court/precinct-one,2026-08-02,"Current Precinct 1 Commissioner; live official office page and GIS roster agree."
+County Commissioner Precinct 2,commissioner_precinct,2,Brigid Shea,https://www.traviscountytx.gov/commissioners-court/precinct-two,2026-08-02,"Current Precinct 2 Commissioner; live official office page and GIS roster agree."
+County Commissioner Precinct 3,commissioner_precinct,3,Ann Howard,https://www.traviscountytx.gov/commissioners-court/precinct-three,2026-08-02,"Current Precinct 3 Commissioner; live official office page and GIS roster agree."
+County Commissioner Precinct 4,commissioner_precinct,4,George Morales,https://www.traviscountytx.gov/commissioners-court/precinct-four,2026-08-02,"Current Precinct 4 Commissioner. The live office page, current county directory, homepage, and GIS agree; the financial-transparency directory still lists Margaret Gomez and is preserved as stale-source evidence."
