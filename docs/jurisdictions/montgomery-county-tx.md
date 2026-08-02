@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate pending permanent Montgomery County and repository-wide validation.
+Verified release package. First-pass pre-merge validation succeeded in Montgomery County workflow run #6 and repository workflow run #956.
 
 ## Purpose
 
@@ -122,7 +122,17 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Validation evidence
 
-The source-resolution bootstrap proved the application-to-web-map-to-dataset chain, operational layer, `DISTRICTID` values, and live `REPNAME1` roster. Final exact-head workflow evidence is pending.
+- Source-resolution bootstrap: lookup app resolves through web map `8d0ca3edd9bb46f9aea60c99faa54e83` to feature-service item `ea4f547b5eec474b8eb6d022afe173b3`
+- Montgomery County workflow run #6: success
+- Repository workflow run #956: success
+- Automated tests: 76 passed
+- Normalized datasets validated: 24 files
+- Application-chain and freshness contract: passed
+- Live `DISTRICTID`, `NAME`, and `REPNAME1` contract: passed
+- Current Commissioner precinct snapshot comparison: passed
+- Current Census snapshot comparison: passed
+- Geometry joins: passed
+- Combined canonical SHA-256: `7cf79b5ccee5534ebc8ec32f9d743d64e23187e05740ff4e30c686b74344c430`
 
 ## Release files
 
