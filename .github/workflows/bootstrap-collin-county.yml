@@ -24,101 +24,144 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-dev.txt
 
-      - name: Install test dependencies
-        run: python -m pip install -r requirements-dev.txt
+      - name: Install test and browser dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install selenium
 
       - name: Resolve official interactive map layer
         id: source
         run: |
-          python - <<'PY' >> "$GITHUB_OUTPUT"
-          import html
+          python - <<'PY'
           import json
+          import os
           import re
+          import time
           import urllib.parse
           import urllib.request
           from pathlib import Path
 
+          from selenium import webdriver
+          from selenium.webdriver.chrome.options import Options
+
           APP_URL = 'https://maps.collincountytx.gov/ccmap_commissioners/'
           USER_AGENT = 'Civic-Cartography-bootstrap/1.0'
 
-          def fetch_text(url):
+          def fetch_json(url):
               request = urllib.request.Request(url, headers={'User-Agent': USER_AGENT})
               with urllib.request.urlopen(request, timeout=45) as response:
-                  return response.read().decode('utf-8', errors='replace')
+                  return json.load(response)
 
-          root = fetch_text(APP_URL)
-          candidates = [(APP_URL, root)]
-          paths = {
-              'config.json',
-              'js/config.js',
-              'config/config.json',
-              'configs/config.json',
-          }
-          for pattern in (
-              r'(?:src|href)=["\']([^"\']+)["\']',
-              r'["\']([^"\']+\.(?:json|js))(?:\?[^"\']*)?["\']',
-          ):
-              for match in re.findall(pattern, root, flags=re.I):
-                  paths.add(html.unescape(match))
+          options = Options()
+          options.add_argument('--headless=new')
+          options.add_argument('--no-sandbox')
+          options.add_argument('--disable-dev-shm-usage')
+          options.add_argument('--window-size=1600,1200')
+          options.add_argument(f'--user-agent={USER_AGENT}')
+          options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
 
-          seen = {APP_URL}
-          queue = []
-          for path in paths:
-              url = urllib.parse.urljoin(APP_URL, path)
-              if url.startswith(APP_URL) and url not in seen:
-                  queue.append(url)
-                  seen.add(url)
+          driver = webdriver.Chrome(options=options)
+          try:
+              driver.get(APP_URL)
+              time.sleep(15)
+              page_source = driver.page_source
+              logs = driver.get_log('performance')
+          finally:
+              driver.quit()
 
-          for url in queue[:100]:
+          observed_urls = []
+          for entry in logs:
               try:
-                  text = fetch_text(url)
+                  message = json.loads(entry['message'])['message']
               except Exception:
                   continue
-              candidates.append((url, text))
+              params = message.get('params', {})
+              for container in ('request', 'response'):
+                  value = params.get(container, {})
+                  url = value.get('url') if isinstance(value, dict) else None
+                  if isinstance(url, str):
+                      observed_urls.append(urllib.parse.unquote(url))
 
-          service_urls = []
-          pattern = re.compile(r'https?:\\?/\\?/[^"\'<>\\s]+?/(?:MapServer|FeatureServer)/\d+', re.I)
-          for source_url, text in candidates:
-              normalized = text.replace('\\/', '/')
-              for match in pattern.findall(normalized):
-                  service_urls.append((source_url, match.rstrip('/')))
+          observed_urls.extend(re.findall(r'https?://[^"\'<>\s]+', page_source))
+          roots = set()
+          direct_layers = set()
+          for url in observed_urls:
+              normalized = url.replace('\\/', '/')
+              for match in re.findall(r'https?://[^"\'<>\s?]+?/(?:MapServer|FeatureServer)/\d+', normalized, flags=re.I):
+                  direct_layers.add(match.rstrip('/'))
+              for match in re.findall(r'https?://[^"\'<>\s?]+?/(?:MapServer|FeatureServer)', normalized, flags=re.I):
+                  roots.add(match.rstrip('/'))
+
+          candidates = set(direct_layers)
+          root_evidence = {}
+          for root in sorted(roots):
+              if 'collincountytx.gov' not in root:
+                  continue
+              try:
+                  service = fetch_json(f'{root}?f=json')
+              except Exception:
+                  continue
+              root_evidence[root] = service
+              for layer in service.get('layers', []):
+                  if str(layer.get('name', '')).strip().lower() == 'commissioners':
+                      candidates.add(f"{root}/{layer['id']}")
 
           ranked = []
-          for source_url, layer_url in service_urls:
-              score = 0
-              if 'collincountytx.gov' in layer_url:
-                  score += 10
+          for layer_url in sorted(candidates):
+              if 'collincountytx.gov' not in layer_url:
+                  continue
+              try:
+                  layer = fetch_json(f'{layer_url}?f=json')
+              except Exception:
+                  continue
+              fields = {field.get('name') for field in layer.get('fields', [])}
+              if layer.get('geometryType') != 'esriGeometryPolygon':
+                  continue
+              if not {'COMMISH', 'COMMISH_N'}.issubset(fields):
+                  continue
+              score = 100
+              description = layer.get('description') or ''
+              if '2021-1127-11-01' in description:
+                  score += 30
+              if 'November 1, 2021' in description:
+                  score += 20
               if 'Election_Department' in layer_url:
-                  score += 8
+                  score += 12
               if 'InteractiveMap/Election' in layer_url:
-                  score += 7
+                  score += 10
               if 'VotingPrecincts_Edited_PlanC2333' in layer_url:
-                  score += 6
-              if layer_url.endswith('/1') or layer_url.endswith('/3'):
+                  score += 8
+              if '/FeatureServer/' in layer_url:
                   score += 3
-              ranked.append((score, source_url, layer_url))
-          ranked.sort(reverse=True)
+              ranked.append((score, layer_url, layer))
+          ranked.sort(key=lambda item: (item[0], item[1]), reverse=True)
 
           if not ranked:
-              raise SystemExit(f'No ArcGIS operational layer found in {len(candidates)} fetched application resources.')
+              sample = sorted(set(observed_urls))[:100]
+              raise SystemExit(f'No Commissioners polygon layer with COMMISH and COMMISH_N found. Observed URL sample: {sample}')
 
-          layer_url = ranked[0][2]
-          if not any(token in layer_url for token in ('Election_Department', 'InteractiveMap/Election', 'VotingPrecincts_Edited_PlanC2333')):
-              raise SystemExit(f'Unexpected Collin County application layer: {layer_url}')
-
+          layer_url = ranked[0][1]
           contract = {
               'application_url': APP_URL,
-              'application_resources_checked': [url for url, _ in candidates],
+              'observed_network_urls': sorted(set(observed_urls)),
+              'service_roots': sorted(roots),
               'ranked_layer_candidates': [
-                  {'score': score, 'source_url': source_url, 'layer_url': candidate}
-                  for score, source_url, candidate in ranked[:20]
+                  {
+                      'score': score,
+                      'layer_url': candidate,
+                      'description': layer.get('description'),
+                      'service_item_id': layer.get('serviceItemId'),
+                  }
+                  for score, candidate, layer in ranked
               ],
               'operational_layer_url': layer_url,
           }
           output = Path('build/collin-county/app-source-contract.json')
           output.parent.mkdir(parents=True, exist_ok=True)
           output.write_text(json.dumps(contract, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-          print(f'layer_url={layer_url}')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
+              handle.write(f'layer_url={layer_url}\n')
+          print(f'Official application operational layer: {layer_url}')
           PY
 
       - name: Validate live Collin County precinct attributes
