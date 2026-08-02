@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate pending final Tarrant County and repository-wide validation.
+Verified release package. Pre-merge validation succeeded in Tarrant County workflow run #4 and repository workflow run #627.
 
 ## Purpose
 
@@ -95,6 +95,19 @@ TX:county:tarrant:commissioner_precinct:4    -> tarrant-county-commissioner-prec
 | Extra joins | 0 |
 
 All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
+
+## Validation evidence
+
+- Tarrant County workflow run #4: success
+- Repository workflow run #627: success
+- Automated tests: 52 passed
+- Normalized datasets validated: 19 files
+- Controlling ArcGIS metadata hierarchy: passed
+- Four-district geometry-source divergence: passed
+- Current controlling precinct snapshot comparison: passed
+- Current Census snapshot comparison: passed
+- Geometry joins: passed
+- Combined canonical SHA-256: `36a5c53bd999162d8837de7218a89f146949eaf552feca56abddd557054cb263`
 
 ## Release files
 
