@@ -44,17 +44,34 @@ patches before capture:
 
 It then normalizes capture acceptance semantics before building each report.
 
-## Expected gate movement
+## Confirmed result
 
-The expected honest result is **4/6**:
+The two pinned captures produced identical reports with run ID
+`cc9fa7a98a3d22e8cc21`. Evaluation `63323d36b8a7d07eb265` confirmed:
 
-- Seattle: pass
-- Tacoma: pass
-- Pierce County: pass with partial enrichment recorded in diagnostics
-- Colorado Springs School District 11: pass with partial enrichment recorded
-- Regional Transportation District: fail because no authoritative target is resolved
-- City and County of Denver: fail because two Jurisdictions are generated and
-  one canonical Jurisdiction has not yet been selected
+- **4/6 fixtures passed**;
+- **6/6 fixtures were deterministic**;
+- full report content matched;
+- median recorded review time was `0.0` minutes.
 
-This change does not solve RTD selection or Denver canonicalization, and it must
+| Fixture | Generation | Enrichment | Result |
+|---|---|---|---|
+| Seattle | generated | complete | passed |
+| Tacoma | generated | complete | passed |
+| Pierce County | generated | partial | passed |
+| Colorado Springs School District 11 | generated | partial | passed |
+| Regional Transportation District | skipped | not run | failed: `upstream_target_not_found` |
+| City and County of Denver | generated | partial | failed: `upstream_alias_noncanonical` |
+
+Pierce County and District 11 now pass without hiding their missing validation
+enrichment. RTD remains unresolved, and Denver remains blocked because two
+Jurisdiction artifacts exist where one canonical Jurisdiction is required.
+
+## Permanent evidence
+
+- `evidence/upstream-fix-3/2026-08-02/source-manifest.json`
+- `evidence/upstream-fix-3/2026-08-02/fixture-evaluation.json`
+- `evidence/upstream-fix-3/2026-08-02/enrichment-summary.json`
+
+This change does not solve RTD selection or Denver canonicalization, and it does
 not hide either failure.
