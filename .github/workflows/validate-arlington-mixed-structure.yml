@@ -52,6 +52,32 @@ jobs:
       - name: Validate geometry joins
         run: python scripts/validate_geojson.py
 
+      - name: Create deterministic Arlington release digest
+        run: |
+          python - <<'PY'
+          from hashlib import sha256
+          from pathlib import Path
+
+          paths = sorted(
+              [
+                  Path("data/geojson/arlington_districts_1_2.geojson"),
+                  Path("data/geojson/arlington_districts_3_4_5.geojson"),
+                  Path("data/geojson/arlington_citywide.geojson"),
+              ],
+              key=lambda path: path.name,
+          )
+          digest = sha256()
+          for path in paths:
+              digest.update(path.name.encode("utf-8"))
+              digest.update(b"\0")
+              digest.update(path.read_bytes())
+              digest.update(b"\0")
+          output = Path("build/arlington-citywide/arlington_release_sha256.txt")
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(digest.hexdigest() + "\n", encoding="utf-8")
+          print(digest.hexdigest())
+          PY
+
       - name: Upload Arlington mixed-structure boundary check
         uses: actions/upload-artifact@v4
         with:
