@@ -1,0 +1,44 @@
+{
+  "evaluation_id": "03254d526d05fab00c78",
+  "files": {
+    "batch_acceptance": {
+      "path": "build/batch-acceptance.json",
+      "sha256": "56182c644c32f460d6d5c1078ef4f2b800abe7567f2754e937eec4a7e0729052",
+      "size_bytes": 40776
+    },
+    "first_diagnostics": {
+      "path": "build/run-1/diagnostics.json",
+      "sha256": "749cc46eaa0dec50b6392f863c83c8632ca663d9793a349a8359443b00bec6db",
+      "size_bytes": 43283
+    },
+    "first_report": {
+      "path": "build/run-1/report.json",
+      "sha256": "afa231ec0e634185ec54eb1ebf2a49943b1d370767147bbbe1fc9ebaa64acae7",
+      "size_bytes": 33264
+    },
+    "second_diagnostics": {
+      "path": "build/run-2/diagnostics.json",
+      "sha256": "749cc46eaa0dec50b6392f863c83c8632ca663d9793a349a8359443b00bec6db",
+      "size_bytes": 43283
+    },
+    "second_report": {
+      "path": "build/run-2/report.json",
+      "sha256": "afa231ec0e634185ec54eb1ebf2a49943b1d370767147bbbe1fc9ebaa64acae7",
+      "size_bytes": 33264
+    },
+    "source_manifest": {
+      "path": "build/upstream-source/source-manifest.json",
+      "sha256": "f3a1d58aba4fe5d214f0d4b0b33201277862001c27f4f0f449420d937bc8e783",
+      "size_bytes": 5323
+    }
+  },
+  "run_asof": "2026-08-02T15:00:00Z",
+  "run_id": "b2db2dd876bd307d30af",
+  "schema_version": 1,
+  "upstream_repository": "openstates/jurisdictions",
+  "upstream_revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705",
+  "workflow_artifact_digest": "sha256:15506d3604d83ad6e7690c958fcee5f277e385877fa2ae9dc252f3cc14af5b50",
+  "workflow_artifact_id": 8840012484,
+  "workflow_artifact_name": "batch-pilot-25-baseline",
+  "workflow_run_id": 30769313529
+}
