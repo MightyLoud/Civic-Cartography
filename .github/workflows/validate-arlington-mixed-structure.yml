@@ -1,0 +1,52 @@
+name: Validate Arlington mixed structure
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-arlington-mixed:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Fetch current Arlington city boundary
+        run: |
+          python scripts/fetch_tigerweb_place.py \
+            --geoid 4804000 \
+            --record-id TX:municipality:arlington:at_large:CITYWIDE \
+            --geometry-id arlington-citywide \
+            --retrieved-at 2026-08-01 \
+            --raw-output build/arlington-citywide/raw/tigerweb-incorporated-place-4804000.geojson \
+            --output build/arlington-citywide/geojson/arlington_citywide.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate released normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate released geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Upload Arlington citywide boundary check
+        uses: actions/upload-artifact@v4
+        with:
+          name: arlington-mixed-structure-boundary-check
+          path: build/arlington-citywide/
+          if-no-files-found: error
