@@ -5,17 +5,15 @@ on:
   pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate-williamson-county:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository branch
+      - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -27,16 +25,26 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install -r requirements-dev.txt
 
-      - name: Generate Williamson County release geometry
+      - name: Fetch current Williamson County boundary
         run: |
           python scripts/fetch_tigerweb_county.py \
             --geoid 48491 \
             --record-id TX:county:williamson:countywide:COUNTYWIDE \
             --geometry-id williamson-county-countywide \
             --retrieved-at 2026-08-02 \
-            --raw-output data/raw/williamson-county/tigerweb-county-48491.geojson \
-            --output data/geojson/williamson_county_countywide.geojson
+            --raw-output build/williamson-county/county/raw/tigerweb-county-48491.geojson \
+            --output build/williamson-county/county/geojson/williamson_county_countywide.geojson
 
+      - name: Verify committed Williamson County boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/williamson-county/tigerweb-county-48491.geojson \
+            --fresh-raw build/williamson-county/county/raw/tigerweb-county-48491.geojson \
+            --committed-canonical data/geojson/williamson_county_countywide.geojson \
+            --fresh-canonical build/williamson-county/county/geojson/williamson_county_countywide.geojson
+
+      - name: Fetch current Williamson County commissioner precincts
+        run: |
           python scripts/fetch_arcgis_districts.py \
             --layer-url https://gis.wilco.org/arcgis/rest/services/public/county_elections/MapServer/1 \
             --district-ids 1,2,3,4 \
@@ -48,53 +56,39 @@ jobs:
             --geometry-id-prefix williamson-county-commissioner-precinct \
             --source-agency "Williamson County GIS" \
             --retrieved-at 2026-08-02 \
-            --raw-output data/raw/williamson-county/commissioner-precincts-1-4.geojson \
-            --output data/geojson/williamson_county_commissioner_precincts.geojson
+            --raw-output build/williamson-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --output build/williamson-county/precincts/geojson/williamson_county_commissioner_precincts.geojson
 
-      - name: Create Williamson County normalized records
+      - name: Verify committed Williamson County precincts match official GIS
         run: |
-          mkdir -p data/normalized
-          cat > data/normalized/williamson_county_commissioners_court.csv <<'CSV'
-          record_id,state_fips,state_abbr,jurisdiction_type,jurisdiction_name,district_type,district_id,district_name,source_url,source_retrieved_at,source_confidence,qa_status,parity_ok,office_name,election_date,geometry_source_url,geometry_id,parent_record_id,notes
-          TX:county:williamson:countywide:COUNTYWIDE,48,TX,county,Williamson County,countywide,COUNTYWIDE,Countywide,https://www.wilcotx.gov/331/Commissioners-Court,2026-08-02,high,approved,TRUE,County Judge,,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82,williamson-county-countywide,,"Steven Snell is the current County Judge and represents Williamson County countywide. Census GEOID 48491."
-          TX:county:williamson:commissioner_precinct:1,48,TX,county,Williamson County,commissioner_precinct,1,Commissioner Precinct 1,https://www.wilcotx.gov/349/Precinct-One,2026-08-02,high,approved,TRUE,County Commissioner Precinct 1,,https://gis.wilco.org/arcgis/rest/services/public/county_elections/MapServer/1,williamson-county-commissioner-precinct-1,,"Terry Cook is the current Precinct 1 Commissioner. Official Williamson County GIS query field LABEL_NAME equals PCT 1."
-          TX:county:williamson:commissioner_precinct:2,48,TX,county,Williamson County,commissioner_precinct,2,Commissioner Precinct 2,https://www.wilcotx.gov/comm2,2026-08-02,high,approved,TRUE,County Commissioner Precinct 2,,https://gis.wilco.org/arcgis/rest/services/public/county_elections/MapServer/1,williamson-county-commissioner-precinct-2,,"Cynthia Long is the current Precinct 2 Commissioner. Official Williamson County GIS query field LABEL_NAME equals PCT 2."
-          TX:county:williamson:commissioner_precinct:3,48,TX,county,Williamson County,commissioner_precinct,3,Commissioner Precinct 3,https://www.wilcotx.gov/408/Precinct-Three,2026-08-02,high,approved,TRUE,County Commissioner Precinct 3,,https://gis.wilco.org/arcgis/rest/services/public/county_elections/MapServer/1,williamson-county-commissioner-precinct-3,,"Valerie Covey is the current Precinct 3 Commissioner. Official Williamson County GIS query field LABEL_NAME equals PCT 3."
-          TX:county:williamson:commissioner_precinct:4,48,TX,county,Williamson County,commissioner_precinct,4,Commissioner Precinct 4,https://www.wilcotx.gov/comm4,2026-08-02,high,approved,TRUE,County Commissioner Precinct 4,,https://gis.wilco.org/arcgis/rest/services/public/county_elections/MapServer/1,williamson-county-commissioner-precinct-4,,"Russ Boles is the current Precinct 4 Commissioner. Official Williamson County GIS query field LABEL_NAME equals PCT 4."
-          CSV
-          sed -i 's/^          //' data/normalized/williamson_county_commissioners_court.csv
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/williamson-county/commissioner-precincts-1-4.geojson \
+            --fresh-raw build/williamson-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --committed-canonical data/geojson/williamson_county_commissioner_precincts.geojson \
+            --fresh-canonical build/williamson-county/precincts/geojson/williamson_county_commissioner_precincts.geojson
 
-      - name: Verify Williamson County release contract
+      - name: Verify fresh Williamson County precinct attributes
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
-          county = json.loads(Path('data/geojson/williamson_county_countywide.geojson').read_text())
-          precincts = json.loads(Path('data/geojson/williamson_county_commissioner_precincts.geojson').read_text())
-
-          if len(county.get('features', [])) != 1:
-              raise SystemExit('Expected exactly one Williamson County feature')
-          features = precincts.get('features', [])
-          if len(features) != 4:
-              raise SystemExit(f'Expected four commissioner precincts, found {len(features)}')
-          ids = sorted(str((feature.get('properties') or {}).get('district_id')) for feature in features)
-          if ids != ['1', '2', '3', '4']:
-              raise SystemExit(f'Unexpected precinct IDs: {ids!r}')
-          expected_labels = {'1': 'PCT 1', '2': 'PCT 2', '3': 'PCT 3', '4': 'PCT 4'}
-          found_labels = {}
-          for feature in features:
+          path = Path('build/williamson-county/precincts/geojson/williamson_county_commissioner_precincts.geojson')
+          payload = json.loads(path.read_text(encoding='utf-8'))
+          expected = {'1': 'PCT 1', '2': 'PCT 2', '3': 'PCT 3', '4': 'PCT 4'}
+          found = {}
+          for feature in payload.get('features', []):
               props = feature.get('properties') or {}
               district_id = str(props.get('district_id') or '')
               attrs = props.get('source_attributes') or {}
-              found_labels[district_id] = str(attrs.get('LABEL_NAME') or '').strip().upper()
+              found[district_id] = str(attrs.get('LABEL_NAME') or '').strip().upper()
               if props.get('source_district_field') != 'LABEL_NAME':
-                  raise SystemExit(f"Unexpected source field: {props.get('source_district_field')!r}")
+                  raise SystemExit(f"Unexpected source field for precinct {district_id}: {props.get('source_district_field')!r}")
               if str(attrs.get('COUNTY') or '').strip().upper() != 'WILLIAMSON':
-                  raise SystemExit(f'Unexpected source county for precinct {district_id}: {attrs.get("COUNTY")!r}')
-          if found_labels != expected_labels:
-              raise SystemExit(f'Unexpected source labels: {found_labels!r}')
-          print('Verified one county feature and four Williamson County precincts.')
+                  raise SystemExit(f"Unexpected county for precinct {district_id}: {attrs.get('COUNTY')!r}")
+          if found != expected:
+              raise SystemExit(f'Williamson precinct label mismatch: expected {expected!r}; found {found!r}')
+          print('Verified four Williamson County precinct labels and county attributes.')
           PY
 
       - name: Run automated tests
@@ -106,29 +100,32 @@ jobs:
       - name: Validate geometry joins
         run: python scripts/validate_geojson.py
 
-      - name: Commit Williamson County release files once
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+      - name: Calculate Williamson County combined canonical digest
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/raw/williamson-county/tigerweb-county-48491.geojson \
-            data/raw/williamson-county/commissioner-precincts-1-4.geojson \
-            data/geojson/williamson_county_countywide.geojson \
-            data/geojson/williamson_county_commissioner_precincts.geojson \
-            data/normalized/williamson_county_commissioners_court.csv
-          if ! git diff --cached --quiet; then
-            git commit -m "Add Williamson County Commissioners Court release files"
-            git push
-          fi
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
 
-      - name: Upload Williamson County release check
+          paths = [
+              Path('data/geojson/williamson_county_countywide.geojson'),
+              Path('data/geojson/williamson_county_commissioner_precincts.geojson'),
+          ]
+          digest = hashlib.sha256()
+          for path in sorted(paths, key=lambda item: item.name):
+              digest.update(path.name.encode('utf-8'))
+              digest.update(b'\0')
+              digest.update(path.read_bytes())
+              digest.update(b'\0')
+          value = digest.hexdigest()
+          output = Path('build/williamson-county/release-sha256.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(value + '\n', encoding='utf-8')
+          print(f'Williamson County combined canonical SHA-256: {value}')
+          PY
+
+      - name: Upload Williamson County validation check
         uses: actions/upload-artifact@v4
         with:
           name: williamson-county-boundary-check
-          path: |
-            data/raw/williamson-county/tigerweb-county-48491.geojson
-            data/raw/williamson-county/commissioner-precincts-1-4.geojson
-            data/geojson/williamson_county_countywide.geojson
-            data/geojson/williamson_county_commissioner_precincts.geojson
-            data/normalized/williamson_county_commissioners_court.csv
+          path: build/williamson-county/
           if-no-files-found: error
