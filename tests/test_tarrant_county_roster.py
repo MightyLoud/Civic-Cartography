@@ -4,6 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "data/raw/tarrant-county/current-commissioners-court.csv"
+COUNTYWIDE_ROLES = ROOT / "data/raw/tarrant-county/current-countywide-roles.csv"
 MANIFEST = ROOT / "data/raw/tarrant-county/source-manifest.csv"
 NORMALIZED = ROOT / "data/normalized/tarrant_county_commissioners_court.csv"
 PRECINCTS = ROOT / "data/geojson/tarrant_county_commissioner_precincts.geojson"
@@ -43,7 +44,7 @@ def test_tarrant_county_roster_geometry_and_source_conflict_contract() -> None:
 
     with MANIFEST.open(newline="", encoding="utf-8") as handle:
         manifest = {row["source_id"]: row for row in csv.DictReader(handle)}
-    assert len(manifest) == 13
+    assert len(manifest) == 22
     assert "tarrant-county-effective-2025-precinct-layer" in manifest
     controlling = manifest["tarrant-county-effective-2025-precinct-layer"]["use"]
     assert "June 3, 2025" in controlling
@@ -82,3 +83,89 @@ def test_tarrant_county_roster_geometry_and_source_conflict_contract() -> None:
         "3": "tarrant-county-commissioner-precinct-3",
         "4": "tarrant-county-commissioner-precinct-4",
     }
+
+
+def test_tarrant_county_countywide_roles_and_abolished_treasurer_contract() -> None:
+    expected = {
+        "Sheriff": "Bill E. Waybourn",
+        "County Clerk": "Mary Louise Nicholson",
+        "District Clerk": "Thomas A. Wilder",
+        "Tax Assessor-Collector": "Rick Barnes",
+        "County Treasurer duties": "Kimberly M. Buchanan",
+    }
+
+    with EVIDENCE.open(newline="", encoding="utf-8") as handle:
+        court_evidence = list(csv.DictReader(handle))
+    with COUNTYWIDE_ROLES.open(newline="", encoding="utf-8") as handle:
+        countywide_roles = list(csv.DictReader(handle))
+
+    assert len(court_evidence) == 5
+    assert len(countywide_roles) == 5
+    assert {row["office_name"]: row["officeholder"] for row in countywide_roles} == expected
+    assert {row["geography_id"] for row in countywide_roles} == {"COUNTYWIDE"}
+    assert len(court_evidence) + len(countywide_roles) == 10
+    assert len({row["officeholder"] for row in court_evidence + countywide_roles}) == 10
+
+    elected_positions = len(court_evidence) + sum(
+        row["office_name"] != "County Treasurer duties" for row in countywide_roles
+    )
+    assert elected_positions == 9
+
+    treasurer_role = next(
+        row for row in countywide_roles if row["office_name"] == "County Treasurer duties"
+    )
+    assert "abolished" in treasurer_role["notes"]
+    assert "1983" in treasurer_role["notes"]
+    assert "appointed County Auditor" in treasurer_role["notes"]
+    assert "not a separately elected position" in treasurer_role["notes"]
+
+    tax_role = next(
+        row for row in countywide_roles if row["office_name"] == "Tax Assessor-Collector"
+    )
+    assert tax_role["officeholder"] == "Rick Barnes"
+    assert "Wendy Burgess" in tax_role["notes"]
+    assert "stale transition evidence" in tax_role["notes"]
+
+    with MANIFEST.open(newline="", encoding="utf-8") as handle:
+        manifest = {row["source_id"]: row for row in csv.DictReader(handle)}
+    assert len(manifest) == 22
+    for source_id in (
+        "tarrant-county-sheriff",
+        "tarrant-county-clerk",
+        "tarrant-county-district-clerk",
+        "tarrant-county-tax-assessor",
+        "tarrant-county-tax-assessor-transition",
+        "tarrant-county-elections-commission-stale-tax",
+        "tarrant-county-tax-test-faq-stale",
+        "tarrant-county-auditor-treasurer-abolition",
+        "tarrant-county-bail-board-no-treasurer",
+    ):
+        assert source_id in manifest
+
+    assert "Rick Barnes" in manifest["tarrant-county-tax-assessor"]["use"]
+    assert "Wendy Burgess" in manifest["tarrant-county-elections-commission-stale-tax"]["use"]
+    assert "stale" in manifest["tarrant-county-elections-commission-stale-tax"]["source_type"]
+    assert "Wendy Burgess" in manifest["tarrant-county-tax-test-faq-stale"]["use"]
+    abolition = manifest["tarrant-county-auditor-treasurer-abolition"]["use"]
+    assert "abolished" in abolition
+    assert "1983" in abolition
+    assert "Kimberly M. Buchanan" in abolition
+
+    with NORMALIZED.open(newline="", encoding="utf-8") as handle:
+        normalized = list(csv.DictReader(handle))
+    assert len(normalized) == 5
+    countywide = next(row for row in normalized if row["district_id"] == "COUNTYWIDE")
+    assert countywide["geometry_id"] == "tarrant-county-countywide"
+    for office in (
+        "County Judge",
+        "Sheriff",
+        "County Clerk",
+        "District Clerk",
+        "Tax Assessor-Collector",
+        "County Treasurer duties",
+    ):
+        assert office in countywide["office_name"]
+    assert "Kimberly M. Buchanan" in countywide["notes"]
+    assert "Rick Barnes" in countywide["notes"]
+    assert "1983" in countywide["notes"]
+    assert "Wendy Burgess" in countywide["notes"]
