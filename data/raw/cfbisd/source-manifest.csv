@@ -1,0 +1,6 @@
+source_id,source_type,agency,title,url,retrieved_at,confidence,use
+cfbisd-2026-election-results,election_results,Carrollton-Farmers Branch ISD,Elections Results,https://www.cfbisd.edu/about-us/board-of-trustees/elections-results,2026-08-01,high,Certified totals percentages ranking winners and county subtotals.
+cfbisd-2026-elections,election_administration,Carrollton-Farmers Branch ISD,Elections,https://www.cfbisd.edu/about-us/board-of-trustees/elections,2026-08-01,high,Confirms four candidates two positions cumulative vote procedure and canvass order.
+cfbisd-2026-cycle,candidate_filing,Carrollton-Farmers Branch ISD,2026 Board of Trustees Election,https://www.cfbisd.edu/about-us/board-of-trustees/elections/2006,2026-08-01,high,Confirms election date filing timeline and districtwide candidate process.
+cfbisd-board,current_officeholder,Carrollton-Farmers Branch ISD,Board of Trustees,https://www.cfbisd.edu/about-us/board-of-trustees,2026-08-01,high,Confirms Carolyn Benavides and Cinthya Noda terms 2026-2029 and that trustees do not represent geographic areas.
+census-tigerweb-unified-school-district,geometry,U.S. Census Bureau,TIGERweb Current Unified School Districts,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14,2026-08-01,high,Official districtwide boundary and returned GEOID.
