@@ -112,6 +112,7 @@ def normalize_capture_semantics(
         raise AcceptanceSemanticsError("diagnostics.targets must be a list")
 
     diagnostic_by_id: dict[str, dict[str, Any]] = {}
+    normalized_diagnostics: list[dict[str, Any]] = []
     for index, raw_detail in enumerate(raw_diagnostics):
         detail = _require_mapping(raw_detail, f"diagnostics.targets[{index}]")
         target_id = detail.get("target_id")
@@ -120,6 +121,7 @@ def normalize_capture_semantics(
                 f"diagnostics.targets[{index}].target_id must be a string"
             )
         diagnostic_by_id[target_id] = detail
+        normalized_diagnostics.append(detail)
 
     for target_id, raw_overlay in results.items():
         target = manifest_targets.get(target_id)
@@ -147,6 +149,7 @@ def normalize_capture_semantics(
         detail["enrichment_reasons"] = enrichment_reasons
 
         if overlay.get("match_status") != "matched" or not _artifacts_complete(attempts):
+            detail["overlay"] = copy.deepcopy(overlay)
             results[target_id] = overlay
             continue
 
@@ -178,7 +181,7 @@ def normalize_capture_semantics(
         results[target_id] = overlay
 
     execution["results"] = results
-    diagnostic_root["targets"] = raw_diagnostics
+    diagnostic_root["targets"] = normalized_diagnostics
     diagnostic_root["acceptance_semantics"] = {
         "version": 1,
         "generation_rule": (
