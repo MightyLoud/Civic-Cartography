@@ -5,17 +5,15 @@ on:
   pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate-oak-point:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository branch
+      - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -27,24 +25,23 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install -r requirements-dev.txt
 
-      - name: Generate Oak Point release geometry
+      - name: Fetch current Oak Point boundary
         run: |
           python scripts/fetch_tigerweb_place.py \
             --geoid 4853130 \
             --record-id TX:municipality:oak-point:at_large:CITYWIDE \
             --geometry-id oak-point-citywide \
             --retrieved-at 2026-08-01 \
-            --raw-output data/raw/oak-point/tigerweb-incorporated-place-4853130.geojson \
-            --output data/geojson/oak_point_citywide.geojson
+            --raw-output build/oak-point/raw/tigerweb-incorporated-place-4853130.geojson \
+            --output build/oak-point/geojson/oak_point_citywide.geojson
 
-      - name: Create Oak Point normalized record
+      - name: Verify committed Oak Point boundary matches Census
         run: |
-          mkdir -p data/normalized
-          cat > data/normalized/oak_point_2026.csv <<'CSV'
-          record_id,state_fips,state_abbr,jurisdiction_type,jurisdiction_name,district_type,district_id,district_name,source_url,source_retrieved_at,source_confidence,qa_status,parity_ok,office_name,election_date,geometry_source_url,geometry_id,parent_record_id,notes
-          TX:municipality:oak-point:at_large:CITYWIDE,48,TX,municipality,City of Oak Point,at_large,CITYWIDE,Citywide,https://oakpointtexas.com/AgendaCenter/ViewFile/Agenda/_05132026-590,2026-08-01,high,approved,TRUE,City Council — Three At-Large Seats,2026-05-02,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/28,oak-point-citywide,,"Five candidates competed for three at-large seats. Certified ranking: John Lusk 286, Kirk Hawrysio 285, and Scott Dufford 270 elected; Kevin Highlander 217 and Justin Cross 188 not elected. Census GEOID 4853130."
-          CSV
-          sed -i 's/^          //' data/normalized/oak_point_2026.csv
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/oak-point/tigerweb-incorporated-place-4853130.geojson \
+            --fresh-raw build/oak-point/raw/tigerweb-incorporated-place-4853130.geojson \
+            --committed-canonical data/geojson/oak_point_citywide.geojson \
+            --fresh-canonical build/oak-point/geojson/oak_point_citywide.geojson
 
       - name: Run automated tests
         run: pytest -q
@@ -55,25 +52,9 @@ jobs:
       - name: Validate geometry joins
         run: python scripts/validate_geojson.py
 
-      - name: Commit Oak Point release files once
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/raw/oak-point/tigerweb-incorporated-place-4853130.geojson \
-            data/geojson/oak_point_citywide.geojson \
-            data/normalized/oak_point_2026.csv
-          if ! git diff --cached --quiet; then
-            git commit -m "Add Oak Point top-N release files"
-            git push
-          fi
-
-      - name: Upload Oak Point release check
+      - name: Upload Oak Point boundary check
         uses: actions/upload-artifact@v4
         with:
           name: oak-point-top-n-boundary-check
-          path: |
-            data/raw/oak-point/tigerweb-incorporated-place-4853130.geojson
-            data/geojson/oak_point_citywide.geojson
-            data/normalized/oak_point_2026.csv
+          path: build/oak-point/
           if-no-files-found: error
