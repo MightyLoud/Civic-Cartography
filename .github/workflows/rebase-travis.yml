@@ -1,0 +1,55 @@
+name: Rebase Travis release package
+
+on:
+  push:
+    branches:
+      - agent/travis-county-transfer-proof-rebased
+
+permissions:
+  contents: write
+
+jobs:
+  copy-reviewed-travis-paths:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out rebased branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/travis-county-transfer-proof-rebased
+          fetch-depth: 0
+
+      - name: Copy reviewed Travis release paths
+        run: |
+          git fetch origin agent/travis-county-transfer-proof
+          git checkout origin/agent/travis-county-transfer-proof -- \
+            .github/workflows/validate-travis-county.yml \
+            data/geojson/travis_county_commissioner_precincts.geojson \
+            data/geojson/travis_county_countywide.geojson \
+            data/normalized/travis_county_commissioners_court.csv \
+            data/raw/travis-county/commissioner-precincts-1-4.geojson \
+            data/raw/travis-county/current-commissioners-court.csv \
+            data/raw/travis-county/source-manifest.csv \
+            data/raw/travis-county/tigerweb-county-48453.geojson \
+            docs/jurisdictions/travis-county-tx.md \
+            scripts/fetch_arcgis_districts.py \
+            tests/test_fetch_arcgis_esri_json.py \
+            tests/test_travis_county_roster.py
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/validate-travis-county.yml \
+            data/geojson/travis_county_commissioner_precincts.geojson \
+            data/geojson/travis_county_countywide.geojson \
+            data/normalized/travis_county_commissioners_court.csv \
+            data/raw/travis-county/commissioner-precincts-1-4.geojson \
+            data/raw/travis-county/current-commissioners-court.csv \
+            data/raw/travis-county/source-manifest.csv \
+            data/raw/travis-county/tigerweb-county-48453.geojson \
+            docs/jurisdictions/travis-county-tx.md \
+            scripts/fetch_arcgis_districts.py \
+            tests/test_fetch_arcgis_esri_json.py \
+            tests/test_travis_county_roster.py
+          if ! git diff --cached --quiet; then
+            git commit -m "Rebase Travis County release onto current main"
+            git push origin HEAD:agent/travis-county-transfer-proof-rebased
+          fi
