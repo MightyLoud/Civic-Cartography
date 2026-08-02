@@ -2,7 +2,7 @@
 
 ## Status
 
-Release candidate pending Fort Bend County and repository-wide validation.
+Verified ten-office release package. First-pass pre-merge validation succeeded in Fort Bend County workflow run #47 and repository workflow run #747.
 
 ## Purpose
 
@@ -136,7 +136,17 @@ All five normalized records use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Validation evidence
 
-Pending final exact-head Fort Bend County and repository-wide workflow results. The combined canonical SHA-256 must remain `0b00c8a65accd7841d6ee18612071b5c695d9bf0de05be5e7316a9386d40becc` because no geometry files change in this extension.
+- Fort Bend County workflow run #47: success
+- Repository workflow run #747: success
+- Automated tests: 60 passed
+- Normalized datasets validated: 20 files
+- Live `NAME`, `COMMISSION`, `WEBSITE`, and `EFFECTIVE` contract: passed
+- Four-district January 2026 versus 2022–2025 archive divergence: passed
+- Current precinct snapshot comparison: passed
+- Current Census snapshot comparison: passed
+- Geometry joins: passed
+- Geometry changes: 0
+- Combined canonical SHA-256: `0b00c8a65accd7841d6ee18612071b5c695d9bf0de05be5e7316a9386d40becc`
 
 ## Release files
 
