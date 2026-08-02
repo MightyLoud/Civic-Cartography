@@ -1,0 +1,34 @@
+{
+  "target_id": "BP25-018",
+  "override_id": "co-regional-transportation-district",
+  "resolution_reason": "Resolved by authoritative override co-regional-transportation-district.",
+  "resolved_ocdid": "ocd-division/country:us/state:co/special_district:regional_transportation_district",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:co/special_district:regional_transportation_district/transit_authority",
+  "classification": "transit_authority",
+  "generation_status": "generated",
+  "enrichment_status": "partial",
+  "enrichment_reason": "No validation match found",
+  "candidate_source": "authoritative_override",
+  "official_url": "https://www.rtd-denver.com/",
+  "source_name": "Regional Transportation District",
+  "source_urls": {
+    "official_website": "https://www.rtd-denver.com/",
+    "governance_materials": "https://www.rtd-denver.com/about-rtd/board-of-directors/governance-materials",
+    "statutory_identity": "https://www.rtd-denver.com/service-development/faqs"
+  },
+  "division": {
+    "path": "divisions/co/local/regional_transportation_district__6cfe3b86-0fd3-5b34-8848-b8e321ed1121.yaml",
+    "sha256": "d478dceb4a2c7c011bbbc40c66a22a7a4d9e9b496f15ac802395fd5f677fd8df",
+    "display_name": "Regional Transportation District",
+    "jurisdiction_id": "ocd-jurisdiction/country:us/state:co/special_district:regional_transportation_district/transit_authority"
+  },
+  "jurisdiction": {
+    "path": "jurisdictions/co/local/regional_transportation_district_4665e0ef-66c7-55fe-b6f0-385e2609d711.yaml",
+    "sha256": "91743902389b57b91d6ed3728597e12c340d6c2d4293a23e0f0a68c302447eb5",
+    "name": "Regional Transportation District",
+    "classification": "transit_authority"
+  },
+  "run_id": "b90e16be05d7f54c69e4",
+  "evaluation_id": "024a8417fdc24b2a1af9",
+  "run_asof": "2026-08-02T15:00:00Z"
+}
