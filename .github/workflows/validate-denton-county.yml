@@ -5,17 +5,15 @@ on:
   pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate-denton-county:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository branch
+      - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -61,7 +59,7 @@ jobs:
             --raw-output build/denton-county/precincts/raw/commissioner-precincts-1-4.geojson \
             --output build/denton-county/precincts/geojson/denton_county_commissioner_precincts.geojson
 
-      - name: Verify committed Denton County precincts match official GIS
+      - name: Verify committed Denton County commissioner precincts match official GIS
         run: |
           python scripts/compare_arcgis_district_snapshot.py \
             --committed-raw data/raw/denton-county/commissioner-precincts-1-4.geojson \
@@ -69,7 +67,7 @@ jobs:
             --committed-canonical data/geojson/denton_county_commissioner_precincts.geojson \
             --fresh-canonical build/denton-county/precincts/geojson/denton_county_commissioner_precincts.geojson
 
-      - name: Generate Denton County constable release files
+      - name: Fetch current Denton County constable precincts
         run: |
           python scripts/fetch_arcgis_districts.py \
             --layer-url https://gis.dentoncounty.gov/arcgis/rest/services/PoliticalBoundaries_GC/MapServer/5 \
@@ -82,28 +80,24 @@ jobs:
             --geometry-id-prefix denton-county-constable-precinct \
             --source-agency "Denton County GIS" \
             --retrieved-at 2026-08-01 \
-            --raw-output data/raw/denton-county/constable-precincts-1-6.geojson \
-            --output data/geojson/denton_county_constable_precincts.geojson
+            --raw-output build/denton-county/constables/raw/constable-precincts-1-6.geojson \
+            --output build/denton-county/constables/geojson/denton_county_constable_precincts.geojson
 
-          mkdir -p data/normalized
-          cat > data/normalized/denton_county_constables.csv <<'CSV'
-          record_id,state_fips,state_abbr,jurisdiction_type,jurisdiction_name,district_type,district_id,district_name,source_url,source_retrieved_at,source_confidence,qa_status,parity_ok,office_name,election_date,geometry_source_url,geometry_id,parent_record_id,notes
-          TX:county:denton:constable_precinct:1,48,TX,county,Denton County,constable_precinct,1,Constable Precinct 1,https://www.dentoncounty.gov/232/Constable-Precinct-1,2026-08-01,high,approved,TRUE,Constable Precinct 1,,https://gis.dentoncounty.gov/arcgis/rest/services/PoliticalBoundaries_GC/MapServer/5,denton-county-constable-precinct-1,,"Trevor Krueger was appointed effective May 29, 2026 after Johnny Hammons resigned. The live office page and official GIS NAME_CONST value agree; the county Elected Officials directory still lists Hammons and is preserved as a stale-source conflict. Constables have countywide peace-officer jurisdiction but are elected by precinct."
-          TX:county:denton:constable_precinct:2,48,TX,county,Denton County,constable_precinct,2,Constable Precinct 2,https://www.dentoncounty.gov/233/Constable-Precinct-2,2026-08-01,high,approved,TRUE,Constable Precinct 2,,https://gis.dentoncounty.gov/arcgis/rest/services/PoliticalBoundaries_GC/MapServer/5,denton-county-constable-precinct-2,,"Michael A. Truitt is the current Constable. Official Denton County GIS source field JP_C equals 2 and NAME_CONST matches the officeholder. Constables have countywide peace-officer jurisdiction but are elected by precinct."
-          TX:county:denton:constable_precinct:3,48,TX,county,Denton County,constable_precinct,3,Constable Precinct 3,https://www.dentoncounty.gov/234/Constable-Precinct-3,2026-08-01,high,approved,TRUE,Constable Precinct 3,,https://gis.dentoncounty.gov/arcgis/rest/services/PoliticalBoundaries_GC/MapServer/5,denton-county-constable-precinct-3,,"Dan Rochelle is the current Constable. Official Denton County GIS source field JP_C equals 3 and NAME_CONST matches the officeholder. Constables have countywide peace-officer jurisdiction but are elected by precinct."
-          TX:county:denton:constable_precinct:4,48,TX,county,Denton County,constable_precinct,4,Constable Precinct 4,https://www.dentoncounty.gov/235/Constable-Precinct-4,2026-08-01,high,approved,TRUE,Constable Precinct 4,,https://gis.dentoncounty.gov/arcgis/rest/services/PoliticalBoundaries_GC/MapServer/5,denton-county-constable-precinct-4,,"Danny Fletcher is the current Constable. Official Denton County GIS source field JP_C equals 4 and NAME_CONST matches the officeholder. Constables have countywide peace-officer jurisdiction but are elected by precinct."
-          TX:county:denton:constable_precinct:5,48,TX,county,Denton County,constable_precinct,5,Constable Precinct 5,https://www.dentoncounty.gov/236/Constable-Precinct-5,2026-08-01,high,approved,TRUE,Constable Precinct 5,,https://gis.dentoncounty.gov/arcgis/rest/services/PoliticalBoundaries_GC/MapServer/5,denton-county-constable-precinct-5,,"Doug Boydston is the current Constable. Official Denton County GIS source field JP_C equals 5 and NAME_CONST matches the officeholder. Constables have countywide peace-officer jurisdiction but are elected by precinct."
-          TX:county:denton:constable_precinct:6,48,TX,county,Denton County,constable_precinct,6,Constable Precinct 6,https://www.dentoncounty.gov/237/Constable-Precinct-6,2026-08-01,high,approved,TRUE,Constable Precinct 6,,https://gis.dentoncounty.gov/arcgis/rest/services/PoliticalBoundaries_GC/MapServer/5,denton-county-constable-precinct-6,,"Richard Bachus is the current Constable. Official Denton County GIS source field JP_C equals 6 and NAME_CONST matches the officeholder. Constables have countywide peace-officer jurisdiction but are elected by precinct."
-          CSV
-          sed -i 's/^          //' data/normalized/denton_county_constables.csv
+      - name: Verify committed Denton County constable precincts match official GIS
+        run: |
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/denton-county/constable-precincts-1-6.geojson \
+            --fresh-raw build/denton-county/constables/raw/constable-precincts-1-6.geojson \
+            --committed-canonical data/geojson/denton_county_constable_precincts.geojson \
+            --fresh-canonical build/denton-county/constables/geojson/denton_county_constable_precincts.geojson
 
-      - name: Verify constable roster attributes
+      - name: Verify fresh constable roster attributes
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
-          path = Path('data/geojson/denton_county_constable_precincts.geojson')
+          path = Path('build/denton-county/constables/geojson/denton_county_constable_precincts.geojson')
           payload = json.loads(path.read_text(encoding='utf-8'))
           expected = {
               '1': 'TREVOR KRUEGER',
@@ -159,26 +153,9 @@ jobs:
           print(f'Denton County combined canonical SHA-256: {value}')
           PY
 
-      - name: Commit Denton County constable release files once
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/raw/denton-county/constable-precincts-1-6.geojson \
-            data/geojson/denton_county_constable_precincts.geojson \
-            data/normalized/denton_county_constables.csv
-          if ! git diff --cached --quiet; then
-            git commit -m "Add Denton County constable precinct release files"
-            git push
-          fi
-
       - name: Upload Denton County validation check
         uses: actions/upload-artifact@v4
         with:
           name: denton-county-boundary-check
-          path: |
-            build/denton-county/
-            data/raw/denton-county/constable-precincts-1-6.geojson
-            data/geojson/denton_county_constable_precincts.geojson
-            data/normalized/denton_county_constables.csv
+          path: build/denton-county/
           if-no-files-found: error
