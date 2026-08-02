@@ -1,0 +1,87 @@
+{
+  "criteria": {
+    "all_failures_have_explicit_exception": true,
+    "all_targets_have_one_result": true,
+    "known_classification_rate_at_least_80_percent": true,
+    "known_generation_rate_at_least_80_percent": true,
+    "median_human_review_at_most_10_minutes": true,
+    "regression_fixtures_pass": true,
+    "second_run_is_identical": true,
+    "zero_target_only_production_patches": true
+  },
+  "discovery_outcomes": [
+    {
+      "classified_automatically": false,
+      "exception_class": "upstream_target_not_found",
+      "generated_automatically": false,
+      "jurisdiction_name": "Bay Area Rapid Transit District",
+      "review_reason": "No upstream record matched the maintained exact-name aliases: bay area rapid transit district",
+      "target_id": "BP25-019"
+    },
+    {
+      "classified_automatically": false,
+      "exception_class": "upstream_target_not_found",
+      "generated_automatically": false,
+      "jurisdiction_name": "Metropolitan Water Reclamation District of Greater Chicago",
+      "review_reason": "No upstream record matched the maintained exact-name aliases: metropolitan water reclamation district of greater chicago",
+      "target_id": "BP25-020"
+    },
+    {
+      "classified_automatically": false,
+      "exception_class": "upstream_target_not_found",
+      "generated_automatically": false,
+      "jurisdiction_name": "Port of Seattle",
+      "review_reason": "No upstream record matched the maintained exact-name aliases: port of seattle",
+      "target_id": "BP25-021"
+    },
+    {
+      "classified_automatically": false,
+      "exception_class": "upstream_target_not_found",
+      "generated_automatically": false,
+      "jurisdiction_name": "Metropolitan Government of Nashville and Davidson County",
+      "review_reason": "No upstream record matched the maintained exact-name aliases: nashville davidson metropolitan government",
+      "target_id": "BP25-025"
+    }
+  ],
+  "evaluation_id": "03254d526d05fab00c78",
+  "first_run_id": "b2db2dd876bd307d30af",
+  "known_archetype_exceptions": [
+    {
+      "exception_class": "upstream_target_not_found",
+      "jurisdiction_name": "Miami-Dade County",
+      "review_reason": "Exact OCD ID was not present in matched or orphan upstream records.",
+      "target_id": "BP25-012"
+    },
+    {
+      "exception_class": "upstream_target_not_found",
+      "jurisdiction_name": "Denver Public Schools",
+      "review_reason": "No upstream record matched the maintained exact-name aliases: school district no 1 in the city and county of denver",
+      "target_id": "BP25-015"
+    },
+    {
+      "exception_class": "upstream_target_not_found",
+      "jurisdiction_name": "Seattle Public Schools",
+      "review_reason": "No upstream record matched the maintained exact-name aliases: seattle school district no 1",
+      "target_id": "BP25-016"
+    }
+  ],
+  "run_asof": "2026-08-02T15:00:00Z",
+  "schema_version": 1,
+  "second_run_id": "b2db2dd876bd307d30af",
+  "summary": {
+    "deterministic_count": 25,
+    "discovery_count": 4,
+    "exception_failure_count": 0,
+    "exception_failures": [],
+    "gate_passed": true,
+    "known_archetype_count": 15,
+    "known_classification_rate": 0.8,
+    "known_classified_count": 12,
+    "known_generated_count": 12,
+    "known_generation_rate": 0.8,
+    "median_human_minutes": 0.0,
+    "reports_identical": true,
+    "target_count": 25,
+    "target_only_patch_count": 0
+  }
+}

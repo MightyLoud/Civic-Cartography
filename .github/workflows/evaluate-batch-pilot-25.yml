@@ -1,0 +1,83 @@
+name: Evaluate Batch Pilot 25
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/evaluate-batch-pilot-25.yml"
+      - "scripts/run_batch_pilot_25_ci.sh"
+      - "scripts/capture_upstream_batch.py"
+      - "scripts/capture_upstream_batch_with_overrides.py"
+      - "scripts/check_batch_acceptance.py"
+      - "civic_cartography/batch_acceptance.py"
+      - "tests/test_batch_acceptance.py"
+      - "tests/test_batch_capture.py"
+      - "tests/fixtures/batch_pilot_25.yml"
+      - "data/authoritative_jurisdiction_overrides.yml"
+      - "data/canonical_alias_groups.yml"
+      - "patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch"
+      - "patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch"
+      - "patches/openstates-jurisdictions/0003-authoritative-jurisdiction-overrides.patch"
+      - "patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch"
+
+permissions:
+  contents: read
+
+env:
+  UPSTREAM_REPOSITORY: openstates/jurisdictions
+  UPSTREAM_REVISION: 6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705
+  RUN_ASOF: 2026-08-02T15:00:00Z
+  PATCH_1: patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch
+  PATCH_2: patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch
+  PATCH_3: patches/openstates-jurisdictions/0003-authoritative-jurisdiction-overrides.patch
+  PATCH_4: patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch
+  OVERRIDE_REGISTRY: data/authoritative_jurisdiction_overrides.yml
+  ALIAS_REGISTRY: data/canonical_alias_groups.yml
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+
+      - name: Check out pinned upstream generator
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM_REPOSITORY }}
+          ref: ${{ env.UPSTREAM_REVISION }}
+          path: upstream
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install Civic-Cartography test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Run and enforce Batch Pilot 25
+        run: bash scripts/run_batch_pilot_25_ci.sh
+
+      - name: Upload Batch Pilot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch-pilot-25-acceptance
+          path: |
+            build/upstream-source/source-manifest.json
+            build/run-1/execution-results.json
+            build/run-1/diagnostics.json
+            build/run-1/report.json
+            build/run-1/artifacts
+            build/run-2/execution-results.json
+            build/run-2/diagnostics.json
+            build/run-2/report.json
+            build/run-2/artifacts
+            build/batch-acceptance.json
+            batch-pilot-summary.md
+          if-no-files-found: warn
