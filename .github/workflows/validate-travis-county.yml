@@ -35,23 +35,63 @@ jobs:
             --raw-output build/travis-county/county/raw/tigerweb-county-48453.geojson \
             --output build/travis-county/county/geojson/travis_county_countywide.geojson
 
-      - name: Fetch current Travis County commissioner precincts
+      - name: Fetch current Travis County commissioner precincts separately
         run: |
-          python scripts/fetch_arcgis_districts.py \
-            --layer-url https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/MapServer/0 \
-            --district-ids 1,2,3,4 \
-            --district-field PRECINCT \
-            --district-type commissioner_precinct \
-            --district-name-prefix "Commissioner Precinct" \
-            --jurisdiction-name "Travis County" \
-            --record-id-prefix TX:county:travis:commissioner_precinct \
-            --geometry-id-prefix travis-county-commissioner-precinct \
-            --source-agency "Travis County GIS" \
-            --retrieved-at 2026-08-02 \
-            --out-fields PRECINCT,COMMISSIONER,NAME,DISTRICT \
-            --geometry-precision 6 \
-            --raw-output build/travis-county/precincts/raw/commissioner-precincts-1-4.geojson \
-            --output build/travis-county/precincts/geojson/travis_county_commissioner_precincts.geojson
+          for precinct in 1 2 3 4; do
+            python scripts/fetch_arcgis_districts.py \
+              --layer-url https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/MapServer/0 \
+              --district-ids "$precinct" \
+              --district-field PRECINCT \
+              --district-type commissioner_precinct \
+              --district-name-prefix "Commissioner Precinct" \
+              --jurisdiction-name "Travis County" \
+              --record-id-prefix TX:county:travis:commissioner_precinct \
+              --geometry-id-prefix travis-county-commissioner-precinct \
+              --source-agency "Travis County GIS" \
+              --retrieved-at 2026-08-02 \
+              --where "PRECINCT = $precinct" \
+              --out-fields PRECINCT,COMMISSIONER \
+              --geometry-precision 6 \
+              --raw-output "build/travis-county/precincts/parts/raw-$precinct.geojson" \
+              --output "build/travis-county/precincts/parts/canonical-$precinct.geojson"
+          done
+
+      - name: Merge Travis County precinct parts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('build/travis-county/precincts')
+          raw_features = []
+          canonical_features = []
+          for precinct in range(1, 5):
+              raw = json.loads((root / 'parts' / f'raw-{precinct}.geojson').read_text(encoding='utf-8'))
+              canonical = json.loads((root / 'parts' / f'canonical-{precinct}.geojson').read_text(encoding='utf-8'))
+              raw_features.extend(raw.get('features') or [])
+              canonical_features.extend(canonical.get('features') or [])
+
+          raw_features.sort(key=lambda feature: int((feature.get('properties') or {}).get('PRECINCT')))
+          canonical_features.sort(key=lambda feature: int((feature.get('properties') or {}).get('district_id')))
+
+          outputs = {
+              root / 'raw' / 'commissioner-precincts-1-4.geojson': {
+                  'type': 'FeatureCollection',
+                  'features': raw_features,
+              },
+              root / 'geojson' / 'travis_county_commissioner_precincts.geojson': {
+                  'type': 'FeatureCollection',
+                  'features': canonical_features,
+              },
+          }
+          for path, payload in outputs.items():
+              path.parent.mkdir(parents=True, exist_ok=True)
+              path.write_text(
+                  json.dumps(payload, sort_keys=True, separators=(',', ':')) + '\n',
+                  encoding='utf-8',
+              )
+          print('Merged four separately queried Travis County precincts.')
+          PY
 
       - name: Verify Travis County build contract
         run: |
