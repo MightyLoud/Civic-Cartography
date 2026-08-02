@@ -2,11 +2,11 @@
 
 ## Status
 
-Release target. Geometry remains unpublished until the official Travis County FeatureServer and Census county feature pass read-only build validation.
+Release target. Geometry remains unpublished until the official Travis County MapServer and Census county feature pass read-only build validation.
 
 ## Purpose
 
-Travis County is the third county-level Civic Cartography proof. It tests whether the countywide-plus-four-precinct model transfers to an independent FeatureServer schema with a live officeholder attribute and a documented stale-directory conflict.
+Travis County is the third county-level Civic Cartography proof. It tests whether the countywide-plus-four-precinct model transfers to an independent ArcGIS schema with a live officeholder attribute and a documented stale-directory conflict.
 
 ## Jurisdiction identity
 
@@ -18,9 +18,10 @@ Travis County is the third county-level Civic Cartography proof. It tests whethe
 - Governing body: Commissioners Court
 - Representation model: one County Judge elected countywide and four County Commissioners elected from precincts
 - County geometry source: U.S. Census Bureau TIGERweb Current Counties (`MapServer/82`)
-- Precinct geometry source: Travis County GIS `Travis_County_Commissioner_Precincts` (`FeatureServer/0`)
+- Precinct geometry source: Travis County GIS `Travis_County_Commissioner_Precincts` (`MapServer/0`)
 - Stable precinct source field: `PRECINCT`
 - Live officeholder source attribute: `COMMISSIONER`
+- Source-interface note: the equivalent FeatureServer timed out during the initial build; the official MapServer query interface is used instead
 
 ## Current official roster
 
@@ -64,14 +65,15 @@ TX:county:travis:commissioner_precinct:4     -> travis-county-commissioner-preci
 1. Preserve all five current Commissioners Court members.
 2. Model the County Judge as countywide and each Commissioner as precinct-based.
 3. Use the Census county feature for GEOID `48453`.
-4. Use Travis County GIS `FeatureServer/0` for precinct geometry.
+4. Use Travis County GIS `MapServer/0` for precinct geometry.
 5. Resolve precincts through `PRECINCT` and require IDs 1–4 exactly once.
 6. Require the live `COMMISSIONER` attributes to match Jeff Travillion, Brigid Shea, Ann Howard, and George Morales.
 7. Preserve the Margaret Gomez directory entry as a stale-source conflict.
-8. Keep raw source responses separate from canonical map-ready GeoJSON.
-9. Every normalized record must join exactly one canonical feature.
-10. Current-source drift must fail CI when geometry, precinct IDs, officeholder attributes, GEOID, or canonical joins change.
-11. Constables, Justices of the Peace, and other county offices remain outside this bounded release.
+8. Preserve the initial FeatureServer timeout as source-interface evidence; do not disguise it with longer timeouts.
+9. Keep raw source responses separate from canonical map-ready GeoJSON.
+10. Every normalized record must join exactly one canonical feature.
+11. Current-source drift must fail CI when geometry, precinct IDs, officeholder attributes, GEOID, or canonical joins change.
+12. Constables, Justices of the Peace, and other county offices remain outside this bounded release.
 
 ## Completion rule
 
