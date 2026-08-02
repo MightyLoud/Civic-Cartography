@@ -111,6 +111,10 @@ def infer_district_field(
             score += 100
         elif "DIST" in upper_key:
             score += 80
+        if "PRECINCT" in upper_key:
+            score += 100
+        elif "PCT" in upper_key:
+            score += 80
         if "COUNCIL" in upper_key:
             score += 40
         if upper_key in {"ID", "NUMBER", "NO", "NUM"}:
@@ -173,6 +177,8 @@ def canonicalize(
     layer_url: str,
     request_url: str,
     retrieved_at: str,
+    district_type: str = "district",
+    district_name_prefix: str = "District",
 ) -> dict[str, Any]:
     """Create map-ready features with stable join identifiers."""
     canonical_features: list[dict[str, Any]] = []
@@ -189,9 +195,9 @@ def canonicalize(
                     "geometry_id": f"{geometry_id_prefix}-{district_id}",
                     "record_id": f"{record_id_prefix}:{district_id}",
                     "jurisdiction_name": jurisdiction_name,
-                    "district_type": "district",
+                    "district_type": district_type,
                     "district_id": district_id,
-                    "district_name": f"District {district_id}",
+                    "district_name": f"{district_name_prefix} {district_id}",
                     "source_agency": source_agency,
                     "source_layer": layer_url,
                     "source_request_url": request_url,
@@ -214,6 +220,8 @@ def main() -> int:
     parser.add_argument("--layer-url", required=True)
     parser.add_argument("--district-ids", required=True)
     parser.add_argument("--district-field")
+    parser.add_argument("--district-type", default="district")
+    parser.add_argument("--district-name-prefix", default="District")
     parser.add_argument("--jurisdiction-name", required=True)
     parser.add_argument("--record-id-prefix", required=True)
     parser.add_argument("--geometry-id-prefix", required=True)
@@ -248,6 +256,8 @@ def main() -> int:
         layer_url=args.layer_url,
         request_url=request_url,
         retrieved_at=args.retrieved_at,
+        district_type=args.district_type,
+        district_name_prefix=args.district_name_prefix,
     )
 
     write_json(args.raw_output, raw_payload)
