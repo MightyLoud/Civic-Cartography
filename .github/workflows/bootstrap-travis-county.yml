@@ -1,0 +1,55 @@
+name: Bootstrap Travis County geometry
+
+on:
+  push:
+    branches:
+      - data/travis-county-commissioners-court
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap-travis-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch Travis County boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48453 \
+            --record-id TX:county:travis:countywide:COUNTYWIDE \
+            --geometry-id travis-county-countywide \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/travis-county/county/raw/tigerweb-county-48453.geojson \
+            --output build/travis-county/county/geojson/travis_county_countywide.geojson
+
+      - name: Fetch Travis County commissioner precincts
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://gis.traviscountytx.gov/server1/rest/services/Boundaries_and_Jurisdictions/Travis_County_Commissioner_Precincts/FeatureServer/0 \
+            --district-ids 1,2,3,4 \
+            --district-field PRECINCT \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Travis County" \
+            --record-id-prefix TX:county:travis:commissioner_precinct \
+            --geometry-id-prefix travis-county-commissioner-precinct \
+            --source-agency "Travis County GIS" \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/travis-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --output build/travis-county/precincts/geojson/travis_county_commissioner_precincts.geojson
+
+      - name: Upload Travis County bootstrap artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: travis-county-bootstrap
+          path: build/travis-county/
+          if-no-files-found: error
