@@ -1,0 +1,45 @@
+name: Derive Schleicher County release geometry
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/derive-schleicher-county.yml"
+      - "scripts/derive_schleicher_commissioner_precincts.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  derive-schleicher-county:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install geometry dependencies
+        run: python -m pip install pymupdf pyshp pyproj shapely pillow
+      - name: Derive Commissioner precincts
+        run: |
+          python scripts/derive_schleicher_commissioner_precincts.py \
+            --retrieved-at 2026-08-03 \
+            --work-dir build/schleicher-county/work \
+            --raw-output build/schleicher-county/raw/commissioner-precincts-1-4.geojson \
+            --output build/schleicher-county/geojson/schleicher_county_commissioner_precincts.geojson \
+            --contract-output build/schleicher-county/gis-source-contract.json \
+            --evidence-output build/schleicher-county/derivation-evidence.json
+      - name: Fetch current county boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48413 \
+            --record-id TX:county:schleicher:countywide:COUNTYWIDE \
+            --geometry-id schleicher-county-countywide \
+            --retrieved-at 2026-08-03 \
+            --raw-output build/schleicher-county/raw/tigerweb-county-48413.geojson \
+            --output build/schleicher-county/geojson/schleicher_county_countywide.geojson
+      - uses: actions/upload-artifact@v4
+        with:
+          name: schleicher-county-derived-geometry
+          path: build/schleicher-county/
+          if-no-files-found: error
