@@ -1,0 +1,610 @@
+{
+  "artifact_inventory": {
+    "first_failures": [],
+    "first_inventory_sha256": "cf8fa6e4571f2a367a4faac63266abc03e19d2c78596c312710214763a0e16d2",
+    "identical": true,
+    "second_failures": [],
+    "second_inventory_sha256": "cf8fa6e4571f2a367a4faac63266abc03e19d2c78596c312710214763a0e16d2"
+  },
+  "batch_id": "WA-PB01",
+  "criteria": {
+    "all_generated_artifacts_have_sha256": true,
+    "all_nesting_relationships_preserved_as_lists": true,
+    "all_output_paths_are_unique": true,
+    "all_targets_are_deterministic": true,
+    "all_targets_have_one_result_per_run": true,
+    "all_targets_resolve_classify_and_generate": true,
+    "artifact_inventories_are_identical": true,
+    "target_crosswalk_parity": true,
+    "zero_target_only_production_patches": true
+  },
+  "crosswalk_sha256": "e5e9739380738142535040bd643225638f236706a684374c83d1178fc3a96d38",
+  "evaluation_id": "d65b1634e7b02d1fe0b5",
+  "first_run_id": "bece54b9e87136456a55",
+  "manifest_name": "production_batch_wa_100_wa_pb01_b",
+  "manifest_sha256": "85d256c44c48f1ee5c3684c784f490f0af662b04b7ec41600eaa4b9b84da5fcb",
+  "run_asof": "2026-08-03T20:00:00Z",
+  "schema_version": 1,
+  "second_run_id": "bece54b9e87136456a55",
+  "summary": {
+    "artifact_count": 42,
+    "artifact_inventories_identical": true,
+    "deterministic_count": 20,
+    "gate_passed": true,
+    "nesting_parity_count": 20,
+    "passed_count": 20,
+    "reports_identical": true,
+    "shared_artifact_count": 2,
+    "target_artifact_count": 40,
+    "target_count": 20,
+    "target_only_patch_count": 0,
+    "unique_output_paths": true
+  },
+  "targets": [
+    {
+      "census_geoid": "5338495",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/latah_5338495_966338b5-4c8b-5672-809b-40ff1704ceee.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Latah",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/latah_a973b1e9-5fda-55a3-a8e0-189285ddc4e7.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:latah",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/latah_5338495_966338b5-4c8b-5672-809b-40ff1704ceee.yaml": "4c07c51ea24d44aeec200c36b77e47f32e33d7c55eeb2931255bb6d3e57bea89",
+        "jurisdictions/wa/local/latah_a973b1e9-5fda-55a3-a8e0-189285ddc4e7.yaml": "fbce2552def134d19bdd9d7acd1113d7ccf7b029b797a64bd3cf597bd5f8ec62"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:latah"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-021",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5338845",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/leavenworth_5338845_b299f1d8-168a-5620-a3bc-7927dc4cd48f.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Leavenworth",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/leavenworth_553b2891-677c-53e6-8d85-9317c9e6f6ee.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:leavenworth",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/leavenworth_5338845_b299f1d8-168a-5620-a3bc-7927dc4cd48f.yaml": "23ecf646c335553895ebc94ebbbc5a52baa1513878ea455b0dc05601297b20b5",
+        "jurisdictions/wa/local/leavenworth_553b2891-677c-53e6-8d85-9317c9e6f6ee.yaml": "9e77fc9527af8e32447cd6bd5ff3d15a000fb72f39d7905e02534071e6de282d"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:leavenworth"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-022",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5339335",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/liberty_lake_5339335_bd65376e-c17b-5236-9ed2-b94ebd7fb4c8.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Liberty Lake",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/liberty_lake_e5c6c4a3-04f3-583c-a10e-c728ee7c694a.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:liberty_lake",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/liberty_lake_5339335_bd65376e-c17b-5236-9ed2-b94ebd7fb4c8.yaml": "932edb2b58d0dcf1d3cb7fbe7fd5ba9358941af94e6856dba31407a811e52086",
+        "jurisdictions/wa/local/liberty_lake_e5c6c4a3-04f3-583c-a10e-c728ee7c694a.yaml": "9b0a3d0d5fb4bf72b0def17196eb181c793b6aa7feb7968a1b186ab5a776ec60"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:liberty_lake"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-023",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5339510",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/lind_5339510_4e1102bb-8be2-52ea-9cbe-9d18c399387f.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Lind",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/lind_9b28c4c6-2f43-5027-9d14-420abd4456c0.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lind",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/lind_5339510_4e1102bb-8be2-52ea-9cbe-9d18c399387f.yaml": "4bd02c21102b0c3765194a17e97a7d58e0c5470dc8705453519c6ad55e19f77a",
+        "jurisdictions/wa/local/lind_9b28c4c6-2f43-5027-9d14-420abd4456c0.yaml": "e6646762219ba31dd18b32d70de92fadc085e4889ccab352062323aaf3007b62"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:lind"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-024",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5340070",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/long_beach_5340070_4fe9bd4e-e0c4-5e30-89d0-b90e4db7f297.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Long Beach",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/long_beach_0338a9b4-4a21-500e-908a-09142b008414.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:long_beach",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/long_beach_5340070_4fe9bd4e-e0c4-5e30-89d0-b90e4db7f297.yaml": "29bddeae90361a24f7e6d3c50d262765a02728e95f786d9a969dd76ae6866c98",
+        "jurisdictions/wa/local/long_beach_0338a9b4-4a21-500e-908a-09142b008414.yaml": "5ef30a9ee521e4ed7eef6dec94ca7bea6421f8521201ccf155d83c5b47bcf477"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:long_beach"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-025",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5340245",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/longview_5340245_306ba6ac-311d-59ec-8be0-3d6e34bb58cb.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Longview",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/longview_dff34bb4-a80f-5630-b330-987b315dc777.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:longview",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/longview_5340245_306ba6ac-311d-59ec-8be0-3d6e34bb58cb.yaml": "55cb0a230203b4a7a565956a8a9364f044445da2c97549a0803c80009af4fab9",
+        "jurisdictions/wa/local/longview_dff34bb4-a80f-5630-b330-987b315dc777.yaml": "166a11075dfba3cc1dcf9d4ad29b8ad062b5e51857e1c291448648dedb530e76"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:longview"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-026",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5340770",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/lyman_5340770_928b65ca-3894-5f4e-8f67-25ed46313ddd.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Lyman",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/lyman_032ba616-f524-5f7f-9bc7-7400f4f4db6c.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lyman",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/lyman_5340770_928b65ca-3894-5f4e-8f67-25ed46313ddd.yaml": "c937c2e8a3f8a0d67053ae7c36f31e93a03fc0abbb28e1e5fc900a43f72213b9",
+        "jurisdictions/wa/local/lyman_032ba616-f524-5f7f-9bc7-7400f4f4db6c.yaml": "45aaf77fb0f39b135ce92598efc68ab968534f7b2a23f66493909654ba0d1bf2"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:lyman"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-027",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5340805",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/lynden_5340805_50d4e634-beb2-51c4-bf26-6eb5bceed057.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Lynden",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/lynden_60ffd4bf-449e-577c-80f4-04d246d83cb7.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lynden",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/lynden_5340805_50d4e634-beb2-51c4-bf26-6eb5bceed057.yaml": "729ebab4ad9d28b0a7d12a9f9a68eefea5c57a4a233d98a20ef2988347b7d33e",
+        "jurisdictions/wa/local/lynden_60ffd4bf-449e-577c-80f4-04d246d83cb7.yaml": "009397fd881db9e92a357e573de4b140de02b330616c66b8647d6235336554e8"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:lynden"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-028",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5340840",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/lynnwood_5340840_e453bb07-7c0a-5fdb-9931-655d3b8ea903.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Lynnwood",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/lynnwood_5c54e589-d517-59cc-8f0b-0944f7fd19f2.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lynnwood",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/lynnwood_5340840_e453bb07-7c0a-5fdb-9931-655d3b8ea903.yaml": "0160015759341d99302fc34201d4a51ff6604bce70e85bf50d4fe6cc9f21f216",
+        "jurisdictions/wa/local/lynnwood_5c54e589-d517-59cc-8f0b-0944f7fd19f2.yaml": "ac50668891b46432231967a11c508aee6bb2bc22b18b371beadfab33f28931e2"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:lynnwood"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-029",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5340980",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/mabton_5340980_42065fcf-bb99-5dc2-b7df-423a2018d262.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Mabton",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/mabton_7f7432d1-2f6b-5b3c-ab23-2617473b1ba6.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mabton",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/mabton_5340980_42065fcf-bb99-5dc2-b7df-423a2018d262.yaml": "66098b3ce9d82e3efc72d050daa92745780344660330c15b0bf4523039fefd09",
+        "jurisdictions/wa/local/mabton_7f7432d1-2f6b-5b3c-ab23-2617473b1ba6.yaml": "6803f77120b0036a03d34be572dffc14c363344c31925b510e04cfc4c5e4dbcf"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:mabton"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-030",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5341225",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/mccleary_5341225_a4d1f512-5e0f-5942-9662-89fb37c78ea6.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "McCleary",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/mccleary_829aefcc-29e3-500c-a488-18100faebd1d.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mccleary",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/mccleary_5341225_a4d1f512-5e0f-5942-9662-89fb37c78ea6.yaml": "828c439dee206fa8491999bc47ca2fb24d9082fb7f560d039a4d433592d668d3",
+        "jurisdictions/wa/local/mccleary_829aefcc-29e3-500c-a488-18100faebd1d.yaml": "425ff0328c3ac2a7dceba6266b398135c3245b25f800e832d1fa247e29e28402"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:mccleary"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-031",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5342275",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/malden_5342275_cd16448d-8d5a-57e8-a266-071ccd3bf73b.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Malden",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/malden_25a14146-a7a1-5043-81f0-17464e9964d4.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:malden",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/malden_5342275_cd16448d-8d5a-57e8-a266-071ccd3bf73b.yaml": "8d29c9a4195dd89c7203ae31f30df071af5c72c0200f5920fbd969b81a903b21",
+        "jurisdictions/wa/local/malden_25a14146-a7a1-5043-81f0-17464e9964d4.yaml": "7174648482565bcfa911e317eb8e66d6d3437b272a79610871573c0ee3f426a7"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:malden"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-032",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5342800",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/mansfield_5342800_c9966bef-7697-5bb7-9aa3-36fc366e0cf4.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Mansfield",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/mansfield_7862a5ec-8432-51c4-9cb9-bd37a3ba089f.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mansfield",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/mansfield_5342800_c9966bef-7697-5bb7-9aa3-36fc366e0cf4.yaml": "9282f7d49b199eb85af4a0615ba3ec63e7ce845910d5873247f8147f698a31e4",
+        "jurisdictions/wa/local/mansfield_7862a5ec-8432-51c4-9cb9-bd37a3ba089f.yaml": "56f32b67cea28d656be0b56209e2cac112f3eb8f4a566edc8279579b0e22bb75"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:mansfield"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-033",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5343150",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/maple_valley_5343150_3fbcc18b-e30e-51d0-972b-d2b685f1cbca.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Maple Valley",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/maple_valley_be224be3-4b55-5e1e-a3fd-c676951fb224.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:maple_valley",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/maple_valley_5343150_3fbcc18b-e30e-51d0-972b-d2b685f1cbca.yaml": "22429790778970385c98f00bb09d1b0065befa14d3db29f24a02dc5b8bbb6f70",
+        "jurisdictions/wa/local/maple_valley_be224be3-4b55-5e1e-a3fd-c676951fb224.yaml": "10430db8de88f592edf7589b5052555a8cfeec9f8ef12e55178aad320c996d27"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:maple_valley"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-034",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5343395",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/marcus_5343395_90516495-28e3-5778-828c-4568000ff573.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Marcus",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/marcus_cb9addce-aff3-5bc5-9c8c-5bbf2a848671.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:marcus",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/marcus_5343395_90516495-28e3-5778-828c-4568000ff573.yaml": "5f211dc509582fd0e1c73fb5703a9f1e6f614ddd89cc335e6e872dc7bc4f30c2",
+        "jurisdictions/wa/local/marcus_cb9addce-aff3-5bc5-9c8c-5bbf2a848671.yaml": "d55de7e651b00c8c35cabe02b8ef9b1cd4f9bb2cc0ef8d860f8bdb30d8b7976d"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:marcus"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-035",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5343955",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/marysville_5343955_8580edf3-2360-589b-9e67-784d675d7155.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Marysville",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/marysville_fd226f68-f8a3-5381-85de-7c46c092c5bc.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:marysville",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/marysville_5343955_8580edf3-2360-589b-9e67-784d675d7155.yaml": "2f810f484e0b4048043061b62926642088d1bf8b31e22d9bedbb6d9189bb3c84",
+        "jurisdictions/wa/local/marysville_fd226f68-f8a3-5381-85de-7c46c092c5bc.yaml": "beabeac648b4a58a256d37d775130960ec6d841fb2789e89930bc113360589bb"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:marysville"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-036",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5344165",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/mattawa_5344165_76e0151e-f1bd-5e8d-90b1-dce6a71149ad.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Mattawa",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/mattawa_2937dd93-20de-54fa-b46e-2e3de038fe22.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mattawa",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/mattawa_5344165_76e0151e-f1bd-5e8d-90b1-dce6a71149ad.yaml": "c4065e5f5dc33ef236c12c3f1a5fcd29b52a5e6cd46b061bc493121377a6a8a1",
+        "jurisdictions/wa/local/mattawa_2937dd93-20de-54fa-b46e-2e3de038fe22.yaml": "7d0171df9d52d93e0cd566927fa5e19623b5c68532cda3bf308322af0a45499d"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:mattawa"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-037",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5344690",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/medical_lake_5344690_88aa1b64-2442-5d86-b0c0-3edcb3e0036c.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Medical Lake",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/medical_lake_9f000479-9b66-594d-8fca-c46c741c1902.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:medical_lake",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/medical_lake_5344690_88aa1b64-2442-5d86-b0c0-3edcb3e0036c.yaml": "94b43e46545e087e1bd0cdb55088bab31453a5b46f5723f017781b3e47582a09",
+        "jurisdictions/wa/local/medical_lake_9f000479-9b66-594d-8fca-c46c741c1902.yaml": "879805a6d965ca2d2050ef810d221d3f1579721bf17fd8676e893c29075a2cb6"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:medical_lake"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-038",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5344725",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/medina_5344725_6dd4f023-4e94-5db4-9a72-3325190b7da9.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Medina",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/medina_bb79eb34-3981-5757-87d3-50f0ed446d79.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:medina",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/medina_5344725_6dd4f023-4e94-5db4-9a72-3325190b7da9.yaml": "d7bcd24f8bfd27f825e6b718857d802213982d35f425785acced7974e649d6ed",
+        "jurisdictions/wa/local/medina_bb79eb34-3981-5757-87d3-50f0ed446d79.yaml": "7c1feb9d67002381a59948a35c73fd6dc52080695dc09b9e74a600fec3fbe05c"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:medina"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-039",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5345005",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/mercer_island_5345005_117d26b1-c824-5ff1-9632-a89dc629ed7a.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Mercer Island",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/mercer_island_bdef0301-8f35-5c14-a409-eccb5d334763.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mercer_island",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/mercer_island_5345005_117d26b1-c824-5ff1-9632-a89dc629ed7a.yaml": "ecc0659296ad53f6b8ec3cdab149500e34c03388b713d090143f9a1acefd2456",
+        "jurisdictions/wa/local/mercer_island_bdef0301-8f35-5c14-a409-eccb5d334763.yaml": "0e01850d2af9121bbac7f25e1e7affa95e01c17c2549ca5482bba5c9806d4103"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:mercer_island"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-040",
+      "wave": "WA-PB01-B"
+    }
+  ],
+  "upstream": {
+    "repository": "openstates/jurisdictions",
+    "revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
+  },
+  "wave": "WA-PB01-B"
+}
