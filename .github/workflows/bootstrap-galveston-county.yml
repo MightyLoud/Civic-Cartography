@@ -49,11 +49,20 @@ jobs:
           SELECTED_ROOT = f'{HOST}/Galveston_County_Commissioner_Precincts_2026/FeatureServer'
           SELECTED_LAYER = f'{SELECTED_ROOT}/0'
           SELECTED_FIELD = 'Commission'
-          OLD_ROOTS = [
-              f'{HOST}/Galveston_County_Commissioner_Precincts/FeatureServer',
-              f'{HOST}/commissionerpct/FeatureServer',
+          LEGACY_SOURCES = [
+              {
+                  'root_url': f'{HOST}/commissionerpct/FeatureServer',
+                  'known_item_id': '1c58e007931141a18145d7379c24f21c',
+              },
+              {
+                  'root_url': f'{HOST}/Galveston_County_Commissioner_Precincts/FeatureServer',
+                  'known_item_id': None,
+              },
+              {
+                  'root_url': f'{HOST}/GC_commissionerpct_/FeatureServer',
+                  'known_item_id': None,
+              },
           ]
-          ALTERNATE_ROOT = f'{HOST}/GC_commissionerpct_/FeatureServer'
           EFFECTIVE_DATE = '2026-06-29'
           EFFECTIVE_MS = int(datetime(2026, 6, 29, tzinfo=timezone.utc).timestamp() * 1000)
           ID_RE = re.compile(r'(?<![0-9a-fA-F])([0-9a-fA-F]{32})(?![0-9a-fA-F])')
@@ -97,74 +106,6 @@ jobs:
               match = re.fullmatch(r'(?:commissioner\s*)?(?:precinct|pct|district)?\s*0*([1-4])', text, re.I)
               return match.group(1) if match else None
 
-          def inspect_layer(layer_url, district_field):
-              metadata = fetch_json(f'{layer_url}?f=json')
-              if metadata.get('geometryType') != 'esriGeometryPolygon':
-                  raise ValueError(f'Unexpected geometry type at {layer_url}: {metadata.get("geometryType")!r}')
-              fields = {str(field.get('name') or '') for field in metadata.get('fields', [])}
-              if district_field not in fields:
-                  raise ValueError(f'{layer_url} lost field {district_field!r}: {sorted(fields)}')
-              params = urllib.parse.urlencode({
-                  'where': '1=1',
-                  'outFields': district_field,
-                  'returnGeometry': 'false',
-                  'orderByFields': district_field,
-                  'f': 'json',
-              })
-              payload = fetch_json(f'{layer_url}/query?{params}')
-              values = [normalize_precinct(feature.get('attributes', {}).get(district_field)) for feature in payload.get('features', [])]
-              counts = {value: values.count(value) for value in sorted(set(value for value in values if value))}
-              if counts != {'1': 1, '2': 1, '3': 1, '4': 1}:
-                  raise ValueError(f'{layer_url} did not resolve one each of 1-4 using {district_field}: {counts!r}')
-              return metadata
-
-          def inspect_root(root, preferred_field=None):
-              service = fetch_json(f'{root}?f=json')
-              service_item_id = str(service.get('serviceItemId') or '')
-              service_item = item_meta(service_item_id) if service_item_id else {}
-              layer_results = []
-              for layer in service.get('layers') or []:
-                  layer_url = f"{root}/{layer['id']}"
-                  metadata = fetch_json(f'{layer_url}?f=json')
-                  if metadata.get('geometryType') != 'esriGeometryPolygon':
-                      continue
-                  fields = [str(field.get('name') or '') for field in metadata.get('fields', [])]
-                  candidates = [preferred_field] if preferred_field else []
-                  candidates.extend(field for field in fields if field not in candidates and any(token in field.upper() for token in ('COMMISSION', 'PRECINCT', 'PCT', 'DISTRICT')))
-                  for field in candidates:
-                      try:
-                          inspect_layer(layer_url, field)
-                      except Exception:
-                          continue
-                      dates = [
-                          int(service_item.get('created') or 0),
-                          int(service_item.get('modified') or 0),
-                          int((metadata.get('editingInfo') or {}).get('lastEditDate') or (metadata.get('editingInfo') or {}).get('dataLastEditDate') or 0),
-                          int((service.get('editingInfo') or {}).get('lastEditDate') or (service.get('editingInfo') or {}).get('dataLastEditDate') or 0),
-                      ]
-                      max_date = max(dates)
-                      layer_results.append({
-                          'root_url': root,
-                          'layer_url': layer_url,
-                          'layer_name': metadata.get('name'),
-                          'district_field': field,
-                          'district_values': ['1', '2', '3', '4'],
-                          'service_item_id': service_item_id,
-                          'service_item_title': service_item.get('title'),
-                          'service_item_owner': service_item.get('owner'),
-                          'service_item_created': service_item.get('created'),
-                          'service_item_created_iso': to_iso(int(service_item.get('created') or 0)),
-                          'service_item_modified': service_item.get('modified'),
-                          'service_item_modified_iso': to_iso(int(service_item.get('modified') or 0)),
-                          'max_item_or_layer_date': max_date or None,
-                          'max_item_or_layer_date_iso': to_iso(max_date),
-                          'post_cutover': max_date >= EFFECTIVE_MS,
-                      })
-                      break
-              if len(layer_results) != 1:
-                  raise ValueError(f'Expected one four-precinct polygon layer at {root}; found {layer_results!r}')
-              return layer_results[0]
-
           experience = item_meta(EXPERIENCE_ID)
           if experience.get('id') != EXPERIENCE_ID or experience.get('owner') != EXPERIENCE_OWNER or experience.get('title') != EXPERIENCE_TITLE:
               raise SystemExit(f'Unexpected Galveston Experience metadata: {experience!r}')
@@ -178,40 +119,123 @@ jobs:
               except Exception as exc:
                   print(f'Skipping linked item {item_id}: {exc}')
                   continue
-              linked_items.append({'item_id': item_id, 'title': metadata.get('title'), 'type': metadata.get('type'), 'owner': metadata.get('owner')})
+              linked_items.append({
+                  'item_id': item_id,
+                  'title': metadata.get('title'),
+                  'type': metadata.get('type'),
+                  'owner': metadata.get('owner'),
+              })
               graph_texts.extend([json.dumps(metadata, sort_keys=True), json.dumps(data, sort_keys=True)])
           graph_text = '\n'.join(graph_texts).lower()
 
-          selected = inspect_root(SELECTED_ROOT, SELECTED_FIELD)
-          if selected['layer_url'] != SELECTED_LAYER or selected['district_field'] != SELECTED_FIELD:
-              raise SystemExit(f'Unexpected selected Galveston layer contract: {selected!r}')
-          if not selected['post_cutover']:
-              raise SystemExit(f'The dedicated 2026 service lacks post-cutover item/layer evidence: {selected!r}')
-          if not (
+          service = fetch_json(f'{SELECTED_ROOT}?f=json')
+          service_item_id = str(service.get('serviceItemId') or '')
+          service_item = item_meta(service_item_id) if service_item_id else {}
+          metadata = fetch_json(f'{SELECTED_LAYER}?f=json')
+          if metadata.get('geometryType') != 'esriGeometryPolygon':
+              raise SystemExit(f'Unexpected selected geometry type: {metadata.get("geometryType")!r}')
+          fields = {str(field.get('name') or '') for field in metadata.get('fields', [])}
+          if SELECTED_FIELD not in fields:
+              raise SystemExit(f'Selected layer lost {SELECTED_FIELD!r}: {sorted(fields)}')
+          params = urllib.parse.urlencode({
+              'where': '1=1',
+              'outFields': SELECTED_FIELD,
+              'returnGeometry': 'false',
+              'orderByFields': SELECTED_FIELD,
+              'f': 'json',
+          })
+          payload = fetch_json(f'{SELECTED_LAYER}/query?{params}')
+          values = [normalize_precinct(feature.get('attributes', {}).get(SELECTED_FIELD)) for feature in payload.get('features', [])]
+          counts = {value: values.count(value) for value in sorted(set(value for value in values if value))}
+          if counts != {'1': 1, '2': 1, '3': 1, '4': 1}:
+              raise SystemExit(f'Selected layer did not resolve one each of 1-4: {counts!r}')
+          selected_dates = [
+              int(service_item.get('created') or 0),
+              int(service_item.get('modified') or 0),
+              int((service.get('editingInfo') or {}).get('lastEditDate') or (service.get('editingInfo') or {}).get('dataLastEditDate') or 0),
+              int((metadata.get('editingInfo') or {}).get('lastEditDate') or (metadata.get('editingInfo') or {}).get('dataLastEditDate') or 0),
+          ]
+          selected_max_date = max(selected_dates)
+          if selected_max_date < EFFECTIVE_MS:
+              raise SystemExit('The dedicated 2026 service lacks post-cutover item or layer evidence.')
+          referenced = (
               SELECTED_ROOT.lower() in graph_text
               or SELECTED_LAYER.lower() in graph_text
-              or (selected['service_item_id'] and selected['service_item_id'].lower() in graph_text)
-          ):
-              raise SystemExit(f'The Experience graph does not reference the dedicated 2026 service: {selected!r}; linked={linked_items!r}')
-          selected['referenced_by_experience_graph'] = True
+              or (service_item_id and service_item_id.lower() in graph_text)
+          )
+          if not referenced:
+              raise SystemExit(f'The Experience graph no longer references the dedicated 2026 service; linked={linked_items!r}')
+
+          selected = {
+              'root_url': SELECTED_ROOT,
+              'layer_url': SELECTED_LAYER,
+              'layer_name': metadata.get('name'),
+              'district_field': SELECTED_FIELD,
+              'district_values': ['1', '2', '3', '4'],
+              'service_item_id': service_item_id,
+              'service_item_title': service_item.get('title'),
+              'service_item_owner': service_item.get('owner'),
+              'service_item_created': service_item.get('created'),
+              'service_item_created_iso': to_iso(int(service_item.get('created') or 0)),
+              'service_item_modified': service_item.get('modified'),
+              'service_item_modified_iso': to_iso(int(service_item.get('modified') or 0)),
+              'max_item_or_layer_date': selected_max_date,
+              'max_item_or_layer_date_iso': to_iso(selected_max_date),
+              'post_cutover': True,
+              'referenced_by_experience_graph': True,
+          }
 
           rejected = []
           pre_cutover_count = 0
-          for root in [*OLD_ROOTS, ALTERNATE_ROOT]:
+          for legacy in LEGACY_SOURCES:
+              root = legacy['root_url']
+              service_payload = {}
+              service_error = None
               try:
-                  candidate = inspect_root(root)
+                  service_payload = fetch_json(f'{root}?f=json')
               except Exception as exc:
-                  rejected.append({'root_url': root, 'available': False, 'rejection_reason': 'candidate unavailable or does not resolve exactly four Commissioner polygons', 'error': str(exc)})
-                  continue
-              candidate['available'] = True
-              if not candidate['post_cutover']:
-                  candidate['rejection_reason'] = 'pre-cutover candidate rejected by the June 29, 2026 effective-date contract'
+                  service_error = str(exc)
+              item_id = str(service_payload.get('serviceItemId') or legacy.get('known_item_id') or '')
+              item = {}
+              item_error = None
+              if item_id:
+                  try:
+                      item = item_meta(item_id)
+                  except Exception as exc:
+                      item_error = str(exc)
+              item_dates = [int(item.get('created') or 0), int(item.get('modified') or 0)]
+              max_item_date = max(item_dates)
+              candidate = {
+                  'root_url': root,
+                  'available': bool(service_payload),
+                  'service_item_id': item_id or None,
+                  'service_item_title': item.get('title'),
+                  'service_item_owner': item.get('owner'),
+                  'service_item_created': item.get('created'),
+                  'service_item_created_iso': to_iso(int(item.get('created') or 0)),
+                  'service_item_modified': item.get('modified'),
+                  'service_item_modified_iso': to_iso(int(item.get('modified') or 0)),
+                  'max_item_date': max_item_date or None,
+                  'max_item_date_iso': to_iso(max_item_date),
+                  'geometry_currently_resolves_four_precincts': False,
+              }
+              if service_error:
+                  candidate['service_error'] = service_error
+              if item_error:
+                  candidate['item_error'] = item_error
+              if max_item_date and max_item_date < EFFECTIVE_MS:
+                  candidate['post_cutover'] = False
+                  candidate['rejection_reason'] = 'pre-cutover candidate rejected by the June 29, 2026 effective-date contract; legacy geometry no longer needs to remain queryable when immutable ArcGIS item dates prove its age'
                   pre_cutover_count += 1
-              else:
+              elif max_item_date:
+                  candidate['post_cutover'] = True
                   candidate['rejection_reason'] = 'non-controlling alternate service rejected in favor of the dedicated 2026 Experience-linked service'
+              else:
+                  candidate['post_cutover'] = None
+                  candidate['rejection_reason'] = 'legacy candidate unavailable and not controlling after the dedicated 2026 service cutover'
               rejected.append(candidate)
           if pre_cutover_count < 1:
-              raise SystemExit(f'No older official Commissioner service was proven pre-cutover: {rejected!r}')
+              raise SystemExit(f'No legacy ArcGIS item was proven pre-cutover: {rejected!r}')
 
           contract = {
               'experience_item_id': EXPERIENCE_ID,
@@ -223,10 +247,10 @@ jobs:
               'experience_item_modified': experience.get('modified'),
               'experience_item_modified_iso': to_iso(int(experience.get('modified') or 0)),
               'effective_date': EFFECTIVE_DATE,
-              'selection_rule': 'Use the dedicated Galveston_County_Commissioner_Precincts_2026 service linked by the public Experience graph; require exactly four polygons using Commission and post-June-29 item or layer evidence; reject older generic services.',
-              'operational_layer_url': selected['layer_url'],
-              'district_field': selected['district_field'],
-              'district_values': selected['district_values'],
+              'selection_rule': 'Use the dedicated Galveston_County_Commissioner_Precincts_2026 service linked by the public Experience graph; require exactly four polygons using Commission and post-June-29 item or layer evidence; reject legacy services using immutable ArcGIS item dates even when their polygon layers are no longer queryable.',
+              'operational_layer_url': SELECTED_LAYER,
+              'district_field': SELECTED_FIELD,
+              'district_values': ['1', '2', '3', '4'],
               'selected_candidate': selected,
               'rejected_candidates': rejected,
               'linked_items_inspected': linked_items,
