@@ -58,7 +58,6 @@ def test_alias_member_metadata_suppresses_only_secondary_member() -> None:
     assert secondary["_canonical_jurisdiction_ocdid"] == JURISDICTION
 
 
-
 def test_nashville_davidson_alias_prefers_county_government_root() -> None:
     aliases = load_canonical_aliases(REGISTRY)
     alias = resolve_canonical_alias(
