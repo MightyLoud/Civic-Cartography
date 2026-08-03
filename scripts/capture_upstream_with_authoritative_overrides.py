@@ -41,7 +41,11 @@ def _candidate_with_canonical_alias(candidate: Any, alias: CanonicalAlias) -> An
         raise ValueError(
             f"candidate {candidate.ocdid} raw_record must be a mapping for alias metadata"
         )
-    raw_record.update(alias.member_metadata(candidate.ocdid))
+    metadata = alias.member_metadata(candidate.ocdid)
+    raw_record.update(metadata)
+    member_display_name = metadata.get("_canonical_alias_member_display_name")
+    if isinstance(member_display_name, str):
+        raw_record["name"] = member_display_name
     raw_record["_canonical_alias_verified_asof"] = alias.verified_asof
     if candidate.ocdid == alias.canonical_member:
         raw_record["_jurisdiction_override"] = alias.generator_override
@@ -154,6 +158,7 @@ def install_canonical_aliases(aliases: tuple[CanonicalAlias, ...]) -> None:
                     "_canonical_jurisdiction_ocdid",
                     "_suppress_jurisdiction_generation",
                     "_canonical_alias_verified_asof",
+                    "_canonical_alias_member_display_name",
                 ):
                     if key in raw_record:
                         attempt[key.removeprefix("_")] = raw_record[key]
