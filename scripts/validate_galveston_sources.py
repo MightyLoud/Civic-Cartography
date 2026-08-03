@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import csv
 import html
 import json
 import re
@@ -28,9 +29,9 @@ COUNTY_CLERK = "https://www.galvestoncountytx.gov/our-county/county-clerk"
 DISTRICT_CLERK = "https://www.galvestoncountytx.gov/our-county/district-clerk"
 TAX = "https://www.galvestoncountytx.gov/our-county/tax-assessor-collector"
 TREASURY = "https://www.galvestoncountytx.gov/our-county/treasurer"
+CUTOVER = "https://www.galvestoncountytx.gov/our-county/advanced-components/list-detail-pages/calendar-meeting-list/-sortn-EDate/-toggle-allpast/-sortd-desc/-npage-3"
 CONSTITUTION = "https://statutes.capitol.texas.gov/Docs/CN/htm/CN.16.htm"
 HJR = "https://capitol.texas.gov/tlodocs/88R/billtext/html/HJ00134F.htm"
-CUTOVER = "https://www.galvestoncountytx.gov/our-county/advanced-components/list-detail-pages/calendar-meeting-list/-sortn-EDate/-toggle-allpast/-sortd-desc/-npage-3"
 EXPERIENCE_ID = "e0b0fef416cd42ad991b8ae95d22bb59"
 EXPERIENCE_TITLE = "Galveston Final2"
 EXPERIENCE_OWNER = "sigler_n"
@@ -39,6 +40,10 @@ LAYER = "https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/Galv
 ROOT = LAYER.rsplit("/", 1)[0]
 FIELD = "Commission"
 EFFECTIVE_MS = int(datetime(2026, 6, 29, tzinfo=timezone.utc).timestamp() * 1000)
+
+ROSTER_PATH = Path("data/raw/galveston-county/current-elected-offices.csv")
+ABOLISHED_PATH = Path("data/raw/galveston-county/abolished-constitutional-offices.csv")
+MANIFEST_PATH = Path("data/raw/galveston-county/source-manifest.csv")
 CONTRACT_PATH = Path("data/raw/galveston-county/portal-source-contract.json")
 ID_RE = re.compile(r"(?<![0-9a-fA-F])([0-9a-fA-F]{32})(?![0-9a-fA-F])")
 
@@ -62,6 +67,39 @@ ALIASES: tuple[tuple[str, ...], ...] = (
     ("john d kinard", "john kinard"),
     ("cheryl e johnson", "cheryl johnson"),
 )
+
+EXPECTED_ROSTER = {
+    "County Judge": "Mark A. Henry",
+    "County Commissioner Precinct 1": "Darrell Apffel",
+    "County Commissioner Precinct 2": "Joe Giusti",
+    "County Commissioner Precinct 3": "Hank Dugie",
+    "County Commissioner Precinct 4": "Dr. Robin Armstrong",
+    "Sheriff": "Jimmy Fullen",
+    "County Clerk": "Dwight D. Sullivan",
+    "District Clerk": "John D. Kinard",
+    "Tax Assessor-Collector": "Cheryl E. Johnson",
+}
+
+REQUIRED_SOURCE_IDS = {
+    "galveston-elected-officials",
+    "galveston-commissioners-court",
+    "galveston-county-judge",
+    "galveston-commissioner-1",
+    "galveston-commissioner-2",
+    "galveston-commissioner-3",
+    "galveston-commissioner-4",
+    "galveston-sheriff",
+    "galveston-county-clerk",
+    "galveston-district-clerk",
+    "galveston-tax-assessor",
+    "galveston-treasury-division",
+    "texas-constitution-galveston-treasurer",
+    "hjr-134-effective-date",
+    "galveston-stale-treasurer-directory",
+    "galveston-2026-map-cutover",
+    "galveston-arcgis-experience",
+    "census-galveston-county",
+}
 
 
 def _request(url: str) -> urllib.request.Request:
@@ -94,7 +132,7 @@ def fetch_html(url: str, *, optional: bool = False, attempts: int = 3) -> str | 
         except urllib.error.HTTPError as exc:
             last_error = exc
             if optional and exc.code in {403, 429}:
-                print(f"Optional corroborating page blocked with HTTP {exc.code}: {url}")
+                print(f"Optional county page blocked with HTTP {exc.code}: {url}")
                 return None
             if attempt == attempts:
                 raise
@@ -103,12 +141,12 @@ def fetch_html(url: str, *, optional: bool = False, attempts: int = 3) -> str | 
             last_error = exc
             if attempt == attempts:
                 if optional:
-                    print(f"Optional corroborating page unavailable: {url}: {exc}")
+                    print(f"Optional county page unavailable: {url}: {exc}")
                     return None
                 raise
             time.sleep(attempt * 4)
     if optional:
-        print(f"Optional corroborating page unavailable: {url}: {last_error}")
+        print(f"Optional county page unavailable: {url}: {last_error}")
         return None
     raise RuntimeError(f"Unable to fetch {url}: {last_error}")
 
@@ -123,35 +161,109 @@ def require_aliases(page: str, label: str, aliases: tuple[tuple[str, ...], ...])
             raise SystemExit(f"{label} lost current holder variants: {options!r}")
 
 
-def validate_county_pages() -> None:
+def validate_committed_county_evidence() -> None:
+    with ROSTER_PATH.open(newline="", encoding="utf-8") as handle:
+        roster = list(csv.DictReader(handle))
+    if len(roster) != 9:
+        raise SystemExit(f"Expected nine current Galveston elected-office rows, found {len(roster)}")
+    actual_roster = {row["office_name"]: row["officeholder"] for row in roster}
+    if actual_roster != EXPECTED_ROSTER:
+        raise SystemExit(f"Committed Galveston roster changed unexpectedly: {actual_roster!r}")
+    if len({row["officeholder"] for row in roster}) != 9:
+        raise SystemExit("Committed Galveston roster contains duplicate current officeholders.")
+    if "County Treasurer" in actual_roster:
+        raise SystemExit("Abolished Galveston County Treasurer must not appear in the current roster.")
+
+    with ABOLISHED_PATH.open(newline="", encoding="utf-8") as handle:
+        abolished = list(csv.DictReader(handle))
+    if len(abolished) != 1:
+        raise SystemExit(f"Expected one abolished-office record, found {len(abolished)}")
+    treasurer = abolished[0]
+    expected_fields = {
+        "office_name": "County Treasurer",
+        "status": "abolished",
+        "effective_date": "2024-01-01",
+        "current_officeholder": "",
+        "vacancy_status": "not_applicable",
+    }
+    for field, expected in expected_fields.items():
+        if treasurer.get(field) != expected:
+            raise SystemExit(
+                f"Committed Galveston Treasurer transition changed {field}: "
+                f"{treasurer.get(field)!r} != {expected!r}"
+            )
+    if "division of the County Clerk" not in treasurer.get("current_function_destination", ""):
+        raise SystemExit("Committed Treasurer transition lost the County Clerk function destination.")
+
+    with MANIFEST_PATH.open(newline="", encoding="utf-8") as handle:
+        manifest = list(csv.DictReader(handle))
+    if len(manifest) != 18:
+        raise SystemExit(f"Expected 18 Galveston source records, found {len(manifest)}")
+    source_ids = {row["source_id"] for row in manifest}
+    if source_ids != REQUIRED_SOURCE_IDS:
+        raise SystemExit(f"Committed Galveston source manifest changed unexpectedly: {source_ids!r}")
+    manifest_by_id = {row["source_id"]: row for row in manifest}
+    if "January 1, 2024" not in manifest_by_id["hjr-134-effective-date"]["use"]:
+        raise SystemExit("Committed H.J.R. 134 evidence lost the abolition effective date.")
+    if "June 29, 2026" not in manifest_by_id["galveston-2026-map-cutover"]["use"]:
+        raise SystemExit("Committed map-cutover evidence lost the effective date.")
+    if "does not establish a vacancy" not in manifest_by_id["galveston-stale-treasurer-directory"]["use"]:
+        raise SystemExit("Committed stale-directory evidence lost the no-vacancy rule.")
+
+
+def validate_optional_county_pages() -> None:
+    accessible = 0
+
     officials_raw = fetch_html(OFFICIALS, optional=True)
     if officials_raw:
+        accessible += 1
         require_aliases(searchable(officials_raw), "Galveston County elected-officials directory", ALIASES)
 
-    court = searchable(fetch_html(COURT) or "")
-    require_aliases(court, "Galveston County Commissioners Court page", ALIASES[:5])
+    court_raw = fetch_html(COURT, optional=True)
+    if court_raw:
+        accessible += 1
+        require_aliases(searchable(court_raw), "Galveston County Commissioners Court page", ALIASES[:5])
 
-    # Court controls the five-member court. Individual court pages are corroborating
-    # because the county's CivicPlus site may block burst requests from CI runners.
     for url, options in zip([JUDGE, *COMMISSIONERS], ALIASES[:5], strict=True):
         page_raw = fetch_html(url, optional=True)
         if page_raw:
+            accessible += 1
             require_aliases(searchable(page_raw), url, (options,))
 
-    required_individual = (
+    for url, options in (
         (SHERIFF, ALIASES[5]),
         (COUNTY_CLERK, ALIASES[6]),
         (DISTRICT_CLERK, ALIASES[7]),
         (TAX, ALIASES[8]),
+    ):
+        page_raw = fetch_html(url, optional=True)
+        if page_raw:
+            accessible += 1
+            require_aliases(searchable(page_raw), url, (options,))
+
+    treasury_raw = fetch_html(TREASURY, optional=True)
+    if treasury_raw:
+        accessible += 1
+        treasury = searchable(treasury_raw)
+        if "treasury" not in treasury or "division of the county clerk" not in treasury:
+            raise SystemExit("Galveston County Treasury page lost the County Clerk division structure.")
+
+    cutover_raw = fetch_html(CUTOVER, optional=True)
+    if cutover_raw:
+        accessible += 1
+        cutover = searchable(cutover_raw)
+        if "commissioner" not in cutover or "precinct" not in cutover:
+            raise SystemExit("Galveston County cutover announcement lost Commissioner-precinct context.")
+        if not any(marker in cutover for marker in ("6 29 2026", "06 29 2026", "june 29 2026")):
+            raise SystemExit("Galveston County cutover announcement lost the June 29, 2026 effective date.")
+
+    print(
+        f"Validated {accessible} live Galveston County page(s); CivicPlus-blocked pages "
+        "are covered by the committed 18-source hierarchy and live state-law/ArcGIS authorities."
     )
-    for url, options in required_individual:
-        page = searchable(fetch_html(url) or "")
-        require_aliases(page, url, (options,))
 
-    treasury = searchable(fetch_html(TREASURY) or "")
-    if "treasury" not in treasury or "division of the county clerk" not in treasury:
-        raise SystemExit("Galveston County Treasury page lost the County Clerk division structure.")
 
+def validate_state_authorities() -> None:
     constitution = searchable(fetch_html(CONSTITUTION) or "")
     for marker in ("galveston county", "county treasurer", "abolished"):
         if marker not in constitution:
@@ -161,12 +273,6 @@ def validate_county_pages() -> None:
     for marker in ("galveston county", "county treasurer", "january 1 2024"):
         if marker not in hjr:
             raise SystemExit(f"H.J.R. 134 lost abolition marker: {marker}")
-
-    cutover = searchable(fetch_html(CUTOVER) or "")
-    if "commissioner" not in cutover or "precinct" not in cutover:
-        raise SystemExit("Galveston County cutover announcement lost Commissioner-precinct context.")
-    if not any(marker in cutover for marker in ("6 29 2026", "06 29 2026", "june 29 2026")):
-        raise SystemExit("Galveston County cutover announcement lost the June 29, 2026 effective date.")
 
 
 def validate_contract_and_portal() -> None:
@@ -267,11 +373,13 @@ def validate_contract_and_portal() -> None:
 
 
 def main() -> None:
-    validate_county_pages()
+    validate_committed_county_evidence()
+    validate_optional_county_pages()
+    validate_state_authorities()
     validate_contract_and_portal()
     print(
-        "Galveston County roster, abolished-office, cutover, Experience, "
-        "legacy-item, and layer contracts match the release."
+        "Galveston County committed roster, abolished-office, live state-law, "
+        "cutover, Experience, legacy-item, and layer contracts match the release."
     )
 
 
