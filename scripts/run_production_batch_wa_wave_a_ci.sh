@@ -107,6 +107,11 @@ capture_run() {
     --execution-results "build/$run_dir/execution-results.json" \
     --artifact-root "build/$run_dir/artifacts" \
     --result-path "build/$run_dir/report.json"
+
+  python scripts/inventory_production_artifacts.py \
+    --artifact-root "build/$run_dir/artifacts" \
+    --report "build/$run_dir/report.json" \
+    --result-path "build/$run_dir/artifact-inventory.json"
 }
 
 capture_run run-1
@@ -118,6 +123,8 @@ PYTHONPATH=. python scripts/check_production_wave.py \
   --first-report build/run-1/report.json \
   --second-report build/run-2/report.json \
   --selection-crosswalk "$CROSSWALK" \
+  --first-artifact-inventory build/run-1/artifact-inventory.json \
+  --second-artifact-inventory build/run-2/artifact-inventory.json \
   --upstream-repository "$UPSTREAM_REPOSITORY" \
   --upstream-revision "$UPSTREAM_REVISION" \
   --expected-target-count 20 \
@@ -141,6 +148,8 @@ lines = [
     f"- Nesting parity: **{summary['nesting_parity_count']}/{summary['target_count']}**",
     f"- Reports identical: **{summary['reports_identical']}**",
     f"- Unique output paths: **{summary['unique_output_paths']}**",
+    f"- Artifacts hashed: **{summary['artifact_count']}** ({summary['target_artifact_count']} target + {summary['shared_artifact_count']} shared)",
+    f"- Artifact inventories identical: **{summary['artifact_inventories_identical']}**",
     f"- Target-only patches: **{summary['target_only_patch_count']}**",
     f"- Overall gate passed: **{summary['gate_passed']}**",
     "",

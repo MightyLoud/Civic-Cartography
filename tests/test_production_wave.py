@@ -10,6 +10,7 @@ from jsonschema import Draft202012Validator
 
 from civic_cartography.production_wave import (
     ProductionWaveError,
+    build_artifact_inventory,
     evaluate_production_wave,
     load_crosswalk,
     select_production_wave,
@@ -29,11 +30,14 @@ CROSSWALK_PATH = (
 MANIFEST_SCHEMA_PATH = ROOT / "schemas" / "target-manifest.schema.json"
 RESULT_SCHEMA_PATH = ROOT / "schemas" / "target-result-report.schema.json"
 WAVE_SCHEMA_PATH = ROOT / "schemas" / "production-wave-report.schema.json"
+INVENTORY_SCHEMA_PATH = (
+    ROOT / "schemas" / "production-artifact-inventory.schema.json"
+)
 UPSTREAM_REVISION = "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
 RUN_ASOF = "2026-08-03T18:00:00Z"
 
 
-def _reports(tmp_path: Path) -> tuple[object, dict, dict]:
+def _reports(tmp_path: Path) -> tuple[object, dict, dict, dict, dict]:
     manifest = select_production_wave(
         load_manifest(FULL_MANIFEST_PATH), "WA-PB01-A"
     )
@@ -67,7 +71,14 @@ def _reports(tmp_path: Path) -> tuple[object, dict, dict]:
         execution_results_sha256="synthetic-overlay",
         artifact_root=tmp_path,
     )
-    return manifest, first, copy.deepcopy(first)
+    inventory = build_artifact_inventory(tmp_path, first)
+    return (
+        manifest,
+        first,
+        copy.deepcopy(first),
+        inventory,
+        copy.deepcopy(inventory),
+    )
 
 
 def test_full_production_manifest_is_executable_and_satisfies_schema() -> None:
@@ -99,12 +110,14 @@ def test_wave_a_selection_is_the_frozen_first_twenty_targets() -> None:
 
 
 def test_wave_a_acceptance_passes_all_gates_and_schemas(tmp_path: Path) -> None:
-    manifest, first, second = _reports(tmp_path)
+    manifest, first, second, first_inventory, second_inventory = _reports(tmp_path)
     evaluation = evaluate_production_wave(
         manifest,
         first,
         second,
         load_crosswalk(CROSSWALK_PATH),
+        first_inventory,
+        second_inventory,
         upstream_repository="openstates/jurisdictions",
         upstream_revision=UPSTREAM_REVISION,
     )
@@ -116,6 +129,10 @@ def test_wave_a_acceptance_passes_all_gates_and_schemas(tmp_path: Path) -> None:
         "nesting_parity_count": 20,
         "reports_identical": True,
         "unique_output_paths": True,
+        "artifact_count": 40,
+        "target_artifact_count": 40,
+        "shared_artifact_count": 0,
+        "artifact_inventories_identical": True,
         "target_only_patch_count": 0,
         "gate_passed": True,
     }
@@ -123,12 +140,16 @@ def test_wave_a_acceptance_passes_all_gates_and_schemas(tmp_path: Path) -> None:
 
     result_schema = json.loads(RESULT_SCHEMA_PATH.read_text(encoding="utf-8"))
     wave_schema = json.loads(WAVE_SCHEMA_PATH.read_text(encoding="utf-8"))
+    inventory_schema = json.loads(
+        INVENTORY_SCHEMA_PATH.read_text(encoding="utf-8")
+    )
     Draft202012Validator(result_schema).validate(first)
+    Draft202012Validator(inventory_schema).validate(first_inventory)
     Draft202012Validator(wave_schema).validate(evaluation)
 
 
 def test_wave_a_rejects_a_non_exact_ocdid(tmp_path: Path) -> None:
-    manifest, first, second = _reports(tmp_path)
+    manifest, first, second, first_inventory, second_inventory = _reports(tmp_path)
     for report in (first, second):
         report["results"][0]["resolved_ocdids"] = [
             "ocd-division/country:us/state:wa/place:not_ione"
@@ -139,6 +160,8 @@ def test_wave_a_rejects_a_non_exact_ocdid(tmp_path: Path) -> None:
         first,
         second,
         load_crosswalk(CROSSWALK_PATH),
+        first_inventory,
+        second_inventory,
         upstream_repository="openstates/jurisdictions",
         upstream_revision=UPSTREAM_REVISION,
     )
@@ -151,7 +174,7 @@ def test_wave_a_rejects_a_non_exact_ocdid(tmp_path: Path) -> None:
 
 
 def test_wave_a_rejects_flattened_nesting(tmp_path: Path) -> None:
-    manifest, first, second = _reports(tmp_path)
+    manifest, first, second, first_inventory, second_inventory = _reports(tmp_path)
     crosswalk = load_crosswalk(CROSSWALK_PATH)
     first_row = next(
         row for row in crosswalk["candidates"] if row.get("target_id") == "WA-PB01-001"
@@ -163,6 +186,8 @@ def test_wave_a_rejects_flattened_nesting(tmp_path: Path) -> None:
         first,
         second,
         crosswalk,
+        first_inventory,
+        second_inventory,
         upstream_repository="openstates/jurisdictions",
         upstream_revision=UPSTREAM_REVISION,
     )
@@ -171,6 +196,50 @@ def test_wave_a_rejects_flattened_nesting(tmp_path: Path) -> None:
     assert evaluation["criteria"][
         "all_nesting_relationships_preserved_as_lists"
     ] is False
+
+
+def test_artifact_inventory_hashes_shared_generator_files(tmp_path: Path) -> None:
+    manifest, first, _, _, _ = _reports(tmp_path)
+    shared_path = tmp_path / "divisions" / "wa" / "washington_stub.yaml"
+    shared_path.parent.mkdir(parents=True, exist_ok=True)
+    shared_path.write_text("id: ocd-division/country:us/state:wa\n", encoding="utf-8")
+
+    inventory = build_artifact_inventory(tmp_path, first)
+
+    assert len(manifest.targets) == 20
+    assert inventory["file_count"] == 41
+    assert inventory["target_artifact_count"] == 40
+    assert inventory["shared_artifact_count"] == 1
+    assert inventory["shared_paths"] == ["divisions/wa/washington_stub.yaml"]
+    assert inventory["files"]["divisions/wa/washington_stub.yaml"]
+
+
+def test_wave_a_rejects_shared_artifact_drift(tmp_path: Path) -> None:
+    manifest, first, second, first_inventory, second_inventory = _reports(tmp_path)
+    shared_path = "jurisdictions/wa/washington_stub.yaml"
+    first_inventory["files"][shared_path] = "1" * 64
+    first_inventory["shared_paths"].append(shared_path)
+    first_inventory["file_count"] += 1
+    first_inventory["shared_artifact_count"] += 1
+    second_inventory["files"][shared_path] = "2" * 64
+    second_inventory["shared_paths"].append(shared_path)
+    second_inventory["file_count"] += 1
+    second_inventory["shared_artifact_count"] += 1
+
+    evaluation = evaluate_production_wave(
+        manifest,
+        first,
+        second,
+        load_crosswalk(CROSSWALK_PATH),
+        first_inventory,
+        second_inventory,
+        upstream_repository="openstates/jurisdictions",
+        upstream_revision=UPSTREAM_REVISION,
+    )
+
+    assert evaluation["criteria"]["all_generated_artifacts_have_sha256"] is False
+    assert evaluation["criteria"]["artifact_inventories_are_identical"] is False
+    assert evaluation["summary"]["gate_passed"] is False
 
 
 def test_wave_selection_rejects_an_incomplete_wave() -> None:

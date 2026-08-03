@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mightyloud.github.io/Civic-Cartography/schemas/production-artifact-inventory.schema.json",
+  "title": "Civic Cartography Production Artifact Inventory",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "file_count",
+    "target_artifact_count",
+    "shared_artifact_count",
+    "inventory_sha256",
+    "files",
+    "target_paths",
+    "shared_paths"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "run_id": {"type": "string", "minLength": 1},
+    "file_count": {"type": "integer", "minimum": 1},
+    "target_artifact_count": {"type": "integer", "minimum": 1},
+    "shared_artifact_count": {"type": "integer", "minimum": 0},
+    "inventory_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "files": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"type": "string", "minLength": 1},
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "target_paths": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "shared_paths": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  }
+}

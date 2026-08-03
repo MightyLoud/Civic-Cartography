@@ -24,6 +24,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--first-report", required=True)
     parser.add_argument("--second-report", required=True)
     parser.add_argument("--selection-crosswalk", required=True)
+    parser.add_argument("--first-artifact-inventory", required=True)
+    parser.add_argument("--second-artifact-inventory", required=True)
     parser.add_argument("--upstream-repository", required=True)
     parser.add_argument("--upstream-revision", required=True)
     parser.add_argument("--expected-target-count", type=int, default=20)
@@ -40,6 +42,8 @@ def main(argv: list[str] | None = None) -> int:
             first_report_path=args.first_report,
             second_report_path=args.second_report,
             crosswalk_path=args.selection_crosswalk,
+            first_inventory_path=args.first_artifact_inventory,
+            second_inventory_path=args.second_artifact_inventory,
             result_path=args.result_path,
             upstream_repository=args.upstream_repository,
             upstream_revision=args.upstream_revision,

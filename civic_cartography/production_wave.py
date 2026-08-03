@@ -95,6 +95,86 @@ def load_crosswalk(path: str | Path) -> dict[str, Any]:
     return raw
 
 
+def build_artifact_inventory(
+    artifact_root: str | Path, report: Mapping[str, Any]
+) -> dict[str, Any]:
+    root = Path(artifact_root)
+    if not root.is_dir():
+        raise ProductionWaveError(f"artifact root not found: {artifact_root}")
+    files = {
+        path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in sorted(root.rglob("*"))
+        if path.is_file()
+    }
+    target_hashes: dict[str, str] = {}
+    raw_results = report.get("results")
+    if not isinstance(raw_results, list):
+        raise ProductionWaveError("result report must contain a results list")
+    for index, result in enumerate(raw_results):
+        if not isinstance(result, dict) or not isinstance(
+            result.get("output_hashes"), dict
+        ):
+            raise ProductionWaveError(
+                f"result report results[{index}].output_hashes must be a mapping"
+            )
+        for path, digest in result["output_hashes"].items():
+            if path in target_hashes:
+                raise ProductionWaveError(
+                    f"target artifact path appears more than once: {path}"
+                )
+            target_hashes[path] = digest
+    missing = sorted(set(target_hashes) - set(files))
+    mismatched = sorted(
+        path for path, digest in target_hashes.items() if files.get(path) != digest
+    )
+    if missing or mismatched:
+        raise ProductionWaveError(
+            f"artifact inventory does not match target report; "
+            f"missing={missing}, mismatched={mismatched}"
+        )
+    target_paths = sorted(target_hashes)
+    shared_paths = sorted(set(files) - set(target_hashes))
+    seed = {
+        "run_id": report.get("run_id"),
+        "files": files,
+        "target_paths": target_paths,
+        "shared_paths": shared_paths,
+    }
+    return {
+        "schema_version": 1,
+        "run_id": report.get("run_id"),
+        "file_count": len(files),
+        "target_artifact_count": len(target_paths),
+        "shared_artifact_count": len(shared_paths),
+        "inventory_sha256": _sha256_value(seed),
+        "files": files,
+        "target_paths": target_paths,
+        "shared_paths": shared_paths,
+    }
+
+
+def write_artifact_inventory(inventory: Mapping[str, Any], path: str | Path) -> None:
+    output = Path(path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(inventory, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+
+def load_artifact_inventory(path: str | Path) -> dict[str, Any]:
+    inventory_path = Path(path)
+    try:
+        raw = json.loads(inventory_path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise ProductionWaveError(f"artifact inventory not found: {path}") from exc
+    except json.JSONDecodeError as exc:
+        raise ProductionWaveError(f"artifact inventory is invalid JSON: {path}") from exc
+    if not isinstance(raw, dict):
+        raise ProductionWaveError("artifact inventory must be a mapping")
+    return raw
+
+
 def _index_results(
     report: Mapping[str, Any], label: str
 ) -> dict[str, dict[str, Any]]:
@@ -266,11 +346,72 @@ def _determinism_failures(
     ]
 
 
+def _inventory_failures(
+    report: Mapping[str, Any],
+    inventory: Mapping[str, Any],
+    label: str,
+) -> list[str]:
+    failures: list[str] = []
+    files = inventory.get("files")
+    target_paths = inventory.get("target_paths")
+    shared_paths = inventory.get("shared_paths")
+    if inventory.get("schema_version") != 1:
+        failures.append(f"{label}: schema_version must be 1")
+    if inventory.get("run_id") != report.get("run_id"):
+        failures.append(f"{label}: run_id does not match the report")
+    if not isinstance(files, dict):
+        return [*failures, f"{label}: files must be a mapping"]
+    if any(
+        not isinstance(path, str)
+        or not path
+        or not isinstance(digest, str)
+        or not SHA256_PATTERN.fullmatch(digest)
+        for path, digest in files.items()
+    ):
+        failures.append(f"{label}: every file must have a SHA-256 digest")
+    if not isinstance(target_paths, list) or not isinstance(shared_paths, list):
+        return [*failures, f"{label}: target_paths and shared_paths must be lists"]
+    if len(set(target_paths)) != len(target_paths):
+        failures.append(f"{label}: target_paths contains duplicates")
+    if len(set(shared_paths)) != len(shared_paths):
+        failures.append(f"{label}: shared_paths contains duplicates")
+    if set(target_paths) & set(shared_paths):
+        failures.append(f"{label}: target and shared paths overlap")
+    if set(files) != set(target_paths) | set(shared_paths):
+        failures.append(f"{label}: target and shared paths do not cover all files")
+
+    report_hashes: dict[str, str] = {}
+    for result in report.get("results") or []:
+        if isinstance(result, dict) and isinstance(result.get("output_hashes"), dict):
+            report_hashes.update(result["output_hashes"])
+    if set(report_hashes) != set(target_paths):
+        failures.append(f"{label}: target paths do not match report hashes")
+    if any(files.get(path) != digest for path, digest in report_hashes.items()):
+        failures.append(f"{label}: target file digest does not match the report")
+    if inventory.get("file_count") != len(files):
+        failures.append(f"{label}: file_count is incorrect")
+    if inventory.get("target_artifact_count") != len(target_paths):
+        failures.append(f"{label}: target_artifact_count is incorrect")
+    if inventory.get("shared_artifact_count") != len(shared_paths):
+        failures.append(f"{label}: shared_artifact_count is incorrect")
+    seed = {
+        "run_id": inventory.get("run_id"),
+        "files": files,
+        "target_paths": target_paths,
+        "shared_paths": shared_paths,
+    }
+    if inventory.get("inventory_sha256") != _sha256_value(seed):
+        failures.append(f"{label}: inventory_sha256 is incorrect")
+    return failures
+
+
 def evaluate_production_wave(
     manifest: TargetManifest,
     first_report: Mapping[str, Any],
     second_report: Mapping[str, Any],
     crosswalk: Mapping[str, Any],
+    first_inventory: Mapping[str, Any],
+    second_inventory: Mapping[str, Any],
     *,
     upstream_repository: str,
     upstream_revision: str,
@@ -355,6 +496,17 @@ def evaluate_production_wave(
     nesting_parity_count = sum(row["nesting_parity"] for row in outcomes)
     reports_identical = _sha256_value(first_report) == _sha256_value(second_report)
     unique_output_paths = len(all_paths) == len(set(all_paths))
+    first_inventory_failures = _inventory_failures(
+        first_report, first_inventory, "first_inventory"
+    )
+    second_inventory_failures = _inventory_failures(
+        second_report, second_inventory, "second_inventory"
+    )
+    inventories_identical = (
+        first_inventory.get("files") == second_inventory.get("files")
+        and first_inventory.get("target_paths") == second_inventory.get("target_paths")
+        and first_inventory.get("shared_paths") == second_inventory.get("shared_paths")
+    )
 
     criteria = {
         "all_targets_have_one_result_per_run": first_parity and second_parity,
@@ -368,6 +520,10 @@ def evaluate_production_wave(
             nesting_parity_count == expected_target_count
         ),
         "all_output_paths_are_unique": unique_output_paths,
+        "all_generated_artifacts_have_sha256": not (
+            first_inventory_failures or second_inventory_failures
+        ),
+        "artifact_inventories_are_identical": inventories_identical,
         "zero_target_only_production_patches": target_only_patch_count == 0,
     }
     gate_passed = all(criteria.values())
@@ -376,6 +532,8 @@ def evaluate_production_wave(
         "first_run_id": first_report.get("run_id"),
         "second_run_id": second_report.get("run_id"),
         "crosswalk_sha256": _sha256_value(crosswalk),
+        "first_inventory_sha256": first_inventory.get("inventory_sha256"),
+        "second_inventory_sha256": second_inventory.get("inventory_sha256"),
         "criteria": criteria,
         "targets": outcomes,
     }
@@ -401,10 +559,21 @@ def evaluate_production_wave(
             "nesting_parity_count": nesting_parity_count,
             "reports_identical": reports_identical,
             "unique_output_paths": unique_output_paths,
+            "artifact_count": first_inventory.get("file_count"),
+            "target_artifact_count": first_inventory.get("target_artifact_count"),
+            "shared_artifact_count": first_inventory.get("shared_artifact_count"),
+            "artifact_inventories_identical": inventories_identical,
             "target_only_patch_count": target_only_patch_count,
             "gate_passed": gate_passed,
         },
         "criteria": criteria,
+        "artifact_inventory": {
+            "first_inventory_sha256": first_inventory.get("inventory_sha256"),
+            "second_inventory_sha256": second_inventory.get("inventory_sha256"),
+            "first_failures": first_inventory_failures,
+            "second_failures": second_inventory_failures,
+            "identical": inventories_identical,
+        },
         "targets": outcomes,
     }
 
@@ -415,6 +584,8 @@ def run_production_wave_acceptance(
     first_report_path: str | Path,
     second_report_path: str | Path,
     crosswalk_path: str | Path,
+    first_inventory_path: str | Path,
+    second_inventory_path: str | Path,
     result_path: str | Path,
     upstream_repository: str,
     upstream_revision: str,
@@ -426,6 +597,8 @@ def run_production_wave_acceptance(
         load_result_report(first_report_path),
         load_result_report(second_report_path),
         load_crosswalk(crosswalk_path),
+        load_artifact_inventory(first_inventory_path),
+        load_artifact_inventory(second_inventory_path),
         upstream_repository=upstream_repository,
         upstream_revision=upstream_revision,
         expected_target_count=expected_target_count,
