@@ -1,0 +1,13 @@
+office_name,geography_type,geography_id,officeholder,selection_method,source_url,source_retrieved_at,notes
+County Judge,countywide,COUNTYWIDE,Bryan Wilson,election,https://burnetcountyelections.com/elected-officials/,2026-08-03,Current elected County Judge. The Elections office and Commissioners Court identify Bryan Wilson.
+County Commissioner Precinct 1,commissioner_precinct,1,"Jim Luther, Jr.",election,https://www.burnetcountytexas.org/page/comm.pct1,2026-08-03,Current elected Commissioner for Precinct 1.
+County Commissioner Precinct 2,commissioner_precinct,2,Damon Beierle,election,https://www.burnetcountytexas.org/page/comm.pct2,2026-08-03,Current elected Commissioner for Precinct 2.
+County Commissioner Precinct 3,commissioner_precinct,3,Chad Collier,election,https://www.burnetcountytexas.org/page/comm.pct3,2026-08-03,"Current elected Commissioner for Precinct 3; sworn in January 1, 2025."
+County Commissioner Precinct 4,commissioner_precinct,4,Joe Don Dockery,election,https://www.burnetcountytexas.org/page/comm.pct4,2026-08-03,Current elected Commissioner for Precinct 4.
+Sheriff,countywide,COUNTYWIDE,Calvin Boyd,election,https://www.burnetsheriff.com/command-staff/,2026-08-03,"Current elected Sheriff, confirmed by the county Elections office and official Sheriff's Office."
+County Clerk,countywide,COUNTYWIDE,Vicinta Stafford,election,https://www.burnetcountytexas.org/page/cclerk.home,2026-08-03,"Current elected County Clerk; took office January 1, 2023."
+District Clerk,countywide,COUNTYWIDE,Casie Walker,election,https://www.burnetcountytexas.org/page/dclerk.home,2026-08-03,Current elected District Clerk.
+Tax Assessor-Collector,countywide,COUNTYWIDE,DeAnne Fisher,election,https://www.burnetcountytexas.org/page/taxac.home,2026-08-03,Current elected Tax Assessor-Collector.
+County Treasurer,countywide,COUNTYWIDE,Karrie Crownover,election,https://www.burnetcountytexas.org/page/treas.home,2026-08-03,Current elected County Treasurer.
+County Attorney,countywide,COUNTYWIDE,Eddie Arredondo,election,https://www.burnetcountytexas.org/page/attorney.home,2026-08-03,Current elected Burnet County Attorney. This countywide office is distinct from the multi-county District Attorney.
+"District Attorney, 33rd & 424th Judicial Districts",district_attorney_service_area,33-424,Perry Thomas,election,https://www.burnetcountytexas.org/page/distatty.home,2026-08-03,"Current elected District Attorney serving Blanco, Burnet, Llano, and San Saba Counties. The office is distinct from the Burnet County Attorney and is not a Criminal District Attorney."

@@ -49,18 +49,35 @@ def main()->int:
         canonical.append({"type":"Feature","properties":{
           "geometry_id":f"burnet-county-commissioner-precinct-{d}",
           "record_id":f"TX:county:burnet:commissioner_precinct:{d}",
-          "jurisdiction_name":"Burnet County","district_type":"commissioner_precinct","district_id":d,
-          "district_name":f"Commissioner Precinct {d}","source_agency":"Burnet County 9-1-1 Addressing",
-          "source_application_item_id":APP_ITEM,"source_layer":LAYER,"source_request_url":query,
-          "source_retrieved_at":a.retrieved_at,"source_district_field":FIELD,"source_attributes":attrs,
+          "jurisdiction_name":"Burnet County",
+          "district_type":"commissioner_precinct",
+          "district_id":d,
+          "district_name":f"Commissioner Precinct {d}",
+          "source_agency":"Burnet County 9-1-1 Addressing",
+          "source_application_item_id":APP_ITEM,
+          "source_layer":LAYER,
+          "source_request_url":query,
+          "source_retrieved_at":a.retrieved_at,
+          "source_district_field":FIELD,
+          "source_attributes":attrs,
         },"geometry":feature["geometry"]})
-    contract={"application_item_id":APP_ITEM,"source_layer_url":LAYER,"source_layer_name":meta.get("name"),
-      "source_layer_last_edit_date":(meta.get("editingInfo") or {}).get("lastEditDate"),"district_field":FIELD,
-      "district_label_pattern":"Pct. <1-4>","source_filter":WHERE,"total_layer_feature_count":all_count,
-      "source_feature_count":len(source),"excluded_null_feature_count":all_count-len(source),
-      "commissioner_feature_count":4,"commissioner_precinct_ids":["1","2","3","4"],
-      "source_request_url":query,"source_retrieved_at":a.retrieved_at,
-      "null_artifact_policy":"Features with blank NAME are maintenance artifacts and are excluded before publication."}
+    contract={
+      "application_item_id":APP_ITEM,
+      "source_layer_url":LAYER,
+      "source_layer_name":meta.get("name"),
+      "source_layer_last_edit_date":(meta.get("editingInfo") or {}).get("lastEditDate"),
+      "district_field":FIELD,
+      "district_label_pattern":"Pct. <1-4>",
+      "source_filter":WHERE,
+      "total_layer_feature_count":all_count,
+      "source_feature_count":len(source),
+      "excluded_null_feature_count":all_count-len(source),
+      "commissioner_feature_count":4,
+      "commissioner_precinct_ids":["1","2","3","4"],
+      "source_request_url":query,
+      "source_retrieved_at":a.retrieved_at,
+      "null_artifact_policy":"Features with blank NAME are maintenance artifacts and are excluded before publication.",
+    }
     dump(a.raw_output,raw);dump(a.output,{"type":"FeatureCollection","features":canonical});dump(a.contract_output,contract)
     print(f"Fetched four Burnet County Commissioner precincts; excluded {all_count-len(source)} null artifact(s).")
     return 0
