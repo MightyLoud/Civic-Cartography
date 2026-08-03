@@ -10,6 +10,7 @@ on:
       - "scripts/check_production_wave.py"
       - "scripts/inventory_production_artifacts.py"
       - "scripts/run_batch_pilot_25_ci.sh"
+      - "scripts/capture_upstream_fixtures.py"
       - "scripts/capture_upstream_batch.py"
       - "scripts/capture_upstream_batch_with_overrides.py"
       - "scripts/run_target_manifest.py"

@@ -82,10 +82,29 @@ def _download_once(url: str, path: Path) -> None:
     path.write_bytes(response.content)
 
 
+def _install_fixed_datetime(fixed_asof: datetime, *modules: Any) -> type[datetime]:
+    """Install one explicit capture clock in upstream generator modules."""
+
+    class FixedDateTime(datetime):
+        @classmethod
+        def now(cls, tz=None):  # type: ignore[override]
+            if tz is None:
+                return fixed_asof.replace(tzinfo=None)
+            return fixed_asof.astimezone(tz)
+
+    for module in modules:
+        module.datetime = FixedDateTime
+    return FixedDateTime
+
+
 def _configure_upstream(upstream_root: Path, fixed_asof: datetime) -> dict[str, Any]:
     sys.path.insert(0, str(upstream_root))
 
-    from src.init_migration import generate_division, generate_jurisdiction
+    from src.init_migration import (
+        generate_division,
+        generate_jurisdiction,
+        generate_recursive,
+    )
     from src.init_migration.download_manager import (
         LOCAL_TEMPLATE,
         MASTER_PATH,
@@ -103,18 +122,15 @@ def _configure_upstream(upstream_root: Path, fixed_asof: datetime) -> dict[str, 
     from src.models.ocdid import OCDIdParsed
     from src.utils.ocdid import ocdid_parser
 
-    class FixedDateTime(datetime):
-        @classmethod
-        def now(cls, tz=None):  # type: ignore[override]
-            if tz is None:
-                return fixed_asof.replace(tzinfo=None)
-            return fixed_asof.astimezone(tz)
-
-    # Upstream currently calls datetime.now() independently for Division and
-    # Jurisdiction last_updated fields. Patch only the imported module clocks so
-    # both clean captures receive the same explicit timestamp.
-    generate_division.datetime = FixedDateTime
-    generate_jurisdiction.datetime = FixedDateTime
+    # Upstream calls datetime.now() independently for leaf records and recursive
+    # ancestor stubs. Patch only those imported module clocks so every generated
+    # artifact in both clean captures receives the same explicit timestamp.
+    _install_fixed_datetime(
+        fixed_asof,
+        generate_division,
+        generate_jurisdiction,
+        generate_recursive,
+    )
 
     return {
         "DownloadManager": DownloadManager,
