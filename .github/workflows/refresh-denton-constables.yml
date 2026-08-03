@@ -1,0 +1,72 @@
+name: Refresh Denton County constable geometry
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/refresh-denton-constables.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-denton-constables:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/denton-constable-geometry-refresh
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Refresh official constable snapshots
+        run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://gis.dentoncounty.gov/arcgis/rest/services/PoliticalBoundaries_GC/MapServer/5 \
+            --district-ids 1,2,3,4,5,6 \
+            --district-field JP_C \
+            --district-type constable_precinct \
+            --district-name-prefix "Constable Precinct" \
+            --jurisdiction-name "Denton County" \
+            --record-id-prefix TX:county:denton:constable_precinct \
+            --geometry-id-prefix denton-county-constable-precinct \
+            --source-agency "Denton County GIS" \
+            --retrieved-at 2026-08-03 \
+            --raw-output data/raw/denton-county/constable-precincts-1-6.geojson \
+            --output data/geojson/denton_county_constable_precincts.geojson
+      - name: Verify six current constables
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          payload=json.loads(Path('data/geojson/denton_county_constable_precincts.geojson').read_text(encoding='utf-8'))
+          expected={
+              '1':'TREVOR KRUEGER','2':'MICHAEL A. TRUITT','3':'DAN ROCHELLE',
+              '4':'DANNY FLETCHER','5':'DOUG BOYDSTON','6':'RICHARD BACHUS',
+          }
+          found={}
+          for feature in payload['features']:
+              props=feature['properties'];attrs=props['source_attributes']
+              found[str(props['district_id'])]=str(attrs.get('NAME_CONST') or '').strip().upper()
+          if found!=expected:raise SystemExit(f'Constable roster mismatch: {found!r}')
+          if len(payload['features'])!=6:raise SystemExit('Expected six constable polygons')
+          print('Verified six refreshed constable polygons and officeholders.')
+          PY
+      - name: Validate repository
+        run: |
+          pytest -q
+          python scripts/validate.py
+          python scripts/validate_geojson.py
+      - name: Commit refreshed snapshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/raw/denton-county/constable-precincts-1-6.geojson data/geojson/denton_county_constable_precincts.geojson
+          git diff --cached --check
+          git commit -m "Refresh Denton County constable geometry"
+          git push origin HEAD:agent/denton-constable-geometry-refresh
