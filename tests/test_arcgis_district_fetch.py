@@ -17,7 +17,9 @@ def feature(object_id: int, district: str, x: float) -> dict:
         },
         "geometry": {
             "type": "Polygon",
-            "coordinates": [[[x, 32.7], [x + 0.01, 32.7], [x, 32.7]]],
+            "coordinates": [
+                [[x, 32.7], [x + 0.01, 32.7], [x + 0.01, 32.71], [x, 32.7]]
+            ],
         },
     }
 
@@ -61,6 +63,65 @@ def test_select_features_returns_requested_districts_in_order() -> None:
     assert [
         item["properties"]["COUNCIL_DISTRICT"] for item in selected["features"]
     ] == ["District 3", "District 4", "District 5"]
+
+
+def test_select_features_normalizes_arcgis_timestamp_precision() -> None:
+    source = payload()
+    source["features"][0]["properties"].update(
+        {"CreateDate": 1642607653316, "EditDate": 1777039741149}
+    )
+
+    selected = select_features(
+        source,
+        district_field="COUNCIL_DISTRICT",
+        expected_ids={"1"},
+    )
+
+    properties = selected["features"][0]["properties"]
+    assert properties["CreateDate"] == 1642607653000
+    assert properties["EditDate"] == 1777039741000
+
+
+def test_select_features_rebuilds_disjoint_rings_as_multipolygon() -> None:
+    source = payload()
+    source["features"][0]["geometry"] = {
+        "type": "Polygon",
+        "coordinates": [
+            [[0.0, 0.0], [4.0, 0.0], [4.0, 4.0], [0.0, 0.0]],
+            [[10.0, 10.0], [11.0, 10.0], [11.0, 11.0], [10.0, 10.0]],
+        ],
+    }
+
+    selected = select_features(
+        source,
+        district_field="COUNCIL_DISTRICT",
+        expected_ids={"1"},
+    )
+
+    geometry = selected["features"][0]["geometry"]
+    assert geometry["type"] == "MultiPolygon"
+    assert len(geometry["coordinates"]) == 2
+
+
+def test_select_features_keeps_contained_ring_as_polygon_hole() -> None:
+    source = payload()
+    source["features"][0]["geometry"] = {
+        "type": "MultiPolygon",
+        "coordinates": [
+            [[[0.0, 0.0], [4.0, 0.0], [4.0, 4.0], [0.0, 0.0]]],
+            [[[2.5, 1.0], [3.0, 1.0], [3.0, 1.5], [2.5, 1.0]]],
+        ],
+    }
+
+    selected = select_features(
+        source,
+        district_field="COUNCIL_DISTRICT",
+        expected_ids={"1"},
+    )
+
+    geometry = selected["features"][0]["geometry"]
+    assert geometry["type"] == "Polygon"
+    assert len(geometry["coordinates"]) == 2
 
 
 def test_canonicalize_creates_unique_join_ids() -> None:
