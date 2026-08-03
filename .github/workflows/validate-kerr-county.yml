@@ -1,0 +1,126 @@
+name: Validate Kerr County judicial appointment schema
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-kerr-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Validate roster, judicial appointment, scope, and GIS contracts
+        run: python scripts/validate_kerr_sources.py
+
+      - name: Fetch current Kerr County Commissioner precincts
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/kerr-county/precincts
+            if python scripts/fetch_arcgis_districts.py \
+              --layer-url https://services1.arcgis.com/Ijqs2ihddUy84otW/ArcGIS/rest/services/Kerr_County_Commissioner_Precincts_2022/FeatureServer/0 \
+              --district-ids 1,2,3,4 \
+              --district-field precinct \
+              --district-type commissioner_precinct \
+              --district-name-prefix "Commissioner Precinct" \
+              --jurisdiction-name "Kerr County" \
+              --record-id-prefix TX:county:kerr:commissioner_precinct \
+              --geometry-id-prefix kerr-county-commissioner-precinct \
+              --source-agency "City of Kerrville GIS" \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/kerr-county/precincts/raw/commissioner-precincts-1-4.geojson \
+              --output build/kerr-county/precincts/geojson/kerr_county_commissioner_precincts.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Kerr County precincts match official source
+        run: |
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/kerr-county/commissioner-precincts-1-4.geojson \
+            --fresh-raw build/kerr-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --committed-canonical data/geojson/kerr_county_commissioner_precincts.geojson \
+            --fresh-canonical build/kerr-county/precincts/geojson/kerr_county_commissioner_precincts.geojson
+
+      - name: Fetch current Kerr County boundary
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/kerr-county/county
+            if python scripts/fetch_tigerweb_county.py \
+              --geoid 48265 \
+              --record-id TX:county:kerr:countywide:COUNTYWIDE \
+              --geometry-id kerr-county-countywide \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/kerr-county/county/raw/tigerweb-county-48265.geojson \
+              --output build/kerr-county/county/geojson/kerr_county_countywide.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Kerr County boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/kerr-county/tigerweb-county-48265.geojson \
+            --fresh-raw build/kerr-county/county/raw/tigerweb-county-48265.geojson \
+            --committed-canonical data/geojson/kerr_county_countywide.geojson \
+            --fresh-canonical build/kerr-county/county/geojson/kerr_county_countywide.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Calculate Kerr County combined canonical digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          paths = [
+              Path('data/geojson/kerr_county_countywide.geojson'),
+              Path('data/geojson/kerr_county_commissioner_precincts.geojson'),
+          ]
+          digest = hashlib.sha256()
+          for path in sorted(paths, key=lambda item: item.name):
+              digest.update(path.name.encode('utf-8'))
+              digest.update(b'\0')
+              digest.update(path.read_bytes())
+              digest.update(b'\0')
+          value = digest.hexdigest()
+          expected = 'c55276bef1b02f6f0de42f000e20f0218a7ee83b4ea95f0304ea921ddbfa5a4c'
+          if value != expected:
+              raise SystemExit(f'Kerr County release digest changed: {value} != {expected}')
+          output = Path('build/kerr-county/release-sha256.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(value + '\n', encoding='utf-8')
+          print(f'Kerr County combined canonical SHA-256: {value}')
+          PY
+
+      - name: Upload Kerr County validation check
+        uses: actions/upload-artifact@v4
+        with:
+          name: kerr-county-validation
+          path: build/kerr-county/
+          if-no-files-found: error
