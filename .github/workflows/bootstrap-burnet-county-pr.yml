@@ -1,0 +1,26 @@
+name: Bootstrap Burnet County official geometry on PR
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/bootstrap-burnet-county-pr.yml"
+      - "scripts/discover_burnet_arcgis.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap-burnet-county:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/discover_burnet_arcgis.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: burnet-county-bootstrap
+          path: build/burnet-county-bootstrap/
+          if-no-files-found: error
