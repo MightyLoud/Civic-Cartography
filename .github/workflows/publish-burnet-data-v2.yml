@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/publish-burnet-data-v2.yml"
-      - ".release/burnet-text-package.tar.gz"
+      - ".release/burnet-*.tar.gz"
   workflow_dispatch:
 
 permissions:
@@ -29,8 +29,11 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --name burnet-county-derived-geometry \
             --dir /tmp/burnet-derived
-      - name: Expand permanent text package
-        run: tar -xzf .release/burnet-text-package.tar.gz -C .
+      - name: Expand permanent text package shards
+        run: |
+          tar -xzf .release/burnet-a.tar.gz -C .
+          tar -xzf .release/burnet-b.tar.gz -C .
+          tar -xzf .release/burnet-c.tar.gz -C .
       - name: Promote exact geometry snapshots
         run: |
           mkdir -p data/raw/burnet-county data/geojson
@@ -45,7 +48,9 @@ jobs:
       - name: Remove discovery material and publish
         run: |
           git rm -f --ignore-unmatch \
-            .release/burnet-text-package.tar.gz \
+            .release/burnet-a.tar.gz \
+            .release/burnet-b.tar.gz \
+            .release/burnet-c.tar.gz \
             scripts/discover_burnet_arcgis.py \
             scripts/probe_burnet_arcgis_index.py \
             scripts/probe_burnet_webmap.py \
