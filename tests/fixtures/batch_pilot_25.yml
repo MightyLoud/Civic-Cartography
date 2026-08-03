@@ -144,7 +144,7 @@ targets:
   state: wa
   selector:
     type: explicit_lookup
-    name: Seattle School District No. 1
+    name: Seattle Public Schools
     resolution_policy: override_or_exception
   expected_archetype: AR-003
   expected_classification: school_system
