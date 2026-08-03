@@ -1,10 +1,7 @@
 name: Activate Burnet County data publisher
 
-# Registered branch publisher; this update activates the existing push trigger.
 on:
-  push:
-    branches:
-      - agent/burnet-county-dual-prosecutor
+  pull_request:
     paths:
       - ".github/workflows/publish-burnet-data-v2.yml"
       - ".release/burnet-text-package.tar.gz"
