@@ -1,0 +1,313 @@
+name: Bootstrap Kaufman County source geometry
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/bootstrap-kaufman-county.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap-kaufman-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Resolve official Kaufman County GIS contract and generate geometry
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          import subprocess
+          import time
+          import urllib.parse
+          import urllib.request
+          from collections import deque
+          from pathlib import Path
+
+          PORTAL = "https://gis.kaufmancounty.net/portal/sharing/rest"
+          APP_ITEM = "da2d7bb2339b4c67bfe382fc24bb775a"
+          BUILD = Path("build/kaufman-county")
+          BUILD.mkdir(parents=True, exist_ok=True)
+          ID_RE = re.compile(r"(?<![0-9a-fA-F])([0-9a-fA-F]{32})(?![0-9a-fA-F])")
+          SERVICE_RE = re.compile(
+              r"https?://[^\"'\\\s]+?/rest/services/[^\"'\\\s?]+?/(?:FeatureServer|MapServer)(?:/\d+)?",
+              re.IGNORECASE,
+          )
+
+          def fetch_json(url, attempts=5):
+              request = urllib.request.Request(
+                  url,
+                  headers={"User-Agent": "Civic-Cartography-bootstrap/1.0"},
+              )
+              last_error = None
+              for attempt in range(1, attempts + 1):
+                  try:
+                      with urllib.request.urlopen(request, timeout=60) as response:
+                          payload = json.load(response)
+                      if not isinstance(payload, dict):
+                          raise ValueError(f"Expected JSON object from {url}")
+                      return payload
+                  except Exception as exc:
+                      last_error = exc
+                      if attempt == attempts:
+                          raise
+                      time.sleep(attempt * 4)
+              raise RuntimeError(last_error)
+
+          def item_metadata(item_id):
+              return fetch_json(f"{PORTAL}/content/items/{item_id}?f=json")
+
+          def item_data(item_id):
+              return fetch_json(f"{PORTAL}/content/items/{item_id}/data?f=json")
+
+          app = item_metadata(APP_ITEM)
+          if app.get("id", "").lower() != APP_ITEM or "Application" not in str(app.get("type", "")):
+              raise SystemExit(f"Unexpected Kaufman County app metadata: {app!r}")
+
+          queue = deque([(APP_ITEM, 0)])
+          seen = set()
+          items = {}
+          service_urls = set()
+          while queue and len(seen) < 120:
+              item_id, depth = queue.popleft()
+              item_id = item_id.lower()
+              if item_id in seen or depth > 7:
+                  continue
+              seen.add(item_id)
+              try:
+                  metadata = item_metadata(item_id)
+                  data = item_data(item_id)
+              except Exception as exc:
+                  items[item_id] = {"error": repr(exc)}
+                  continue
+              items[item_id] = {"metadata": metadata, "data": data}
+              text = json.dumps({"metadata": metadata, "data": data}, sort_keys=True)
+              for child_id in ID_RE.findall(text):
+                  child_id = child_id.lower()
+                  if child_id not in seen:
+                      queue.append((child_id, depth + 1))
+              for match in SERVICE_RE.findall(text):
+                  service_urls.add(match.rstrip("/"))
+              item_url = str(metadata.get("url") or "").rstrip("/")
+              if re.search(r"/(?:FeatureServer|MapServer)(?:/\d+)?$", item_url, re.IGNORECASE):
+                  service_urls.add(item_url)
+
+          def root_and_layer(url):
+              match = re.match(r"^(.*?/(?:FeatureServer|MapServer))(?:/(\d+))?$", url, re.IGNORECASE)
+              if not match:
+                  return None, None
+              return match.group(1), int(match.group(2)) if match.group(2) is not None else None
+
+          layer_urls = set()
+          for url in service_urls:
+              root, explicit_layer = root_and_layer(url)
+              if not root:
+                  continue
+              if explicit_layer is not None:
+                  layer_urls.add(f"{root}/{explicit_layer}")
+                  continue
+              try:
+                  service = fetch_json(f"{root}?f=json")
+              except Exception:
+                  continue
+              for layer in service.get("layers", []):
+                  try:
+                      layer_urls.add(f"{root}/{int(layer['id'])}")
+                  except Exception:
+                      continue
+
+          candidates = []
+          inspections = []
+          for layer_url in sorted(layer_urls):
+              try:
+                  metadata = fetch_json(f"{layer_url}?f=json")
+              except Exception as exc:
+                  inspections.append({"layer_url": layer_url, "error": repr(exc)})
+                  continue
+              if metadata.get("geometryType") != "esriGeometryPolygon":
+                  continue
+              fields = metadata.get("fields", [])
+              query = urllib.parse.urlencode(
+                  {
+                      "where": "1=1",
+                      "outFields": "*",
+                      "returnGeometry": "false",
+                      "f": "json",
+                  }
+              )
+              try:
+                  payload = fetch_json(f"{layer_url}/query?{query}")
+              except Exception as exc:
+                  inspections.append({"layer_url": layer_url, "metadata": metadata, "error": repr(exc)})
+                  continue
+              rows = [feature.get("attributes", {}) for feature in payload.get("features", [])]
+              inspections.append(
+                  {
+                      "layer_url": layer_url,
+                      "layer_name": metadata.get("name"),
+                      "fields": fields,
+                      "rows": rows,
+                  }
+              )
+              for field in fields:
+                  name = str(field.get("name") or "")
+                  field_type = str(field.get("type") or "")
+                  if field_type == "esriFieldTypeOID" or name.casefold() in {"objectid", "fid", "oid"}:
+                      continue
+                  values = []
+                  for row in rows:
+                      value = row.get(name)
+                      if value is None or value == "":
+                          continue
+                      if isinstance(value, float) and value.is_integer():
+                          value = int(value)
+                      values.append(str(value).strip())
+                  if set(values) != {"1", "2", "3", "4"} or len(values) != 4:
+                      continue
+                  haystack = " ".join(
+                      [
+                          name,
+                          str(metadata.get("name") or ""),
+                          layer_url,
+                      ]
+                  ).casefold()
+                  score = 0
+                  for marker, points in (
+                      ("commissioner", 100),
+                      ("commission", 70),
+                      ("precinct", 60),
+                      ("pct", 40),
+                      ("district", 20),
+                      ("2021", 10),
+                      ("2022", 10),
+                  ):
+                      if marker in haystack:
+                          score += points
+                  if "/featureserver/" in layer_url.casefold():
+                      score += 5
+                  candidates.append(
+                      {
+                          "score": score,
+                          "layer_url": layer_url,
+                          "layer_name": metadata.get("name"),
+                          "district_field": name,
+                          "geometry_type": metadata.get("geometryType"),
+                          "fields": [item.get("name") for item in fields],
+                          "rows": rows,
+                      }
+                  )
+
+          evidence = {
+              "portal": PORTAL,
+              "app_item_id": APP_ITEM,
+              "app_metadata": app,
+              "visited_item_ids": sorted(seen),
+              "items": items,
+              "discovered_service_urls": sorted(service_urls),
+              "inspections": inspections,
+              "candidates": sorted(candidates, key=lambda row: (-row["score"], row["layer_url"], row["district_field"])),
+          }
+          Path("build/kaufman-county/discovery-evidence.json").write_text(
+              json.dumps(evidence, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          if not candidates:
+              raise SystemExit("No Kaufman County polygon layer has one exact non-OID district field with values 1-4.")
+
+          candidates.sort(key=lambda row: (-row["score"], row["layer_url"], row["district_field"]))
+          selected = candidates[0]
+          contract = {
+              "portal_url": PORTAL,
+              "application_item_id": APP_ITEM,
+              "application_title": app.get("title"),
+              "application_owner": app.get("owner"),
+              "operational_layer_url": selected["layer_url"],
+              "operational_layer_name": selected["layer_name"],
+              "geometry_type": selected["geometry_type"],
+              "district_field": selected["district_field"],
+              "district_values": ["1", "2", "3", "4"],
+              "layer_fields": selected["fields"],
+              "source_rows": selected["rows"],
+              "candidate_score": selected["score"],
+              "resolved_from_official_county_application": True,
+              "source_retrieved_at": "2026-08-02",
+          }
+          Path("build/kaufman-county/gis-source-contract.json").write_text(
+              json.dumps(contract, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(contract, indent=2, sort_keys=True))
+
+          subprocess.run(
+              [
+                  "python",
+                  "scripts/fetch_arcgis_districts.py",
+                  "--layer-url",
+                  selected["layer_url"],
+                  "--district-ids",
+                  "1,2,3,4",
+                  "--district-field",
+                  selected["district_field"],
+                  "--district-type",
+                  "commissioner_precinct",
+                  "--district-name-prefix",
+                  "Commissioner Precinct",
+                  "--jurisdiction-name",
+                  "Kaufman County",
+                  "--record-id-prefix",
+                  "TX:county:kaufman:commissioner_precinct",
+                  "--geometry-id-prefix",
+                  "kaufman-county-commissioner-precinct",
+                  "--source-agency",
+                  "Kaufman County GIS",
+                  "--retrieved-at",
+                  "2026-08-02",
+                  "--raw-output",
+                  "build/kaufman-county/raw/commissioner-precincts-1-4.geojson",
+                  "--output",
+                  "build/kaufman-county/geojson/kaufman_county_commissioner_precincts.geojson",
+              ],
+              check=True,
+          )
+          subprocess.run(
+              [
+                  "python",
+                  "scripts/fetch_tigerweb_county.py",
+                  "--geoid",
+                  "48257",
+                  "--record-id",
+                  "TX:county:kaufman:countywide:COUNTYWIDE",
+                  "--geometry-id",
+                  "kaufman-county-countywide",
+                  "--retrieved-at",
+                  "2026-08-02",
+                  "--raw-output",
+                  "build/kaufman-county/raw/tigerweb-county-48257.geojson",
+                  "--output",
+                  "build/kaufman-county/geojson/kaufman_county_countywide.geojson",
+              ],
+              check=True,
+          )
+          PY
+
+      - name: Upload Kaufman County bootstrap
+        uses: actions/upload-artifact@v4
+        with:
+          name: kaufman-county-bootstrap
+          path: build/kaufman-county/
+          if-no-files-found: error
