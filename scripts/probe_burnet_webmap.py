@@ -9,12 +9,12 @@ def get(url):
     req=urllib.request.Request(url,headers=HEAD)
     with urllib.request.urlopen(req,timeout=60) as r:return json.loads(r.read().decode("utf-8",errors="replace"))
 def main():
-    out=Path('build/burnet-webmap');out.mkdir(parents=True,exist_ok=True)
-    meta=get(f'{PORTAL}/sharing/rest/content/items/{ITEM}?f=json')
-    data=get(f'{PORTAL}/sharing/rest/content/items/{ITEM}/data?f=json')
+    out=Path("build/burnet-webmap");out.mkdir(parents=True,exist_ok=True)
+    meta=get(f"{PORTAL}/sharing/rest/content/items/{ITEM}?f=json")
+    data=get(f"{PORTAL}/sharing/rest/content/items/{ITEM}/data?f=json")
     text=json.dumps(data)
-    urls=sorted(set(re.findall(r'https?://[^\"\'<>\\s]+(?:FeatureServer|MapServer)(?:/\d+)?',text,re.I)))
-    payload={'portal':PORTAL,'item_id':ITEM,'meta':meta,'data':data,'service_urls':urls}
-    (out/'webmap.json').write_text(json.dumps(payload,indent=2,sort_keys=True)+'\n')
-    print(json.dumps({'title':meta.get('title'),'owner':meta.get('owner'),'urls':urls},indent=2))
-if __name__=='__main__':main()
+    urls=sorted(set(re.findall(r"https?://[^\"'<>\\s]+(?:FeatureServer|MapServer)(?:/\d+)?",text,re.I)))
+    payload={"portal":PORTAL,"item_id":ITEM,"meta":meta,"data":data,"service_urls":urls}
+    (out/"webmap.json").write_text(json.dumps(payload,indent=2,sort_keys=True)+"\n")
+    print(json.dumps({"title":meta.get("title"),"owner":meta.get("owner"),"urls":urls},indent=2))
+if __name__=="__main__":main()
