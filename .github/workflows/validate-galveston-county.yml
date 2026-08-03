@@ -1,0 +1,124 @@
+name: Validate Galveston County effective-date cutover
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-galveston-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Validate roster, abolition, cutover, and portal contracts
+        run: python scripts/validate_galveston_sources.py
+
+      - name: Fetch current Galveston County Commissioner precincts
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/galveston-county/precincts
+            if python scripts/fetch_arcgis_districts.py \
+              --layer-url https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/Galveston_County_Commissioner_Precincts_2026/FeatureServer/0 \
+              --district-ids 1,2,3,4 \
+              --district-field Commission \
+              --district-type commissioner_precinct \
+              --district-name-prefix "Commissioner Precinct" \
+              --jurisdiction-name "Galveston County" \
+              --record-id-prefix TX:county:galveston:commissioner_precinct \
+              --geometry-id-prefix galveston-county-commissioner-precinct \
+              --source-agency "Galveston County GIS" \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/galveston-county/precincts/raw/commissioner-precincts-1-4.geojson \
+              --output build/galveston-county/precincts/geojson/galveston_county_commissioner_precincts.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Galveston County precincts match source
+        run: |
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/galveston-county/commissioner-precincts-1-4.geojson \
+            --fresh-raw build/galveston-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --committed-canonical data/geojson/galveston_county_commissioner_precincts.geojson \
+            --fresh-canonical build/galveston-county/precincts/geojson/galveston_county_commissioner_precincts.geojson
+
+      - name: Fetch current Galveston County boundary
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/galveston-county/county
+            if python scripts/fetch_tigerweb_county.py \
+              --geoid 48167 \
+              --record-id TX:county:galveston:countywide:COUNTYWIDE \
+              --geometry-id galveston-county-countywide \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/galveston-county/county/raw/tigerweb-county-48167.geojson \
+              --output build/galveston-county/county/geojson/galveston_county_countywide.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Galveston County boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/galveston-county/tigerweb-county-48167.geojson \
+            --fresh-raw build/galveston-county/county/raw/tigerweb-county-48167.geojson \
+            --committed-canonical data/geojson/galveston_county_countywide.geojson \
+            --fresh-canonical build/galveston-county/county/geojson/galveston_county_countywide.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Calculate Galveston County combined canonical digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          paths = [
+              Path('data/geojson/galveston_county_countywide.geojson'),
+              Path('data/geojson/galveston_county_commissioner_precincts.geojson'),
+          ]
+          digest = hashlib.sha256()
+          for path in sorted(paths, key=lambda item: item.name):
+              digest.update(path.name.encode('utf-8'))
+              digest.update(b'\0')
+              digest.update(path.read_bytes())
+              digest.update(b'\0')
+          value = digest.hexdigest()
+          output = Path('build/galveston-county/release-sha256.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(value + '\n', encoding='utf-8')
+          print(f'Galveston County combined canonical SHA-256: {value}')
+          PY
+
+      - name: Upload Galveston County validation check
+        uses: actions/upload-artifact@v4
+        with:
+          name: galveston-county-validation
+          path: build/galveston-county/
+          if-no-files-found: error

@@ -1,0 +1,17 @@
+name: Archived Galveston County source-resolution proof
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  archived-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain archived workflow
+        run: |
+          echo "The Galveston County source-resolution bootstrap has been retired."
+          echo "Committed snapshots and the permanent read-only validator now control the release."
+          echo "See data/raw/galveston-county/portal-source-contract.json and .github/workflows/validate-galveston-county.yml."
