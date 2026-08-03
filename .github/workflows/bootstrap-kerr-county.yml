@@ -1,54 +1,17 @@
-# Second push activates the publisher after the trigger definition exists.
-name: Promote Kerr County geometry
+name: Archived Kerr County source-resolution proof
 
 on:
-  push:
-    branches:
-      - agent/kerr-county-judicial-appointment
-    paths:
-      - ".github/workflows/bootstrap-kerr-county.yml"
   workflow_dispatch:
 
 permissions:
-  contents: write
-  actions: read
+  contents: read
 
 jobs:
-  promote-kerr-county-geometry:
+  archived-proof:
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
-
     steps:
-      - name: Check out branch
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref_name }}
-          fetch-depth: 0
-
-      - name: Download successful bootstrap artifact
+      - name: Explain archived workflow
         run: |
-          rm -rf /tmp/kerr-bootstrap
-          mkdir -p /tmp/kerr-bootstrap
-          gh run download 30779553127 \
-            --repo "$GITHUB_REPOSITORY" \
-            --name kerr-county-bootstrap \
-            --dir /tmp/kerr-bootstrap
-
-      - name: Promote generated geometry and source contract
-        run: |
-          mkdir -p data/raw/kerr-county data/geojson
-          cp /tmp/kerr-bootstrap/raw/commissioner-precincts-1-4.geojson data/raw/kerr-county/commissioner-precincts-1-4.geojson
-          cp /tmp/kerr-bootstrap/raw/tigerweb-county-48265.geojson data/raw/kerr-county/tigerweb-county-48265.geojson
-          cp /tmp/kerr-bootstrap/geojson/kerr_county_commissioner_precincts.geojson data/geojson/kerr_county_commissioner_precincts.geojson
-          cp /tmp/kerr-bootstrap/geojson/kerr_county_countywide.geojson data/geojson/kerr_county_countywide.geojson
-          cp /tmp/kerr-bootstrap/gis-source-contract.json data/raw/kerr-county/gis-source-contract.json
-
-      - name: Commit and push geometry
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/raw/kerr-county data/geojson/kerr_county_countywide.geojson data/geojson/kerr_county_commissioner_precincts.geojson
-          git diff --cached --check
-          git commit -m "Add Kerr County canonical geometry"
-          git push origin HEAD:${{ github.ref_name }}
+          echo "The Kerr County GIS bootstrap has been retired."
+          echo "Committed snapshots and the permanent read-only validator now control the release."
+          echo "See data/raw/kerr-county/gis-source-contract.json and .github/workflows/validate-kerr-county.yml."
