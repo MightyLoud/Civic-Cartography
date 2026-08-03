@@ -1,0 +1,17 @@
+name: Archived Kerr County source-resolution proof
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  archived-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain archived workflow
+        run: |
+          echo "The Kerr County GIS bootstrap has been retired."
+          echo "Committed snapshots and the permanent read-only validator now control the release."
+          echo "See data/raw/kerr-county/gis-source-contract.json and .github/workflows/validate-kerr-county.yml."
