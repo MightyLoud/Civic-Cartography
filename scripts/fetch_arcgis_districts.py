@@ -55,6 +55,101 @@ def normalize_identifier(value: Any) -> str | None:
     return None
 
 
+def normalize_source_properties(properties: dict[str, Any]) -> dict[str, Any]:
+    """Normalize ArcGIS transport variants without changing source meaning."""
+    normalized = copy.deepcopy(properties)
+    for key, value in normalized.items():
+        if (
+            key.casefold().endswith("date")
+            and isinstance(value, (int, float))
+            and not isinstance(value, bool)
+        ):
+            normalized[key] = int(value / 1000) * 1000
+    return normalized
+
+
+def _signed_ring_area(ring: list[list[float]]) -> float:
+    return sum(
+        first[0] * second[1] - second[0] * first[1]
+        for first, second in zip(ring, ring[1:] + ring[:1])
+    ) / 2
+
+
+def _point_in_ring(point: list[float], ring: list[list[float]]) -> bool:
+    x, y = point[:2]
+    inside = False
+    for first, second in zip(ring, ring[1:] + ring[:1]):
+        x1, y1 = first[:2]
+        x2, y2 = second[:2]
+        if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1:
+            inside = not inside
+    return inside
+
+
+def normalize_polygon_geometry(geometry: dict[str, Any]) -> dict[str, Any]:
+    """Rebuild Polygon/MultiPolygon topology from ring containment.
+
+    ArcGIS GeoJSON backends can wrap the same disjoint rings as either one
+    Polygon or a MultiPolygon. Ring containment is stable across those transport
+    variants and determines whether a ring is a shell or a hole.
+    """
+    geometry_type = geometry.get("type")
+    coordinates = geometry.get("coordinates")
+    if geometry_type == "Polygon":
+        raw_rings = coordinates
+    elif geometry_type == "MultiPolygon":
+        raw_rings = [ring for polygon in coordinates for ring in polygon]
+    else:
+        raise ValueError(f"Unsupported polygon geometry {geometry_type!r}")
+    if not isinstance(raw_rings, list) or not raw_rings:
+        raise ValueError("Polygon geometry must contain at least one ring")
+
+    rings = copy.deepcopy(raw_rings)
+    for ring in rings:
+        if not isinstance(ring, list) or len(ring) < 4:
+            raise ValueError("Polygon rings must contain at least four positions")
+
+    areas = [abs(_signed_ring_area(ring)) for ring in rings]
+    parents: list[int | None] = []
+    for index, ring in enumerate(rings):
+        containers = [
+            candidate
+            for candidate, outer in enumerate(rings)
+            if candidate != index
+            and areas[candidate] > areas[index]
+            and _point_in_ring(ring[0], outer)
+        ]
+        parents.append(min(containers, key=areas.__getitem__) if containers else None)
+
+    depths: list[int] = []
+    for index in range(len(rings)):
+        depth = 0
+        parent = parents[index]
+        visited = {index}
+        while parent is not None:
+            if parent in visited:
+                raise ValueError("Polygon ring containment cycle detected")
+            visited.add(parent)
+            depth += 1
+            parent = parents[parent]
+        depths.append(depth)
+
+    polygons: list[list[list[list[float]]]] = []
+    for index, ring in enumerate(rings):
+        if depths[index] % 2:
+            continue
+        holes = [
+            rings[candidate]
+            for candidate, parent in enumerate(parents)
+            if parent == index and depths[candidate] % 2
+        ]
+        polygons.append([ring, *holes])
+
+    if len(polygons) == 1:
+        return {"type": "Polygon", "coordinates": polygons[0]}
+    return {"type": "MultiPolygon", "coordinates": polygons}
+
+
 def fetch_layer(layer_url: str) -> tuple[dict[str, Any], str]:
     """Fetch all layer features as WGS84 GeoJSON."""
     query_url = f"{layer_url.rstrip('/')}/query"
@@ -154,7 +249,10 @@ def select_features(
             raise ValueError(
                 f"District {district_id} has unsupported geometry {geometry_type!r}"
             )
-        selected.append((int(district_id), copy.deepcopy(feature)))
+        normalized_feature = copy.deepcopy(feature)
+        normalized_feature["properties"] = normalize_source_properties(properties)
+        normalized_feature["geometry"] = normalize_polygon_geometry(geometry)
+        selected.append((int(district_id), normalized_feature))
 
     selected.sort(key=lambda item: item[0])
     found = {str(number) for number, _ in selected}

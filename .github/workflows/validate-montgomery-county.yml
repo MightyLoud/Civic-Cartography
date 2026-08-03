@@ -165,6 +165,14 @@ jobs:
             --committed-canonical data/geojson/montgomery_county_commissioner_precincts.geojson \
             --fresh-canonical build/montgomery-county/precincts/geojson/montgomery_county_commissioner_precincts.geojson
 
+      - name: Upload Montgomery County precinct drift evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: montgomery-county-precinct-drift
+          path: build/montgomery-county/precincts/
+          if-no-files-found: error
+
       - name: Fetch current Montgomery County boundary
         run: |
           for attempt in 1 2 3 4 5; do

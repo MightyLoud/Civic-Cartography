@@ -16,7 +16,9 @@ def source_feature(object_id: int, district_id: int, x: float) -> dict:
         },
         "geometry": {
             "type": "Polygon",
-            "coordinates": [[[x, 32.7], [x + 0.01, 32.7], [x, 32.7]]],
+            "coordinates": [
+                [[x, 32.7], [x + 0.01, 32.7], [x + 0.01, 32.71], [x, 32.7]]
+            ],
         },
     }
 
