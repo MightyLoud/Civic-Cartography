@@ -1,0 +1,26 @@
+name: Probe Burnet County precinct layer
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/probe-burnet-precinct-layer.yml"
+      - "scripts/probe_burnet_precinct_layer.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe-burnet-layer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/probe_burnet_precinct_layer.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: burnet-precinct-layer
+          path: build/burnet-layer-probe/
+          if-no-files-found: error
