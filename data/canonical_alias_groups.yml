@@ -28,3 +28,32 @@ aliases:
       the manifest lists the incorporated-place member first. The county
       Division remains a first-class geographic record and points to the same
       canonical government Jurisdiction.
+  - alias_id: tn-nashville-davidson-metropolitan-government
+    state: tn
+    canonical_name: Metropolitan Government of Nashville and Davidson County
+    members:
+      - ocd-division/country:us/state:tn/county:davidson
+      - ocd-division/country:us/state:tn/place:nashville
+    canonical_member: ocd-division/country:us/state:tn/county:davidson
+    classification: government
+    jurisdiction_name: Metropolitan Government of Nashville and Davidson County
+    url: https://www.nashville.gov/
+    source:
+      source_name: Metropolitan Government of Nashville and Davidson County
+      source_url:
+        official_website: https://www.nashville.gov/
+        metropolitan_council: https://www.nashville.gov/departments/council/boards/metro-council
+        consolidation_history: https://www.nashville.gov/departments/government/history-metro
+        maintained_ocd_source: https://github.com/opencivicdata/ocd-division-ids/blob/a52719a15852fc8c8418194016c16657591930ad/identifiers/country-us.csv
+      source_description: >-
+        Official Metro materials identify one city-county consolidated
+        government created in 1963. The maintained OCD source preserves both
+        Nashville place and Davidson County Divisions and advises that the
+        county identifier is preferable for government statistics.
+    verified_asof: '2026-08-02'
+    evidence_notes: >-
+      Davidson County is the maintained canonical member because the
+      metropolitan government operates countywide and the pinned OCD source
+      explicitly recommends county:davidson for government statistics. The
+      Nashville place remains a first-class geographic Division that points to
+      the same canonical government Jurisdiction.
