@@ -1,0 +1,87 @@
+name: Bootstrap Gillespie County map sources
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/bootstrap-gillespie-county.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap-gillespie-county:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install map inspection dependencies
+        run: python -m pip install pymupdf pillow pyshp shapely pyproj
+
+      - name: Capture official map and current voting precinct geometry
+        run: |
+          set -euo pipefail
+          mkdir -p build/gillespie-county/bootstrap
+          curl -fsSL --compressed --retry 5 --retry-all-errors --max-time 180 \
+            'https://www.gillespiecounty.gov/DocumentCenter/View/1038/Gillespie-County-Commissioner-Precinct-Map-PDF' \
+            -o build/gillespie-county/bootstrap/official-commissioner-map.pdf
+          curl -fsSL --compressed --retry 5 --retry-all-errors --max-time 180 \
+            'https://data.capitol.texas.gov/dataset/d04c72b9-16c4-4ab2-8c6d-c666d41e04b7/resource/33ec5b30-ee4d-424f-9769-57b87cb5e311/download/precincts26p.zip' \
+            -o build/gillespie-county/bootstrap/precincts26p.zip
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+
+          import fitz
+          from PIL import Image
+
+          root = Path('build/gillespie-county/bootstrap')
+          pdf_path = root / 'official-commissioner-map.pdf'
+          zip_path = root / 'precincts26p.zip'
+
+          document = fitz.open(pdf_path)
+          rendered = []
+          for page_number, page in enumerate(document):
+              pixmap = page.get_pixmap(matrix=fitz.Matrix(2.5, 2.5), alpha=False)
+              image_path = root / f'official-commissioner-map-page-{page_number + 1}.png'
+              pixmap.save(image_path)
+              with Image.open(image_path) as image:
+                  rendered.append({
+                      'page': page_number + 1,
+                      'path': image_path.name,
+                      'width': image.width,
+                      'height': image.height,
+                  })
+
+          with zipfile.ZipFile(zip_path) as archive:
+              names = archive.namelist()
+
+          evidence = {
+              'official_map_url': 'https://www.gillespiecounty.gov/DocumentCenter/View/1038/Gillespie-County-Commissioner-Precinct-Map-PDF',
+              'official_map_sha256': hashlib.sha256(pdf_path.read_bytes()).hexdigest(),
+              'official_map_size': pdf_path.stat().st_size,
+              'official_map_page_count': len(document),
+              'rendered_pages': rendered,
+              'tlc_precinct_url': 'https://data.capitol.texas.gov/dataset/d04c72b9-16c4-4ab2-8c6d-c666d41e04b7/resource/33ec5b30-ee4d-424f-9769-57b87cb5e311/download/precincts26p.zip',
+              'tlc_precinct_zip_sha256': hashlib.sha256(zip_path.read_bytes()).hexdigest(),
+              'tlc_archive_names': names,
+              'source_retrieved_at': '2026-08-02',
+          }
+          (root / 'bootstrap-evidence.json').write_text(
+              json.dumps(evidence, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          print(json.dumps(evidence, indent=2, sort_keys=True))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gillespie-county-bootstrap
+          path: build/gillespie-county/bootstrap/
+          if-no-files-found: error
