@@ -1,5 +1,6 @@
 name: Activate Burnet County data publisher
 
+# Registered branch publisher; this update activates the existing push trigger.
 on:
   push:
     branches:
