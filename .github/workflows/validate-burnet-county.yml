@@ -1,0 +1,107 @@
+name: Validate Burnet County separate prosecutor geographies
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-burnet-county.yml"
+      - "data/raw/burnet-county/**"
+      - "data/normalized/burnet_county_elected_offices.csv"
+      - "data/geojson/burnet_*.geojson"
+      - "docs/jurisdictions/burnet-county-tx.md"
+      - "scripts/fetch_burnet_commissioner_precincts.py"
+      - "scripts/fetch_burnet_district_attorney_service_area.py"
+      - "scripts/validate_burnet_sources.py"
+      - "tests/test_burnet_county_roster.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-burnet-county:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install validation and geometry dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install shapely
+      - name: Validate roster, separate prosecutors, scope, and sources
+        run: python scripts/validate_burnet_sources.py
+      - name: Regenerate current Commissioner geometry
+        run: |
+          python scripts/fetch_burnet_commissioner_precincts.py \
+            --retrieved-at 2026-08-03 \
+            --raw-output build/burnet-county/commissioners/raw/commissioner-precincts-1-4.geojson \
+            --output build/burnet-county/commissioners/geojson/burnet_county_commissioner_precincts.geojson \
+            --contract-output build/burnet-county/commissioners/gis-source-contract.json
+      - name: Verify committed Commissioner snapshots and contract
+        run: |
+          cmp data/raw/burnet-county/commissioner-precincts-1-4.geojson build/burnet-county/commissioners/raw/commissioner-precincts-1-4.geojson
+          cmp data/geojson/burnet_county_commissioner_precincts.geojson build/burnet-county/commissioners/geojson/burnet_county_commissioner_precincts.geojson
+          cmp data/raw/burnet-county/gis-source-contract.json build/burnet-county/commissioners/gis-source-contract.json
+      - name: Fetch current Burnet County boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48053 \
+            --record-id TX:county:burnet:countywide:COUNTYWIDE \
+            --geometry-id burnet-county-countywide \
+            --retrieved-at 2026-08-03 \
+            --raw-output build/burnet-county/county/raw/tigerweb-county-48053.geojson \
+            --output build/burnet-county/county/geojson/burnet_county_countywide.geojson
+      - name: Verify committed Burnet County boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/burnet-county/tigerweb-county-48053.geojson \
+            --fresh-raw build/burnet-county/county/raw/tigerweb-county-48053.geojson \
+            --committed-canonical data/geojson/burnet_county_countywide.geojson \
+            --fresh-canonical build/burnet-county/county/geojson/burnet_county_countywide.geojson
+      - name: Regenerate District Attorney service area
+        run: |
+          python scripts/fetch_burnet_district_attorney_service_area.py \
+            --retrieved-at 2026-08-03 \
+            --raw-output build/burnet-county/district-attorney/raw/district-attorney-component-counties.geojson \
+            --output build/burnet-county/district-attorney/geojson/burnet_33rd_424th_district_attorney_service_area.geojson \
+            --contract-output build/burnet-county/district-attorney/district-attorney-service-area-contract.json
+      - name: Verify District Attorney service-area snapshots and contract
+        run: |
+          cmp data/raw/burnet-county/district-attorney-component-counties.geojson build/burnet-county/district-attorney/raw/district-attorney-component-counties.geojson
+          cmp data/geojson/burnet_33rd_424th_district_attorney_service_area.geojson build/burnet-county/district-attorney/geojson/burnet_33rd_424th_district_attorney_service_area.geojson
+          cmp data/raw/burnet-county/district-attorney-service-area-contract.json build/burnet-county/district-attorney/district-attorney-service-area-contract.json
+      - name: Run automated tests
+        run: pytest -q
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+      - name: Verify Burnet County release digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          paths=[
+              Path("data/geojson/burnet_county_countywide.geojson"),
+              Path("data/geojson/burnet_county_commissioner_precincts.geojson"),
+              Path("data/geojson/burnet_33rd_424th_district_attorney_service_area.geojson"),
+          ]
+          digest=hashlib.sha256()
+          for path in sorted(paths,key=lambda item:item.name):
+              digest.update(path.name.encode("utf-8"));digest.update(b"\0")
+              digest.update(path.read_bytes());digest.update(b"\0")
+          value=digest.hexdigest()
+          expected="eef9a2b7386d2356aa60aa9cd9a17f077500265f3553ab99f82487a7c875542e"
+          if value!=expected:raise SystemExit(f"Burnet release digest changed: {value} != {expected}")
+          output=Path("build/burnet-county/release-sha256.txt")
+          output.parent.mkdir(parents=True,exist_ok=True);output.write_text(value+"\n")
+          print(f"Burnet County combined canonical SHA-256: {value}")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: burnet-county-validation
+          path: build/burnet-county/
+          if-no-files-found: error
