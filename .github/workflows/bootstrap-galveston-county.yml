@@ -42,16 +42,18 @@ jobs:
           from pathlib import Path
 
           EXPERIENCE_ID = 'e0b0fef416cd42ad991b8ae95d22bb59'
-          EXPERIENCE_OWNER = 'galvcountymaps'
+          EXPERIENCE_OWNER = 'sigler_n'
+          EXPERIENCE_TITLE = 'Galveston Final2'
           PORTAL = 'https://www.arcgis.com/sharing/rest'
           HOST = 'https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services'
           SELECTED_ROOT = f'{HOST}/Galveston_County_Commissioner_Precincts_2026/FeatureServer'
-          CANDIDATE_ROOTS = [
-              SELECTED_ROOT,
-              f'{HOST}/GC_commissionerpct_/FeatureServer',
+          SELECTED_LAYER = f'{SELECTED_ROOT}/0'
+          SELECTED_FIELD = 'Commission'
+          OLD_ROOTS = [
               f'{HOST}/Galveston_County_Commissioner_Precincts/FeatureServer',
               f'{HOST}/commissionerpct/FeatureServer',
           ]
+          ALTERNATE_ROOT = f'{HOST}/GC_commissionerpct_/FeatureServer'
           EFFECTIVE_DATE = '2026-06-29'
           EFFECTIVE_MS = int(datetime(2026, 6, 29, tzinfo=timezone.utc).timestamp() * 1000)
           ID_RE = re.compile(r'(?<![0-9a-fA-F])([0-9a-fA-F]{32})(?![0-9a-fA-F])')
@@ -77,9 +79,6 @@ jobs:
           def item_data(item_id):
               return fetch_json(f'{PORTAL}/content/items/{item_id}/data?f=json')
 
-          def compact(value):
-              return json.dumps(value, separators=(',', ':'), sort_keys=True)
-
           def to_iso(milliseconds):
               if not milliseconds:
                   return None
@@ -98,145 +97,121 @@ jobs:
               match = re.fullmatch(r'(?:commissioner\s*)?(?:precinct|pct|district)?\s*0*([1-4])', text, re.I)
               return match.group(1) if match else None
 
-          def linked_experience_text():
-              experience = item_meta(EXPERIENCE_ID)
-              if experience.get('id') != EXPERIENCE_ID:
-                  raise SystemExit(f'Unexpected Experience metadata: {experience!r}')
-              if experience.get('owner') != EXPERIENCE_OWNER:
-                  raise SystemExit(f'Unexpected Experience owner: {experience.get("owner")!r}')
-              data = item_data(EXPERIENCE_ID)
-              texts = [compact(experience), compact(data)]
-              first_level = sorted(set(ID_RE.findall(texts[-1])))[:24]
-              inspected = []
-              for item_id in first_level:
-                  try:
-                      metadata = item_meta(item_id)
-                      linked_data = item_data(item_id)
-                  except Exception as exc:
-                      print(f'Skipping linked item {item_id}: {exc}')
-                      continue
-                  inspected.append({
-                      'item_id': item_id,
-                      'title': metadata.get('title'),
-                      'type': metadata.get('type'),
-                      'owner': metadata.get('owner'),
-                  })
-                  texts.extend([compact(metadata), compact(linked_data)])
-              return experience, inspected, '\n'.join(texts)
+          def inspect_layer(layer_url, district_field):
+              metadata = fetch_json(f'{layer_url}?f=json')
+              if metadata.get('geometryType') != 'esriGeometryPolygon':
+                  raise ValueError(f'Unexpected geometry type at {layer_url}: {metadata.get("geometryType")!r}')
+              fields = {str(field.get('name') or '') for field in metadata.get('fields', [])}
+              if district_field not in fields:
+                  raise ValueError(f'{layer_url} lost field {district_field!r}: {sorted(fields)}')
+              params = urllib.parse.urlencode({
+                  'where': '1=1',
+                  'outFields': district_field,
+                  'returnGeometry': 'false',
+                  'orderByFields': district_field,
+                  'f': 'json',
+              })
+              payload = fetch_json(f'{layer_url}/query?{params}')
+              values = [normalize_precinct(feature.get('attributes', {}).get(district_field)) for feature in payload.get('features', [])]
+              counts = {value: values.count(value) for value in sorted(set(value for value in values if value))}
+              if counts != {'1': 1, '2': 1, '3': 1, '4': 1}:
+                  raise ValueError(f'{layer_url} did not resolve one each of 1-4 using {district_field}: {counts!r}')
+              return metadata
 
-          def inspect_root(root):
+          def inspect_root(root, preferred_field=None):
               service = fetch_json(f'{root}?f=json')
               service_item_id = str(service.get('serviceItemId') or '')
               service_item = item_meta(service_item_id) if service_item_id else {}
-              layers = service.get('layers') or []
-              if not layers:
-                  raise ValueError(f'No layers published at {root}')
-              field_tokens = ('PRECINCT', 'PCT', 'DISTRICT', 'COMMISH', 'COMMISSION')
-              matches = []
-              for layer in layers:
+              layer_results = []
+              for layer in service.get('layers') or []:
                   layer_url = f"{root}/{layer['id']}"
                   metadata = fetch_json(f'{layer_url}?f=json')
                   if metadata.get('geometryType') != 'esriGeometryPolygon':
                       continue
                   fields = [str(field.get('name') or '') for field in metadata.get('fields', [])]
-                  ranked_fields = []
-                  for field in fields:
-                      upper = field.upper()
-                      if not any(token in upper for token in field_tokens):
+                  candidates = [preferred_field] if preferred_field else []
+                  candidates.extend(field for field in fields if field not in candidates and any(token in field.upper() for token in ('COMMISSION', 'PRECINCT', 'PCT', 'DISTRICT')))
+                  for field in candidates:
+                      try:
+                          inspect_layer(layer_url, field)
+                      except Exception:
                           continue
-                      score = 0
-                      if upper in {'PCT_NO', 'PRECINCT', 'PRECINCT_NO', 'DISTRICT'}:
-                          score += 100
-                      if 'PRECINCT' in upper or 'PCT' in upper:
-                          score += 70
-                      if 'DIST' in upper:
-                          score += 50
-                      if 'COMMISSION' in upper:
-                          score += 40
-                      ranked_fields.append((score, field))
-                  ranked_fields.sort(key=lambda value: (-value[0], value[1]))
-                  for _, field in ranked_fields:
-                      params = urllib.parse.urlencode({
-                          'where': '1=1',
-                          'outFields': field,
-                          'returnGeometry': 'false',
-                          'orderByFields': field,
-                          'f': 'json',
+                      dates = [
+                          int(service_item.get('created') or 0),
+                          int(service_item.get('modified') or 0),
+                          int((metadata.get('editingInfo') or {}).get('lastEditDate') or (metadata.get('editingInfo') or {}).get('dataLastEditDate') or 0),
+                          int((service.get('editingInfo') or {}).get('lastEditDate') or (service.get('editingInfo') or {}).get('dataLastEditDate') or 0),
+                      ]
+                      max_date = max(dates)
+                      layer_results.append({
+                          'root_url': root,
+                          'layer_url': layer_url,
+                          'layer_name': metadata.get('name'),
+                          'district_field': field,
+                          'district_values': ['1', '2', '3', '4'],
+                          'service_item_id': service_item_id,
+                          'service_item_title': service_item.get('title'),
+                          'service_item_owner': service_item.get('owner'),
+                          'service_item_created': service_item.get('created'),
+                          'service_item_created_iso': to_iso(int(service_item.get('created') or 0)),
+                          'service_item_modified': service_item.get('modified'),
+                          'service_item_modified_iso': to_iso(int(service_item.get('modified') or 0)),
+                          'max_item_or_layer_date': max_date or None,
+                          'max_item_or_layer_date_iso': to_iso(max_date),
+                          'post_cutover': max_date >= EFFECTIVE_MS,
                       })
-                      payload = fetch_json(f'{layer_url}/query?{params}')
-                      values = [normalize_precinct(feature.get('attributes', {}).get(field)) for feature in payload.get('features', [])]
-                      counts = {value: values.count(value) for value in sorted(set(value for value in values if value))}
-                      if counts == {'1': 1, '2': 1, '3': 1, '4': 1}:
-                          editing = metadata.get('editingInfo') or {}
-                          service_editing = service.get('editingInfo') or {}
-                          dates = [
-                              int(service_item.get('created') or 0),
-                              int(service_item.get('modified') or 0),
-                              int(editing.get('lastEditDate') or editing.get('dataLastEditDate') or 0),
-                              int(service_editing.get('lastEditDate') or service_editing.get('dataLastEditDate') or 0),
-                          ]
-                          max_date = max(dates)
-                          matches.append({
-                              'root_url': root,
-                              'layer_url': layer_url,
-                              'layer_name': metadata.get('name'),
-                              'district_field': field,
-                              'district_values': ['1', '2', '3', '4'],
-                              'service_item_id': service_item_id,
-                              'service_item_title': service_item.get('title'),
-                              'service_item_owner': service_item.get('owner'),
-                              'service_item_created': service_item.get('created'),
-                              'service_item_created_iso': to_iso(int(service_item.get('created') or 0)),
-                              'service_item_modified': service_item.get('modified'),
-                              'service_item_modified_iso': to_iso(int(service_item.get('modified') or 0)),
-                              'max_item_or_layer_date': max_date or None,
-                              'max_item_or_layer_date_iso': to_iso(max_date),
-                              'post_cutover': max_date >= EFFECTIVE_MS,
-                          })
-                          break
-              if len(matches) != 1:
-                  raise ValueError(f'Expected exactly one four-precinct polygon layer at {root}; found {matches!r}')
-              return matches[0]
+                      break
+              if len(layer_results) != 1:
+                  raise ValueError(f'Expected one four-precinct polygon layer at {root}; found {layer_results!r}')
+              return layer_results[0]
 
-          experience, linked_items, experience_text = linked_experience_text()
-          candidates = []
-          for root in CANDIDATE_ROOTS:
+          experience = item_meta(EXPERIENCE_ID)
+          if experience.get('id') != EXPERIENCE_ID or experience.get('owner') != EXPERIENCE_OWNER or experience.get('title') != EXPERIENCE_TITLE:
+              raise SystemExit(f'Unexpected Galveston Experience metadata: {experience!r}')
+          experience_data = item_data(EXPERIENCE_ID)
+          graph_texts = [json.dumps(experience_data, sort_keys=True)]
+          linked_items = []
+          for item_id in sorted(set(ID_RE.findall(graph_texts[0])))[:24]:
               try:
-                  candidate = inspect_root(root)
+                  metadata = item_meta(item_id)
+                  data = item_data(item_id)
               except Exception as exc:
-                  candidates.append({'root_url': root, 'available': False, 'error': str(exc)})
+                  print(f'Skipping linked item {item_id}: {exc}')
                   continue
-              candidate['available'] = True
-              candidate['referenced_by_experience_graph'] = (
-                  root.lower() in experience_text.lower()
-                  or candidate['layer_url'].lower() in experience_text.lower()
-                  or (candidate['service_item_id'] and candidate['service_item_id'].lower() in experience_text.lower())
-              )
-              candidates.append(candidate)
+              linked_items.append({'item_id': item_id, 'title': metadata.get('title'), 'type': metadata.get('type'), 'owner': metadata.get('owner')})
+              graph_texts.extend([json.dumps(metadata, sort_keys=True), json.dumps(data, sort_keys=True)])
+          graph_text = '\n'.join(graph_texts).lower()
 
-          selected = next((candidate for candidate in candidates if candidate.get('root_url') == SELECTED_ROOT and candidate.get('available')), None)
-          if selected is None:
-              raise SystemExit(f'The dedicated 2026 Galveston Commissioner service did not validate: {candidates!r}')
+          selected = inspect_root(SELECTED_ROOT, SELECTED_FIELD)
+          if selected['layer_url'] != SELECTED_LAYER or selected['district_field'] != SELECTED_FIELD:
+              raise SystemExit(f'Unexpected selected Galveston layer contract: {selected!r}')
           if not selected['post_cutover']:
               raise SystemExit(f'The dedicated 2026 service lacks post-cutover item/layer evidence: {selected!r}')
-          if not selected['referenced_by_experience_graph']:
-              raise SystemExit(f'The public Experience graph does not reference the dedicated 2026 service: {selected!r}; linked={linked_items!r}')
+          if not (
+              SELECTED_ROOT.lower() in graph_text
+              or SELECTED_LAYER.lower() in graph_text
+              or (selected['service_item_id'] and selected['service_item_id'].lower() in graph_text)
+          ):
+              raise SystemExit(f'The Experience graph does not reference the dedicated 2026 service: {selected!r}; linked={linked_items!r}')
+          selected['referenced_by_experience_graph'] = True
 
           rejected = []
           pre_cutover_count = 0
-          for candidate in candidates:
-              if candidate is selected:
+          for root in [*OLD_ROOTS, ALTERNATE_ROOT]:
+              try:
+                  candidate = inspect_root(root)
+              except Exception as exc:
+                  rejected.append({'root_url': root, 'available': False, 'rejection_reason': 'candidate unavailable or does not resolve exactly four Commissioner polygons', 'error': str(exc)})
                   continue
-              if not candidate.get('available'):
-                  reason = 'candidate unavailable or does not resolve exactly four Commissioner polygons'
-              elif not candidate.get('post_cutover'):
-                  reason = 'pre-cutover candidate rejected by the June 29, 2026 effective-date contract'
+              candidate['available'] = True
+              if not candidate['post_cutover']:
+                  candidate['rejection_reason'] = 'pre-cutover candidate rejected by the June 29, 2026 effective-date contract'
                   pre_cutover_count += 1
               else:
-                  reason = 'non-controlling alternate service rejected in favor of the dedicated 2026 Experience-linked service'
-              rejected.append({**candidate, 'rejection_reason': reason})
+                  candidate['rejection_reason'] = 'non-controlling alternate service rejected in favor of the dedicated 2026 Experience-linked service'
+              rejected.append(candidate)
           if pre_cutover_count < 1:
-              raise SystemExit(f'No older official candidate was proven pre-cutover: {rejected!r}')
+              raise SystemExit(f'No older official Commissioner service was proven pre-cutover: {rejected!r}')
 
           contract = {
               'experience_item_id': EXPERIENCE_ID,
@@ -248,25 +223,25 @@ jobs:
               'experience_item_modified': experience.get('modified'),
               'experience_item_modified_iso': to_iso(int(experience.get('modified') or 0)),
               'effective_date': EFFECTIVE_DATE,
-              'selection_rule': 'The dedicated Galveston_County_Commissioner_Precincts_2026 service must resolve exactly four Commissioner polygons, be referenced by the public Experience graph, and carry post-June-29 item or layer evidence; older generic services are rejected.',
+              'selection_rule': 'Use the dedicated Galveston_County_Commissioner_Precincts_2026 service linked by the public Experience graph; require exactly four polygons using Commission and post-June-29 item or layer evidence; reject older generic services.',
               'operational_layer_url': selected['layer_url'],
               'district_field': selected['district_field'],
               'district_values': selected['district_values'],
               'selected_candidate': selected,
               'rejected_candidates': rejected,
               'linked_items_inspected': linked_items,
-              'source_classification': 'county-controlled effective-date cutover contract; official county pages control the roster and June 29, 2026 adoption date',
+              'source_classification': 'county-controlled effective-date cutover contract; official county pages control the roster and June 29, 2026 effective date',
           }
           output = Path('build/galveston-county/portal-source-contract.json')
           output.parent.mkdir(parents=True, exist_ok=True)
           output.write_text(json.dumps(contract, indent=2, sort_keys=True) + '\n', encoding='utf-8')
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
-              handle.write(f"layer_url={selected['layer_url']}\n")
-              handle.write(f"district_field={selected['district_field']}\n")
-          print(f"Galveston County Experience: {EXPERIENCE_ID} / {experience.get('owner')} / {experience.get('title')}")
-          print(f"Selected post-cutover layer: {selected['layer_url']}")
-          print(f"Stable district field: {selected['district_field']}")
-          print(f"Rejected alternative candidates: {len(rejected)}")
+              handle.write(f'layer_url={SELECTED_LAYER}\n')
+              handle.write(f'district_field={SELECTED_FIELD}\n')
+          print(f'Galveston County Experience: {EXPERIENCE_ID} / {EXPERIENCE_OWNER} / {EXPERIENCE_TITLE}')
+          print(f'Selected post-cutover layer: {SELECTED_LAYER}')
+          print(f'Stable district field: {SELECTED_FIELD}')
+          print(f'Rejected alternative candidates: {len(rejected)}')
           PY
 
       - name: Fetch current Galveston County Commissioner precincts
