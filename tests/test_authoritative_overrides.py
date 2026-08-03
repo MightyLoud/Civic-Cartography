@@ -39,6 +39,58 @@ def test_rtd_override_resolves_only_exact_maintained_aliases() -> None:
     assert near_miss is None
 
 
+
+def test_discovery_overrides_resolve_exact_reviewed_aliases() -> None:
+    overrides = load_authoritative_overrides(REGISTRY)
+
+    bart = resolve_authoritative_override(
+        overrides, state="ca", name="Bay Area Rapid Transit District"
+    )
+    mwrd = resolve_authoritative_override(
+        overrides,
+        state="IL",
+        name="Metropolitan Water Reclamation District of Greater Chicago",
+    )
+    port = resolve_authoritative_override(
+        overrides, state="wa", name="Port of Seattle"
+    )
+
+    assert bart is not None
+    assert bart.override_id == (
+        "ca-san-francisco-bay-area-rapid-transit-district"
+    )
+    assert bart.ocdid == (
+        "ocd-division/country:us/state:ca/special_district:"
+        "san_francisco_bay_area_rapid_transit_district"
+    )
+    assert bart.generator_override["classification"] == "transit_authority"
+
+    assert mwrd is not None
+    assert mwrd.override_id == "il-metropolitan-water-reclamation-district"
+    assert mwrd.ocdid == "ocd-division/country:us/state:il/sewer:mwrd"
+    assert mwrd.generator_override["classification"] == "special_purpose_district"
+
+    assert port is not None
+    assert port.override_id == "wa-port-of-seattle"
+    assert port.ocdid == (
+        "ocd-division/country:us/state:wa/special_district:port_of_seattle"
+    )
+    assert port.generator_override["classification"] == "special_purpose_district"
+
+    assert (
+        resolve_authoritative_override(
+            overrides, state="ca", name="Bay Area Regional Transit District"
+        )
+        is None
+    )
+    assert (
+        resolve_authoritative_override(
+            overrides, state="wa", name="Port of Tacoma"
+        )
+        is None
+    )
+
+
 def test_override_registry_rejects_duplicate_aliases(tmp_path: Path) -> None:
     path = tmp_path / "overrides.yml"
     path.write_text(
