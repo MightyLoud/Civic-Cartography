@@ -1,0 +1,54 @@
+name: Derive Gillespie County Commissioner geometry
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/derive-gillespie-county.yml"
+      - "scripts/derive_gillespie_commissioner_precincts.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  derive-gillespie-county:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install derivation dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install pymupdf pyshp shapely pyproj pillow
+
+      - name: Derive Commissioner precincts
+        run: |
+          python scripts/derive_gillespie_commissioner_precincts.py \
+            --retrieved-at 2026-08-02 \
+            --work-dir build/gillespie-county/work \
+            --raw-output build/gillespie-county/raw/commissioner-precincts-1-4.geojson \
+            --output build/gillespie-county/geojson/gillespie_county_commissioner_precincts.geojson \
+            --contract-output build/gillespie-county/gis-source-contract.json \
+            --evidence-output build/gillespie-county/derivation-evidence.json
+
+      - name: Fetch current county boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48171 \
+            --record-id TX:county:gillespie:countywide:COUNTYWIDE \
+            --geometry-id gillespie-county-countywide \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/gillespie-county/raw/tigerweb-county-48171.geojson \
+            --output build/gillespie-county/geojson/gillespie_county_countywide.geojson
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gillespie-county-derived-geometry
+          path: build/gillespie-county/
+          if-no-files-found: error
