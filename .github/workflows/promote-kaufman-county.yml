@@ -1,0 +1,52 @@
+name: Promote Kaufman County derived geometry
+
+on:
+  push:
+    branches:
+      - agent/kaufman-county-criminal-district-attorney
+    paths:
+      - ".github/workflows/promote-kaufman-county.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  promote-kaufman-county:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Download successful derivation artifact
+        run: |
+          rm -rf /tmp/kaufman-derived
+          mkdir -p /tmp/kaufman-derived
+          gh run download 30783377078 \
+            --repo "$GITHUB_REPOSITORY" \
+            --name kaufman-county-derived-geometry \
+            --dir /tmp/kaufman-derived
+
+      - name: Promote release snapshots
+        run: |
+          mkdir -p data/raw/kaufman-county data/geojson
+          cp /tmp/kaufman-derived/raw/commissioner-precincts-1-4.geojson data/raw/kaufman-county/commissioner-precincts-1-4.geojson
+          cp /tmp/kaufman-derived/raw/tigerweb-county-48257.geojson data/raw/kaufman-county/tigerweb-county-48257.geojson
+          cp /tmp/kaufman-derived/geojson/kaufman_county_commissioner_precincts.geojson data/geojson/kaufman_county_commissioner_precincts.geojson
+          cp /tmp/kaufman-derived/geojson/kaufman_county_countywide.geojson data/geojson/kaufman_county_countywide.geojson
+          cp /tmp/kaufman-derived/gis-source-contract.json data/raw/kaufman-county/gis-source-contract.json
+          cp /tmp/kaufman-derived/derivation-evidence.json data/raw/kaufman-county/derivation-evidence.json
+
+      - name: Commit and push snapshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/raw/kaufman-county data/geojson/kaufman_county_*.geojson
+          git diff --cached --check
+          git commit -m "Add Kaufman County canonical geometry"
+          git push origin HEAD:${{ github.ref_name }}
