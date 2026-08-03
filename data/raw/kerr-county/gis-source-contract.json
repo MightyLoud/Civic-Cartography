@@ -1,0 +1,70 @@
+{
+  "district_field": "precinct",
+  "district_values": [
+    "1",
+    "2",
+    "3",
+    "4"
+  ],
+  "geometry_type": "esriGeometryPolygon",
+  "layer_fields": [
+    "OBJECTID",
+    "precinct",
+    "order_num",
+    "order_date",
+    "effective_date",
+    "GlobalID",
+    "Shape__Area",
+    "Shape__Length"
+  ],
+  "operational_layer_id": 0,
+  "operational_layer_name": "Kerr County Commissioner Precincts 2022",
+  "operational_layer_url": "https://services1.arcgis.com/Ijqs2ihddUy84otW/ArcGIS/rest/services/Kerr_County_Commissioner_Precincts_2022/FeatureServer/0",
+  "resolved_from_county_elections_page": true,
+  "service_item_id": "de7c8e02045a4981a752998bb6406538",
+  "service_name": "Kerr_County_Commissioner_Precincts_2022",
+  "service_url": "https://services1.arcgis.com/Ijqs2ihddUy84otW/ArcGIS/rest/services/Kerr_County_Commissioner_Precincts_2022/FeatureServer",
+  "source_retrieved_at": "2026-08-02",
+  "source_rows": [
+    {
+      "GlobalID": "479cfca3-9f32-4cf4-a7d3-f903ffde454b",
+      "OBJECTID": 1,
+      "Shape__Area": 2687513962.408203,
+      "Shape__Length": 431220.58817935,
+      "effective_date": 1641016800000,
+      "order_date": 1635919200000,
+      "order_num": "39047",
+      "precinct": "1"
+    },
+    {
+      "GlobalID": "8aec061e-a57f-4a15-87d5-a8705f46e261",
+      "OBJECTID": 10,
+      "Shape__Area": 3636935880.001953,
+      "Shape__Length": 348829.16552224127,
+      "effective_date": 1641016800000,
+      "order_date": 1635919200000,
+      "order_num": "39047",
+      "precinct": "2"
+    },
+    {
+      "GlobalID": "1eb2b08c-fb5a-43e9-a777-dd6e2e7963cd",
+      "OBJECTID": 12,
+      "Shape__Area": 4684596874.916016,
+      "Shape__Length": 488350.4495563305,
+      "effective_date": 1641016800000,
+      "order_date": 1635919200000,
+      "order_num": "39047",
+      "precinct": "3"
+    },
+    {
+      "GlobalID": "b9ee8f7b-ad35-4243-b458-5cb4e06888ca",
+      "OBJECTID": 19,
+      "Shape__Area": 19856734588.742188,
+      "Shape__Length": 725222.9831800624,
+      "effective_date": 1641016800000,
+      "order_date": 1635919200000,
+      "order_num": "39047",
+      "precinct": "4"
+    }
+  ]
+}
