@@ -1,0 +1,98 @@
+name: Validate Kaufman County Criminal District Attorney consolidation
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-kaufman-county:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install validation and derivation dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install pyshp shapely pyproj pillow
+
+      - name: Validate roster, consolidation, scope, and source contracts
+        run: python scripts/validate_kaufman_sources.py
+
+      - name: Regenerate current Kaufman County Commissioner geometry
+        run: |
+          python scripts/derive_kaufman_commissioner_precincts.py \
+            --retrieved-at 2026-08-02 \
+            --work-dir build/kaufman-county/work \
+            --raw-output build/kaufman-county/derived/raw/commissioner-precincts-1-4.geojson \
+            --output build/kaufman-county/derived/geojson/kaufman_county_commissioner_precincts.geojson \
+            --contract-output build/kaufman-county/derived/gis-source-contract.json \
+            --evidence-output build/kaufman-county/derived/derivation-evidence.json
+
+      - name: Verify committed Commissioner snapshots and contract
+        run: |
+          cmp data/raw/kaufman-county/commissioner-precincts-1-4.geojson build/kaufman-county/derived/raw/commissioner-precincts-1-4.geojson
+          cmp data/geojson/kaufman_county_commissioner_precincts.geojson build/kaufman-county/derived/geojson/kaufman_county_commissioner_precincts.geojson
+          cmp data/raw/kaufman-county/gis-source-contract.json build/kaufman-county/derived/gis-source-contract.json
+
+      - name: Fetch current Kaufman County boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48257 \
+            --record-id TX:county:kaufman:countywide:COUNTYWIDE \
+            --geometry-id kaufman-county-countywide \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/kaufman-county/county/raw/tigerweb-county-48257.geojson \
+            --output build/kaufman-county/county/geojson/kaufman_county_countywide.geojson
+
+      - name: Verify committed county boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/kaufman-county/tigerweb-county-48257.geojson \
+            --fresh-raw build/kaufman-county/county/raw/tigerweb-county-48257.geojson \
+            --committed-canonical data/geojson/kaufman_county_countywide.geojson \
+            --fresh-canonical build/kaufman-county/county/geojson/kaufman_county_countywide.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Verify Kaufman County release digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          paths=[
+              Path("data/geojson/kaufman_county_countywide.geojson"),
+              Path("data/geojson/kaufman_county_commissioner_precincts.geojson"),
+          ]
+          digest=hashlib.sha256()
+          for path in sorted(paths,key=lambda item:item.name):
+              digest.update(path.name.encode("utf-8"));digest.update(b"\0")
+              digest.update(path.read_bytes());digest.update(b"\0")
+          value=digest.hexdigest()
+          expected="50a46300a55671c29268ddfbae11cac3a8e189c02ff8b8f6754211b920be250b"
+          if value!=expected:raise SystemExit(f"Kaufman release digest changed: {value} != {expected}")
+          output=Path("build/kaufman-county/release-sha256.txt")
+          output.parent.mkdir(parents=True,exist_ok=True);output.write_text(value+"\n")
+          print(f"Kaufman County combined canonical SHA-256: {value}")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kaufman-county-validation
+          path: build/kaufman-county/
+          if-no-files-found: error
