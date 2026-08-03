@@ -16,6 +16,11 @@ REGISTRY = PROJECT_ROOT / "data" / "canonical_alias_groups.yml"
 PLACE = "ocd-division/country:us/state:co/place:denver"
 COUNTY = "ocd-division/country:us/state:co/county:denver"
 JURISDICTION = "ocd-jurisdiction/country:us/state:co/place:denver/government"
+NASHVILLE_PLACE = "ocd-division/country:us/state:tn/place:nashville"
+DAVIDSON_COUNTY = "ocd-division/country:us/state:tn/county:davidson"
+NASHVILLE_JURISDICTION = (
+    "ocd-jurisdiction/country:us/state:tn/county:davidson/government"
+)
 
 
 def test_denver_alias_resolves_exact_member_set_order_independently() -> None:
@@ -51,6 +56,28 @@ def test_alias_member_metadata_suppresses_only_secondary_member() -> None:
     assert secondary["_canonical_alias_is_canonical"] is False
     assert secondary["_suppress_jurisdiction_generation"] is True
     assert secondary["_canonical_jurisdiction_ocdid"] == JURISDICTION
+
+
+
+def test_nashville_davidson_alias_prefers_county_government_root() -> None:
+    aliases = load_canonical_aliases(REGISTRY)
+    alias = resolve_canonical_alias(
+        aliases,
+        state="TN",
+        members=[NASHVILLE_PLACE, DAVIDSON_COUNTY],
+    )
+
+    assert alias is not None
+    assert alias.alias_id == "tn-nashville-davidson-metropolitan-government"
+    assert alias.canonical_member == DAVIDSON_COUNTY
+    assert alias.canonical_jurisdiction_ocdid == NASHVILLE_JURISDICTION
+    assert alias.generator_override["classification"] == "government"
+    assert alias.member_metadata(DAVIDSON_COUNTY)[
+        "_suppress_jurisdiction_generation"
+    ] is False
+    assert alias.member_metadata(NASHVILLE_PLACE)[
+        "_suppress_jurisdiction_generation"
+    ] is True
 
 
 def test_alias_registry_rejects_canonical_member_outside_group(tmp_path: Path) -> None:
