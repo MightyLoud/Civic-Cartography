@@ -1,0 +1,132 @@
+{
+  "district_field": "Commission",
+  "district_values": [
+    "1",
+    "2",
+    "3",
+    "4"
+  ],
+  "effective_date": "2026-06-29",
+  "experience_item_created": 1782219040000,
+  "experience_item_created_iso": "2026-06-23T12:50:40Z",
+  "experience_item_id": "e0b0fef416cd42ad991b8ae95d22bb59",
+  "experience_item_modified": 1784559852000,
+  "experience_item_modified_iso": "2026-07-20T15:04:12Z",
+  "experience_item_owner": "sigler_n",
+  "experience_item_title": "Galveston Final2",
+  "experience_item_type": "Web Experience",
+  "linked_items_inspected": [
+    {
+      "item_id": "02a838ffd6bf491396ed96438e021296",
+      "owner": "sigler_n",
+      "title": "Commissioner/ JP Precincts (Adopted)",
+      "type": "Web Map"
+    },
+    {
+      "item_id": "10df2279f9684e4a9f6a7f08febac2a9",
+      "owner": "esri",
+      "title": "World Imagery",
+      "type": "Map Service"
+    },
+    {
+      "item_id": "25869b8718c0419db87dad07de5b02d8",
+      "owner": "esri_en",
+      "title": "Dark Gray Canvas",
+      "type": "Web Map"
+    },
+    {
+      "item_id": "5d2bfa736f8448b3a1708e1f6be23eed",
+      "owner": "esri_en",
+      "title": "OpenStreetMap",
+      "type": "Web Map"
+    },
+    {
+      "item_id": "6e03e8c26aad4b9c92a87c1063ddb0e3",
+      "owner": "esri_en",
+      "title": "Topographic",
+      "type": "Web Map"
+    },
+    {
+      "item_id": "8b3b470883a744aeb60e5fff0a319ce7",
+      "owner": "esri_en",
+      "title": "Light Gray Canvas",
+      "type": "Web Map"
+    }
+  ],
+  "operational_layer_url": "https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/Galveston_County_Commissioner_Precincts_2026/FeatureServer/0",
+  "rejected_candidates": [
+    {
+      "available": true,
+      "geometry_currently_resolves_four_precincts": false,
+      "max_item_date": 1755185472000,
+      "max_item_date_iso": "2025-08-14T15:31:12Z",
+      "post_cutover": false,
+      "rejection_reason": "pre-cutover candidate rejected by the June 29, 2026 effective-date contract; legacy geometry no longer needs to remain queryable when immutable ArcGIS item dates prove its age",
+      "root_url": "https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/commissionerpct/FeatureServer",
+      "service_item_created": 1492525245000,
+      "service_item_created_iso": "2017-04-18T14:20:45Z",
+      "service_item_id": "1c58e007931141a18145d7379c24f21c",
+      "service_item_modified": 1755185472000,
+      "service_item_modified_iso": "2025-08-14T15:31:12Z",
+      "service_item_owner": "sigler_n",
+      "service_item_title": "commissionerpct"
+    },
+    {
+      "available": true,
+      "geometry_currently_resolves_four_precincts": false,
+      "max_item_date": 1755204245000,
+      "max_item_date_iso": "2025-08-14T20:44:05Z",
+      "post_cutover": false,
+      "rejection_reason": "pre-cutover candidate rejected by the June 29, 2026 effective-date contract; legacy geometry no longer needs to remain queryable when immutable ArcGIS item dates prove its age",
+      "root_url": "https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/Galveston_County_Commissioner_Precincts/FeatureServer",
+      "service_item_created": 1435847524000,
+      "service_item_created_iso": "2015-07-02T14:32:04Z",
+      "service_item_id": "628e1ae17e784fcc800b758d7d7e03b9",
+      "service_item_modified": 1755204245000,
+      "service_item_modified_iso": "2025-08-14T20:44:05Z",
+      "service_item_owner": "sigler_n",
+      "service_item_title": "Galveston_County_Commissioner_Precincts"
+    },
+    {
+      "available": true,
+      "geometry_currently_resolves_four_precincts": false,
+      "max_item_date": 1782831141000,
+      "max_item_date_iso": "2026-06-30T14:52:21Z",
+      "post_cutover": true,
+      "rejection_reason": "non-controlling alternate service rejected in favor of the dedicated 2026 Experience-linked service",
+      "root_url": "https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/GC_commissionerpct_/FeatureServer",
+      "service_item_created": 1782831130000,
+      "service_item_created_iso": "2026-06-30T14:52:10Z",
+      "service_item_id": "bf63b0e3ca7849f19a40d8958e56ef4a",
+      "service_item_modified": 1782831141000,
+      "service_item_modified_iso": "2026-06-30T14:52:21Z",
+      "service_item_owner": "sigler_n",
+      "service_item_title": "GC commissionerpct "
+    }
+  ],
+  "selected_candidate": {
+    "district_field": "Commission",
+    "district_values": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "layer_name": "Galveston_County_Commissioner_Precincts_2026",
+    "layer_url": "https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/Galveston_County_Commissioner_Precincts_2026/FeatureServer/0",
+    "max_item_or_layer_date": 1784295172057,
+    "max_item_or_layer_date_iso": "2026-07-17T13:32:52.057000Z",
+    "post_cutover": true,
+    "referenced_by_experience_graph": true,
+    "root_url": "https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/Galveston_County_Commissioner_Precincts_2026/FeatureServer",
+    "service_item_created": 1782752100000,
+    "service_item_created_iso": "2026-06-29T16:55:00Z",
+    "service_item_id": "89f25db98a4342e8a722005db89dc58e",
+    "service_item_modified": 1782762737000,
+    "service_item_modified_iso": "2026-06-29T19:52:17Z",
+    "service_item_owner": "sigler_n",
+    "service_item_title": "Galveston_County_Commissioner_Precincts_2026"
+  },
+  "selection_rule": "Use the dedicated Galveston_County_Commissioner_Precincts_2026 service linked by the public Experience graph; require exactly four polygons using Commission and post-June-29 item or layer evidence; reject legacy services using immutable ArcGIS item dates even when their polygon layers are no longer queryable.",
+  "source_classification": "county-controlled effective-date cutover contract; official county pages control the roster and June 29, 2026 effective date"
+}
