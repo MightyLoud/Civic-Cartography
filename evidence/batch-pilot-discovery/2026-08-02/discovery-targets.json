@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "verified_asof": "2026-08-02",
+  "upstream": {
+    "generator_repository": "openstates/jurisdictions",
+    "generator_revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705",
+    "ocd_identifier_repository": "opencivicdata/ocd-division-ids",
+    "ocd_identifier_revision": "a52719a15852fc8c8418194016c16657591930ad"
+  },
+  "batch_acceptance": {
+    "evaluation_id": "ffeb1f9b74c050588a43",
+    "first_run_id": "467baa4b6df060e70439",
+    "second_run_id": "467baa4b6df060e70439",
+    "target_count": 25,
+    "known_archetype_count": 15,
+    "known_classified_count": 15,
+    "known_generated_count": 15,
+    "discovery_count": 4,
+    "discovery_classified_count": 4,
+    "discovery_generated_count": 4,
+    "regression_fixture_count": 6,
+    "regression_fixtures_passed": 6,
+    "deterministic_count": 25,
+    "reports_identical": true,
+    "target_only_patch_count": 0,
+    "gate_passed": true
+  },
+  "targets": [
+    {
+      "target_id": "BP25-019",
+      "jurisdiction_name": "Bay Area Rapid Transit District",
+      "resolution_route": "authoritative_override",
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:ca/special_district:san_francisco_bay_area_rapid_transit_district"
+      ],
+      "classification": "transit_authority",
+      "match_status": "matched",
+      "generation_status": "generated",
+      "enrichment_status": "partial",
+      "exception_class": null,
+      "review_reason": null,
+      "artifacts": {
+        "divisions/ca/local/san_francisco_bay_area_rapid_transit_district__023958dc-091e-534d-9a60-075dbaf599c9.yaml": "7b26da6d00e2d9ebb1ff12a1feeab195bca22cd29d96cb0c92a2f3c92a468baa",
+        "jurisdictions/ca/local/san_francisco_bay_area_rapid_transit_district_d0516522-8490-5c9d-b405-5293fe041778.yaml": "c8c09b2675959dc98b842eda85ffe9b85583025f47b6b0156c4778482cea3a79"
+      },
+      "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:ca/special_district:san_francisco_bay_area_rapid_transit_district/transit_authority"
+    },
+    {
+      "target_id": "BP25-020",
+      "jurisdiction_name": "Metropolitan Water Reclamation District of Greater Chicago",
+      "resolution_route": "authoritative_override_retaining_upstream_ocdid",
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:il/sewer:mwrd"
+      ],
+      "classification": "special_purpose_district",
+      "match_status": "matched",
+      "generation_status": "generated",
+      "enrichment_status": "partial",
+      "exception_class": null,
+      "review_reason": null,
+      "artifacts": {
+        "divisions/il/local/metropolitan_water_reclamation_district_of_greater_chicago__687258f7-8f87-5278-9662-cbfa07e133b4.yaml": "d115c265b49a179f44d1ebd88d216da890eacbb6ffa87c9f2fd30e204fcceeb8",
+        "jurisdictions/il/local/mwrd_501d961e-91d6-5f57-b9aa-35e44ee9f244.yaml": "9477f50b940c54c5c52e2e4d1b692ce5ad844bd2b9996e7fe54747f766f214c8"
+      },
+      "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:il/sewer:mwrd/special_purpose_district"
+    },
+    {
+      "target_id": "BP25-021",
+      "jurisdiction_name": "Port of Seattle",
+      "resolution_route": "authoritative_override",
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/special_district:port_of_seattle"
+      ],
+      "classification": "special_purpose_district",
+      "match_status": "matched",
+      "generation_status": "generated",
+      "enrichment_status": "partial",
+      "exception_class": null,
+      "review_reason": null,
+      "artifacts": {
+        "divisions/wa/local/port_of_seattle__3f08d8b9-a6ea-5add-b82b-4e494a84bfcd.yaml": "784c7086360fba17a2f6177bf738e982bb3fc3b081fa67422c95d9c1bc0cb752",
+        "jurisdictions/wa/local/port_of_seattle_d0141845-c59d-57af-8ed7-b133b17cbba2.yaml": "a41ef60e7f52ea868f5d413953a8e77b1d005c16bd688d5444972cbfc70076af"
+      },
+      "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:wa/special_district:port_of_seattle/special_purpose_district"
+    },
+    {
+      "target_id": "BP25-025",
+      "jurisdiction_name": "Metropolitan Government of Nashville and Davidson County",
+      "resolution_route": "maintained_canonical_alias",
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:tn/county:davidson",
+        "ocd-division/country:us/state:tn/place:nashville"
+      ],
+      "canonical_member": "ocd-division/country:us/state:tn/county:davidson",
+      "canonical_jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:tn/county:davidson/government",
+      "classification": "government",
+      "match_status": "matched",
+      "generation_status": "generated",
+      "enrichment_status": "partial",
+      "exception_class": null,
+      "review_reason": null,
+      "alias_invariant_errors": [],
+      "artifacts": {
+        "divisions/tn/local/metropolitan_government_of_nashville_and_davidson_county__146eada3-19ff-5da1-8dc0-18aa0404a78a.yaml": "781100de2f45698b1b4b8a553ce8871d8a231b6f7cfadbe6e99e1d0042737e70",
+        "divisions/tn/local/nashville__999da89e-e73b-554d-b36d-c3e452359f06.yaml": "b22981ea8f054dcf155795852b9c628bd1097c8264f09da69527ce4e1c31245a",
+        "jurisdictions/tn/local/davidson_a2fa1367-73f3-59a4-b95f-ee5ffc1a99ba.yaml": "b6f861dea41c6c846ad1ce92621c59b75d55892da2cd7edfae23d53f616cd223"
+      }
+    }
+  ],
+  "workflow_evidence": {
+    "head_sha": "375b86d58f5e244534a5f8f6fe13be29caf3e0e5",
+    "run_id": 30777788298,
+    "artifact_id": 8842680050,
+    "artifact_digest": "sha256:bbb93244ba14e06ea751a4b71b327014c0ad277dc4640290e176fa7a77926563"
+  },
+  "constraints": {
+    "fuzzy_matching_added": false,
+    "target_only_production_patch_added": false,
+    "handcrafted_generated_yaml_added": false,
+    "maintained_mwrd_ocdid_preserved": true,
+    "nashville_and_davidson_divisions_preserved": true
+  }
+}

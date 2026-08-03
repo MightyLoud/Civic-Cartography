@@ -186,6 +186,8 @@ def normalize_canonical_alias_acceptance(
             continue
         raw_overlay = results.get(target_id)
         detail = detail_by_id.get(target_id)
+        if raw_overlay is None and detail is None:
+            continue
         if not isinstance(raw_overlay, dict) or detail is None:
             raise CanonicalAliasAcceptanceError(
                 f"canonical alias target {target_id} requires execution and diagnostics"

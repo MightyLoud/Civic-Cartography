@@ -30,3 +30,94 @@ overrides:
       current OCD identifier inputs do not contain RTD. The classification is
       transit_authority because RTD is the elected regional public body that
       develops, maintains, and operates the district mass-transit system.
+  - override_id: ca-san-francisco-bay-area-rapid-transit-district
+    state: ca
+    canonical_name: San Francisco Bay Area Rapid Transit District
+    aliases:
+      - San Francisco Bay Area Rapid Transit District
+      - Bay Area Rapid Transit District
+      - BART
+    ocdid: ocd-division/country:us/state:ca/special_district:san_francisco_bay_area_rapid_transit_district
+    jurisdiction:
+      has_jurisdiction: true
+      classification: transit_authority
+      jurisdiction_name: San Francisco Bay Area Rapid Transit District
+      jurisdiction_type_suffix: transit_authority
+      url: https://www.bart.gov/
+    source:
+      source_name: San Francisco Bay Area Rapid Transit District
+      source_url:
+        official_website: https://www.bart.gov/
+        board_of_directors: https://www.bart.gov/about/bod
+        statutory_identity: https://www.bart.gov/sites/default/files/docs/OfficialStatementFY17.pdf
+      source_description: >-
+        Official BART materials identify the San Francisco Bay Area Rapid
+        Transit District as a California public agency created in 1957 and
+        governed by an elected nine-member Board of Directors under the San
+        Francisco Bay Area Rapid Transit District Act.
+    verified_asof: '2026-08-02'
+    evidence_notes: >-
+      The pinned OCD identifier inputs contain no BART root record. The
+      maintained special_district OCDID and transit_authority classification
+      reuse the exact authoritative-override path already validated for RTD.
+  - override_id: il-metropolitan-water-reclamation-district
+    state: il
+    canonical_name: Metropolitan Water Reclamation District of Greater Chicago
+    aliases:
+      - Metropolitan Water Reclamation District of Greater Chicago
+      - Metropolitan Water Reclamation District
+      - MWRD
+    ocdid: ocd-division/country:us/state:il/sewer:mwrd
+    jurisdiction:
+      has_jurisdiction: true
+      classification: special_purpose_district
+      jurisdiction_name: Metropolitan Water Reclamation District of Greater Chicago
+      jurisdiction_type_suffix: special_purpose_district
+      url: https://www.mwrd.org/
+    source:
+      source_name: Metropolitan Water Reclamation District of Greater Chicago
+      source_url:
+        official_website: https://www.mwrd.org/
+        agency_identity: https://www.mwrd.org/what-we-do/mission-and-service-area/differences-between-metropolitan-water-reclamation-district-greater-chicago-and-chicago-department-water-management
+        board_of_commissioners: https://www.mwrd.org/what-we-do/management-and-administration/metropolitan-water-reclamation-district-greater-chicago-board-commissioners
+      source_description: >-
+        Official MWRD materials identify the District as an independent
+        regional government agency and special-purpose government responsible
+        for wastewater treatment and stormwater management, governed by nine
+        commissioners elected countywide in Cook County.
+    verified_asof: '2026-08-02'
+    evidence_notes: >-
+      The pinned OCD source already maintains
+      ocd-division/country:us/state:il/sewer:mwrd under the shorter name
+      Metropolitan Water Reclamation District. This override retains that
+      upstream OCDID while attaching the official full name, source provenance,
+      and reusable special_purpose_district classification.
+  - override_id: wa-port-of-seattle
+    state: wa
+    canonical_name: Port of Seattle
+    aliases:
+      - Port of Seattle
+      - Seattle Port District
+    ocdid: ocd-division/country:us/state:wa/special_district:port_of_seattle
+    jurisdiction:
+      has_jurisdiction: true
+      classification: special_purpose_district
+      jurisdiction_name: Port of Seattle
+      jurisdiction_type_suffix: special_purpose_district
+      url: https://www.portseattle.org/
+    source:
+      source_name: Port of Seattle
+      source_url:
+        official_website: https://www.portseattle.org/
+        port_commission: https://www.portseattle.org/about/commission
+        statutory_identity: https://www.portseattle.org/page/board-ethics
+      source_description: >-
+        Official Port materials identify the Port of Seattle as a Washington
+        public agency and port district governed by five commissioners elected
+        at large by King County voters under RCW Chapter 53.
+    verified_asof: '2026-08-02'
+    evidence_notes: >-
+      The pinned OCD identifier inputs contain no Port of Seattle root record.
+      The maintained special_district OCDID preserves the elected port
+      government as a first-class reusable jurisdiction without introducing a
+      target-only generator patch.
