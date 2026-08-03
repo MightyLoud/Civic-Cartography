@@ -98,11 +98,11 @@ def repair(geometry):
     except ImportError:
         geometry = geometry.buffer(0)
     if geometry.geom_type == "GeometryCollection":
-        geometry = unary_union(
+        geometry = unary_union([
             part
             for part in geometry.geoms
             if part.geom_type in {"Polygon", "MultiPolygon"}
-        )
+        ])
     return geometry
 
 
@@ -363,8 +363,8 @@ def main() -> int:
         precinct_zip,
         args.work_dir / "precincts",
     )
-    union_3857 = repair(unary_union(row["g3857"] for row in rows))
-    union_4326 = repair(unary_union(row["g4326"] for row in rows))
+    union_3857 = repair(unary_union([row["g3857"] for row in rows]))
+    union_4326 = repair(unary_union([row["g4326"] for row in rows]))
 
     assignments = []
     raw_features = []
