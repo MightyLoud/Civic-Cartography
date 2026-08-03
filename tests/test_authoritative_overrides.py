@@ -39,7 +39,6 @@ def test_rtd_override_resolves_only_exact_maintained_aliases() -> None:
     assert near_miss is None
 
 
-
 def test_discovery_overrides_resolve_exact_reviewed_aliases() -> None:
     overrides = load_authoritative_overrides(REGISTRY)
 
