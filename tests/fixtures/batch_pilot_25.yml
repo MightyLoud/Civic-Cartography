@@ -134,7 +134,7 @@ targets:
   state: co
   selector:
     type: explicit_lookup
-    name: School District No. 1 in the City and County of Denver
+    name: School District No. 1
     resolution_policy: override_or_exception
   expected_archetype: AR-003
   expected_classification: school_system
