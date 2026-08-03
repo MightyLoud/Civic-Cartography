@@ -35,6 +35,8 @@ aliases:
       - ocd-division/country:us/state:tn/county:davidson
       - ocd-division/country:us/state:tn/place:nashville
     canonical_member: ocd-division/country:us/state:tn/county:davidson
+    member_display_names:
+      ocd-division/country:us/state:tn/place:nashville: Nashville
     classification: government
     jurisdiction_name: Metropolitan Government of Nashville and Davidson County
     url: https://www.nashville.gov/
