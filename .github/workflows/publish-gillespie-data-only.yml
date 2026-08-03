@@ -1,0 +1,54 @@
+name: Publish Gillespie County data package
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/publish-gillespie-data-only.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish-gillespie-data:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/gillespie-county-surveyor
+          fetch-depth: 0
+
+      - name: Download validated geometry artifact
+        run: |
+          rm -rf /tmp/gillespie-derived
+          mkdir -p /tmp/gillespie-derived
+          gh run download 30785679433 --repo "$GITHUB_REPOSITORY" --name gillespie-county-derived-geometry --dir /tmp/gillespie-derived
+
+      - name: Expand and normalize permanent release package
+        run: |
+          awk '/^H4sI/{capture=1} capture{print} /^EOF$/{exit}' .github/workflows/publish-gillespie-county.yml | sed '$d' > /tmp/gillespie-release.tar.gz.b64
+          base64 -d /tmp/gillespie-release.tar.gz.b64 > /tmp/gillespie-release.tar.gz
+          tar -xzf /tmp/gillespie-release.tar.gz -C .
+          find data -type f -name '*.csv' -exec sed -i 's/\r$//' {} +
+
+      - name: Promote exact geometry and source snapshots
+        run: |
+          mkdir -p data/raw/gillespie-county data/geojson
+          cp /tmp/gillespie-derived/raw/commissioner-precincts-1-4.geojson data/raw/gillespie-county/commissioner-precincts-1-4.geojson
+          cp /tmp/gillespie-derived/raw/tigerweb-county-48171.geojson data/raw/gillespie-county/tigerweb-county-48171.geojson
+          cp /tmp/gillespie-derived/geojson/gillespie_county_commissioner_precincts.geojson data/geojson/gillespie_county_commissioner_precincts.geojson
+          cp /tmp/gillespie-derived/geojson/gillespie_county_countywide.geojson data/geojson/gillespie_county_countywide.geojson
+          cp /tmp/gillespie-derived/gis-source-contract.json data/raw/gillespie-county/gis-source-contract.json
+          cp /tmp/gillespie-derived/derivation-evidence.json data/raw/gillespie-county/derivation-evidence.json
+
+      - name: Commit and push release data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data docs scripts tests
+          git diff --cached --check
+          git commit -m "Add Gillespie County active County Surveyor data"
+          git push origin HEAD:agent/gillespie-county-surveyor
