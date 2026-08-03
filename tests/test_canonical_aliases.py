@@ -70,13 +70,48 @@ def test_nashville_davidson_alias_prefers_county_government_root() -> None:
     assert alias.alias_id == "tn-nashville-davidson-metropolitan-government"
     assert alias.canonical_member == DAVIDSON_COUNTY
     assert alias.canonical_jurisdiction_ocdid == NASHVILLE_JURISDICTION
+    assert alias.member_display_names == {NASHVILLE_PLACE: "Nashville"}
     assert alias.generator_override["classification"] == "government"
+    assert alias.member_metadata(NASHVILLE_PLACE)[
+        "_canonical_alias_member_display_name"
+    ] == "Nashville"
     assert alias.member_metadata(DAVIDSON_COUNTY)[
         "_suppress_jurisdiction_generation"
     ] is False
     assert alias.member_metadata(NASHVILLE_PLACE)[
         "_suppress_jurisdiction_generation"
     ] is True
+
+
+def test_alias_registry_rejects_display_name_for_nonmember(tmp_path: Path) -> None:
+    path = tmp_path / "aliases.yml"
+    path.write_text(
+        """version: 1
+aliases:
+  - alias_id: invalid-display-name
+    state: tn
+    canonical_name: Example
+    members:
+      - ocd-division/country:us/state:tn/place:example
+      - ocd-division/country:us/state:tn/county:example
+    canonical_member: ocd-division/country:us/state:tn/county:example
+    member_display_names:
+      ocd-division/country:us/state:tn/place:other: Other
+    classification: government
+    jurisdiction_name: Example
+    url: https://example.com/
+    source:
+      source_name: Example
+      source_url: {official: https://example.com/}
+      source_description: Example source
+    verified_asof: '2026-08-02'
+    evidence_notes: Example evidence
+""",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(CanonicalAliasError, match="maintained members"):
+        load_canonical_aliases(path)
 
 
 def test_alias_registry_rejects_canonical_member_outside_group(tmp_path: Path) -> None:
