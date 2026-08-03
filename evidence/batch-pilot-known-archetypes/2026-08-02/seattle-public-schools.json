@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "target_id": "BP25-016",
+  "jurisdiction_name": "Seattle Public Schools",
+  "state": "wa",
+  "selector": {
+    "type": "explicit_lookup",
+    "name": "Seattle Public Schools",
+    "resolution_policy": "override_or_exception"
+  },
+  "source_record": {
+    "repository": "opencivicdata/ocd-division-ids",
+    "revision": "a52719a15852fc8c8418194016c16657591930ad",
+    "path": "identifiers/country-us.csv",
+    "ocdid": "ocd-division/country:us/state:wa/county:king/school_district:seattle_public_schools",
+    "name": "seattle public schools",
+    "federal_district_id": "5307710",
+    "state_district_id": "17001"
+  },
+  "result": {
+    "match_status": "matched",
+    "resolved_ocdids": [
+      "ocd-division/country:us/state:wa/county:king/school_district:seattle_public_schools"
+    ],
+    "expected_classification": "school_system",
+    "inferred_classification": "school_system",
+    "classification_status": "matched",
+    "generation_status": "generated",
+    "exception_class": null,
+    "review_reason": null,
+    "enrichment_status": "partial",
+    "enrichment_reason": "No validation match found",
+    "division_path": "divisions/wa/local/seattle_public_schools__09e8b756-50d7-5d67-9278-6610241883b3.yaml",
+    "division_sha256": "376f0533191b282e98487d2411e66534f7f0c3a59e5d6068dc601e3ce85cd678",
+    "jurisdiction_path": "jurisdictions/wa/local/seattle_public_schools_9a3d5c91-9bfd-50df-86c6-60f3f39dd8b6.yaml",
+    "jurisdiction_sha256": "00877c6b6d78ebf39876e4b3b6d49149fd184532e7cf685e909a9f4bee922416",
+    "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:wa/county:king/school_district:seattle_public_schools/school_system"
+  },
+  "batch_acceptance": {
+    "evaluation_id": "f679c1151fb92e0469ab",
+    "first_run_id": "0031d76685c9c1797fb9",
+    "second_run_id": "0031d76685c9c1797fb9",
+    "run_asof": "2026-08-02T15:00:00Z",
+    "known_classified_count": 15,
+    "known_generated_count": 15,
+    "known_archetype_count": 15,
+    "known_classification_rate": 1.0,
+    "known_generation_rate": 1.0,
+    "deterministic_count": 25,
+    "reports_identical": true,
+    "regression_fixture_count": 6,
+    "regression_fixtures_passed": 6,
+    "target_only_patch_count": 0,
+    "gate_passed": true
+  },
+  "workflow_evidence": {
+    "run_id": 30774516173,
+    "artifact_id": 8841592811,
+    "artifact_digest": "sha256:b35f3731421153e2f7011abf3741ff388a47e6793667791c7bdde256171307e0"
+  },
+  "decision": "Use the exact upstream source name as the maintained selector while retaining Seattle Public Schools as the human-facing jurisdiction name. No fuzzy matching, alias-table entry, override, or target-only production patch is required."
+}
