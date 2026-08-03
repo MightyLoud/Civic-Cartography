@@ -1,0 +1,219 @@
+name: Publish Burnet County permanent data package
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/publish-burnet-data.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish-burnet-data:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/burnet-county-dual-prosecutor
+          fetch-depth: 0
+      - name: Download validated geometry artifact
+        run: |
+          rm -rf /tmp/burnet-derived
+          mkdir -p /tmp/burnet-derived
+          gh run download 30820583252 \
+            --repo "$GITHUB_REPOSITORY" \
+            --name burnet-county-derived-geometry \
+            --dir /tmp/burnet-derived
+      - name: Expand permanent text package
+        run: |
+          cat > /tmp/burnet-text.tar.gz.b64 <<'EOF'
+H4sIAAAAAAAAA+w823LbRpZ55ld0kKoNaQPgVVJMLSclS7Jjj2R7JXk8Ux4X3CSaFCwQ4KABSRxJ
+VfmIfdz9uXzJnr7iypsUa1I7Ziolo9GXc06fPveGi2PcjPBVc5hEAYmtUZgE8bw5SqKIBLFFfDKK
+iWuF47E3ItQe0cvvNv614Lfd67G/7Z2tlvzb5u3w22q129+1tzrdXru93e5Cv06n0+t8h1qbL7X5
+L6ExjhD6LsTe0n7w3qHnOCLuY0D1aD+xsU6Ap8SckHAS4dn53Inns+yj55qi33nouyQyKWcLLwyc
+KYnPQ9ekYRLBLEnkq39GJI48cklcB8dmEMaE1vY5a6HXiTshpuCzK88l5v7b92/O/vbh1cGh+Tya
+4wB98HwaBqZaxDyP4xntNyWLipHqJbBkOG3m2NTDPm2anVZn22r9ZLW65r5gZiR7oSwgNjo7J+hQ
+zYYEnggHrNt06lEKzSSibFAUI4A3iL3xHGUhtRVq2RHoXURGXjCKURuQTdudmWw326bx2puioyQ+
+B5qi15FtlHG+urqys3jH5BpTO4wmzRmekCab2Z6N4vZyfDNgjcMsaCtA7ywAvWMe4GkYoOfEI5FP
+7g12535gd1aA3V0ANqxxjtnEvg9w3xvqbhZqY32wu7uIXoVRgLwAvcZBgqM5MAeCybZsYzlGvQUY
+9czXIUEHsBUH4eiCRPN7I9W731b07NopsK83Hi840vvYvwR8n4dzdxlsVEzCTzMDCQ6gBZJ5PG4u
+JbZaG43CYOxFU2gazhEcKCSgqT7ZSkyo4T9S9Ja/zWyDT6KLBSj9BQYHMUanDL4wWopXNc1HbHb7
+PAShu5yVUlh2URyGFwqLPPt0Ae4Dj4LEhR1ZBvk+ph5BH7B/cQ/2d6uhLgKdB8SuneFrtEcpoTSM
+LHb0oFsYLQDwgOwFAUEvPMYPG0MY42s8WglgNUBapJxFBNMkIotA/DOOQLOh/Si8CsLL+0DJFlgJ
+ZREaDd9eDNAGZL4AvEPXBej2YDI3DNxwY+iwnH4lgM/5HKgAFdOnHkUpbIpjodEFzuBCYxyFU35I
+p4kfe9LmTBlHz1UzSm0m6nYjF/0H6nV68TnT4eIkq47UMF35T0eh4lASXTIrB6w3bHa7Fow135EI
+zs8ZYInp5kcBloDZy0QqHeESAogDE0zQcx8Ho9CUdDTRETzDI5NPp2BanOIhFsT1wO7mVsoySlbv
+Bp8N+oMBhmC2yJt6QYZYKaWN2r/aEP32+5f83Gr/bxaFlIwS4A7p+lmUzHCE2SHZ2Alc4f91Wt2t
+gv/X7fa2vvl/j/HL+n/S6Xdyvp7sQEfhbLmHCFbbDOxDGD+SUqvYNHdggOdScwaCCKwXJwrBd5CM
+ReSyG/mSWisUtV5OHC5yNnN9ej+1tkDJiXnB2HXJlIBAjpA6CsD5XJxKbeWTCUhSN+GInp28P3yw
+gn0bFMW4UiIZ01Xsio1excgNiZDsoAn8BDQt0wNjIJlSqGPih8EcKX1o4ZwKYhOCPrynks2pT2MT
+XbaughZzSlLs5imzK1bQT/lF+GZ227uI7yn703n2jP0BAWO+EETJ7ipzaBjtONIM5kVob7TPi20E
+ttGK65cYCpW7DqYVIB54I4BLHz+m4hkCAABMkAQMqXDMeQHJQ432SUATZZihIfxxccR4l7NQnu8w
+kIh8swn+HX4L9D+wmMVF/sMiv+K3Sv/vdIr6v93a3vmm/x/jt7b+B1mWgKN0DaqGxYEc5peCw7Rc
+W6dBLRY8xTE6wlcyALwfunP0CwglFemFAWESU1DSDpdO8CyMDi2HpUCMyBR7LKAjenPJJ0co8Uau
+uWy/FNIzNWZhrA9wE3vtSA32i/I7oy85JtRcrTgMc88HhYVeYqBwHO+iw0t42vfxHJ3GyXBINyMB
+ZZqby+2SnY6i8IraDw2Zp/sWwMYPfUDyiFAfTKwTDOqWoQHGl4unFHTvKIxjdIAvPXg49nwfoAB9
+89uv/3PsUTr/7df/Rc+9wKXE81dg+YLpKxXaZBE9sbZGWmw8bO4M1vBipIUUIpcsMD/aYF/V5KXd
+fQ0Cga8GCpRx1juCwSg9Ca8xC0y9ISzgD+aHRzH6cO7F5Jxgd5fF4wg6ZgoV/ZJEFHb4RYSDC3QC
+WPvzdfD+ItZlAhiOSgHllNU9ujEPH+MJ40MwNrJ4pq1g1mAwxzE68wBF2N4/R/CGBPAMmOPZLPQC
+DnzkkOnMD+dE2erUTGdB4ySQkVbGnHoYglOH3akXiH7qTJYQSy0hYOkYjJ2HofcmjOAk/gLUF0YN
+8Ou7ZAh8gw7ImARMsh17o3PiA38dh2GUCQyDccYCu0sxN+VkLpuM8pgMTm06PbKphmnq8GV4OCbQ
+CGfkk5h9bdxnyRAgKPHwBvJ/gf4Xstya4sAbExo/RPuv0v+g8dta/+90t+F9p7W9tf1N/z/GTypt
+T+dwuWMPvBWM5mbsxeCgM92ec8F5roXLWzOhpCY5p6RQKu0J6sABcOB8T2neAU8zNeahPBdv9UwP
+zQCfe5NzU00nBQw/iQwQNIIGaoEwGF1oX1AZFHkXnPJBWgF9UWo51UTKXK7p85RJIgvhvoQuIMeS
+UZxEpECbilS0WdW2Sc6v6JZyGhmaSKyjSneDm5hLeFekx9NMNktkmyifH0a5vCsfXshb7qoMHhVu
+qzIDFFuhHCHBN62gr9WuNmHzgZ5FSfqHZNxX0K6Y5q8EvnN/4DsPyrvnD0cR9txGVrK11b0/5N0H
+5d5XkD3LdCKMAmq6kHjXsTCmBuIFW9O7P4K9B+Xhl29N4QjpzaEqIb8S6FICnGPBw3bcBLpvnj4P
+d3ERJFQNl7XyHcqUCeyWc/dSYssw1xj7/hCDsFZVagK1rBzPMCqbyhqJpPhqgojsee7hYUn95VtY
+LCXQcOug7dqQFwoACo8Py/EvRyJbVaARiPG1hWWWfR3wF5QJLGh+UEHACoGXLUFI0UmrAtbARXcu
+NTyoRmA54MXChOIZwLpwoAIDYX5wd7Q6lWwWnx+a7liOTCGhI4y1xXlu6TeVTs+9cDbLCZGHxvxX
+aKpsNoWjyqYhTNrhmKNdXUbAzLJNqgiMWokwMmxk8koMlabTMT9ljS5PB6VkKoMp1YqiX7erINB8
+wTTJYr5YmBbJ6JAS9VQyp7kIYI2Z5hiw6aWHbnHnh2VGUr/cSbPfy6XuoZ4G7alpNhO9KSB0xWnx
+YWmaJq7U9pQpxkiyqD6EZqIWEuCS7mSuBTCM5eMrU/k+Drg84uyoiEjRY0kjvmZV2/0DsKusIhaU
+RZnw8m7qp5UjyCzMx9HIYK1jnguRpSXbrxgufWgccgWS3EdKXSO17G5F4LCM4TQN/VnMfvsy2wDV
+TMSPu3EibCn3FggQY5YofUjsbgXqGeg5BJwUlVHb9agx45E8y1VhwcUcvkZMsfj8oDjeCkIwPPXh
+zWJBVRhiF3mxLv+qijdqIqiwiYWjEZDXwrMZq+6YEkDSIQxVHtEsHPJnVttqoz3XjcA+84KJPAfW
+kRdcwDp70ejlq1O0N2MExYVS/lH4rN22p3hGbbEmVwSwLm1ekSH8vfTIFYmaHtDx2j6Pp/7PnjvY
+6mHcGmO8tcMiijsd3B0NO63us2GLtNtb2C1RT0Lk5yDCKUQoodAeh8AiNPQviawdBoyZ3xhMdP5c
+5yWE4ilTLucxik75om1Fz0oiNiVs5omAo1Bzrf3JUzGxoqP0Xmk3S0QSd58/38dvp2cXkT++3muK
+d01AMdYjmm8DwI84x3jmvGBVgc6HF0ft5guCmV48ZdZF1KzwtjV8uoh6FvrzCVBS4Lyr600QcKnv
+ojd7x4emVtdiegp+MesnpwLy81OcQ1kRnJktI168YOX0UqaqJyXte/vUVqUOQGaCE/Ps1cvDE2Ap
+pEozlTmkiRh7ExJBDxumscVS9iS8rCabmk6M+nB86sh5QZjNJNl+KsdX1OKaankmkPUYc27PSPhf
+Hr59dSBqWGxFARdbEhKL18rkzLY/PhWMEhlK9SicArL2h5fxKNtWUEJauKKmp2Dn8gKf3VwVjDzJ
+dIkRrQuh/i3rXXj+JwijKfa9fxJXRtgVR+m85YOKQFbUf2x3trqF/E+nu9P7lv95jB8I2TByef6H
+uZzO2ANjUPwTD4eR+SWJPArWM7/tx3NDuRZeN6Lr+fh7/QRz6n/zfisqO2VbJrv0D6zqTsDK8Zhj
+eqHqUfiE+hqiyyxIba9k1tFtAAzMwSIAKcailPTsr33B7X3B+/1Ur/Qz1aK9n8yzv0qds1Z56X7a
++rukr8BoiUIglShClHpDODtPdRj1aS6OCY95/xQaqgNq6UAdqkqbtHv/VXVFyelU1DNPgUOCvMLk
+N0uKuTl+PCuiREq52iX3txhlutcllQoGqriq128vZ6HqG6JfLVlVyU2LVns8c7PIBBmTWmcEAZ7i
+xVmVGRiVLlEtvvlqrLtxnc03rvP1EnUbbFznD7ZxAE8um7j5rnXWPm3dzTet+/VylBtsWvcPtmkA
+Ty6PuvGeddfes97me9b7emnXDfas9wfbM4CnkBvefNt6fNtU5NRRllxf3M7oL7/DIXvJ/aQzkptj
+RTqBrnlBpOzOnUp3bg96od9+/e9V11h+n7ROnlHudZvmMQwrBoTFQSinx/JBBdPIZVRkpgnn7hax
+jojf72LxM+5y+yw3s/G1VmDM3D2Wb7dRHvXnhiPazLp0NF8JasXX9vSBLu+q7/90utr/h268/rPd
++eb/P8rvh/xhM9EZE3212g8/oBNRZ46moUv8Wi1/KL18/sHK1DCnxzlm5c/wVlxfVyWVsn6dx+Z4
+Gi6+IizyXtRNuuSS1/Ug6l0j6c6D6OjXahYKizcmuVuo19+FLjyuvLiYMo0y7zIRJedcHihEdIaD
+YOMr/Jymxc8DSBxrtVtVG3Wr+8iqplv0UhP0tnZrWZb+H0bl4gC3+SrN2wLion+liwd9iy7Vkr4L
+5+nAqLyJv6Tnwlm6bFTW5lzSceEkPYZSwQha0hfmUTGU22wx2gIiZmIst6UirsoxhUDMba5qqnLE
+gkjNbb5CaRmAaSzntlQdtGycZvvbUoRkKWprWzwwTc7EuN3oKMGi7Cy9S0VOWp5RqzFRUypzCKou
+2PJo0VW4SPCY6MoD6FkPWaMtikvgWYkDJWrE+bbQkyeFlftPnhRJuLtMZNl8khKobJoswXZztlgq
+cNe+ySzWWfxBELZgELLLZEzSj4CPgDC2IG4xd5NWrKBJ4rmwj9nalCUfJimU6VRsUFV1Ctclpb4/
+UqUcFt2GLlyErs441T/znNPnhs468ZatLmsRmSfW0Hn2jDXkuJO1gwXzuVEU+VmRo2AUlBytSk5L
+TDRmaSZekGFGoilmH1hQ+VWe72Joiyi3GB7plC305xPD5vl4ziS9vGKXz9kW07UCUFNvmkvYvQl+
+pYvdgZJ5XARgLU/kcnqciht76iIp6L6q8qAUoi/ykmX1xbxM8YuZLQ1JgV1dtVG6WCixV7cK0TCJ
+9Y1LMFhIxKQEx5ZfyCsYNgLN/9rTm8EkQ7ujGTBbgsiva4rXvNSkdOFEvAMm/kdCKmfgPYrHi7eV
+zgi0tpZ8BIjNtI3SXGBGrkgot/MfHxA8qVL6fHa+62AZfQEeFS3kGmignz/rlA4aIOU4f2YvdIYH
+XjBH+vM3f+8xfnQUebOYNsckHp07OvtbEWuj9mx+vzVW3P9r9bZ2dP6309ph+d/Wzrfvvz7K74fv
+mwmNmkMvaJLgEs3m8XkYdGuGYbxgHLGW65SmyioVGtc0NsxY4/0cZ5wwgeE4yJvOQibyAxCsXC/R
+mmqKJiAQKMj3L+wDASBaTZRE4A0MbdkunyICgpHGYuoZjs+hUc37Dh5rtb1375xXZ4fHA2NV8ZhR
+O9r72+HJwHisYK5Re/Hq8OhgYLAaKaP24ZfDk0PxgIBub96eoTfvj46M2vu9gbHvwcTWPo5iKZSb
+LbuN6k8VrBOwVZMhh/DYm5zH86MwcZulUQ2jVnPJGInzzohbB0r2QRU0+jUEPyDoIE9b+0T8ZR1N
+dt0dlM7gxngPuFqsyDk2+u/3TGNvNCKz2DoEM8oFFWD0DVGrGM+NuwafmpvThbnhEdReUIdnM/am
+JEziQbvTajDbDyg6A54g/YgA1QLOCrYfYreu3jQ4Lm4yndXZ3vfZjpuX2E+IxIa12iLxb08vXC+q
+iwc6OIsSYpJrUIKgc/hTIx1xBbqIODHorjpflK1A63xiE7yx2LkAdSmmkAZqCDSpGyb81zcajafG
+3wPDJJIUAyOJx9ZPhoA2EtZCPQumNwZTz2OGDJgbcp0xYBo3FO58lHyz01g4iNndesxHvVSD27iX
+7MOzvN+nhROwKKCe4OaiX5jiwkwnsYFGU1pv3Em+4UP4G7Er0r6QiFp/gkeB7RQD7w0iYo8T3+cP
+9cj4O33ybhT/3Ya/9Y9tq/epAf8yTBgkJmDfETCAtApyZovxsf0Ie5Sgv7BOh1EURvWx8T5g9u8k
+4GZMpdACqTQkfh/d8Mm/j+6MRhYNPrM9Aexn9XZDHBlmI9YBDzD8JHMNlJiy96JJMgW+eseeonpj
+d2Zj13WwbK4blqVrXSwcGybjfw+USZbzykPwlQUHYpbAAFZbM+D8nR9asdKqIQtWU+bq6iXxYCbE
+MBsPHCB2lcR4kBErXJY+NX4eD9ijJC/2fVFbVtGzCRIhmv9sPM0KeiYg+Dki9Rvj6pxEBA5Ye9CG
+gya2imsmkLZzaI8BOngxhn/yNe8ajY8GX874JA93hKdMeMmZuMQ1DUD4BfN7KAx8omd+KS3cdGLo
+d3oCj71uZ1uuA2awWIrPzzEYrImPAEZJnTkTbFmq8NGNXeGLDGQHe0Jgr5TJbTTYqfioTzPMXBf9
+G98PelUH4/B6JtwL7qaNPR8cuVIaUM5usk7gRN1kptXHBByCgVyYyQXlKHqqDFicEI5aFM7ogMmV
+uuwlkGDt4El5Co2bu8auO9BSgw/jPbmOlAdfrW2D7wC+W73umjcG41PYCqlcYWMyU/f5PKYx0Zup
+JJoE5mP66lPjrpGiZzNBXwdBP/DxdOhi1giDrz62Pmkh9NHl2LumwzBnoz59P/hoMO7swP9d+L9n
+fCpvRMU4uTC+GhQRkqE/2BzGc2rr+x8VzdlMjpnZAT6fYEjtr2U3yy12TjcLx3GU36yPWWp+SndB
+z6y2YsU+3OiRCBmZsjyjPzbWyWnfuHeGmZ1D1/GxGdasMChNUipmBPhzJm++e67SEbpWrrJgCAPU
+rX4lFh4b1dHpEtCyvlF8pKMIcOlSRvXYNMjkMDXOoVOWctUAbsQbfS7aqt5Le44VXRp9Lrqqe6X1
+nkYf27n6z4r+mkI8LGX0uSioxAf41hsmMeM0zsNpp7vs4a849NI4VdpvoBjVWItGOfoI7HM0yr8X
+G800pZCB/LlR3dfHQE7iejGvbjX69XQYa4WdfRWMQy07xRs26BDeHrAh6cRL6Zi+5TaRAxYwaIUA
+GAsMMhv9JxhjfzKKMArVoTSoehmDH+dL+CWphbqHXVGavzRTvl9G2eiePFjIvpcVgMG4cGKramju
+hBZG9qp7qXMM+83EbFGaF+FfzPmbcL3BUQM/zRsDEzqzEFhvngpTKpynoc8+KsYdRBaPZBZpTAIe
+cVdDRZKCvVVUQ0MyZh+4ElfExCec5X4KJcH9JwALXznC9DPhn6CMRbNsWlMrabVwpydQJ0tNrp6l
+5RMBDmCZ8HCDMkzWS9hqBG8qeeAOMZpqwtRpw84b+a0aqHCHH0rHGQwMx2EEdRxDKuzTOYVjf3jt
+xXVh+zf+/8UkK+N/y+uvNo4Drqj/2NnabhXqP7pb3+J/j/NbFf8rflN6ab4uf53qQQG/+wX7+AvY
+pRnx53aaDxQ9pqDQ2SVV0SHfF3wE1S0J2KfJedqwVgwIfoXyPKPG7/mdgtnPU4/Mnst++ZopHZaA
+LBumBs9DQnv2W9i8GQ4SNBc+ig0u6teKI9b5d90zQcSinz02OJKDH294z7sfjd/R6QbmGIyNG75V
+d9Lpvlnuc98Zf5RY57NCqFMFAqpinWxepWnXDwiod43vB+2qkIDckj5Lf8rUY6Azv//X3pX1tpEc
+4Xf9CrqfhjE9pnjJojIPgsXdFRAdkIQgCMMQI3FoCUsd0Ej2ehX+91RV3wfnkAPvkekHW5zprr5q
+qru/OtrCABQlByyTz+FkjMECt/5vYM4/GPrcoJjlKCYCMNPZnjY0xF/iAwZJsFYgCn01Hdw7Iqdw
+GS5ZReMp8jMiGaVFZVuRnNLvGYqhVyFmlBdBTuemDTpZzhL8b2Meqhoy0f8aXku/VIR0akJrqgY9
+uLIiWoaDxXgpWo0TY2WONA0lJehFfJNjrF7YqcAA8SeYlQAbYb/RemGnPGQB9OcInfvkz7UvHx0S
+EiuQI8kvNElQHkWcB9p7+i2OPjAQfzH9NOOMg01wKQh4Wg2uRiEsqIzVteXX53YDLmPf7NihyYYA
+tFJ3Bw94EGxWXHegHPXGbZIDq/kOGbX9RDz0Q0FvfqQFL28IOQtgB/A9SZnwKvzAv36HjR1O3JRX
+3stjFhA39WwoobATF2Wuil1XkCz875B4ERt5/m2222uJdXsIHuzebj6nynUdqiObQC5C5vfLuYwK
+x7fyeuR+41GFV+JOn1yb5NAefkyrvsfpwe9lfqNK35N+7Id0lWe/BXtugpkqcguUWLtwlGK5WjAT
+HKFuVk/fcqj9swFIEv+B3eUN4sySY/jcvt7my0wl9l+j3s6OHf8DczX4z3dJm/GfvwuOcMBYHoq3
+Y15aYARH5Fas3PjWMUnOayJCV/nnTgvjfpk2YHhsVnBQhju0GpZgZycnF3QSiOaov4Dq27GwjY7a
+4pyWT7dnkPH8YnKWYP73bMMNCTL2sBW5g4fIYVvnk9P9s/2Lw5PjYiJl1yyyreOT4/n5x5PTSTGh
+4H1NbOto//jwh8n5RXHhwGUPbOvjyfHF2f7HkqIYK04Ul/McEzSzdbA/r0aieAPrkt2a/ON08vFi
+cgCrPDOdnxAfM5yfYAlnIfWBdmOCAt716yVleribNN2bSksgbGe6MpUWGGCzbLclLCN8k5Ca9k0y
+iaFTEbx1XZEwi+15RCS05xFmCDsaYV9NRyOjNuVXBHlcvyIjm1xCIZfjA2M1q7qf9NhyTAYi662f
+JvsHk7NzB6NjR/e/3qxW6fth3G152OU7sdjdP77fjrusGM7jqEmepY9X1+hmEH0mnJObs0nUKovz
+58vokU3/nb77tftud/YWqLZY53N8lebZ8n61gLU/xm48RG0DN5Wml0TtP8fACmMFMKAWFg6yZKOR
+3n3Kou3OwEAWYEesf/A9SSUwUwxY2ypbFa0cDIOGmSil4+e7LL/CY7x8C5RS6He8yAh6FTBUh6R2
+nsCB9GGVXmXMsOzJfsF5sMR7/NPFxSkdxbFiyGB3GvZf8CzGCuhkP+j2O4PuoDPo7a5l63BY3Som
+9B98e+OHNM+3DHJi2P/aH2On43yVZbC75A//0re2f0SYsE4OLEUYLGAsZ7IjJrdzmz7Ch5aPn54f
+VtkUn8RxPIM51/MN9fLonjkRFS2nVwgDJgb7Yb72nvCzSKa3xCu32HlRDxIz8t+2JeyBlBQiKgj4
+G9UlQ+x83VrBOi9JjlsvIv9awoikMYdRWURWR4iR+PIZE/fcZV/QEDphAUASZ/R6TKZkBKDAuhMf
+wId+RqwaXQvOAOH/jEfLxykzgn+hWZV8wD1hGMdXHqVV09pEwfEBIuA9uo+KKL5J5FoSGgWx6xE3
+D8Bgwie4gIEQZZXBqDS7y54i/iomoDaHD17Vh03PVbAyOM1e3y+81r4BGSbzKCTKaJJsEfcFgo8t
+b9HeSxSRTdTNyp9vI3fM4JDiCme7GYaWwKx7YuoGXAqFNcZ0sUaOjBH5Mp+161cfICIbkN59jdhm
+DydG1TgNdBoQqH0zQZj69GfpC2ZxDJNIISEBcmuT3CGo/2hXiQ2vME+coHfkr0yybCLUIEZOowmP
+Na59ZrNOQQ5ElGEWI6YjuMFaqOPiseAIO96h2vPM4+rIG4FA+wrzqBaWwY0SWQy12GeFUJu1TNQn
+gqpyUZ8NisWjEEBGduicEjuhew9MnjeKkQTyNmr2liskl4J+2M7ELVKPT42aBbuG2wqfgtUE1etF
+ukmnkbPZm4RtvgQ6gM8EJlSAQzzIzU1YxqLAIeFu3WFO1aMTIwt2N8RP5yqQt3sZYGu5Sj8FeUqd
+DauyFJwSC1lpqSuFFkf6pOLe3opftHwn3W/hWdBFF5Us2i8XfpU75DJjnytcPcRAO0JSjpAcZOhg
+YHCX7Ei4pfo3hsKKzomsraGVB+eqIyvgsiofqsiKH2k/1Fa11vX6AkIJWeKbSnih1Xxx7KilVIMh
+33QtCrzadCOILhW4GkO/DASOD7wMxEaHXKGo3vqxE+paGHugto22U/LeQlOYiaFRGz9kHDk8MdT/
+fInbNCARZBIeWr0lYRC1RQY5Kmi8g6KKT5S6QZlq5JFEPOjowzX4HsPwWZPGFjBrQTvjcmfFTsD0
++Pt5LnY8m2LuxNipZ0tbbJ+rte0/Z1+5ZUWL++nT2Pnq9pulmhZSmUMx+M6oYMEe32yDjqCgt/xA
+ZZ28+ITNM4B8Ow2bNc+0P05gSx+KtuBK/EU6D3GcAbOVMx0tmnPd1ILVcyqs0aT1mbQ2k+ZlM9xg
+FBHb1OWS2EqFq61VXz3l10zGliMl2GvatVqlD+KuCNsQT5yIVzcII5uHYYV8J1PBoRGrE5YSow2y
+TuTgmgZqCT8cONIBGz0osa0s43VT6kSlxubYGJzbOn8DaSGWAYTSwSNd1NFHGEOdqHMLGXYi0Ez3
+vFW/FitOZGioyLAT/yAa8AeZbsL/0lbzVbV6F0dh1f4J73/SReOWQ6zFn83Xd0DStNnhFfT0rX80
+EDY7vYaeuowP6fmAtyQ5E3DVFTpewZY46ar1CxFYhc/daclguElCTYlChdt7mszbRGKDKL9QvOyZ
+gGPHoG27VEgNHjpIKGprElSOUo8qkI0SjhKWtaAp1BTwt8dF3p7SrYf0hLl/sMkL1YTku0IIPbZi
+k4KdN+x3p07/w6UntOh4j//aliZzPn/fQf/fHXWHA6X/39kZov5/1N1u9P/fI9XVx6c56tW5Sv5P
+p2o/O9r/2+E/JwcmpTp346DWXOKcJg3hr+AQ0ABpLB0aoPzR0eH5OfQGlZoVSAQDNSlycDrYP5vs
+FxBCleucFK5lXl+KqNSazA8Of0TbApZly920d7nT/zBa9PrDUZqOumm6e7XYTbd3ll34pLvd3mi4
+7A+H/fRyd3f5oTf4sJPuXH3YGQ4HvYxJj4EvORnStw1dEhnEVwNhYDFZKZVkEIihHG2pgOXmZaJG
+N8QMf154pJpqE7UZ70FIjPKYcOrcIk+rXLwm1Gf+DQhlV47h5YTKCrO0k2S75756KVR9YbG1V+4V
+6iBZfxmZOjqeEE0J8H2L6oboCmvUgE6E3x9eR9FSh0o13YrobXSVhlQqqaejSIq0KBbFRYjiIkyx
+staD4w5aSnJm1fLWY1idFSqyeK+KJkKXXicVFBESFIFi3kQZaoj6mgXRZE66ACNJCjUMfPD04sEH
+Ty8x3uDprDB4I3fwVNhEc8R0ERoxGU5RjI1RWsVWLChN6gqvpG2hv7m0xaYbomKUcd5a4qpIKlHy
+WTM9uVYoyrmZxVg123swdcpNTuURS6E37rw6lEh0GuGPjFrgzUC9MSi7MuwFI1Ut7WgpU8tTYcbl
+4FL4f+gqaARtZHSt/EHyxKh02p3ZNZgtKHTzIYYtBfXKySGZAZ+oVMdiyBNe11urX2+NlrvDbhZ2
+GZ5WOG8oTUeYmR5Jk9C6GiXtClNIR+jbP8Ginoh9bwwngN5wFGl1Ge4SuOoBg8JGkXkBnMmVHcl/
+HSOi0MP4IcYFxECweX3x8wMe3PkeBHPEwn+1Ddxt5bhk/+oy96Heulx+fSJTlGApS9zx99fZL/yv
+CIbA2eg1h+0mNalJTWpSk5rUpCY1qUlNalKTmtSkJjWpSU1qUpOa1KQmNalJTfodp/8C0fDIDgDI
+AAA=
+EOF
+          base64 -d /tmp/burnet-text.tar.gz.b64 > /tmp/burnet-text.tar.gz
+          tar -xzf /tmp/burnet-text.tar.gz -C .
+      - name: Promote exact geometry snapshots
+        run: |
+          mkdir -p data/raw/burnet-county data/geojson
+          cp /tmp/burnet-derived/raw/commissioner-precincts-1-4.geojson data/raw/burnet-county/commissioner-precincts-1-4.geojson
+          cp /tmp/burnet-derived/raw/tigerweb-county-48053.geojson data/raw/burnet-county/tigerweb-county-48053.geojson
+          cp /tmp/burnet-derived/raw/district-attorney-component-counties.geojson data/raw/burnet-county/district-attorney-component-counties.geojson
+          cp /tmp/burnet-derived/gis-source-contract.json data/raw/burnet-county/gis-source-contract.json
+          cp /tmp/burnet-derived/district-attorney-service-area-contract.json data/raw/burnet-county/district-attorney-service-area-contract.json
+          cp /tmp/burnet-derived/geojson/burnet_county_commissioner_precincts.geojson data/geojson/burnet_county_commissioner_precincts.geojson
+          cp /tmp/burnet-derived/geojson/burnet_county_countywide.geojson data/geojson/burnet_county_countywide.geojson
+          cp /tmp/burnet-derived/geojson/burnet_33rd_424th_district_attorney_service_area.geojson data/geojson/burnet_33rd_424th_district_attorney_service_area.geojson
+      - name: Remove discovery scripts and publish
+        run: |
+          git rm -f --ignore-unmatch \
+            scripts/discover_burnet_arcgis.py \
+            scripts/probe_burnet_arcgis_index.py \
+            scripts/probe_burnet_webmap.py \
+            scripts/probe_burnet_precinct_layer.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data docs scripts tests
+          git diff --cached --check
+          git commit -m "Add Burnet County separate prosecutor release"
+          git push origin HEAD:agent/burnet-county-dual-prosecutor
