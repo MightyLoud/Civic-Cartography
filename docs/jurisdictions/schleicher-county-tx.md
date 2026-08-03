@@ -59,6 +59,8 @@ The release publishes:
 - `qa_status = approved`; and
 - `parity_ok = TRUE`.
 
+The dedicated workflow regenerates both countywide and Commissioner geometry from the pinned authorities and compares the resulting snapshots before publication.
+
 Combined canonical SHA-256:
 
 `70575f6d635746024f155eb2598c9551a58a96fa6fa9e90b050bbb17702fd3bf`
