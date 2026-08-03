@@ -1,0 +1,83 @@
+name: Find Kaufman County ArcGIS target
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/find-kaufman-arcgis-targeted.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  find-kaufman-target:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Search only Kaufman public feature services
+        run: |
+          python - <<'PY'
+          import json, subprocess, urllib.parse
+          from pathlib import Path
+
+          OUT=Path('build/kaufman-targeted'); OUT.mkdir(parents=True,exist_ok=True)
+          ROOT='https://www.arcgis.com/sharing/rest'
+
+          def curl_json(url):
+              p=subprocess.run(['curl','-sS','--compressed','--retry','2','--retry-all-errors','--max-time','60',url],capture_output=True,check=True)
+              return json.loads(p.stdout.decode('utf-8'))
+
+          queries=[
+              'title:"Kaufman County" AND type:"Feature Service"',
+              'title:"Kaufman" AND type:"Feature Service" AND (commissioner OR precinct)',
+              'tags:"Kaufman County" AND type:"Feature Service"',
+              'owner:kaufman AND type:"Feature Service"',
+          ]
+          items={}
+          searches=[]
+          for query in queries:
+              url=f"{ROOT}/search?{urllib.parse.urlencode({'q':query,'num':25,'f':'json'})}"
+              payload=curl_json(url); searches.append({'query':query,'payload':payload})
+              for item in payload.get('results',[]): items[item.get('id')]=item
+          candidates=[]; inspected=[]
+          for item_id,item in sorted(items.items()):
+              service_url=str(item.get('url') or '').rstrip('/')
+              if not service_url: continue
+              root=service_url.rsplit('/',1)[0] if service_url.rsplit('/',1)[-1].isdigit() else service_url
+              try: service=curl_json(f'{root}?f=json')
+              except Exception as exc:
+                  inspected.append({'item':item,'error':repr(exc)}); continue
+              layer_ids=[int(x['id']) for x in service.get('layers',[]) if 'id' in x]
+              if service_url.rsplit('/',1)[-1].isdigit(): layer_ids=[int(service_url.rsplit('/',1)[-1])]
+              for layer_id in layer_ids:
+                  layer_url=f'{root}/{layer_id}'
+                  try:
+                      layer=curl_json(f'{layer_url}?f=json')
+                      if layer.get('geometryType')!='esriGeometryPolygon': continue
+                      params=urllib.parse.urlencode({'where':'1=1','outFields':'*','returnGeometry':'false','f':'json'})
+                      rows=[f.get('attributes',{}) for f in curl_json(f'{layer_url}/query?{params}').get('features',[])]
+                  except Exception as exc:
+                      inspected.append({'item':item,'layer_url':layer_url,'error':repr(exc)}); continue
+                  inspected.append({'item':item,'layer_url':layer_url,'layer':layer,'rows':rows})
+                  for field in layer.get('fields',[]):
+                      name=str(field.get('name') or '')
+                      if field.get('type')=='esriFieldTypeOID' or name.casefold() in {'objectid','fid','oid'}: continue
+                      vals=[str(int(v) if isinstance(v,float) and v.is_integer() else v).strip() for v in (r.get(name) for r in rows) if v not in (None,'')]
+                      if len(vals)==4 and set(vals)=={'1','2','3','4'}:
+                          hay=f"{item.get('title','')} {item.get('tags',[])} {layer.get('name','')} {name}".casefold()
+                          score=sum(p for m,p in (('kaufman',100),('commissioner',100),('precinct',70),('commission',60),('district',20),('2021',10),('2022',10)) if m in hay)
+                          candidates.append({'score':score,'item':item,'layer_url':layer_url,'layer_name':layer.get('name'),'district_field':name,'layer_fields':[x.get('name') for x in layer.get('fields',[])],'source_rows':rows})
+          output={'searches':searches,'items':list(items.values()),'inspected':inspected,'candidates':sorted(candidates,key=lambda x:(-x['score'],x['layer_url']))}
+          (OUT/'targeted-search.json').write_text(json.dumps(output,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(output['candidates'],indent=2,sort_keys=True))
+          if not candidates: raise SystemExit('No targeted Kaufman four-row polygon service found')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kaufman-arcgis-targeted
+          path: build/kaufman-targeted/
+          if-no-files-found: error
