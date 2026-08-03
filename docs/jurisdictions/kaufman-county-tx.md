@@ -28,9 +28,28 @@ County Surveyor, constables, justices of the peace, county courts, and district 
 - `Teressa Floyd` follows the current Tax Assessor page; the isolated `Teresa Floyd` campaign-finance spelling is non-controlling.
 - `Charles “Chuck” Mohnkern` preserves the office-page and campaign-finance name forms as one person.
 
-## Geography
+## Authoritative composite geometry
 
-The countywide feature is the current Census TIGERweb county polygon for GEOID `48257`. Commissioner geometry is resolved from the official county-linked ArcGIS application `da2d7bb2339b4c67bfe382fc24bb775a`; the committed source contract pins the controlling polygon layer, stable district field, values 1–4, and source attributes.
+The official county GIS application is retained as the public map entrypoint, but `gis.kaufmancounty.net` resolved to `67.133.180.13` and timed out before any HTTP response from GitHub-hosted runners. The release does not silently substitute an unrelated public ArcGIS item.
+
+Instead, the maintained derivation uses two authoritative components:
+
+1. Kaufman County's pinned official Commissioner map controls the assignment of territory to Precincts 1–4. The 940×788 PNG has SHA-256 `49673d66657b8dd93daec7aad205d549023bffa263c5db71707032ae321ca8e6`.
+2. The Texas Legislative Council's July 15, 2026 `Precincts26P` shapefile controls exact polygon geometry. Its ZIP has SHA-256 `70a67743d55a218ba5ce6057816563376f61cf0bc531a77d1edc98644c310107`.
+
+The script georeferences the official PNG to the Kaufman voting-precinct union in Web Mercator, classifies multiple interior samples from every voting precinct by nearest pinned Commissioner color, and dissolves the 37 voting precincts by majority assignment. The county's November and December 2021 final redistricting actions establish that election precinct boundaries must conform to the Commissioner precincts.
+
+Validation requires:
+
+- all 37 voting precincts assigned;
+- four nonempty Commissioner groups;
+- minimum assignment confidence at least 0.60;
+- mean assignment confidence at least 0.90;
+- zero interdistrict overlap;
+- exact equality between the dissolved Commissioner union and the source voting-precinct union;
+- byte-identical regeneration from current pinned sources.
+
+The confirmed assignment has mean confidence `0.926576`, minimum confidence `0.633333`, zero overlap, and zero union difference. The countywide feature is the current Census TIGERweb county polygon for GEOID `48257`.
 
 ## Definition of done
 
