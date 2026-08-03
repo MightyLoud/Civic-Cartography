@@ -1,0 +1,74 @@
+name: Inspect Kaufman County ArcGIS seed item
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/inspect-kaufman-seed-item.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-kaufman-seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Inspect seed item and exact four-polygon candidates
+        run: |
+          python - <<'PY'
+          import json, urllib.parse, urllib.request
+          from pathlib import Path
+
+          ITEM = 'c13f9cf1c9544c90b0e91b5bd8138c59'
+          ROOT = 'https://www.arcgis.com/sharing/rest'
+          OUT = Path('build/kaufman-seed')
+          OUT.mkdir(parents=True, exist_ok=True)
+
+          def get(url):
+              req = urllib.request.Request(url, headers={'User-Agent':'Civic-Cartography/1.0'})
+              with urllib.request.urlopen(req, timeout=45) as response:
+                  value = json.load(response)
+              return value if isinstance(value, dict) else {}
+
+          meta = get(f'{ROOT}/content/items/{ITEM}?f=json')
+          data = get(f'{ROOT}/content/items/{ITEM}/data?f=json')
+          evidence = {'metadata':meta, 'data':data, 'services':[], 'candidates':[]}
+          service_url = str(meta.get('url') or '').rstrip('/')
+          roots = []
+          if service_url:
+              roots.append(service_url.rsplit('/',1)[0] if service_url.rsplit('/',1)[-1].isdigit() else service_url)
+          for root in roots:
+              service = get(f'{root}?f=json')
+              service_entry = {'root':root,'service':service,'layers':[]}
+              layer_ids = [int(x['id']) for x in service.get('layers',[]) if 'id' in x]
+              if service_url.rsplit('/',1)[-1].isdigit():
+                  layer_ids = [int(service_url.rsplit('/',1)[-1])]
+              for layer_id in layer_ids:
+                  layer_url = f'{root}/{layer_id}'
+                  layer = get(f'{layer_url}?f=json')
+                  params = urllib.parse.urlencode({'where':'1=1','outFields':'*','returnGeometry':'false','f':'json'})
+                  rows = [f.get('attributes',{}) for f in get(f'{layer_url}/query?{params}').get('features',[])]
+                  entry = {'layer_url':layer_url,'metadata':layer,'rows':rows}
+                  service_entry['layers'].append(entry)
+                  if layer.get('geometryType') != 'esriGeometryPolygon':
+                      continue
+                  for field in layer.get('fields',[]):
+                      name = str(field.get('name') or '')
+                      if field.get('type') == 'esriFieldTypeOID' or name.casefold() in {'objectid','fid','oid'}:
+                          continue
+                      values = [str(int(v) if isinstance(v,float) and v.is_integer() else v).strip() for v in (row.get(name) for row in rows) if v not in (None,'')]
+                      if len(values)==4 and set(values)=={'1','2','3','4'}:
+                          evidence['candidates'].append({'layer_url':layer_url,'layer_name':layer.get('name'),'district_field':name,'rows':rows,'fields':[x.get('name') for x in layer.get('fields',[])]})
+              evidence['services'].append(service_entry)
+          (OUT/'seed-item-evidence.json').write_text(json.dumps(evidence,indent=2,sort_keys=True)+'\n')
+          print(json.dumps({'metadata':meta,'candidates':evidence['candidates']},indent=2,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kaufman-seed-item
+          path: build/kaufman-seed/
+          if-no-files-found: error
