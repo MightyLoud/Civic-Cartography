@@ -1,3 +1,4 @@
+# Second push activates the publisher after the trigger definition exists.
 name: Promote Kerr County geometry
 
 on:
