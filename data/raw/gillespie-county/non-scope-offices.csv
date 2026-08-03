@@ -1,0 +1,6 @@
+office_name,current_officeholder,office_status,exclusion_reason,source_url,source_retrieved_at
+County Engineer,"Melissa Eckert, PE, CFM",appointed_or_employee_department,Engineering Department is a separate administrative/technical function and is not an elected-office row.,https://gillespiecounty.gov/1198/Engineering-Department,2026-08-02
+County Attorney,Sara Neel,elected_outside_bounded_scope,Prosecutor office remains explicit evidence but outside this eleven-office release.,https://www.gillespiecounty.gov/1213/County-Attorney,2026-08-02
+County Constables,Ken Moore; Kenny Bode; Hilario Villa Sr.; Marcus Davee,elected_outside_bounded_scope,Four constable offices are explicit but outside the bounded release.,https://www.gillespiecounty.gov/1210/County-Constables,2026-08-02
+Justices of the Peace,Four precinct offices,elected_outside_bounded_scope,Justice-court offices are explicit but outside the bounded release.,https://www.gillespiecounty.gov/1185/Elected-Officials,2026-08-02
+County Court at Law and District Courts,Judicial offices,elected_outside_bounded_scope,Judicial offices remain outside the bounded county executive/constitutional roster.,https://www.gillespiecounty.gov/1185/Elected-Officials,2026-08-02
