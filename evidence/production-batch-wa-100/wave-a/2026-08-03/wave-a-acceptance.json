@@ -1,0 +1,610 @@
+{
+  "artifact_inventory": {
+    "first_failures": [],
+    "first_inventory_sha256": "8f8328ad6d1d1e995a64905fb651d39b727eca69d436baa8c157dab2237a5cf2",
+    "identical": true,
+    "second_failures": [],
+    "second_inventory_sha256": "8f8328ad6d1d1e995a64905fb651d39b727eca69d436baa8c157dab2237a5cf2"
+  },
+  "batch_id": "WA-PB01",
+  "criteria": {
+    "all_generated_artifacts_have_sha256": true,
+    "all_nesting_relationships_preserved_as_lists": true,
+    "all_output_paths_are_unique": true,
+    "all_targets_are_deterministic": true,
+    "all_targets_have_one_result_per_run": true,
+    "all_targets_resolve_classify_and_generate": true,
+    "artifact_inventories_are_identical": true,
+    "target_crosswalk_parity": true,
+    "zero_target_only_production_patches": true
+  },
+  "crosswalk_sha256": "e5e9739380738142535040bd643225638f236706a684374c83d1178fc3a96d38",
+  "evaluation_id": "cd9fea3aad75dc97e7c4",
+  "first_run_id": "7ad97093b4ee98e829e8",
+  "manifest_name": "production_batch_wa_100_wa_pb01_a",
+  "manifest_sha256": "59c59b3d540f3106cbf131b78c3495d8039100eedda407f202d16e338effcb50",
+  "run_asof": "2026-08-03T18:00:00Z",
+  "schema_version": 1,
+  "second_run_id": "7ad97093b4ee98e829e8",
+  "summary": {
+    "artifact_count": 42,
+    "artifact_inventories_identical": true,
+    "deterministic_count": 20,
+    "gate_passed": true,
+    "nesting_parity_count": 20,
+    "passed_count": 20,
+    "reports_identical": true,
+    "shared_artifact_count": 2,
+    "target_artifact_count": 40,
+    "target_count": 20,
+    "target_only_patch_count": 0,
+    "unique_output_paths": true
+  },
+  "targets": [
+    {
+      "census_geoid": "5333560",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/ione_5333560_b7ea43f4-0d46-50e6-af61-7f9c4ce4f8c6.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Ione",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/ione_d213606b-876e-5103-b50b-ba80b690c0e1.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:ione",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/ione_5333560_b7ea43f4-0d46-50e6-af61-7f9c4ce4f8c6.yaml": "cb32c645753f82007a84380e8a782833c1699c3eaaae309901148d2ddb69917e",
+        "jurisdictions/wa/local/ione_d213606b-876e-5103-b50b-ba80b690c0e1.yaml": "4a0b123280e2ba3bc26e7c6279aac0d51ed77f233c8ab1674a52c77da46cab02"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:ione"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-001",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5333805",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/issaquah_5333805_2fdce080-6dd6-50d0-ba2c-425f4bebea57.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Issaquah",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/issaquah_e9236fae-70d7-56c5-86b1-05b3742b5149.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:issaquah",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/issaquah_5333805_2fdce080-6dd6-50d0-ba2c-425f4bebea57.yaml": "7dad4cdd6c46a5384e844dd5ad321a9fdae2dedf2624853a759f28c0aab2a71d",
+        "jurisdictions/wa/local/issaquah_e9236fae-70d7-56c5-86b1-05b3742b5149.yaml": "c7e1aecc4bbde4e40bfc5da8fa43592f0cfd0231d45073522d3aecb9493dd78e"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:issaquah"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-002",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5334575",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/kahlotus_5334575_014ec053-23fb-5c92-b130-e45a4dfdaa25.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Kahlotus",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/kahlotus_83d7d4c8-a1f5-5b44-8efa-631fed0ce8a6.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kahlotus",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/kahlotus_5334575_014ec053-23fb-5c92-b130-e45a4dfdaa25.yaml": "714b7d00c0ad5a41d3bb4c2e5e1d1bddad360e2fc8e3d89d6dc053cdc9df77e2",
+        "jurisdictions/wa/local/kahlotus_83d7d4c8-a1f5-5b44-8efa-631fed0ce8a6.yaml": "7043c52ca713b00c85382e48d837ac4d14412c46fff2f4907604949b727053f5"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:kahlotus"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-003",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5334645",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/kalama_5334645_59fcf150-bbbc-53ba-9492-d7f3cb7300be.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Kalama",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/kalama_6da652af-8482-59e3-91ba-198eca80bd99.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kalama",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/kalama_5334645_59fcf150-bbbc-53ba-9492-d7f3cb7300be.yaml": "ff2d6fe864400b9a9e042c7da0f066d97e9ce35bb9618a2a232831a925dcda95",
+        "jurisdictions/wa/local/kalama_6da652af-8482-59e3-91ba-198eca80bd99.yaml": "5af698411b11cbb545bd2f65558a40da143a23df8d0884ae372013ce5fd55a0c"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:kalama"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-004",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5335065",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/kelso_5335065_cd2c7050-5d9a-5504-8504-201f37223f53.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Kelso",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/kelso_fb963aba-8647-5ac6-88b2-27bf46ed01a7.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kelso",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/kelso_5335065_cd2c7050-5d9a-5504-8504-201f37223f53.yaml": "7c32ab564d0d27099f5aafab4912eaaad053016647ebfa2146f7a83afecebafd",
+        "jurisdictions/wa/local/kelso_fb963aba-8647-5ac6-88b2-27bf46ed01a7.yaml": "12c4998554b7507827b0688373b5a736f43be964d85890d459345dfe8a95d307"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:kelso"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-005",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5335170",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/kenmore_5335170_976ea52b-81b5-5588-a802-ef3c2a63c82c.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Kenmore",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/kenmore_3dc8713c-5a71-5f66-b55b-18cffd758e0c.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kenmore",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/kenmore_5335170_976ea52b-81b5-5588-a802-ef3c2a63c82c.yaml": "459e166d88328677b2503f58e0954e13ff06544c4a66f10326b308bb75a68f21",
+        "jurisdictions/wa/local/kenmore_3dc8713c-5a71-5f66-b55b-18cffd758e0c.yaml": "5542c04ee7fc1330f98e34e1d13c7461f33f78e05579d1067880fd64ddf90f92"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:kenmore"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-006",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5335275",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/kennewick_5335275_d0e3b13f-8284-5bef-8d1a-61aac67d7167.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Kennewick",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/kennewick_5cf51f8c-db3f-5bdc-9476-d53b18cf04f4.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kennewick",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/kennewick_5335275_d0e3b13f-8284-5bef-8d1a-61aac67d7167.yaml": "190ba5ca4b90428d2d86ea2b01247a4d16f4c5b8ac8cb518a5b93eceb805dd03",
+        "jurisdictions/wa/local/kennewick_5cf51f8c-db3f-5bdc-9476-d53b18cf04f4.yaml": "de52917b7833062c46772170d54f9defad4e00eb11854b3165f9915c9903ae71"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:kennewick"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-007",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5335485",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/kettle_falls_5335485_486c2d8f-0db4-5a2d-918e-ecdb8290b365.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Kettle Falls",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/kettle_falls_54f5a718-734b-5c83-b757-158520e0b46e.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kettle_falls",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/kettle_falls_5335485_486c2d8f-0db4-5a2d-918e-ecdb8290b365.yaml": "79dd1c5f85f5829c1cde761bdc4e30024a40c7f6a52a707606cbb371cdbc23c0",
+        "jurisdictions/wa/local/kettle_falls_54f5a718-734b-5c83-b757-158520e0b46e.yaml": "220164ad1de9accfb617fe144e20efdae012cba5a07c9a884214b28c0872ab0d"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:kettle_falls"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-008",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5335940",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/kirkland_5335940_db72fcb8-d23f-5da7-ab8f-7db4c481b8eb.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Kirkland",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/kirkland_6a3a2695-4c7e-52ae-a40b-c2b81e552650.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kirkland",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/kirkland_5335940_db72fcb8-d23f-5da7-ab8f-7db4c481b8eb.yaml": "d817220560bbc209ed853b98e3936bc8ae127fdc42162a5fb4af10d3c325b711",
+        "jurisdictions/wa/local/kirkland_6a3a2695-4c7e-52ae-a40b-c2b81e552650.yaml": "e733401e8a410746331b733f2dc080899669312c1ff8b3231cfd8e443cced9e4"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:kirkland"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-009",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5336045",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/kittitas_5336045_eae4e5c4-899f-586a-b1f9-91e3a1550ad1.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Kittitas",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/kittitas_6226a03e-b943-55b6-8e48-8c724ad8e1db.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kittitas",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/kittitas_5336045_eae4e5c4-899f-586a-b1f9-91e3a1550ad1.yaml": "e67557e1d245679dfcf1eb1b93a35a8ce1a8fffc08113a47bb14e181a34314e2",
+        "jurisdictions/wa/local/kittitas_6226a03e-b943-55b6-8e48-8c724ad8e1db.yaml": "0df6fe33abd75749f6513cf4c6a7bef72aab288f35142e9282fac1ef7ee35730"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:kittitas"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-010",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5336395",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/krupp_5336395_11155d41-7e8f-518a-ae55-bd2d622e1d46.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Krupp",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/krupp_bd37bd55-3ae1-53b3-b929-ed105c9ea94c.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:krupp",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/krupp_5336395_11155d41-7e8f-518a-ae55-bd2d622e1d46.yaml": "4ae4c0bfac87afc0eaed0b68049b12c95e2060dec268194900da30a87f537567",
+        "jurisdictions/wa/local/krupp_bd37bd55-3ae1-53b3-b929-ed105c9ea94c.yaml": "e1d362df48dab1831050de57bb126298c178b0062031140ae0ba0ca794733c87"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:krupp"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-011",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5336710",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/la_center_5336710_206ee195-64ef-5757-881a-755d70caa960.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "La Center",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/la_center_2e8cd4c6-bed7-576b-af0d-ae10e6e17e48.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:la_center",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/la_center_5336710_206ee195-64ef-5757-881a-755d70caa960.yaml": "560adfb3d6095f8bce2e0c2fbf03ae028b64a1b7195cbe58eef49aef167e7a99",
+        "jurisdictions/wa/local/la_center_2e8cd4c6-bed7-576b-af0d-ae10e6e17e48.yaml": "c396a55e0668e52bfbc3c5d98ec5da064d1931f89f8d21ddda6d2ac34974e69b"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:la_center"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-012",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5336745",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/lacey_5336745_765a9097-ce9f-5f19-8842-a34f5d92e535.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Lacey",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/lacey_1fc4f5e3-657c-5ef6-b33a-fd33c6eab885.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lacey",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/lacey_5336745_765a9097-ce9f-5f19-8842-a34f5d92e535.yaml": "0f61660c584a5e3bbe7a1291c6b387a3b2653eb6f7a0e2fe4725d4a21c4c2a23",
+        "jurisdictions/wa/local/lacey_1fc4f5e3-657c-5ef6-b33a-fd33c6eab885.yaml": "e059e6c26941564aac7751bbf86368f075ff88388278ef14e4c5b51b297fa532"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:lacey"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-013",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5336780",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/la_conner_5336780_d50c58e2-473e-5046-845d-685492d36086.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "La Conner",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/la_conner_3496e557-eb99-53a1-9033-f2de9cc5650f.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:la_conner",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/la_conner_5336780_d50c58e2-473e-5046-845d-685492d36086.yaml": "a0df799bcd9c8c4a8d637d3d863e717fbb4b329ec181dcd875d7f93ccf86f563",
+        "jurisdictions/wa/local/la_conner_3496e557-eb99-53a1-9033-f2de9cc5650f.yaml": "d180eae5e8d3eb266f967fd1f85d12e4583bec903fb0521ca154a7ba4153228b"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:la_conner"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-014",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5336850",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/lacrosse_5336850_e359cd3f-c4d7-50e8-bdf9-a6254cd6f9e6.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "LaCrosse",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/lacrosse_b3722d88-df8b-5774-b868-37985338561d.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lacrosse",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/lacrosse_5336850_e359cd3f-c4d7-50e8-bdf9-a6254cd6f9e6.yaml": "f183fa34af90fb4111e953a971def7fcbeacb46b2571d7e0cd7d92acd5cca764",
+        "jurisdictions/wa/local/lacrosse_b3722d88-df8b-5774-b868-37985338561d.yaml": "05c497686d9af3e49affe1df18f6338e45929c8a9b65576517a8c6889f66c0a9"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:lacrosse"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-015",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5337270",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/lake_forest_park_5337270_f900c473-a1c5-59fa-90d0-736b37ef010f.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Lake Forest Park",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/lake_forest_park_52fbf81e-7fe8-568c-bd02-da0819b60411.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lake_forest_park",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/lake_forest_park_5337270_f900c473-a1c5-59fa-90d0-736b37ef010f.yaml": "78d0bedd7f7aebec404d0c5f531e86469896258077f9ddebab44ac92d9b6ba3d",
+        "jurisdictions/wa/local/lake_forest_park_52fbf81e-7fe8-568c-bd02-da0819b60411.yaml": "3e8c644f81f5c16d79c8fecb9ba8a889c2da3d3a317e0f6a5ca50e91a3f9481a"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:lake_forest_park"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-016",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5337900",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/lake_stevens_5337900_126cfb20-7d47-532e-8cb3-a5795e969526.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Lake Stevens",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/lake_stevens_d2062b3b-9dd2-5b5c-b216-ec6695ac8204.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lake_stevens",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/lake_stevens_5337900_126cfb20-7d47-532e-8cb3-a5795e969526.yaml": "f32cb4c3fe4092d7ff78fadc6927c2bea4500dea56fee7238f8e9f96146655fe",
+        "jurisdictions/wa/local/lake_stevens_d2062b3b-9dd2-5b5c-b216-ec6695ac8204.yaml": "644a3ea4d0a1ef2aa4448678a2a023634a66fe8a6186c641f5e9679f1f64e42b"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:lake_stevens"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-017",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5338038",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/lakewood_5338038_9cd33b49-2fcd-5a74-b621-6da64feb6c47.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Lakewood",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/lakewood_3064715f-d0b9-5b69-b2b4-f3f73cd59ee2.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lakewood",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/lakewood_5338038_9cd33b49-2fcd-5a74-b621-6da64feb6c47.yaml": "6e5782c07adf19d5f92662b970794defaa87b77821b624f55795bba93933b823",
+        "jurisdictions/wa/local/lakewood_3064715f-d0b9-5b69-b2b4-f3f73cd59ee2.yaml": "cacb75489d691bda782c89fbb17075ab3f0ca8da0ab1fbeb1e23ae528aed2b9b"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:lakewood"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-018",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5338215",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/lamont_5338215_26a6a45b-70a7-5b82-ab72-602b60dbdc9e.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Lamont",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/lamont_bee69d50-9aab-5387-a0b9-f47da3550b8c.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lamont",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/lamont_5338215_26a6a45b-70a7-5b82-ab72-602b60dbdc9e.yaml": "eeaead72173dacd761a41b365aed7493f0005ef2d875bc48831f8ed92fc54cb3",
+        "jurisdictions/wa/local/lamont_bee69d50-9aab-5387-a0b9-f47da3550b8c.yaml": "ce28c5567522c067f1fdc8f036029cc48743bbe1e7da55a7e8aa46c0e2ba931a"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:lamont"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-019",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5338355",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/langley_5338355_f6b2639b-32a8-5fc6-8bc2-2772052006aa.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Langley",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/langley_35011c30-f090-5182-af93-39ccd1982b32.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:langley",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/langley_5338355_f6b2639b-32a8-5fc6-8bc2-2772052006aa.yaml": "a831bf31887b990d0edfc194ddd97b24ca8d5fa48a3e02b2e849f79125d352ee",
+        "jurisdictions/wa/local/langley_35011c30-f090-5182-af93-39ccd1982b32.yaml": "0394e220af70e2d94528f10a9988e5db3d9a1f9f096d50a392c733ce940bb5f5"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:langley"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-020",
+      "wave": "WA-PB01-A"
+    }
+  ],
+  "upstream": {
+    "repository": "openstates/jurisdictions",
+    "revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
+  },
+  "wave": "WA-PB01-A"
+}

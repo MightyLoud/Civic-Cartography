@@ -90,6 +90,7 @@
         "state_count": {"type": "integer", "minimum": 1},
         "fixture_count": {"type": "integer", "minimum": 0},
         "discovery_count": {"type": "integer", "minimum": 0},
+        "production_count": {"type": "integer", "minimum": 1},
         "selector_counts": {
           "type": "object",
           "additionalProperties": {"type": "integer", "minimum": 0}
@@ -129,7 +130,17 @@
         "jurisdiction_name": {"type": "string", "minLength": 1},
         "state": {"type": "string", "pattern": "^[a-z]{2}$"},
         "category": {
-          "enum": ["regression_fixture", "new_known_archetype", "discovery"]
+          "enum": [
+            "regression_fixture",
+            "new_known_archetype",
+            "discovery",
+            "production"
+          ]
+        },
+        "census_geoid": {"type": "string", "pattern": "^[0-9]{7}$"},
+        "wave": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]+(?:-[A-Z0-9]+)*$"
         },
         "expected_archetype": {"type": "string", "minLength": 1},
         "requested_selector": {"$ref": "#/$defs/selector"},

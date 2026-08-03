@@ -10,6 +10,9 @@
     "name": {"type": "string", "minLength": 1},
     "description": {"type": "string", "minLength": 1},
     "run_asof": {"type": "string", "format": "date-time"},
+    "state": {"type": "string", "pattern": "^[A-Za-z]{2}$"},
+    "source_manifest": {"type": "string", "minLength": 1},
+    "selection_crosswalk": {"type": "string", "minLength": 1},
     "targets": {
       "type": "array",
       "minItems": 1,
@@ -99,14 +102,29 @@
         },
         "expected_archetype": {"type": "string", "minLength": 1},
         "expected_classification": {"$ref": "#/$defs/classification"},
+        "census_geoid": {"type": "string", "pattern": "^[0-9]{7}$"},
+        "wave": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]+(?:-[A-Z0-9]+)*$"
+        },
         "category": {
           "enum": [
             "regression_fixture",
             "new_known_archetype",
-            "discovery"
+            "discovery",
+            "production"
           ]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"category": {"const": "production"}},
+            "required": ["category"]
+          },
+          "then": {"required": ["census_geoid", "wave"]}
+        }
+      ]
     }
   }
 }
