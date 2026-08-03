@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "batch_id": "WA-PB01",
+  "selection_extracted_at": "2026-08-03T04:23:07Z",
+  "sources": {
+    "workbook": {
+      "filename": "Nested_Divisions_Improved.xlsx",
+      "sha256": "dad097530321be8672f34ee6a9448ba4b19b362c80c70c7f6875141f229ebae4",
+      "municipalities_range": "Municipalities!A1:Y68309",
+      "data_row_count": 68308
+    },
+    "tracker": {
+      "title": "WA Jurisdiction Factory v0.1",
+      "sheet": "00_Batch_Status",
+      "range": "A1:AU282",
+      "data_row_count": 281,
+      "retrieved_at": "2026-08-03T04:23:07Z"
+    },
+    "maintained_ocdids": {
+      "repository": "opencivicdata/ocd-division-ids",
+      "revision": "a52719a15852fc8c8418194016c16657591930ad",
+      "path": "identifiers/country-us.csv",
+      "blob_sha": "bca1de20902adabb89961d08e68e0400d41dde50"
+    }
+  },
+  "selection_rules": [
+    "STATEFP equals 53.",
+    "PLACEFP is populated.",
+    "CLASSFP equals C1 and FUNCSTAT equals A.",
+    "Exclude every municipality whose tracker complete_flag was TRUE at selection time.",
+    "Require exactly one maintained OCDID match by Census GEOID.",
+    "Sort eligible municipalities by Census GEOID ascending.",
+    "Assign the first 100 eligible rows to WA-PB01-001 through WA-PB01-100.",
+    "Assign the next 10 eligible rows to replacement queue WA-PB01-R01 through WA-PB01-R10.",
+    "Preserve county, SLDU, and SLDL relationships as lists."
+  ],
+  "counts": {
+    "workbook_data_rows": 68308,
+    "washington_rows": 881,
+    "washington_non_place_rows": 242,
+    "washington_place_rows": 639,
+    "washington_statistical_or_nonfunctioning_place_rows": 358,
+    "active_incorporated_municipalities": 281,
+    "tracker_rows": 281,
+    "tracker_complete_exclusions": 116,
+    "eligible_pool": 165,
+    "selected_targets": 100,
+    "replacement_queue": 10,
+    "eligible_not_selected": 55,
+    "unresolved_tracker_rows": 0,
+    "unresolved_maintained_ocdids": 0,
+    "duplicate_selected_geoids": 0,
+    "duplicate_selected_ocdids": 0
+  },
+  "drift_note": "Five municipalities in the unpublished interrupted draft (Hatton, Hoquiam, Hunts Point, Ilwaco, and Index) reached complete status before publication. The selection was recomputed against the live tracker to prevent duplicate production work.",
+  "unpublished_draft_removals": [
+    {
+      "census_geoid": "5330060",
+      "display_name": "Hatton",
+      "reason": "completed_before_publication"
+    },
+    {
+      "census_geoid": "5332300",
+      "display_name": "Hoquiam",
+      "reason": "completed_before_publication"
+    },
+    {
+      "census_geoid": "5332755",
+      "display_name": "Hunts Point",
+      "reason": "completed_before_publication"
+    },
+    {
+      "census_geoid": "5333000",
+      "display_name": "Ilwaco",
+      "reason": "completed_before_publication"
+    },
+    {
+      "census_geoid": "5333175",
+      "display_name": "Index",
+      "reason": "completed_before_publication"
+    }
+  ]
+}

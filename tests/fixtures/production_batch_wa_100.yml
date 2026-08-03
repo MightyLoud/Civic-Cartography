@@ -1,0 +1,1107 @@
+version: 1
+name: production_batch_wa_100
+description: First state-scale production batch of 100 active Washington municipal governments.
+state: wa
+source_manifest: evidence/production-batch-wa-100/selection/source-selection-manifest.json
+selection_crosswalk: evidence/production-batch-wa-100/selection/selection-crosswalk.json
+targets:
+- target_id: "WA-PB01-001"
+  jurisdiction_name: "Ione"
+  state: wa
+  census_geoid: "5333560"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:ione"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-002"
+  jurisdiction_name: "Issaquah"
+  state: wa
+  census_geoid: "5333805"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:issaquah"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-003"
+  jurisdiction_name: "Kahlotus"
+  state: wa
+  census_geoid: "5334575"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:kahlotus"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-004"
+  jurisdiction_name: "Kalama"
+  state: wa
+  census_geoid: "5334645"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:kalama"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-005"
+  jurisdiction_name: "Kelso"
+  state: wa
+  census_geoid: "5335065"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:kelso"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-006"
+  jurisdiction_name: "Kenmore"
+  state: wa
+  census_geoid: "5335170"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:kenmore"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-007"
+  jurisdiction_name: "Kennewick"
+  state: wa
+  census_geoid: "5335275"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:kennewick"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-008"
+  jurisdiction_name: "Kettle Falls"
+  state: wa
+  census_geoid: "5335485"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:kettle_falls"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-009"
+  jurisdiction_name: "Kirkland"
+  state: wa
+  census_geoid: "5335940"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:kirkland"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-010"
+  jurisdiction_name: "Kittitas"
+  state: wa
+  census_geoid: "5336045"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:kittitas"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-011"
+  jurisdiction_name: "Krupp"
+  state: wa
+  census_geoid: "5336395"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:krupp"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-012"
+  jurisdiction_name: "La Center"
+  state: wa
+  census_geoid: "5336710"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:la_center"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-013"
+  jurisdiction_name: "Lacey"
+  state: wa
+  census_geoid: "5336745"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:lacey"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-014"
+  jurisdiction_name: "La Conner"
+  state: wa
+  census_geoid: "5336780"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:la_conner"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-015"
+  jurisdiction_name: "LaCrosse"
+  state: wa
+  census_geoid: "5336850"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:lacrosse"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-016"
+  jurisdiction_name: "Lake Forest Park"
+  state: wa
+  census_geoid: "5337270"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:lake_forest_park"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-017"
+  jurisdiction_name: "Lake Stevens"
+  state: wa
+  census_geoid: "5337900"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:lake_stevens"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-018"
+  jurisdiction_name: "Lakewood"
+  state: wa
+  census_geoid: "5338038"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:lakewood"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-019"
+  jurisdiction_name: "Lamont"
+  state: wa
+  census_geoid: "5338215"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:lamont"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-020"
+  jurisdiction_name: "Langley"
+  state: wa
+  census_geoid: "5338355"
+  wave: "WA-PB01-A"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:langley"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-021"
+  jurisdiction_name: "Latah"
+  state: wa
+  census_geoid: "5338495"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:latah"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-022"
+  jurisdiction_name: "Leavenworth"
+  state: wa
+  census_geoid: "5338845"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:leavenworth"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-023"
+  jurisdiction_name: "Liberty Lake"
+  state: wa
+  census_geoid: "5339335"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:liberty_lake"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-024"
+  jurisdiction_name: "Lind"
+  state: wa
+  census_geoid: "5339510"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:lind"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-025"
+  jurisdiction_name: "Long Beach"
+  state: wa
+  census_geoid: "5340070"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:long_beach"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-026"
+  jurisdiction_name: "Longview"
+  state: wa
+  census_geoid: "5340245"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:longview"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-027"
+  jurisdiction_name: "Lyman"
+  state: wa
+  census_geoid: "5340770"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:lyman"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-028"
+  jurisdiction_name: "Lynden"
+  state: wa
+  census_geoid: "5340805"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:lynden"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-029"
+  jurisdiction_name: "Lynnwood"
+  state: wa
+  census_geoid: "5340840"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:lynnwood"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-030"
+  jurisdiction_name: "Mabton"
+  state: wa
+  census_geoid: "5340980"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:mabton"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-031"
+  jurisdiction_name: "McCleary"
+  state: wa
+  census_geoid: "5341225"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:mccleary"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-032"
+  jurisdiction_name: "Malden"
+  state: wa
+  census_geoid: "5342275"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:malden"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-033"
+  jurisdiction_name: "Mansfield"
+  state: wa
+  census_geoid: "5342800"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:mansfield"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-034"
+  jurisdiction_name: "Maple Valley"
+  state: wa
+  census_geoid: "5343150"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:maple_valley"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-035"
+  jurisdiction_name: "Marcus"
+  state: wa
+  census_geoid: "5343395"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:marcus"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-036"
+  jurisdiction_name: "Marysville"
+  state: wa
+  census_geoid: "5343955"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:marysville"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-037"
+  jurisdiction_name: "Mattawa"
+  state: wa
+  census_geoid: "5344165"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:mattawa"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-038"
+  jurisdiction_name: "Medical Lake"
+  state: wa
+  census_geoid: "5344690"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:medical_lake"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-039"
+  jurisdiction_name: "Medina"
+  state: wa
+  census_geoid: "5344725"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:medina"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-040"
+  jurisdiction_name: "Mercer Island"
+  state: wa
+  census_geoid: "5345005"
+  wave: "WA-PB01-B"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:mercer_island"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-041"
+  jurisdiction_name: "Mesa"
+  state: wa
+  census_geoid: "5345180"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:mesa"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-042"
+  jurisdiction_name: "Metaline"
+  state: wa
+  census_geoid: "5345285"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:metaline"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-043"
+  jurisdiction_name: "Metaline Falls"
+  state: wa
+  census_geoid: "5345320"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:metaline_falls"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-044"
+  jurisdiction_name: "Mill Creek"
+  state: wa
+  census_geoid: "5345865"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:mill_creek"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-045"
+  jurisdiction_name: "Millwood"
+  state: wa
+  census_geoid: "5345985"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:millwood"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-046"
+  jurisdiction_name: "Milton"
+  state: wa
+  census_geoid: "5346020"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:milton"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-047"
+  jurisdiction_name: "Monroe"
+  state: wa
+  census_geoid: "5346685"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:monroe"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-048"
+  jurisdiction_name: "Montesano"
+  state: wa
+  census_geoid: "5346895"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:montesano"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-049"
+  jurisdiction_name: "Morton"
+  state: wa
+  census_geoid: "5347175"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:morton"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-050"
+  jurisdiction_name: "Moses Lake"
+  state: wa
+  census_geoid: "5347245"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:moses_lake"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-051"
+  jurisdiction_name: "Mossyrock"
+  state: wa
+  census_geoid: "5347315"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:mossyrock"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-052"
+  jurisdiction_name: "Mountlake Terrace"
+  state: wa
+  census_geoid: "5347490"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:mountlake_terrace"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-053"
+  jurisdiction_name: "Mount Vernon"
+  state: wa
+  census_geoid: "5347560"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:mount_vernon"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-054"
+  jurisdiction_name: "Moxee"
+  state: wa
+  census_geoid: "5347665"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:moxee"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-055"
+  jurisdiction_name: "Mukilteo"
+  state: wa
+  census_geoid: "5347735"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:mukilteo"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-056"
+  jurisdiction_name: "Naches"
+  state: wa
+  census_geoid: "5347805"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:naches"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-057"
+  jurisdiction_name: "Napavine"
+  state: wa
+  census_geoid: "5347980"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:napavine"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-058"
+  jurisdiction_name: "Nespelem"
+  state: wa
+  census_geoid: "5348540"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:nespelem"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-059"
+  jurisdiction_name: "Newcastle"
+  state: wa
+  census_geoid: "5348645"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:newcastle"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-060"
+  jurisdiction_name: "Newport"
+  state: wa
+  census_geoid: "5348820"
+  wave: "WA-PB01-C"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:newport"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-061"
+  jurisdiction_name: "Nooksack"
+  state: wa
+  census_geoid: "5349275"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:nooksack"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-062"
+  jurisdiction_name: "Normandy Park"
+  state: wa
+  census_geoid: "5349415"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:normandy_park"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-063"
+  jurisdiction_name: "North Bend"
+  state: wa
+  census_geoid: "5349485"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:north_bend"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-064"
+  jurisdiction_name: "North Bonneville"
+  state: wa
+  census_geoid: "5349555"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:north_bonneville"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-065"
+  jurisdiction_name: "Northport"
+  state: wa
+  census_geoid: "5350045"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:northport"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-066"
+  jurisdiction_name: "Oakesdale"
+  state: wa
+  census_geoid: "5350325"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:oakesdale"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-067"
+  jurisdiction_name: "Oak Harbor"
+  state: wa
+  census_geoid: "5350360"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:oak_harbor"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-068"
+  jurisdiction_name: "Oakville"
+  state: wa
+  census_geoid: "5350430"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:oakville"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-069"
+  jurisdiction_name: "Ocean Shores"
+  state: wa
+  census_geoid: "5350570"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:ocean_shores"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-070"
+  jurisdiction_name: "Odessa"
+  state: wa
+  census_geoid: "5350745"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:odessa"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-071"
+  jurisdiction_name: "Okanogan"
+  state: wa
+  census_geoid: "5350920"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:okanogan"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-072"
+  jurisdiction_name: "Omak"
+  state: wa
+  census_geoid: "5351340"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:omak"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-073"
+  jurisdiction_name: "Oroville"
+  state: wa
+  census_geoid: "5351970"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:oroville"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-074"
+  jurisdiction_name: "Orting"
+  state: wa
+  census_geoid: "5352005"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:orting"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-075"
+  jurisdiction_name: "Othello"
+  state: wa
+  census_geoid: "5352215"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:othello"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-076"
+  jurisdiction_name: "Pacific"
+  state: wa
+  census_geoid: "5352495"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:pacific"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-077"
+  jurisdiction_name: "Palouse"
+  state: wa
+  census_geoid: "5352950"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:palouse"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-078"
+  jurisdiction_name: "Pasco"
+  state: wa
+  census_geoid: "5353545"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:pasco"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-079"
+  jurisdiction_name: "Pateros"
+  state: wa
+  census_geoid: "5353720"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:pateros"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-080"
+  jurisdiction_name: "Pe Ell"
+  state: wa
+  census_geoid: "5353930"
+  wave: "WA-PB01-D"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:pe_ell"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-081"
+  jurisdiction_name: "Pomeroy"
+  state: wa
+  census_geoid: "5355120"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:pomeroy"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-082"
+  jurisdiction_name: "Port Orchard"
+  state: wa
+  census_geoid: "5355785"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:port_orchard"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-083"
+  jurisdiction_name: "Port Townsend"
+  state: wa
+  census_geoid: "5355855"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:port_townsend"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-084"
+  jurisdiction_name: "Poulsbo"
+  state: wa
+  census_geoid: "5355995"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:poulsbo"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-085"
+  jurisdiction_name: "Prescott"
+  state: wa
+  census_geoid: "5356240"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:prescott"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-086"
+  jurisdiction_name: "Prosser"
+  state: wa
+  census_geoid: "5356450"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:prosser"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-087"
+  jurisdiction_name: "Puyallup"
+  state: wa
+  census_geoid: "5356695"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:puyallup"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-088"
+  jurisdiction_name: "Quincy"
+  state: wa
+  census_geoid: "5357115"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:quincy"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-089"
+  jurisdiction_name: "Rainier"
+  state: wa
+  census_geoid: "5357220"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:rainier"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-090"
+  jurisdiction_name: "Raymond"
+  state: wa
+  census_geoid: "5357430"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:raymond"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-091"
+  jurisdiction_name: "Reardan"
+  state: wa
+  census_geoid: "5357465"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:reardan"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-092"
+  jurisdiction_name: "Redmond"
+  state: wa
+  census_geoid: "5357535"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:redmond"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-093"
+  jurisdiction_name: "Renton"
+  state: wa
+  census_geoid: "5357745"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:renton"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-094"
+  jurisdiction_name: "Republic"
+  state: wa
+  census_geoid: "5357850"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:republic"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-095"
+  jurisdiction_name: "Richland"
+  state: wa
+  census_geoid: "5358235"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:richland"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-096"
+  jurisdiction_name: "Ridgefield"
+  state: wa
+  census_geoid: "5358410"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:ridgefield"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-097"
+  jurisdiction_name: "Riverside"
+  state: wa
+  census_geoid: "5358795"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:riverside"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-098"
+  jurisdiction_name: "Rockford"
+  state: wa
+  census_geoid: "5359145"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:rockford"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-099"
+  jurisdiction_name: "Rock Island"
+  state: wa
+  census_geoid: "5359180"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:rock_island"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
+- target_id: "WA-PB01-100"
+  jurisdiction_name: "Rosalia"
+  state: wa
+  census_geoid: "5359775"
+  wave: "WA-PB01-E"
+  selector:
+    type: ocdid
+    value: "ocd-division/country:us/state:wa/place:rosalia"
+  expected_archetype: AR-001
+  expected_classification: government
+  category: production
