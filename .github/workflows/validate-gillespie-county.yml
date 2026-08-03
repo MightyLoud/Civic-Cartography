@@ -1,0 +1,89 @@
+name: Validate Gillespie County active County Surveyor schema
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-gillespie-county.yml"
+      - "data/raw/gillespie-county/**"
+      - "data/normalized/gillespie_county_elected_offices.csv"
+      - "data/geojson/gillespie_county_*.geojson"
+      - "docs/jurisdictions/gillespie-county-tx.md"
+      - "scripts/derive_gillespie_commissioner_precincts.py"
+      - "scripts/validate_gillespie_sources.py"
+      - "tests/test_gillespie_county_roster.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-gillespie-county:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install validation and derivation dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install pymupdf pyshp shapely pyproj pillow
+      - name: Validate roster, County Surveyor, scope, and sources
+        run: python scripts/validate_gillespie_sources.py
+      - name: Regenerate current Commissioner geometry
+        run: |
+          python scripts/derive_gillespie_commissioner_precincts.py \
+            --retrieved-at 2026-08-02 \
+            --work-dir build/gillespie-county/work \
+            --raw-output build/gillespie-county/derived/raw/commissioner-precincts-1-4.geojson \
+            --output build/gillespie-county/derived/geojson/gillespie_county_commissioner_precincts.geojson \
+            --contract-output build/gillespie-county/derived/gis-source-contract.json \
+            --evidence-output build/gillespie-county/derived/derivation-evidence.json
+      - name: Verify committed Commissioner snapshots and contract
+        run: |
+          cmp data/raw/gillespie-county/commissioner-precincts-1-4.geojson build/gillespie-county/derived/raw/commissioner-precincts-1-4.geojson
+          cmp data/geojson/gillespie_county_commissioner_precincts.geojson build/gillespie-county/derived/geojson/gillespie_county_commissioner_precincts.geojson
+          cmp data/raw/gillespie-county/gis-source-contract.json build/gillespie-county/derived/gis-source-contract.json
+      - name: Fetch current county boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48171 \
+            --record-id TX:county:gillespie:countywide:COUNTYWIDE \
+            --geometry-id gillespie-county-countywide \
+            --retrieved-at 2026-08-02 \
+            --raw-output build/gillespie-county/county/raw/tigerweb-county-48171.geojson \
+            --output build/gillespie-county/county/geojson/gillespie_county_countywide.geojson
+      - name: Verify committed county boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/gillespie-county/tigerweb-county-48171.geojson \
+            --fresh-raw build/gillespie-county/county/raw/tigerweb-county-48171.geojson \
+            --committed-canonical data/geojson/gillespie_county_countywide.geojson \
+            --fresh-canonical build/gillespie-county/county/geojson/gillespie_county_countywide.geojson
+      - name: Run automated tests
+        run: pytest -q
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+      - name: Verify Gillespie County release digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          paths=[Path("data/geojson/gillespie_county_countywide.geojson"),Path("data/geojson/gillespie_county_commissioner_precincts.geojson")]
+          digest=hashlib.sha256()
+          for path in sorted(paths,key=lambda item:item.name):
+              digest.update(path.name.encode("utf-8"));digest.update(b"\0");digest.update(path.read_bytes());digest.update(b"\0")
+          value=digest.hexdigest();expected="e1d5a045812bf990b084219fef6b145d551d1ecf05414ca639a26d0303bbce76"
+          if value!=expected:raise SystemExit(f"Gillespie release digest changed: {value} != {expected}")
+          output=Path("build/gillespie-county/release-sha256.txt");output.parent.mkdir(parents=True,exist_ok=True);output.write_text(value+"\n")
+          print(f"Gillespie County combined canonical SHA-256: {value}")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gillespie-county-validation
+          path: build/gillespie-county/
+          if-no-files-found: error
