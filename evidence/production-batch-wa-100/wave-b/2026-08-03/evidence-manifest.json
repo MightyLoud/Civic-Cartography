@@ -1,0 +1,89 @@
+{
+  "artifact_inventory": {
+    "file_count": 42,
+    "inventory_sha256": "cf8fa6e4571f2a367a4faac63266abc03e19d2c78596c312710214763a0e16d2",
+    "shared_artifact_count": 2,
+    "shared_paths": [
+      "divisions/wa/washington_stub.yaml",
+      "jurisdictions/wa/washington_stub.yaml"
+    ],
+    "target_artifact_count": 40
+  },
+  "batch_id": "WA-PB01",
+  "criteria": {
+    "all_generated_artifacts_have_sha256": true,
+    "all_nesting_relationships_preserved_as_lists": true,
+    "all_output_paths_are_unique": true,
+    "all_targets_are_deterministic": true,
+    "all_targets_have_one_result_per_run": true,
+    "all_targets_resolve_classify_and_generate": true,
+    "artifact_inventories_are_identical": true,
+    "target_crosswalk_parity": true,
+    "zero_target_only_production_patches": true
+  },
+  "evaluation_id": "d65b1634e7b02d1fe0b5",
+  "evidence_files": {
+    "acceptance": {
+      "path": "wa-pb01-wave-b-acceptance.json",
+      "sha256": "19ed0f8df3e32d8c09cf1f112ff2b31a343e83669147d0e8426aaed3257a1deb",
+      "size_bytes": 24968
+    },
+    "first_inventory": {
+      "path": "run-1/artifact-inventory.json",
+      "sha256": "7d7b0493640a9b68c0bb069f66bd7bbd0a9ee7a50cb0f4849506efdb775d6a4f",
+      "size_bytes": 9982
+    },
+    "first_report": {
+      "path": "run-1/report.json",
+      "sha256": "8d15e47d19b8090431d66c7a05cf340925d0ac36843d6add7e1239e83812eded",
+      "size_bytes": 27633
+    },
+    "second_inventory": {
+      "path": "run-2/artifact-inventory.json",
+      "sha256": "7d7b0493640a9b68c0bb069f66bd7bbd0a9ee7a50cb0f4849506efdb775d6a4f",
+      "size_bytes": 9982
+    },
+    "second_report": {
+      "path": "run-2/report.json",
+      "sha256": "8d15e47d19b8090431d66c7a05cf340925d0ac36843d6add7e1239e83812eded",
+      "size_bytes": 27633
+    },
+    "source_manifest": {
+      "path": "upstream-source/source-manifest.json",
+      "sha256": "52221c29bbca9520cf39cb21db73214e035cacb167bde8cdb6340e93e643529f",
+      "size_bytes": 1176
+    }
+  },
+  "recorded_on": "2026-08-03",
+  "run_asof": "2026-08-03T20:00:00Z",
+  "run_id": "bece54b9e87136456a55",
+  "schema_version": 1,
+  "summary": {
+    "artifact_count": 42,
+    "artifact_inventories_identical": true,
+    "deterministic_count": 20,
+    "gate_passed": true,
+    "nesting_parity_count": 20,
+    "passed_count": 20,
+    "reports_identical": true,
+    "shared_artifact_count": 2,
+    "target_artifact_count": 40,
+    "target_count": 20,
+    "target_only_patch_count": 0,
+    "unique_output_paths": true
+  },
+  "upstream": {
+    "repository": "openstates/jurisdictions",
+    "revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
+  },
+  "wave": "WA-PB01-B",
+  "workflow": {
+    "artifact_digest": "sha256:a85093741349a93a72ab6ce26dad22a95ee0c8d2cf46c731801f5d011dfc39a6",
+    "artifact_id": 8868495903,
+    "artifact_name": "wa-pb01-wave-b-acceptance",
+    "head_sha": "1de32b61ed972460d1a23afc9a5cf89b2c1d96b5",
+    "pull_request": 121,
+    "repository": "MightyLoud/Civic-Cartography",
+    "run_id": 30845399688
+  }
+}
