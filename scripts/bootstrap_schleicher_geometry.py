@@ -18,6 +18,10 @@ from shapely.geometry import mapping, shape
 from shapely.ops import transform
 
 MAP_URL = "https://www.schleichercounty.gov/upload/page/0086/Schleicher%20Precinct%20Map.pdf"
+REDISTRICTING_URL = (
+    "https://www.schleichercounty.gov/upload/page/0091/"
+    "Adoption%20Order%20with%20maps%20and%20tables%2011.01.2021.pdf"
+)
 TLC_URL = (
     "https://data.capitol.texas.gov/dataset/d04c72b9-16c4-4ab2-8c6d-"
     "c666d41e04b7/resource/33ec5b30-ee4d-424f-9769-57b87cb5e311/"
@@ -79,27 +83,51 @@ def rounded(value: Any) -> Any:
     return value
 
 
+def render_pdf(document: fitz.Document, folder: Path, width: int) -> list[list[int]]:
+    folder.mkdir(parents=True, exist_ok=True)
+    sizes = []
+    for index, page in enumerate(document):
+        zoom = width / page.rect.width
+        pixmap = page.get_pixmap(matrix=fitz.Matrix(zoom, zoom), alpha=False)
+        pixmap.save(folder / f"page-{index + 1:02d}.png")
+        sizes.append([pixmap.width, pixmap.height])
+    return sizes
+
+
 def main() -> int:
     output = Path("build/schleicher-county-bootstrap")
     work = output / "work"
     output.mkdir(parents=True, exist_ok=True)
     work.mkdir(parents=True, exist_ok=True)
 
-    pdf_path = output / "official-precinct-map.pdf"
+    map_pdf = output / "official-precinct-map.pdf"
+    redistricting_pdf = output / "redistricting-order-2021.pdf"
     zip_path = work / "precincts26p.zip"
-    download(MAP_URL, pdf_path)
+    download(MAP_URL, map_pdf)
+    download(REDISTRICTING_URL, redistricting_pdf)
     download(TLC_URL, zip_path)
 
-    document = fitz.open(pdf_path)
-    if len(document) != 1:
-        raise SystemExit(f"Expected one map page, found {len(document)}")
-    page = document[0]
-    zoom = 1800 / page.rect.width
-    pixmap = page.get_pixmap(matrix=fitz.Matrix(zoom, zoom), alpha=False)
-    image_path = output / "official-precinct-map.png"
-    pixmap.save(image_path)
-    map_text = page.get_text("text")
+    map_document = fitz.open(map_pdf)
+    if len(map_document) != 1:
+        raise SystemExit(f"Expected one map page, found {len(map_document)}")
+    map_sizes = render_pdf(map_document, output / "official-map-pages", 1800)
+    map_text = "\n".join(page.get_text("text") for page in map_document)
     (output / "official-map-text.txt").write_text(map_text, encoding="utf-8")
+
+    redistricting_document = fitz.open(redistricting_pdf)
+    redistricting_sizes = render_pdf(
+        redistricting_document,
+        output / "redistricting-pages",
+        1400,
+    )
+    redistricting_text = "\n\n".join(
+        f"--- PAGE {index + 1} ---\n{page.get_text('text')}"
+        for index, page in enumerate(redistricting_document)
+    )
+    (output / "redistricting-order-text.txt").write_text(
+        redistricting_text,
+        encoding="utf-8",
+    )
 
     extract_dir = work / "precincts"
     shutil.rmtree(extract_dir, ignore_errors=True)
@@ -134,15 +162,14 @@ def main() -> int:
             continue
         precinct_id = str(record.get(precinct_field) or "").strip()
         geometry = transform(to_4326, shape(shape_record.shape.__geo_interface__))
-        feature = {
+        features.append({
             "type": "Feature",
             "properties": {
                 "source_precinct_id": precinct_id,
                 "source_attributes": record,
             },
             "geometry": rounded(mapping(geometry)),
-        }
-        features.append(feature)
+        })
         records.append(record)
 
     if not features:
@@ -153,14 +180,23 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    normalized_ids = sorted({code(feature["properties"]["source_precinct_id"]) for feature in features})
+    normalized_ids = sorted({
+        code(feature["properties"]["source_precinct_id"])
+        for feature in features
+    })
     report = {
         "official_map_url": MAP_URL,
-        "official_map_sha256": sha256(pdf_path),
-        "official_map_bytes": pdf_path.stat().st_size,
-        "official_map_page_count": len(document),
-        "official_map_render_size": [pixmap.width, pixmap.height],
+        "official_map_sha256": sha256(map_pdf),
+        "official_map_bytes": map_pdf.stat().st_size,
+        "official_map_page_count": len(map_document),
+        "official_map_render_sizes": map_sizes,
         "official_map_text": map_text,
+        "redistricting_order_url": REDISTRICTING_URL,
+        "redistricting_order_sha256": sha256(redistricting_pdf),
+        "redistricting_order_bytes": redistricting_pdf.stat().st_size,
+        "redistricting_order_page_count": len(redistricting_document),
+        "redistricting_order_render_sizes": redistricting_sizes,
+        "redistricting_order_text": redistricting_text,
         "tlc_url": TLC_URL,
         "tlc_zip_sha256": sha256(zip_path),
         "tlc_zip_bytes": zip_path.stat().st_size,
@@ -179,12 +215,15 @@ def main() -> int:
         json.dumps(report, indent=2, sort_keys=True, default=str) + "\n",
         encoding="utf-8",
     )
+    shutil.rmtree(work, ignore_errors=True)
     print(json.dumps({
         "map_sha256": report["official_map_sha256"],
+        "redistricting_sha256": report["redistricting_order_sha256"],
+        "redistricting_pages": len(redistricting_document),
         "tlc_sha256": report["tlc_zip_sha256"],
         "voting_precinct_count": len(features),
         "normalized_precinct_ids": normalized_ids,
-        "map_text": map_text[:1000],
+        "redistricting_text_preview": redistricting_text[:2000],
     }, indent=2))
     return 0
 
