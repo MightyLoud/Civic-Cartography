@@ -37,9 +37,11 @@ UPSTREAM_REVISION = "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
 RUN_ASOF = "2026-08-03T18:00:00Z"
 
 
-def _reports(tmp_path: Path) -> tuple[object, dict, dict, dict, dict]:
+def _reports(
+    tmp_path: Path, wave: str = "WA-PB01-A"
+) -> tuple[object, dict, dict, dict, dict]:
     manifest = select_production_wave(
-        load_manifest(FULL_MANIFEST_PATH), "WA-PB01-A"
+        load_manifest(FULL_MANIFEST_PATH), wave
     )
     overlays: dict[str, dict[str, object]] = {}
     for target in manifest.targets:
@@ -107,6 +109,44 @@ def test_wave_a_selection_is_the_frozen_first_twenty_targets() -> None:
     assert wave.targets[0].jurisdiction_name == "Ione"
     assert wave.targets[-1].jurisdiction_name == "Langley"
     assert {target.wave for target in wave.targets} == {"WA-PB01-A"}
+
+
+def test_wave_b_selection_is_the_frozen_second_twenty_targets() -> None:
+    wave = select_production_wave(
+        load_manifest(FULL_MANIFEST_PATH), "WA-PB01-B"
+    )
+    assert [target.target_id for target in wave.targets] == [
+        f"WA-PB01-{number:03d}" for number in range(21, 41)
+    ]
+    assert wave.targets[0].jurisdiction_name == "Latah"
+    assert wave.targets[-1].jurisdiction_name == "Mercer Island"
+    assert {target.wave for target in wave.targets} == {"WA-PB01-B"}
+
+
+def test_wave_b_acceptance_uses_the_reusable_wave_contract(
+    tmp_path: Path,
+) -> None:
+    manifest, first, second, first_inventory, second_inventory = _reports(
+        tmp_path, "WA-PB01-B"
+    )
+    evaluation = evaluate_production_wave(
+        manifest,
+        first,
+        second,
+        load_crosswalk(CROSSWALK_PATH),
+        first_inventory,
+        second_inventory,
+        upstream_repository="openstates/jurisdictions",
+        upstream_revision=UPSTREAM_REVISION,
+    )
+
+    assert evaluation["summary"]["target_count"] == 20
+    assert evaluation["summary"]["passed_count"] == 20
+    assert evaluation["summary"]["deterministic_count"] == 20
+    assert evaluation["summary"]["nesting_parity_count"] == 20
+    assert evaluation["summary"]["artifact_count"] == 40
+    assert evaluation["summary"]["gate_passed"] is True
+    assert all(evaluation["criteria"].values())
 
 
 def test_wave_a_acceptance_passes_all_gates_and_schemas(tmp_path: Path) -> None:
