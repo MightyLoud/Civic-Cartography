@@ -26,35 +26,7 @@ jobs:
         run: python -m pip install -r requirements-dev.txt
 
       - name: Validate roster, abolition, cutover, and portal contracts
-        run: |
-          python - <<'PY'
-          import scripts.validate_galveston_sources as validator
-
-          validator.validate_committed_county_evidence()
-          validator.validate_optional_county_pages()
-
-          # H.J.R. 134 is the enrolled legislative text that added Section 44(d)
-          # and supplied the January 1, 2024 effective-date provision. The
-          # Constitution DocViewer returns only a navigation shell to CI runners,
-          # so it remains preserved in the manifest rather than used as a brittle
-          # live HTML gate.
-          hjr = validator.searchable(validator.fetch_html(validator.HJR) or "")
-          for marker in (
-              "galveston county",
-              "county treasurer",
-              "abolished",
-              "january 1 2024",
-          ):
-              if marker not in hjr:
-                  raise SystemExit(f"H.J.R. 134 lost abolition marker: {marker}")
-
-          validator.validate_contract_and_portal()
-          print(
-              "Galveston County committed roster, abolished-office, enrolled "
-              "state-law, Experience, legacy-item, and layer contracts match "
-              "the release."
-          )
-          PY
+        run: python scripts/validate_galveston_sources.py
 
       - name: Fetch current Galveston County Commissioner precincts
         run: |
