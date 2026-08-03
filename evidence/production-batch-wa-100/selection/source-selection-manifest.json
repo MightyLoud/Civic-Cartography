@@ -52,5 +52,32 @@
     "duplicate_selected_geoids": 0,
     "duplicate_selected_ocdids": 0
   },
-  "drift_note": "Five municipalities in the unpublished interrupted draft (Hatton, Hoquiam, Hunts Point, Ilwaco, and Index) reached complete status before publication. The selection was recomputed against the live tracker to prevent duplicate production work."
+  "drift_note": "Five municipalities in the unpublished interrupted draft (Hatton, Hoquiam, Hunts Point, Ilwaco, and Index) reached complete status before publication. The selection was recomputed against the live tracker to prevent duplicate production work.",
+  "unpublished_draft_removals": [
+    {
+      "census_geoid": "5330060",
+      "display_name": "Hatton",
+      "reason": "completed_before_publication"
+    },
+    {
+      "census_geoid": "5332300",
+      "display_name": "Hoquiam",
+      "reason": "completed_before_publication"
+    },
+    {
+      "census_geoid": "5332755",
+      "display_name": "Hunts Point",
+      "reason": "completed_before_publication"
+    },
+    {
+      "census_geoid": "5333000",
+      "display_name": "Ilwaco",
+      "reason": "completed_before_publication"
+    },
+    {
+      "census_geoid": "5333175",
+      "display_name": "Index",
+      "reason": "completed_before_publication"
+    }
+  ]
 }
