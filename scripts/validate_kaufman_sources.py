@@ -122,14 +122,13 @@ def live()->None:
       ("https://www.kaufmancounty.net/217/District-Attorney",("Erleigh Norville Wiley",)),
       ("https://www.kaufmancounty.net/496/Public-Information-Act-Open-Records",("Civil Division","Public Information")),
       ("https://www.kaufmancounty.net/254/County-Surveyor",("Greg Sjerven",)),
-      ("https://statutes.capitol.texas.gov/Docs/GV/htm/GV.44.htm#44.229",("Kaufman County","criminal district attorney","county and district attorneys")),
     ]
     accessible=0
     for url,markers in contracts:
         page=fetch(url)
         if page is not None:accessible+=1
         require(page,url,markers)
-    print(f"Validated {accessible} live Kaufman County/statutory page contract(s).")
+    print(f"Validated {accessible} live Kaufman County page contract(s); §44.229 remains enforced through committed statutory evidence because the Texas statutes host returns a wrapper page without section text to automated clients.")
 
 def main()->None:
     committed();live()
