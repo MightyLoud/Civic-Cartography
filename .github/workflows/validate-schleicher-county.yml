@@ -1,0 +1,99 @@
+name: Validate Schleicher County combined County and District Clerk schema
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-schleicher-county.yml"
+      - "data/raw/schleicher-county/**"
+      - "data/normalized/schleicher_county_elected_offices.csv"
+      - "data/geojson/schleicher_county_*.geojson"
+      - "docs/jurisdictions/schleicher-county-tx.md"
+      - "scripts/derive_schleicher_commissioner_precincts.py"
+      - "scripts/validate_schleicher_sources.py"
+      - "tests/test_schleicher_county_roster.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-schleicher-county:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install validation and geometry dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install pymupdf pyshp pyproj shapely pillow
+      - name: Validate roster, combined clerk, scope, and sources
+        run: python scripts/validate_schleicher_sources.py
+      - name: Regenerate current Commissioner geometry
+        run: |
+          python scripts/derive_schleicher_commissioner_precincts.py \
+            --retrieved-at 2026-08-03 \
+            --work-dir build/schleicher-county/commissioners/work \
+            --raw-output build/schleicher-county/commissioners/raw/commissioner-precincts-1-4.geojson \
+            --output build/schleicher-county/commissioners/geojson/schleicher_county_commissioner_precincts.geojson \
+            --contract-output build/schleicher-county/commissioners/gis-source-contract.json \
+            --evidence-output build/schleicher-county/commissioners/derivation-evidence.json
+      - name: Verify committed Commissioner snapshots and contract
+        run: |
+          cmp data/raw/schleicher-county/commissioner-precincts-1-4.geojson build/schleicher-county/commissioners/raw/commissioner-precincts-1-4.geojson
+          cmp data/geojson/schleicher_county_commissioner_precincts.geojson build/schleicher-county/commissioners/geojson/schleicher_county_commissioner_precincts.geojson
+          cmp data/raw/schleicher-county/gis-source-contract.json build/schleicher-county/commissioners/gis-source-contract.json
+      - name: Fetch current county boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48413 \
+            --record-id TX:county:schleicher:countywide:COUNTYWIDE \
+            --geometry-id schleicher-county-countywide \
+            --retrieved-at 2026-08-03 \
+            --raw-output build/schleicher-county/county/raw/tigerweb-county-48413.geojson \
+            --output build/schleicher-county/county/geojson/schleicher_county_countywide.geojson
+      - name: Verify committed county boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/schleicher-county/tigerweb-county-48413.geojson \
+            --fresh-raw build/schleicher-county/county/raw/tigerweb-county-48413.geojson \
+            --committed-canonical data/geojson/schleicher_county_countywide.geojson \
+            --fresh-canonical build/schleicher-county/county/geojson/schleicher_county_countywide.geojson
+      - name: Run automated tests
+        run: pytest -q
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+      - name: Verify Schleicher County release digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          paths=[
+              Path("data/geojson/schleicher_county_countywide.geojson"),
+              Path("data/geojson/schleicher_county_commissioner_precincts.geojson"),
+          ]
+          digest=hashlib.sha256()
+          for path in sorted(paths,key=lambda item:item.name):
+              digest.update(path.name.encode("utf-8"))
+              digest.update(b"\0")
+              digest.update(path.read_bytes())
+              digest.update(b"\0")
+          value=digest.hexdigest()
+          expected="70575f6d635746024f155eb2598c9551a58a96fa6fa9e90b050bbb17702fd3bf"
+          if value!=expected:
+              raise SystemExit(f"Schleicher release digest changed: {value} != {expected}")
+          output=Path("build/schleicher-county/release-sha256.txt")
+          output.parent.mkdir(parents=True,exist_ok=True)
+          output.write_text(value+"\n")
+          print(f"Schleicher County combined canonical SHA-256: {value}")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: schleicher-county-validation
+          path: build/schleicher-county/
+          if-no-files-found: error
