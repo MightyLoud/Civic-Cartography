@@ -8,13 +8,43 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   derive-schleicher-county:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: agent/schleicher-county-combined-clerk
+          fetch-depth: 0
+      - name: Normalize Shapely collection inputs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path=Path("scripts/derive_schleicher_commissioner_precincts.py")
+          text=path.read_text(encoding="utf-8")
+          text=text.replace(
+              'geometry = unary_union(\n            part\n            for part in geometry.geoms\n            if part.geom_type in {"Polygon", "MultiPolygon"}\n        )',
+              'geometry = unary_union([\n            part\n            for part in geometry.geoms\n            if part.geom_type in {"Polygon", "MultiPolygon"}\n        ])',
+          )
+          text=text.replace(
+              'unary_union(row["g3857"] for row in rows)',
+              'unary_union([row["g3857"] for row in rows])',
+          )
+          text=text.replace(
+              'unary_union(row["g4326"] for row in rows)',
+              'unary_union([row["g4326"] for row in rows])',
+          )
+          path.write_text(text,encoding="utf-8")
+          PY
+          if ! git diff --quiet -- scripts/derive_schleicher_commissioner_precincts.py; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add scripts/derive_schleicher_commissioner_precincts.py
+            git commit -m "Normalize Schleicher Shapely collection inputs"
+            git push origin HEAD:agent/schleicher-county-combined-clerk
+          fi
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
