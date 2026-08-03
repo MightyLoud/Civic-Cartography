@@ -27,6 +27,7 @@ class CanonicalAlias:
     source: dict[str, Any]
     verified_asof: str
     evidence_notes: str
+    member_display_names: dict[str, str]
 
     @property
     def canonical_jurisdiction_ocdid(self) -> str:
@@ -53,7 +54,7 @@ class CanonicalAlias:
                 f"{member} is not a member of canonical alias {self.alias_id}"
             )
         is_canonical = member == self.canonical_member
-        return {
+        metadata = {
             "_canonical_alias_id": self.alias_id,
             "_canonical_alias_is_canonical": is_canonical,
             "_canonical_alias_member": member,
@@ -61,6 +62,10 @@ class CanonicalAlias:
             "_canonical_jurisdiction_ocdid": self.canonical_jurisdiction_ocdid,
             "_suppress_jurisdiction_generation": not is_canonical,
         }
+        display_name = self.member_display_names.get(member)
+        if display_name is not None:
+            metadata["_canonical_alias_member_display_name"] = display_name
+        return metadata
 
 
 def _require_mapping(value: Any, location: str) -> dict[str, Any]:
@@ -99,9 +104,10 @@ def _parse_alias(raw: Any, index: int) -> CanonicalAlias:
         "verified_asof",
         "evidence_notes",
     }
-    if set(item) != required:
+    optional = {"member_display_names"}
+    if not required.issubset(item) or set(item) - required - optional:
         missing = sorted(required - set(item))
-        extra = sorted(set(item) - required)
+        extra = sorted(set(item) - required - optional)
         raise CanonicalAliasError(
             f"{location} keys mismatch; missing={missing}, extra={extra}"
         )
@@ -119,6 +125,23 @@ def _parse_alias(raw: Any, index: int) -> CanonicalAlias:
     )
     if len(set(members)) != len(members):
         raise CanonicalAliasError(f"{location}.members must not contain duplicates")
+
+    raw_member_display_names = item.get("member_display_names", {})
+    member_display_name_map = _require_mapping(
+        raw_member_display_names, f"{location}.member_display_names"
+    )
+    member_display_names: dict[str, str] = {}
+    for raw_member, raw_display_name in member_display_name_map.items():
+        member = _normalize_ocdid(
+            raw_member, state, f"{location}.member_display_names key"
+        )
+        if member not in members:
+            raise CanonicalAliasError(
+                f"{location}.member_display_names keys must be maintained members"
+            )
+        member_display_names[member] = _require_string(
+            raw_display_name, f"{location}.member_display_names.{member}"
+        )
 
     canonical_member = _normalize_ocdid(
         item["canonical_member"], state, f"{location}.canonical_member"
@@ -179,6 +202,7 @@ def _parse_alias(raw: Any, index: int) -> CanonicalAlias:
         evidence_notes=_require_string(
             item["evidence_notes"], f"{location}.evidence_notes"
         ),
+        member_display_names=member_display_names,
     )
 
 
@@ -242,4 +266,5 @@ def canonical_alias_to_dict(alias: CanonicalAlias) -> Mapping[str, Any]:
         "source": dict(alias.source),
         "verified_asof": alias.verified_asof,
         "evidence_notes": alias.evidence_notes,
+        "member_display_names": dict(alias.member_display_names),
     }
