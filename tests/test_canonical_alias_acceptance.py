@@ -106,6 +106,46 @@ def test_complete_alias_group_passes_with_one_shared_jurisdiction() -> None:
     ]
 
 
+def test_scoped_capture_skips_alias_absent_from_execution_and_diagnostics() -> None:
+    execution = {"version": 1, "results": {"BP25-022": _overlay()}}
+    diagnostics = {
+        "version": 1,
+        "targets": [
+            {
+                "target_id": "BP25-022",
+                "attempts": _attempts(),
+                "overlay": _overlay(),
+            }
+        ],
+    }
+    nashville = {
+        "target_id": "BP25-025",
+        "state": "tn",
+        "selector": {
+            "type": "alias_group",
+            "members": [
+                "ocd-division/country:us/state:tn/county:davidson",
+                "ocd-division/country:us/state:tn/place:nashville",
+            ],
+            "canonical_rule": "maintained_alias",
+        },
+    }
+
+    normalized_execution, normalized_diagnostics = (
+        normalize_canonical_alias_acceptance(
+            ALIASES,
+            {"BP25-022": _target(), "BP25-025": nashville},
+            execution,
+            diagnostics,
+        )
+    )
+
+    assert set(normalized_execution["results"]) == {"BP25-022"}
+    assert normalized_diagnostics["canonical_alias_semantics"][
+        "evaluated_targets"
+    ] == ["BP25-022"]
+
+
 def test_duplicate_secondary_jurisdiction_remains_noncanonical() -> None:
     attempts = _attempts()
     attempts[1]["jurisdiction_path"] = "jurisdictions/co/local/duplicate.yaml"
