@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mightyloud.github.io/Civic-Cartography/schemas/production-wave-report.schema.json",
+  "title": "Civic Cartography Production Wave Acceptance Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "batch_id",
+    "wave",
+    "manifest_name",
+    "manifest_sha256",
+    "crosswalk_sha256",
+    "run_asof",
+    "evaluation_id",
+    "upstream",
+    "first_run_id",
+    "second_run_id",
+    "summary",
+    "criteria",
+    "targets"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "batch_id": {"const": "WA-PB01"},
+    "wave": {"type": "string", "pattern": "^WA-PB01-[A-E]$"},
+    "manifest_name": {"type": "string", "minLength": 1},
+    "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "crosswalk_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "run_asof": {"type": "string", "format": "date-time"},
+    "evaluation_id": {"type": "string", "pattern": "^[0-9a-f]{20}$"},
+    "first_run_id": {"type": "string", "minLength": 1},
+    "second_run_id": {"type": "string", "minLength": 1},
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "revision"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_count",
+        "passed_count",
+        "deterministic_count",
+        "nesting_parity_count",
+        "reports_identical",
+        "unique_output_paths",
+        "target_only_patch_count",
+        "gate_passed"
+      ],
+      "properties": {
+        "target_count": {"type": "integer", "minimum": 1},
+        "passed_count": {"type": "integer", "minimum": 0},
+        "deterministic_count": {"type": "integer", "minimum": 0},
+        "nesting_parity_count": {"type": "integer", "minimum": 0},
+        "reports_identical": {"type": "boolean"},
+        "unique_output_paths": {"type": "boolean"},
+        "target_only_patch_count": {"type": "integer", "minimum": 0},
+        "gate_passed": {"type": "boolean"}
+      }
+    },
+    "criteria": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "all_targets_have_one_result_per_run",
+        "target_crosswalk_parity",
+        "all_targets_resolve_classify_and_generate",
+        "all_targets_are_deterministic",
+        "all_nesting_relationships_preserved_as_lists",
+        "all_output_paths_are_unique",
+        "zero_target_only_production_patches"
+      ],
+      "properties": {
+        "all_targets_have_one_result_per_run": {"type": "boolean"},
+        "target_crosswalk_parity": {"type": "boolean"},
+        "all_targets_resolve_classify_and_generate": {"type": "boolean"},
+        "all_targets_are_deterministic": {"type": "boolean"},
+        "all_nesting_relationships_preserved_as_lists": {"type": "boolean"},
+        "all_output_paths_are_unique": {"type": "boolean"},
+        "zero_target_only_production_patches": {"type": "boolean"}
+      }
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/target"}
+    }
+  },
+  "$defs": {
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_id",
+        "jurisdiction_name",
+        "census_geoid",
+        "maintained_ocdid",
+        "wave",
+        "status",
+        "deterministic",
+        "nesting_parity",
+        "resolved_ocdids",
+        "inferred_classification",
+        "generation_status",
+        "division_paths",
+        "jurisdiction_paths",
+        "output_hashes",
+        "exception_class",
+        "review_reason",
+        "failures"
+      ],
+      "properties": {
+        "target_id": {"type": "string", "pattern": "^WA-PB01-[0-9]{3}$"},
+        "jurisdiction_name": {"type": "string", "minLength": 1},
+        "census_geoid": {"type": "string", "pattern": "^[0-9]{7}$"},
+        "maintained_ocdid": {"type": "string", "pattern": "^ocd-division/"},
+        "wave": {"type": "string", "pattern": "^WA-PB01-[A-E]$"},
+        "status": {"enum": ["passed", "failed"]},
+        "deterministic": {"type": "boolean"},
+        "nesting_parity": {"type": "boolean"},
+        "resolved_ocdids": {"type": "array", "items": {"type": "string"}},
+        "inferred_classification": {"type": ["string", "null"]},
+        "generation_status": {"type": ["string", "null"]},
+        "division_paths": {"type": "array", "items": {"type": "string"}},
+        "jurisdiction_paths": {"type": "array", "items": {"type": "string"}},
+        "output_hashes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "exception_class": {"type": ["string", "null"]},
+        "review_reason": {"type": ["string", "null"]},
+        "failures": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}
