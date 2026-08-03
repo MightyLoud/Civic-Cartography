@@ -1,3 +1,4 @@
+# Second push activates promotion after the workflow exists on the branch.
 name: Promote Kaufman County derived geometry
 
 on:
