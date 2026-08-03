@@ -1,0 +1,10 @@
+office_name,geography_type,geography_id,officeholder,selection_method,source_url,source_retrieved_at,notes
+County Judge,countywide,COUNTYWIDE,Charlie Bradley,election,https://www.schleichercounty.gov/page/County.Judge,2026-08-03,Current elected Schleicher County Judge.
+County Commissioner Precinct 1,commissioner_precinct,1,Gary Gibson,election,https://www.schleichercounty.gov/page/Commissioner.Court,2026-08-03,Current elected Commissioner for Precinct 1.
+County Commissioner Precinct 2,commissioner_precinct,2,Steve Nelson,election,https://www.schleichercounty.gov/page/Commissioner.Court,2026-08-03,Current elected Commissioner for Precinct 2.
+County Commissioner Precinct 3,commissioner_precinct,3,Kirk Griffin,election,https://www.schleichercounty.gov/page/Commissioner.Court,2026-08-03,Current elected Commissioner for Precinct 3.
+County Commissioner Precinct 4,commissioner_precinct,4,Chris Meador,election,https://www.schleichercounty.gov/page/Commissioner.Court,2026-08-03,Current elected Commissioner for Precinct 4.
+Sheriff,countywide,COUNTYWIDE,Jason Chatham,election,https://www.schleichercounty.gov/page/Sheriff,2026-08-03,Current elected Sheriff.
+County and District Clerk,countywide,COUNTYWIDE,Marsha L. Maskill,election,https://www.schleichercounty.gov/page/County.Clerk,2026-08-03,One combined elected office performs both County Clerk and District Clerk functions; the county publishes Maskill with the same title on both official pages.
+Tax Assessor-Collector,countywide,COUNTYWIDE,Vanessa Covarrubiaz,election,https://www.schleichercounty.gov/page/Tax.Assessor,2026-08-03,Current elected County Tax Assessor-Collector and Voter Registrar.
+County Treasurer,countywide,COUNTYWIDE,Jennifer L. Henderson,election,https://www.schleichercounty.gov/page/Treasurer,2026-08-03,Current elected County Treasurer.

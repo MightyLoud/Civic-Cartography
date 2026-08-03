@@ -1,0 +1,6 @@
+office_name,current_officeholder,scope_status,source_url,notes
+County Attorney,Clint T. Griffin,explicit_non_scope,https://www.schleichercounty.gov/page/countyattorney,Active elected prosecutor office retained as non-scope evidence; not part of the bounded combined-clerk release.
+"District Attorney, 51st Judicial District",Allison Palmer,explicit_non_scope,https://www.tomgreencountytx.gov/page/da.DistrictAttorneyHome,Multi-county elected prosecutor office retained as non-scope evidence.
+51st District Court Judge,Carmen Symes Dusek,explicit_non_scope,https://www.schleichercounty.gov/page/District.Judge,Multi-county judicial office retained as non-scope evidence.
+Justice of the Peace,Rahegyn Franke,explicit_non_scope,https://www.schleichercounty.gov/page/Justice,Precinct/county justice office retained as non-scope evidence.
+County Constable,,explicit_non_scope,https://www.sos.state.tx.us/elections/candidates/guide/2026/qualifications2026.shtml,Constable office family remains outside this bounded release; no holder row is created.
