@@ -30,7 +30,11 @@ DISTRICT_CLERK = "https://www.galvestoncountytx.gov/our-county/district-clerk"
 TAX = "https://www.galvestoncountytx.gov/our-county/tax-assessor-collector"
 TREASURY = "https://www.galvestoncountytx.gov/our-county/treasurer"
 CUTOVER = "https://www.galvestoncountytx.gov/our-county/advanced-components/list-detail-pages/calendar-meeting-list/-sortn-EDate/-toggle-allpast/-sortd-desc/-npage-3"
-CONSTITUTION = "https://statutes.capitol.texas.gov/Docs/CN/htm/CN.16.htm"
+CONSTITUTION = (
+    "https://statutes.capitol.texas.gov/DocViewer.aspx?"
+    "DocKey=CN%2FCN.16&ExactPhrase=False&HighlightType=1&"
+    "Phrases=Galveston%7CCounty%7CTreasurer&QueryText=Galveston+County+Treasurer"
+)
 HJR = "https://capitol.texas.gov/tlodocs/88R/billtext/html/HJ00134F.htm"
 EXPERIENCE_ID = "e0b0fef416cd42ad991b8ae95d22bb59"
 EXPERIENCE_TITLE = "Galveston Final2"
