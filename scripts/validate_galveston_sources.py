@@ -136,7 +136,7 @@ def fetch_html(url: str, *, optional: bool = False, attempts: int = 3) -> str | 
         except urllib.error.HTTPError as exc:
             last_error = exc
             if optional and exc.code in {403, 429}:
-                print(f"Optional county page blocked with HTTP {exc.code}: {url}")
+                print(f"Optional source page blocked with HTTP {exc.code}: {url}")
                 return None
             if attempt == attempts:
                 raise
@@ -145,12 +145,12 @@ def fetch_html(url: str, *, optional: bool = False, attempts: int = 3) -> str | 
             last_error = exc
             if attempt == attempts:
                 if optional:
-                    print(f"Optional county page unavailable: {url}: {exc}")
+                    print(f"Optional source page unavailable: {url}: {exc}")
                     return None
                 raise
             time.sleep(attempt * 4)
     if optional:
-        print(f"Optional county page unavailable: {url}: {last_error}")
+        print(f"Optional source page unavailable: {url}: {last_error}")
         return None
     raise RuntimeError(f"Unable to fetch {url}: {last_error}")
 
@@ -268,13 +268,19 @@ def validate_optional_county_pages() -> None:
 
 
 def validate_state_authorities() -> None:
-    constitution = searchable(fetch_html(CONSTITUTION) or "")
-    for marker in ("galveston county", "county treasurer", "abolished"):
-        if marker not in constitution:
-            raise SystemExit(f"Texas Constitution lost Galveston Treasurer abolition marker: {marker}")
+    constitution_raw = fetch_html(CONSTITUTION, optional=True)
+    if constitution_raw:
+        constitution = searchable(constitution_raw)
+        for marker in ("galveston", "treasurer", "abolished"):
+            if marker not in constitution:
+                raise SystemExit(f"Texas Constitution DocViewer lost marker: {marker}")
+        if "sec 44" not in constitution and "section 44" not in constitution:
+            raise SystemExit("Texas Constitution DocViewer lost Section 44 context.")
 
+    # The enrolled resolution is required live. It supplies both the constitutional
+    # amendment text and the January 1, 2024 effective-date provision.
     hjr = searchable(fetch_html(HJR) or "")
-    for marker in ("galveston county", "county treasurer", "january 1 2024"):
+    for marker in ("galveston county", "county treasurer", "abolished", "january 1 2024"):
         if marker not in hjr:
             raise SystemExit(f"H.J.R. 134 lost abolition marker: {marker}")
 
