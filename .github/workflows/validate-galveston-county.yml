@@ -1,0 +1,320 @@
+name: Validate Galveston County effective-date cutover
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-galveston-county:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Validate roster, abolition, cutover, and portal contracts
+        run: |
+          python - <<'PY'
+          import html
+          import json
+          import re
+          import time
+          import urllib.parse
+          import urllib.request
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          OFFICIALS = 'https://www.galvestoncountytx.gov/our-county/elected-officials'
+          COURT = 'https://www.galvestoncountytx.gov/our-county/county-judge/commissioners-court'
+          JUDGE = 'https://www.galvestoncountytx.gov/our-county/county-judge'
+          COMMISSIONERS = [
+              'https://www.galvestoncountytx.gov/our-county/commissioners/commissioner-1',
+              'https://www.galvestoncountytx.gov/our-county/commissioners/commissioner-2',
+              'https://www.galvestoncountytx.gov/our-county/commissioners/commissioner-3',
+              'https://www.galvestoncountytx.gov/our-county/commissioners/commissioner-4',
+          ]
+          SHERIFF = 'https://sheriff.galvestoncountytx.gov/'
+          COUNTY_CLERK = 'https://www.galvestoncountytx.gov/our-county/county-clerk'
+          DISTRICT_CLERK = 'https://www.galvestoncountytx.gov/our-county/district-clerk'
+          TAX = 'https://www.galvestoncountytx.gov/our-county/tax-assessor-collector'
+          TREASURY = 'https://www.galvestoncountytx.gov/our-county/treasurer'
+          CONSTITUTION = 'https://statutes.capitol.texas.gov/Docs/CN/htm/CN.16.htm'
+          HJR = 'https://capitol.texas.gov/tlodocs/88R/billtext/html/HJ00134F.htm'
+          CUTOVER = 'https://www.galvestoncountytx.gov/our-county/advanced-components/list-detail-pages/calendar-meeting-list/-sortn-EDate/-toggle-allpast/-sortd-desc/-npage-3'
+          EXPERIENCE_ID = 'e0b0fef416cd42ad991b8ae95d22bb59'
+          EXPERIENCE_TITLE = 'Galveston Final2'
+          EXPERIENCE_OWNER = 'sigler_n'
+          PORTAL = 'https://www.arcgis.com/sharing/rest'
+          LAYER = 'https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/Galveston_County_Commissioner_Precincts_2026/FeatureServer/0'
+          ROOT = LAYER.rsplit('/', 1)[0]
+          FIELD = 'Commission'
+          EFFECTIVE_MS = int(datetime(2026, 6, 29, tzinfo=timezone.utc).timestamp() * 1000)
+          OLD_ROOTS = [
+              'https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/Galveston_County_Commissioner_Precincts/FeatureServer',
+              'https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/commissionerpct/FeatureServer',
+          ]
+          CONTRACT_PATH = Path('data/raw/galveston-county/portal-source-contract.json')
+          ID_RE = re.compile(r'(?<![0-9a-fA-F])([0-9a-fA-F]{32})(?![0-9a-fA-F])')
+
+          def fetch(url, json_response=False):
+              request = urllib.request.Request(url, headers={'User-Agent': 'Civic-Cartography-validator/1.0'})
+              last_error = None
+              for attempt in range(1, 6):
+                  try:
+                      with urllib.request.urlopen(request, timeout=45) as response:
+                          if json_response:
+                              return json.load(response)
+                          return html.unescape(response.read().decode('utf-8', errors='replace'))
+                  except Exception as exc:
+                      last_error = exc
+                      if attempt == 5:
+                          raise
+                      time.sleep(attempt * 5)
+              raise last_error
+
+          def searchable(value):
+              return re.sub(r'[^a-z0-9]+', ' ', value.casefold()).strip()
+
+          def require_aliases(page, label, aliases):
+              for options in aliases:
+                  if not any(option in page for option in options):
+                      raise SystemExit(f'{label} lost current holder variants: {options!r}')
+
+          aliases = (
+              ('mark a henry', 'mark henry'),
+              ('darrell apffel',),
+              ('joe giusti',),
+              ('hank dugie',),
+              ('dr robin armstrong', 'robin armstrong'),
+              ('jimmy fullen',),
+              ('dwight d sullivan', 'dwight sullivan'),
+              ('john d kinard', 'john kinard'),
+              ('cheryl e johnson', 'cheryl johnson'),
+          )
+          officials = searchable(fetch(OFFICIALS))
+          require_aliases(officials, 'Galveston County elected-officials directory', aliases)
+
+          court = searchable(fetch(COURT))
+          require_aliases(court, 'Galveston County Commissioners Court page', aliases[:5])
+
+          individual_pages = [
+              (JUDGE, aliases[0]),
+              (COMMISSIONERS[0], aliases[1]),
+              (COMMISSIONERS[1], aliases[2]),
+              (COMMISSIONERS[2], aliases[3]),
+              (COMMISSIONERS[3], aliases[4]),
+              (SHERIFF, aliases[5]),
+              (COUNTY_CLERK, aliases[6]),
+              (DISTRICT_CLERK, aliases[7]),
+              (TAX, aliases[8]),
+          ]
+          for url, options in individual_pages:
+              page = searchable(fetch(url))
+              require_aliases(page, url, (options,))
+
+          treasury = searchable(fetch(TREASURY))
+          if 'treasury' not in treasury or 'division of the county clerk' not in treasury:
+              raise SystemExit('Galveston County Treasury page lost the County Clerk division structure.')
+
+          constitution = searchable(fetch(CONSTITUTION))
+          for marker in ('galveston county', 'county treasurer', 'abolished'):
+              if marker not in constitution:
+                  raise SystemExit(f'Texas Constitution lost Galveston Treasurer abolition marker: {marker}')
+
+          hjr = searchable(fetch(HJR))
+          for marker in ('galveston county', 'county treasurer', 'january 1 2024'):
+              if marker not in hjr:
+                  raise SystemExit(f'H.J.R. 134 lost abolition marker: {marker}')
+
+          cutover = searchable(fetch(CUTOVER))
+          for marker in ('commissioner', 'jp', 'precinct', '6 29 2026'):
+              if marker not in cutover:
+                  raise SystemExit(f'Galveston County cutover announcement lost marker: {marker}')
+
+          contract = json.loads(CONTRACT_PATH.read_text(encoding='utf-8'))
+          assert contract['experience_item_id'] == EXPERIENCE_ID
+          assert contract['experience_item_title'] == EXPERIENCE_TITLE
+          assert contract['experience_item_owner'] == EXPERIENCE_OWNER
+          assert contract['effective_date'] == '2026-06-29'
+          assert contract['operational_layer_url'] == LAYER
+          assert contract['district_field'] == FIELD
+          assert contract['district_values'] == ['1', '2', '3', '4']
+          selected = contract['selected_candidate']
+          assert selected['layer_url'] == LAYER
+          assert selected['post_cutover'] is True
+          assert selected['referenced_by_experience_graph'] is True
+          assert any('pre-cutover' in candidate['rejection_reason'] for candidate in contract['rejected_candidates'])
+
+          experience = fetch(f'{PORTAL}/content/items/{EXPERIENCE_ID}?f=json', json_response=True)
+          if experience.get('id') != EXPERIENCE_ID or experience.get('title') != EXPERIENCE_TITLE or experience.get('owner') != EXPERIENCE_OWNER:
+              raise SystemExit(f'Unexpected Galveston Experience metadata: {experience!r}')
+          experience_data = fetch(f'{PORTAL}/content/items/{EXPERIENCE_ID}/data?f=json', json_response=True)
+          graph_texts = [json.dumps(experience_data, sort_keys=True)]
+          for item_id in sorted(set(ID_RE.findall(graph_texts[0])))[:24]:
+              try:
+                  metadata = fetch(f'{PORTAL}/content/items/{item_id}?f=json', json_response=True)
+                  data = fetch(f'{PORTAL}/content/items/{item_id}/data?f=json', json_response=True)
+              except Exception:
+                  continue
+              graph_texts.extend([json.dumps(metadata, sort_keys=True), json.dumps(data, sort_keys=True)])
+
+          service = fetch(f'{ROOT}?f=json', json_response=True)
+          service_item_id = str(service.get('serviceItemId') or '')
+          graph_text = '\n'.join(graph_texts).lower()
+          if not (ROOT.lower() in graph_text or LAYER.lower() in graph_text or (service_item_id and service_item_id.lower() in graph_text)):
+              raise SystemExit('The public Experience graph no longer references the dedicated 2026 service.')
+          service_item = fetch(f'{PORTAL}/content/items/{service_item_id}?f=json', json_response=True) if service_item_id else {}
+          metadata = fetch(f'{LAYER}?f=json', json_response=True)
+          if metadata.get('geometryType') != 'esriGeometryPolygon':
+              raise SystemExit(f'Unexpected Galveston Commissioner geometry type: {metadata.get("geometryType")!r}')
+          fields = {str(field.get('name') or '') for field in metadata.get('fields', [])}
+          if FIELD not in fields:
+              raise SystemExit(f'Galveston Commissioner layer lost {FIELD}: {sorted(fields)}')
+          params = urllib.parse.urlencode({
+              'where': '1=1',
+              'outFields': FIELD,
+              'returnGeometry': 'false',
+              'orderByFields': FIELD,
+              'f': 'json',
+          })
+          payload = fetch(f'{LAYER}/query?{params}', json_response=True)
+          values = []
+          for feature in payload.get('features', []):
+              text = str(feature.get('attributes', {}).get(FIELD) or '')
+              match = re.search(r'(?<!\d)([1-4])(?!\d)', text)
+              if match:
+                  values.append(match.group(1))
+          if {value: values.count(value) for value in sorted(set(values))} != {'1': 1, '2': 1, '3': 1, '4': 1}:
+              raise SystemExit(f'Unexpected Galveston Commissioner values: {values!r}')
+          dates = [
+              int(service_item.get('created') or 0),
+              int(service_item.get('modified') or 0),
+              int((service.get('editingInfo') or {}).get('lastEditDate') or (service.get('editingInfo') or {}).get('dataLastEditDate') or 0),
+              int((metadata.get('editingInfo') or {}).get('lastEditDate') or (metadata.get('editingInfo') or {}).get('dataLastEditDate') or 0),
+          ]
+          if max(dates) < EFFECTIVE_MS:
+              raise SystemExit('Dedicated 2026 Galveston service lost post-cutover item/layer evidence.')
+
+          old_proven = 0
+          for old_root in OLD_ROOTS:
+              try:
+                  old_service = fetch(f'{old_root}?f=json', json_response=True)
+                  old_item_id = str(old_service.get('serviceItemId') or '')
+                  old_item = fetch(f'{PORTAL}/content/items/{old_item_id}?f=json', json_response=True) if old_item_id else {}
+              except Exception:
+                  continue
+              old_dates = [int(old_item.get('created') or 0), int(old_item.get('modified') or 0)]
+              if max(old_dates) and max(old_dates) < EFFECTIVE_MS:
+                  old_proven += 1
+          if old_proven < 1:
+              raise SystemExit('No older official Commissioner service remains proven pre-cutover.')
+          print('Galveston County roster, abolished-office, cutover, Experience, and layer contracts match the release.')
+          PY
+
+      - name: Fetch current Galveston County Commissioner precincts
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/galveston-county/precincts
+            if python scripts/fetch_arcgis_districts.py \
+              --layer-url https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/Galveston_County_Commissioner_Precincts_2026/FeatureServer/0 \
+              --district-ids 1,2,3,4 \
+              --district-field Commission \
+              --district-type commissioner_precinct \
+              --district-name-prefix "Commissioner Precinct" \
+              --jurisdiction-name "Galveston County" \
+              --record-id-prefix TX:county:galveston:commissioner_precinct \
+              --geometry-id-prefix galveston-county-commissioner-precinct \
+              --source-agency "Galveston County GIS" \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/galveston-county/precincts/raw/commissioner-precincts-1-4.geojson \
+              --output build/galveston-county/precincts/geojson/galveston_county_commissioner_precincts.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Galveston County precincts match source
+        run: |
+          python scripts/compare_arcgis_district_snapshot.py \
+            --committed-raw data/raw/galveston-county/commissioner-precincts-1-4.geojson \
+            --fresh-raw build/galveston-county/precincts/raw/commissioner-precincts-1-4.geojson \
+            --committed-canonical data/geojson/galveston_county_commissioner_precincts.geojson \
+            --fresh-canonical build/galveston-county/precincts/geojson/galveston_county_commissioner_precincts.geojson
+
+      - name: Fetch current Galveston County boundary
+        run: |
+          for attempt in 1 2 3 4 5; do
+            rm -rf build/galveston-county/county
+            if python scripts/fetch_tigerweb_county.py \
+              --geoid 48167 \
+              --record-id TX:county:galveston:countywide:COUNTYWIDE \
+              --geometry-id galveston-county-countywide \
+              --retrieved-at 2026-08-02 \
+              --raw-output build/galveston-county/county/raw/tigerweb-county-48167.geojson \
+              --output build/galveston-county/county/geojson/galveston_county_countywide.geojson; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 5 ]; then exit 1; fi
+            sleep $((attempt * 5))
+          done
+
+      - name: Verify committed Galveston County boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/galveston-county/tigerweb-county-48167.geojson \
+            --fresh-raw build/galveston-county/county/raw/tigerweb-county-48167.geojson \
+            --committed-canonical data/geojson/galveston_county_countywide.geojson \
+            --fresh-canonical build/galveston-county/county/geojson/galveston_county_countywide.geojson
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+
+      - name: Calculate Galveston County combined canonical digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          paths = [
+              Path('data/geojson/galveston_county_countywide.geojson'),
+              Path('data/geojson/galveston_county_commissioner_precincts.geojson'),
+          ]
+          digest = hashlib.sha256()
+          for path in sorted(paths, key=lambda item: item.name):
+              digest.update(path.name.encode('utf-8'))
+              digest.update(b'\0')
+              digest.update(path.read_bytes())
+              digest.update(b'\0')
+          value = digest.hexdigest()
+          output = Path('build/galveston-county/release-sha256.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(value + '\n', encoding='utf-8')
+          print(f'Galveston County combined canonical SHA-256: {value}')
+          PY
+
+      - name: Upload Galveston County validation check
+        uses: actions/upload-artifact@v4
+        with:
+          name: galveston-county-validation
+          path: build/galveston-county/
+          if-no-files-found: error
