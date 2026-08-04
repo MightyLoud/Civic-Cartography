@@ -59,7 +59,10 @@ def live():
     contracts=[
       ("https://www.elliscountytx.gov/128/County-Judge",("John Wray",)),
       ("https://www.co.ellis.tx.us/CivicAlerts.aspx?AID=1119",("John Wray","May 15 2025","November 2026")),
-      ("https://www.elliscountytx.gov/Directory.aspx?did=46",("Randy Stinson","Lane Grayson","Louis Ponder","Kyle Butler")),
+      ("https://www.elliscountytx.gov/124/Precinct-One",("Randy Stinson",)),
+      ("https://www.elliscountytx.gov/125/Precinct-Two",("Lane Grayson",)),
+      ("https://www.elliscountytx.gov/126/Precinct-Three",("Louis Ponder",)),
+      ("https://www.elliscountytx.gov/127/Precinct-Four",("Kyle Butler",)),
       ("https://www.elliscountytx.gov/directory.aspx?EID=220",("Brad Norman","Sheriff")),
       ("https://www.elliscountytx.gov/73/County-and-District-Attorney",("Lindy Beaty","felony","misdemeanor","legal advice")),
       ("https://www.elliscountytx.gov/74/County-Clerk",("Krystal Valdez",)),
