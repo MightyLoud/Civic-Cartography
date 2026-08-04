@@ -1,0 +1,72 @@
+name: Publish Presidio County permanent data package
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/publish-presidio-data.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-presidio-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/presidio-county-mixed-optional-offices
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install pymupdf pyshp pyproj shapely
+      - name: Generate exact Commissioner geometry
+        run: |
+          python scripts/derive_presidio_commissioner_precincts.py \
+            --retrieved-at 2026-08-04 \
+            --work-dir build/presidio-publish/commissioners/work \
+            --raw-output data/raw/presidio-county/commissioner-precincts-1-4.geojson \
+            --output data/geojson/presidio_county_commissioner_precincts.geojson \
+            --contract-output data/raw/presidio-county/gis-source-contract.json \
+            --evidence-output data/raw/presidio-county/derivation-evidence.json
+      - name: Generate current Census county boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48377 \
+            --record-id TX:county:presidio:countywide:COUNTYWIDE \
+            --geometry-id presidio-county-countywide \
+            --retrieved-at 2026-08-04 \
+            --raw-output data/raw/presidio-county/tigerweb-county-48377.geojson \
+            --output data/geojson/presidio_county_countywide.geojson
+      - name: Pin release digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          paths=[Path('data/geojson/presidio_county_countywide.geojson'),Path('data/geojson/presidio_county_commissioner_precincts.geojson')]
+          digest=hashlib.sha256()
+          for path in sorted(paths,key=lambda p:p.name):
+              digest.update(path.name.encode());digest.update(b'\0');digest.update(path.read_bytes());digest.update(b'\0')
+          value=digest.hexdigest()
+          for path in (Path('tests/test_presidio_county_roster.py'),Path('docs/jurisdictions/presidio-county-tx.md')):
+              path.write_text(path.read_text(encoding='utf-8').replace('__DIGEST__',value),encoding='utf-8')
+          print(value)
+          PY
+      - name: Validate permanent package
+        run: |
+          python scripts/validate_presidio_sources.py
+          pytest -q
+          python scripts/validate.py
+          python scripts/validate_geojson.py
+      - name: Publish and remove temporary bootstrap
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm --ignore-unmatch .github/workflows/bootstrap-presidio-county.yml .github/workflows/publish-presidio-data.yml scripts/bootstrap_presidio_geometry.py
+          git add data/geojson/presidio_county_commissioner_precincts.geojson data/geojson/presidio_county_countywide.geojson data/raw/presidio-county/commissioner-precincts-1-4.geojson data/raw/presidio-county/gis-source-contract.json data/raw/presidio-county/derivation-evidence.json data/raw/presidio-county/tigerweb-county-48377.geojson tests/test_presidio_county_roster.py docs/jurisdictions/presidio-county-tx.md
+          git commit -m "Publish Presidio County mixed optional-office data"
+          git push origin HEAD:agent/presidio-county-mixed-optional-offices
