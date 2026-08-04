@@ -1,0 +1,7 @@
+office_name,officeholder_or_structure,scope_status,source_url,notes
+County Attorney,County office,NON_SCOPE,https://www.co.concho.tx.us/page/concho.County.Attorney,Prosecutor office is outside this bounded constitutional county roster.
+District Attorney,Multi-county district office,NON_SCOPE,https://www.co.concho.tx.us/page/concho.District.Attorney,Judicial-district prosecutor is outside this county roster.
+District Court Judge,Judicial office,NON_SCOPE,https://www.co.concho.tx.us/page/concho.District.Court,Judicial office is not included.
+Justice of the Peace,Scott Spoonts,NON_SCOPE,https://www.co.concho.tx.us/page/concho.Elections,Precinct judicial office is explicitly excluded.
+County Constable,Paul Pearson,NON_SCOPE,https://www.co.concho.tx.us/page/concho.Elections,Constable is explicitly excluded from this release scope.
+Elections Chief Deputy Clerk,Melissa Infante,NON_SCOPE,https://www.co.concho.tx.us/page/concho.Elections,Administrative elections role is not a separate elected office in this release.
