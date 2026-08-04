@@ -1,0 +1,9 @@
+office_name,geography_type,geography_id,officeholder,selection_method,source_url,source_retrieved_at,notes
+County Judge,countywide,COUNTYWIDE,David Dillard,election,https://www.co.concho.tx.us/page/concho.County.Judge,2026-08-04,Current elected County Judge confirmed by the county office and Elections pages.
+County Commissioner Precinct 1,commissioner_precinct,1,Trey Bradshaw,election,https://www.co.concho.tx.us/page/concho.commissioners.court,2026-08-04,Current elected Commissioner for Precinct 1.
+County Commissioner Precinct 2,commissioner_precinct,2,Eric Gully,election,https://www.co.concho.tx.us/page/concho.commissioners.court,2026-08-04,Current elected Commissioner for Precinct 2.
+County Commissioner Precinct 3,commissioner_precinct,3,Chad Miller,election,https://www.co.concho.tx.us/page/concho.commissioners.court,2026-08-04,Current elected Commissioner for Precinct 3; this is not the current Sheriff/Tax Assessor-Collector.
+County Commissioner Precinct 4,commissioner_precinct,4,Keith Dillard,election,https://www.co.concho.tx.us/page/concho.commissioners.court,2026-08-04,Current elected Commissioner for Precinct 4.
+Sheriff/Tax Assessor-Collector,countywide,COUNTYWIDE,Brent Frazier,election,https://www.co.concho.tx.us/page/concho.Elections,2026-08-04,One combined elected office. County Sheriff and Tax Assessor-Collector pages independently identify Brent Frazier.
+County/District Clerk,countywide,COUNTYWIDE,Amber Hall,election,https://www.co.concho.tx.us/page/concho.County.Clerk,2026-08-04,One combined elected clerk office performing both county- and district-clerk functions.
+County Treasurer,countywide,COUNTYWIDE,Jenifer Gierisch,election,https://www.co.concho.tx.us/page/concho.County.Treasurer,2026-08-04,Current elected County Treasurer.

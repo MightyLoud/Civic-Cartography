@@ -1,0 +1,21 @@
+source_id,source_type,source_url,retrieved_at,authority,notes
+concho-elections,county_page,https://www.co.concho.tx.us/page/concho.Elections,2026-08-04,official,Current campaign-finance roster identifies all eight scoped holders and both combined offices.
+concho-county-judge,county_page,https://www.co.concho.tx.us/page/concho.County.Judge,2026-08-04,official,Current County Judge.
+concho-commissioners,county_page,https://www.co.concho.tx.us/page/concho.commissioners.court,2026-08-04,official,Current Commissioners and map links.
+concho-sheriff,county_page,https://www.co.concho.tx.us/page/concho.Sheriff,2026-08-04,official,Current Sheriff Brent Frazier.
+concho-tax-assessor,county_page,https://www.co.concho.tx.us/page/concho.County.Assessor.Collector,2026-08-04,official,Current Tax Assessor-Collector Brent Frazier.
+concho-clerk,county_page,https://www.co.concho.tx.us/page/concho.County.Clerk,2026-08-04,official,Current County and District Clerk Amber Hall.
+concho-treasurer,county_page,https://www.co.concho.tx.us/page/concho.County.Treasurer,2026-08-04,official,Current County Treasurer Jenifer Gierisch.
+concho-official-map,county_pdf,https://www.co.concho.tx.us/upload/page/6097/County%20Precinct%20Map_11222023102640.PDF,2026-08-04,official,Countywide Commissioner and VTD plan; SHA-256 pinned.
+concho-precinct-1-map,county_pdf,https://www.co.concho.tx.us/upload/page/6097/County%20Precinct%201%20Map_11222023102811.PDF,2026-08-04,official,Commissioner Precinct 1 detail map.
+concho-precinct-2-map,county_pdf,https://www.co.concho.tx.us/upload/page/6097/County%20Precinct%202%20Map_11222023102828.PDF,2026-08-04,official,Commissioner Precinct 2 detail map.
+concho-precinct-3-map,county_pdf,https://www.co.concho.tx.us/upload/page/6097/County%20Precinct%203%20Map_11222023102842.PDF,2026-08-04,official,Commissioner Precinct 3 detail map.
+concho-precinct-4-map,county_pdf,https://www.co.concho.tx.us/upload/page/6097/County%20Precinct%204%20Map_11222023102857.PDF,2026-08-04,official,Commissioner Precinct 4 detail map.
+tlc-precincts-26p,state_dataset,https://data.capitol.texas.gov/dataset/precincts,2026-08-04,official,Current 2026 primary voting-precinct polygons.
+census-concho-county,federal_dataset,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82,2026-08-04,official,Current county boundary for GEOID 48095.
+texas-constitution-article-8,state_constitution,https://tcss.legis.texas.gov/resources/CN/htm/CN.8.htm,2026-08-04,official,Article VIII Section 14 controls the sheriff and assessor-collector combination in counties under 10000 unless voters create a separate office.
+texas-constitution-article-5,state_constitution,https://tcss.legis.texas.gov/resources/CN/htm/CN.5.htm,2026-08-04,official,Article V Section 20 authorizes a combined district and county clerk in small counties.
+texas-sos-qualifications,state_guidance,https://www.sos.texas.gov/elections/candidates/guide/2026/qualifications2026.shtml,2026-08-04,official,Current office qualifications and four-year terms.
+txdmv-concho,state_directory,https://www.txdmv.gov/find-your-local-tax-office-dmv/by-county/Concho,2026-08-04,official,Independently identifies Brent Frazier as Concho Tax Assessor-Collector.
+comptroller-concho,state_directory,https://comptroller.texas.gov/taxes/property-tax/county-directory/concho.php,2026-08-04,official,Independently identifies Brent Frazier as Tax Assessor-Collector.
+sos-tax-directory-stale,state_directory,https://www.sos.state.tx.us/elections/voter/tac.shtml,2026-08-04,official_stale,Still lists Chad Miller; retained as documented stale evidence and rejected in favor of current county filings and two current state directories.
