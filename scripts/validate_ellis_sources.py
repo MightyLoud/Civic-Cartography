@@ -10,6 +10,7 @@ NON_SCOPE=ROOT/"data/raw/ellis-county/non-scope-offices.csv"
 MANIFEST=ROOT/"data/raw/ellis-county/source-manifest.csv"
 CONTRACT=ROOT/"data/raw/ellis-county/gis-source-contract.json"
 EXPECTED={"County Judge":"John Wray","County Commissioner Precinct 1":"Randy Stinson","County Commissioner Precinct 2":"Lane Grayson","County Commissioner Precinct 3":"Louis Ponder","County Commissioner Precinct 4":"Kyle Butler","Sheriff":"Brad Norman","County and District Attorney":"Lindy Beaty","County Clerk":"Krystal Valdez","District Clerk":"Melanie Reed","Tax Assessor-Collector":"Richard Rozier","County Treasurer":"Cheryl Chambers"}
+EXPECTED_GROUPS={"1":[*[str(v) for v in range(1001,1015)],"1060"],"2":[str(v) for v in range(1015,1027)],"3":[*[str(v) for v in range(1027,1040)],"1061"],"4":[str(v) for v in range(1040,1060)]}
 HEADERS={"User-Agent":"Mozilla/5.0 Civic-Cartography-validator/1.0","Accept-Encoding":"identity"}
 def rows(path):
     with path.open(newline="",encoding="utf-8") as h:return list(csv.DictReader(h))
@@ -47,9 +48,13 @@ def committed():
     sources=rows(MANIFEST)
     if len(sources)!=22:raise SystemExit(f"Expected 22 sources, found {len(sources)}")
     contract=json.loads(CONTRACT.read_text(encoding="utf-8"))
-    if not contract["layer_url"].endswith("/MapServer/680") or contract["district_field"]!="Commissioner_Pct":raise SystemExit("Ellis GIS layer contract changed")
-    if contract["commissioner_precinct_count"]!=4 or contract["district_ids"]!=["1","2","3","4"]:raise SystemExit("Ellis Commissioner count changed")
-    if contract["adopted_at"]!="2021-11-30" or contract["effective_at"]!="2023-01-01":raise SystemExit("Ellis redistricting dates changed")
+    if not contract["commissioner_identity_layer_url"].endswith("/MapServer/680") or contract["district_field"]!="Commissioner_Pct":raise SystemExit("Ellis GIS identity-layer contract changed")
+    if contract["commissioner_precinct_count"]!=4 or contract["voting_precinct_count"]!=61:raise SystemExit("Ellis geography count changed")
+    if contract["commissioner_source_voting_precinct_ids"]!=EXPECTED_GROUPS:raise SystemExit("Ellis Commissioner assignment changed")
+    if contract["split_descendants"]!={"1060":{"district":"1","parent":"1006"},"1061":{"district":"3","parent":"1038"}}:raise SystemExit("Ellis split-parent contract changed")
+    if contract["commissioner_adopted_at"]!="2021-11-30" or contract["commissioner_effective_at"]!="2023-01-01":raise SystemExit("Ellis Commissioner-plan dates changed")
+    if contract["split_accepted_at"]!="2025-04-15" or contract["split_effective_at"]!="2026-01-01":raise SystemExit("Ellis split dates changed")
+    if contract["interdistrict_overlap_area_degrees"]!=0 or contract["union_symmetric_difference_area_degrees"]!=0 or contract["all_voting_precincts_assigned"] is not True:raise SystemExit("Ellis topology contract changed")
 def live():
     contracts=[
       ("https://www.elliscountytx.gov/128/County-Judge",("John Wray","May 15 2025")),
@@ -60,7 +65,7 @@ def live():
       ("https://www.elliscountytx.gov/79/District-Clerk",("Melanie Reed",)),
       ("https://www.elliscountytx.gov/directory.aspx?EID=58",("Richard Rozier",)),
       ("https://www.elliscountytx.gov/78/County-Treasurer",("Cheryl Chambers",)),
-      ("https://www.elliscountytx.gov/1072/Redistricting-Maps-20212025",("November 30 2021","January 1 2023")),
+      ("https://www.elliscountytx.gov/1072/Redistricting-Maps-20212025",("November 30 2021","January 1 2023","Precinct 1060","Precinct 1061","January 1 2026")),
     ]
     accessible=0
     for url,markers in contracts:
