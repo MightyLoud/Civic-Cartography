@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "batch_id": "WA-PB02",
+  "selection_extracted_at": "2026-08-04T17:31:15Z",
+  "sources": {
+    "workbook": {
+      "filename": "Nested_Divisions_Improved.xlsx",
+      "range": "Municipalities!A1:Y68309",
+      "sha256": "dad097530321be8672f34ee6a9448ba4b19b362c80c70c7f6875141f229ebae4"
+    },
+    "maintained_ocdids": {
+      "repository": "opencivicdata/ocd-division-ids",
+      "revision": "a52719a15852fc8c8418194016c16657591930ad",
+      "identifier_file": "identifiers/country-us.csv",
+      "identifier_blob": "bca1de20902adabb89961d08e68e0400d41dde50"
+    },
+    "prior_selection_crosswalk": {
+      "path": "evidence/production-batch-wa-100/selection/selection-crosswalk.json",
+      "overlap_count": 10,
+      "overlap_bounds": [
+        "Roslyn",
+        "Sequim"
+      ],
+      "identity_and_nesting_parity": true
+    }
+  },
+  "counts": {
+    "active_incorporated_municipalities": 281,
+    "completed_before_production_batch_1": 116,
+    "production_batch_1_targets": 100,
+    "production_batch_2_targets": 65,
+    "exact_maintained_ocdid_matches": 65,
+    "wave_a_targets": 20,
+    "wave_b_targets": 20,
+    "wave_c_targets": 20,
+    "wave_d_targets": 5,
+    "replacement_queue": 0,
+    "duplicate_target_ids": 0,
+    "duplicate_geoids": 0,
+    "duplicate_ocdids": 0,
+    "unresolved_workbook_rows": 0,
+    "unresolved_maintained_ocdids": 0
+  },
+  "selection_rules": [
+    "Preserve WA-PB02-001 through WA-PB02-065 from the merged manifest.",
+    "Sort by Census GEOID after the eight explicit completed exclusions in issue 134.",
+    "Resolve every target by exact Census GEOID to one maintained OCDID.",
+    "Preserve county, SLDU, and SLDL values as non-empty lists.",
+    "Do not substitute, silently remove, or hand-patch a failing municipality."
+  ]
+}
