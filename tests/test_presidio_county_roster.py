@@ -1,7 +1,7 @@
 from pathlib import Path
 import csv, hashlib, json
 ROOT=Path(__file__).resolve().parents[1]
-EXPECTED_DIGEST="__DIGEST__"
+EXPECTED_DIGEST="1175c70e85f15a26b212271e5c058ed4b42bf13911dfed955af8f398631d70d6"
 def csv_rows(path):return list(csv.DictReader((ROOT/path).open(encoding="utf-8")))
 def test_presidio_roster_and_mixed_contract():
  rows=csv_rows("data/raw/presidio-county/current-elected-offices.csv")

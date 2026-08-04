@@ -38,4 +38,4 @@ The release publishes one Census countywide feature and four Commissioner featur
 
 Combined canonical SHA-256:
 
-`__DIGEST__`
+`1175c70e85f15a26b212271e5c058ed4b42bf13911dfed955af8f398631d70d6`
