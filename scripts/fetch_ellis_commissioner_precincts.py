@@ -96,16 +96,21 @@ def fetch_native_features() -> tuple[dict[str, Any], dict[str, Any], str, int]:
             continue
         geometry = source.get("geometry")
         if not isinstance(geometry, dict):
-            raise ValueError(f"District {district_id} lacks geometry")
+            excluded_maintenance_records += 1
+            continue
         rings = geometry.get("rings")
         if not isinstance(rings, list) or not rings:
-            raise ValueError(f"District {district_id} lacks polygon rings")
+            excluded_maintenance_records += 1
+            continue
         selected.append((int(district_id), {"type": "Feature", "properties": normalize_source_properties(attributes), "geometry": normalize_polygon_geometry({"type": "Polygon", "coordinates": rings})}))
 
     selected.sort(key=lambda item: item[0])
     found = {str(number) for number, _ in selected}
     if found != EXPECTED_IDS or len(selected) != 4:
-        raise ValueError(f"Expected precincts 1-4 exactly once; found {sorted(found)}")
+        counts = {district_id: 0 for district_id in EXPECTED_IDS}
+        for number, _ in selected:
+            counts[str(number)] += 1
+        raise ValueError(f"Expected precincts 1-4 exactly once; found counts {counts}")
     return {"type": "FeatureCollection", "features": [feature for _, feature in selected]}, metadata, request_url, excluded_maintenance_records
 
 
