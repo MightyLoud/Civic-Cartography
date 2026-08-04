@@ -70,3 +70,5 @@ jobs:
           git add data/geojson/presidio_county_commissioner_precincts.geojson data/geojson/presidio_county_countywide.geojson data/raw/presidio-county/commissioner-precincts-1-4.geojson data/raw/presidio-county/gis-source-contract.json data/raw/presidio-county/derivation-evidence.json data/raw/presidio-county/tigerweb-county-48377.geojson tests/test_presidio_county_roster.py docs/jurisdictions/presidio-county-tx.md
           git commit -m "Publish Presidio County mixed optional-office data"
           git push origin HEAD:agent/presidio-county-mixed-optional-offices
+
+# Activation edit for the publisher workflow.
