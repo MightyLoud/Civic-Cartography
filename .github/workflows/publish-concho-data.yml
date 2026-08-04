@@ -1,0 +1,72 @@
+name: Publish Concho County permanent data package
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/publish-concho-data.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-concho-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/concho-county-dual-combined-offices
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install pymupdf pyshp pyproj shapely
+      - name: Generate exact Commissioner geometry
+        run: |
+          python scripts/derive_concho_commissioner_precincts.py \
+            --retrieved-at 2026-08-04 \
+            --work-dir build/concho-publish/commissioners/work \
+            --raw-output data/raw/concho-county/commissioner-precincts-1-4.geojson \
+            --output data/geojson/concho_county_commissioner_precincts.geojson \
+            --contract-output data/raw/concho-county/gis-source-contract.json \
+            --evidence-output data/raw/concho-county/derivation-evidence.json
+      - name: Generate current Census county boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48095 \
+            --record-id TX:county:concho:countywide:COUNTYWIDE \
+            --geometry-id concho-county-countywide \
+            --retrieved-at 2026-08-04 \
+            --raw-output data/raw/concho-county/tigerweb-county-48095.geojson \
+            --output data/geojson/concho_county_countywide.geojson
+      - name: Pin release digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          paths=[Path('data/geojson/concho_county_countywide.geojson'),Path('data/geojson/concho_county_commissioner_precincts.geojson')]
+          digest=hashlib.sha256()
+          for path in sorted(paths,key=lambda p:p.name):
+              digest.update(path.name.encode());digest.update(b'\0');digest.update(path.read_bytes());digest.update(b'\0')
+          value=digest.hexdigest()
+          for path in (Path('tests/test_concho_county_roster.py'),Path('docs/jurisdictions/concho-county-tx.md')):
+              path.write_text(path.read_text(encoding='utf-8').replace('__DIGEST__',value),encoding='utf-8')
+          print(value)
+          PY
+      - name: Validate permanent package
+        run: |
+          python scripts/validate_concho_sources.py
+          pytest -q
+          python scripts/validate.py
+          python scripts/validate_geojson.py
+      - name: Publish and remove temporary bootstrap
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/bootstrap-concho-county.yml .github/workflows/publish-concho-data.yml scripts/bootstrap_concho_geometry.py
+          git add data/geojson/concho_county_commissioner_precincts.geojson data/geojson/concho_county_countywide.geojson data/raw/concho-county/commissioner-precincts-1-4.geojson data/raw/concho-county/gis-source-contract.json data/raw/concho-county/derivation-evidence.json data/raw/concho-county/tigerweb-county-48095.geojson tests/test_concho_county_roster.py docs/jurisdictions/concho-county-tx.md
+          git commit -m "Publish Concho County dual combined-office data"
+          git push origin HEAD:agent/concho-county-dual-combined-offices
