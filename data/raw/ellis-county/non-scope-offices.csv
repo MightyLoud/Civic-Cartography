@@ -1,0 +1,9 @@
+office_name,holder_or_body,scope_reason,source_url,source_retrieved_at,notes
+County Court at Law Judge,County Courts at Law,judicial_office,https://www.elliscountytx.gov/177/County-Courts-at-Law,2026-08-04,Judicial offices are outside the bounded constitutional county executive roster.
+District Court Judge,Ellis County District Courts,judicial_office,https://www.elliscountytx.gov/165/District-Courts,2026-08-04,Multi-court judicial offices are explicit non-scope.
+Justice of the Peace,Precincts 1-4,judicial_office,https://www.elliscountytx.gov/272/Justice-of-the-Peace,2026-08-04,JP offices are explicit non-scope for this release.
+County Constable,Precincts 1-4,law_enforcement_precinct_office,https://www.elliscountytx.gov/256/Constables,2026-08-04,Constable offices are explicit non-scope for this release.
+County Auditor,Staci Parr,appointed_office,https://www.elliscountytx.gov/68/County-Auditor,2026-08-04,County Auditor is appointed by district judges and is not part of the elected roster.
+Appraisal District Directors,Ellis Appraisal District Board,special_district_governance,https://www.elliscad.com/board-of-directors,2026-08-04,Appraisal-district governance is outside county-government scope.
+Elections Administrator,Ellis County Elections,appointed_administrative_office,https://www.elliscountytx.gov/312/Elections,2026-08-04,Administrative election staff are not elected constitutional offices.
+Emergency Services District Directors,Ellis County ESD boards,special_district_governance,https://www.elliscountytx.gov/380/Emergency-Services-Districts,2026-08-04,Special-district boards are outside county-government scope.

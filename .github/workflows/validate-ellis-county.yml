@@ -1,0 +1,88 @@
+name: Validate Ellis County combined County and District Attorney schema
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-ellis-county.yml"
+      - "data/normalized/ellis_county_elected_offices.csv"
+      - "data/raw/ellis-county/**"
+      - "data/geojson/ellis_county_*.geojson"
+      - "docs/jurisdictions/ellis-county-tx.md"
+      - "scripts/derive_ellis_commissioner_precincts.py"
+      - "scripts/validate_ellis_sources.py"
+      - "tests/test_ellis_county_roster.py"
+
+jobs:
+  validate-ellis-county:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install validation and geometry dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install pyshp pyproj shapely
+      - name: Validate roster, combined prosecutor, scope, and sources
+        run: python scripts/validate_ellis_sources.py
+      - name: Regenerate current Commissioner geometry
+        run: |
+          python scripts/derive_ellis_commissioner_precincts.py \
+            --retrieved-at 2026-08-04 \
+            --work-dir build/ellis-county/commissioners/work \
+            --raw-output build/ellis-county/commissioners/raw/commissioner-precincts-1-4.geojson \
+            --output build/ellis-county/commissioners/geojson/ellis_county_commissioner_precincts.geojson \
+            --contract-output build/ellis-county/commissioners/gis-source-contract.json \
+            --evidence-output build/ellis-county/commissioners/derivation-evidence.json
+      - name: Verify committed Commissioner snapshots and contract
+        run: |
+          cmp data/raw/ellis-county/commissioner-precincts-1-4.geojson build/ellis-county/commissioners/raw/commissioner-precincts-1-4.geojson
+          cmp data/geojson/ellis_county_commissioner_precincts.geojson build/ellis-county/commissioners/geojson/ellis_county_commissioner_precincts.geojson
+          cmp data/raw/ellis-county/gis-source-contract.json build/ellis-county/commissioners/gis-source-contract.json
+          cmp data/raw/ellis-county/derivation-evidence.json build/ellis-county/commissioners/derivation-evidence.json
+      - name: Fetch current county boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48139 \
+            --record-id TX:county:ellis:countywide:COUNTYWIDE \
+            --geometry-id ellis-county-countywide \
+            --retrieved-at 2026-08-04 \
+            --raw-output build/ellis-county/county/raw/tigerweb-county-48139.geojson \
+            --output build/ellis-county/county/geojson/ellis_county_countywide.geojson
+      - name: Verify committed county boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/ellis-county/tigerweb-county-48139.geojson \
+            --fresh-raw build/ellis-county/county/raw/tigerweb-county-48139.geojson \
+            --committed-canonical data/geojson/ellis_county_countywide.geojson \
+            --fresh-canonical build/ellis-county/county/geojson/ellis_county_countywide.geojson
+      - name: Run automated tests
+        run: pytest -q
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+      - name: Verify Ellis County release digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          expected='cbac5b521198324dc1fa4e7a94974a27a5c91a84db401803d7235c5f3f2ae343'
+          paths=[Path('data/geojson/ellis_county_countywide.geojson'),Path('data/geojson/ellis_county_commissioner_precincts.geojson')]
+          digest=hashlib.sha256()
+          for path in sorted(paths,key=lambda p:p.name):
+              digest.update(path.name.encode());digest.update(b'\0');digest.update(path.read_bytes());digest.update(b'\0')
+          value=digest.hexdigest()
+          if value != expected:
+              raise SystemExit(f'{value} != {expected}')
+          output=Path('build/ellis-county/release-sha256.txt');output.parent.mkdir(parents=True,exist_ok=True);output.write_text(value+'\n')
+          print(f'Ellis County combined canonical SHA-256: {value}')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ellis-county-validation
+          path: build/ellis-county/
+          if-no-files-found: error
