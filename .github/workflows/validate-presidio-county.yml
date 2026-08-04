@@ -1,0 +1,48 @@
+name: Validate Presidio County mixed optional-office structure
+on:
+  pull_request:
+    paths:
+      - "data/raw/presidio-county/**"
+      - "data/normalized/presidio_county_elected_offices.csv"
+      - "data/geojson/presidio_county_*.geojson"
+      - "scripts/derive_presidio_commissioner_precincts.py"
+      - "scripts/validate_presidio_sources.py"
+      - "tests/test_presidio_county_roster.py"
+      - "docs/jurisdictions/presidio-county-tx.md"
+      - ".github/workflows/validate-presidio-county.yml"
+jobs:
+  validate-presidio-county:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install pymupdf pyshp pyproj shapely
+      - name: Validate roster and sources
+        run: python scripts/validate_presidio_sources.py
+      - name: Regenerate Commissioner geometry
+        run: |
+          python scripts/derive_presidio_commissioner_precincts.py --retrieved-at 2026-08-04 --work-dir build/presidio/commissioners/work --raw-output build/presidio/commissioners/raw.geojson --output build/presidio/commissioners/canonical.geojson --contract-output build/presidio/commissioners/contract.json --evidence-output build/presidio/commissioners/evidence.json
+          cmp data/raw/presidio-county/commissioner-precincts-1-4.geojson build/presidio/commissioners/raw.geojson
+          cmp data/geojson/presidio_county_commissioner_precincts.geojson build/presidio/commissioners/canonical.geojson
+          cmp data/raw/presidio-county/gis-source-contract.json build/presidio/commissioners/contract.json
+      - name: Verify county boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py --geoid 48377 --record-id TX:county:presidio:countywide:COUNTYWIDE --geometry-id presidio-county-countywide --retrieved-at 2026-08-04 --raw-output build/presidio/county/raw.geojson --output build/presidio/county/canonical.geojson
+          python scripts/compare_tigerweb_snapshot.py --committed-raw data/raw/presidio-county/tigerweb-county-48377.geojson --fresh-raw build/presidio/county/raw.geojson --committed-canonical data/geojson/presidio_county_countywide.geojson --fresh-canonical build/presidio/county/canonical.geojson
+      - name: Validate repository
+        run: |
+          pytest -q
+          python scripts/validate.py
+          python scripts/validate_geojson.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: presidio-county-validation
+          path: build/presidio/
+          if-no-files-found: error
