@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 from pathlib import Path
 
@@ -29,6 +30,13 @@ CROSSWALK_PATH = (
 UPSTREAM_REVISION = "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
 RUN_ASOF = "2026-08-04T18:00:00Z"
 WAVE_SCHEMA_PATH = ROOT / "schemas" / "production-wave-report.schema.json"
+EVIDENCE_ROOT = (
+    ROOT
+    / "evidence"
+    / "production-batch-wa-65"
+    / "wave-a"
+    / "2026-08-04"
+)
 
 
 def _reports(tmp_path: Path) -> tuple[object, dict, dict, dict, dict]:
@@ -140,6 +148,44 @@ def test_wave_a_rejects_crosswalk_from_a_different_batch(tmp_path: Path) -> None
             upstream_repository="openstates/jurisdictions",
             upstream_revision=UPSTREAM_REVISION,
         )
+
+
+def test_committed_wave_a_evidence_is_valid_and_self_hashing() -> None:
+    acceptance_path = EVIDENCE_ROOT / "wave-a-acceptance.json"
+    inventory_path = EVIDENCE_ROOT / "artifact-inventory.json"
+    evidence_path = EVIDENCE_ROOT / "evidence-manifest.json"
+    acceptance = json.loads(acceptance_path.read_text(encoding="utf-8"))
+    inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
+    evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+    schema = json.loads(WAVE_SCHEMA_PATH.read_text(encoding="utf-8"))
+
+    Draft202012Validator(schema).validate(acceptance)
+    assert acceptance["batch_id"] == "WA-PB02"
+    assert acceptance["wave"] == "WA-PB02-A"
+    assert acceptance["summary"]["gate_passed"] is True
+    assert [row["target_id"] for row in acceptance["targets"]] == [
+        f"WA-PB02-{number:03d}" for number in range(1, 21)
+    ]
+    assert evidence["summary"] == acceptance["summary"]
+    assert evidence["criteria"] == acceptance["criteria"]
+    assert evidence["artifact_inventory"]["inventory_sha256"] == (
+        inventory["inventory_sha256"]
+    )
+    assert evidence["evidence_files"]["acceptance"]["sha256"] == (
+        hashlib.sha256(acceptance_path.read_bytes()).hexdigest()
+    )
+    assert evidence["evidence_files"]["first_inventory"]["sha256"] == (
+        hashlib.sha256(inventory_path.read_bytes()).hexdigest()
+    )
+    assert evidence["evidence_files"]["first_inventory"]["sha256"] == (
+        evidence["evidence_files"]["second_inventory"]["sha256"]
+    )
+    assert evidence["evidence_files"]["first_inventory"]["size_bytes"] == (
+        evidence["evidence_files"]["second_inventory"]["size_bytes"]
+    )
+    assert evidence["workflow"]["head_sha"] == (
+        "167b8b077589a1d67366161f3e6475db948cb45c"
+    )
 
 
 def test_wave_a_rejects_flattened_nesting(tmp_path: Path) -> None:

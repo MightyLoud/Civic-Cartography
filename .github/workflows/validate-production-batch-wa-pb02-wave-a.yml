@@ -32,6 +32,7 @@ on:
       - "data/authoritative_jurisdiction_overrides.yml"
       - "data/canonical_alias_groups.yml"
       - "evidence/production-batch-wa-65/selection/**"
+      - "evidence/production-batch-wa-65/wave-a/**"
       - "evidence/production-batch-wa-100/selection/selection-crosswalk.json"
       - "patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch"
       - "patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch"
