@@ -1,0 +1,23 @@
+source_id,source_type,source_url,retrieved_at,authority,notes
+ellis-county-judge,county_page,https://www.elliscountytx.gov/128/County-Judge,2026-08-04,official,Identifies John Wray as County Judge and records the May 7 and May 15 2025 appointment transition.
+ellis-judge-appointment,county_news,https://www.co.ellis.tx.us/CivicAlerts.aspx?AID=1119,2026-08-04,official,Explains the appointment and term through the November 2026 election.
+ellis-commissioners-directory,county_directory,https://www.elliscountytx.gov/Directory.aspx?did=46,2026-08-04,official,Current Commissioners Randy Stinson Lane Grayson Louis Ponder and Kyle Butler.
+ellis-commissioner-1,county_page,https://www.elliscountytx.gov/124/Precinct-One,2026-08-04,official,Current Precinct 1 Commissioner and district description.
+ellis-commissioner-2,county_page,https://www.elliscountytx.gov/125/Precinct-Two,2026-08-04,official,Current Precinct 2 Commissioner and district description.
+ellis-commissioner-3,county_page,https://www.elliscountytx.gov/126/Precinct-Three,2026-08-04,official,Current Precinct 3 Commissioner and district description.
+ellis-commissioner-4,county_page,https://www.elliscountytx.gov/127/Precinct-Four,2026-08-04,official,Current Precinct 4 Commissioner and district description.
+ellis-sheriff,county_directory,https://www.elliscountytx.gov/directory.aspx?EID=220,2026-08-04,official,Current Sheriff Brad Norman.
+ellis-county-district-attorney,county_page,https://www.elliscountytx.gov/73/County-and-District-Attorney,2026-08-04,official,Identifies Lindy Beaty and documents combined felony misdemeanor juvenile and county-counsel functions.
+ellis-county-clerk,county_page,https://www.elliscountytx.gov/74/County-Clerk,2026-08-04,official,Current County Clerk Krystal Valdez.
+ellis-district-clerk,county_page,https://www.elliscountytx.gov/79/District-Clerk,2026-08-04,official,Current District Clerk Melanie Reed.
+ellis-tax-assessor,county_directory,https://www.elliscountytx.gov/directory.aspx?EID=58,2026-08-04,official,Current Tax Assessor and Collector Richard Rozier.
+ellis-treasurer,county_page,https://www.elliscountytx.gov/78/County-Treasurer,2026-08-04,official,Current County Treasurer Cheryl Chambers.
+tac-combined-prosecutor,county_association,https://texascountiesdeliver.org/county-officials/county-and-district-attorney/,2026-08-04,official,Explains that one combination County and District Attorney office performs both component functions.
+tac-county-official-duties,county_association,https://www.county.org/resources/resource-library/education-and-training/duties-texas-county-officials,2026-08-04,official,Independent office-structure and county-official duties guidance.
+ellis-commissioner-maps,county_page,https://www.elliscountytx.gov/1211/Commissioner-Maps-and-Address-Lists,2026-08-04,official,County GIS map and address-list landing page.
+ellis-redistricting,county_page,https://www.elliscountytx.gov/1072/Redistricting-Maps-20212025,2026-08-04,official,Records November 30 2021 adoption and January 1 2023 effective date for current Commissioner districts.
+ellis-gis-web-map,county_gis_item,https://maps.co.ellis.tx.us/portal/sharing/rest/content/items/05e4901568c044819986934e3715b292/data?f=json,2026-08-04,official,County-owned Web Map identifies current Commissioner layer 680.
+ellis-gis-map-service,county_gis_item,https://maps.co.ellis.tx.us/portal/sharing/rest/content/items/484f13cc3dc64f20a64f5528ef79e035?f=json,2026-08-04,official,County-owned Map Service item for the Commissioner Web Map.
+ellis-gis-layer-680,county_gis_layer,https://maps.co.ellis.tx.us/arcgis/rest/services/Commissioner/Commissioner_Web_Map/MapServer/680,2026-08-04,official,Current Commissioner Precincts 2023-2032 layer with district field Commissioner_Pct.
+census-ellis-county,federal_dataset,https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82,2026-08-04,official,Current county boundary for GEOID 48139.
+texas-sos-qualifications,state_guidance,https://www.sos.texas.gov/elections/candidates/guide/2026/qualifications2026.shtml,2026-08-04,official,Current qualifications and terms for Texas county elected offices.
