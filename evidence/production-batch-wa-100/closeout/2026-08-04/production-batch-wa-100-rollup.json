@@ -1,0 +1,931 @@
+{
+  "batch_id": "WA-PB01",
+  "criteria": {
+    "all_five_waves_present": true,
+    "all_nesting_relationships_preserved_as_lists": true,
+    "all_target_artifacts_have_sha256": true,
+    "all_target_output_paths_are_unique": true,
+    "all_targets_are_deterministic": true,
+    "all_targets_generate_division_and_jurisdiction": true,
+    "all_targets_match_government_classification": true,
+    "all_targets_resolve_by_exact_maintained_ocdid": true,
+    "all_wave_artifact_inventories_are_identical": true,
+    "all_wave_criteria_pass": true,
+    "all_wave_gates_pass": true,
+    "all_waves_share_one_selection_crosswalk": true,
+    "all_waves_share_one_upstream_revision": true,
+    "complete_target_id_coverage": true,
+    "no_duplicate_target_ids": true,
+    "no_exceptions_or_review_reasons": true,
+    "zero_target_only_production_patches": true
+  },
+  "crosswalk_sha256": "e5e9739380738142535040bd643225638f236706a684374c83d1178fc3a96d38",
+  "rollup_id": "4cc54ecf8306a400d5a9",
+  "schema_version": 1,
+  "summary": {
+    "artifact_hash_count": 210,
+    "deterministic_count": 100,
+    "exception_or_review_count": 0,
+    "gate_passed": true,
+    "nesting_parity_count": 100,
+    "passed_count": 100,
+    "target_artifact_count": 200,
+    "target_count": 100,
+    "target_only_patch_count": 0,
+    "wave_count": 5,
+    "wave_scoped_shared_artifact_count": 10
+  },
+  "targets": [
+    {
+      "census_geoid": "5333560",
+      "jurisdiction_name": "Ione",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:ione",
+      "status": "passed",
+      "target_id": "WA-PB01-001",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5333805",
+      "jurisdiction_name": "Issaquah",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:issaquah",
+      "status": "passed",
+      "target_id": "WA-PB01-002",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5334575",
+      "jurisdiction_name": "Kahlotus",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kahlotus",
+      "status": "passed",
+      "target_id": "WA-PB01-003",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5334645",
+      "jurisdiction_name": "Kalama",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kalama",
+      "status": "passed",
+      "target_id": "WA-PB01-004",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5335065",
+      "jurisdiction_name": "Kelso",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kelso",
+      "status": "passed",
+      "target_id": "WA-PB01-005",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5335170",
+      "jurisdiction_name": "Kenmore",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kenmore",
+      "status": "passed",
+      "target_id": "WA-PB01-006",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5335275",
+      "jurisdiction_name": "Kennewick",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kennewick",
+      "status": "passed",
+      "target_id": "WA-PB01-007",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5335485",
+      "jurisdiction_name": "Kettle Falls",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kettle_falls",
+      "status": "passed",
+      "target_id": "WA-PB01-008",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5335940",
+      "jurisdiction_name": "Kirkland",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kirkland",
+      "status": "passed",
+      "target_id": "WA-PB01-009",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5336045",
+      "jurisdiction_name": "Kittitas",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:kittitas",
+      "status": "passed",
+      "target_id": "WA-PB01-010",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5336395",
+      "jurisdiction_name": "Krupp",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:krupp",
+      "status": "passed",
+      "target_id": "WA-PB01-011",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5336710",
+      "jurisdiction_name": "La Center",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:la_center",
+      "status": "passed",
+      "target_id": "WA-PB01-012",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5336745",
+      "jurisdiction_name": "Lacey",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lacey",
+      "status": "passed",
+      "target_id": "WA-PB01-013",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5336780",
+      "jurisdiction_name": "La Conner",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:la_conner",
+      "status": "passed",
+      "target_id": "WA-PB01-014",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5336850",
+      "jurisdiction_name": "LaCrosse",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lacrosse",
+      "status": "passed",
+      "target_id": "WA-PB01-015",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5337270",
+      "jurisdiction_name": "Lake Forest Park",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lake_forest_park",
+      "status": "passed",
+      "target_id": "WA-PB01-016",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5337900",
+      "jurisdiction_name": "Lake Stevens",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lake_stevens",
+      "status": "passed",
+      "target_id": "WA-PB01-017",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5338038",
+      "jurisdiction_name": "Lakewood",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lakewood",
+      "status": "passed",
+      "target_id": "WA-PB01-018",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5338215",
+      "jurisdiction_name": "Lamont",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lamont",
+      "status": "passed",
+      "target_id": "WA-PB01-019",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5338355",
+      "jurisdiction_name": "Langley",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:langley",
+      "status": "passed",
+      "target_id": "WA-PB01-020",
+      "wave": "WA-PB01-A"
+    },
+    {
+      "census_geoid": "5338495",
+      "jurisdiction_name": "Latah",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:latah",
+      "status": "passed",
+      "target_id": "WA-PB01-021",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5338845",
+      "jurisdiction_name": "Leavenworth",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:leavenworth",
+      "status": "passed",
+      "target_id": "WA-PB01-022",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5339335",
+      "jurisdiction_name": "Liberty Lake",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:liberty_lake",
+      "status": "passed",
+      "target_id": "WA-PB01-023",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5339510",
+      "jurisdiction_name": "Lind",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lind",
+      "status": "passed",
+      "target_id": "WA-PB01-024",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5340070",
+      "jurisdiction_name": "Long Beach",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:long_beach",
+      "status": "passed",
+      "target_id": "WA-PB01-025",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5340245",
+      "jurisdiction_name": "Longview",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:longview",
+      "status": "passed",
+      "target_id": "WA-PB01-026",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5340770",
+      "jurisdiction_name": "Lyman",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lyman",
+      "status": "passed",
+      "target_id": "WA-PB01-027",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5340805",
+      "jurisdiction_name": "Lynden",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lynden",
+      "status": "passed",
+      "target_id": "WA-PB01-028",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5340840",
+      "jurisdiction_name": "Lynnwood",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:lynnwood",
+      "status": "passed",
+      "target_id": "WA-PB01-029",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5340980",
+      "jurisdiction_name": "Mabton",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mabton",
+      "status": "passed",
+      "target_id": "WA-PB01-030",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5341225",
+      "jurisdiction_name": "McCleary",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mccleary",
+      "status": "passed",
+      "target_id": "WA-PB01-031",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5342275",
+      "jurisdiction_name": "Malden",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:malden",
+      "status": "passed",
+      "target_id": "WA-PB01-032",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5342800",
+      "jurisdiction_name": "Mansfield",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mansfield",
+      "status": "passed",
+      "target_id": "WA-PB01-033",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5343150",
+      "jurisdiction_name": "Maple Valley",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:maple_valley",
+      "status": "passed",
+      "target_id": "WA-PB01-034",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5343395",
+      "jurisdiction_name": "Marcus",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:marcus",
+      "status": "passed",
+      "target_id": "WA-PB01-035",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5343955",
+      "jurisdiction_name": "Marysville",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:marysville",
+      "status": "passed",
+      "target_id": "WA-PB01-036",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5344165",
+      "jurisdiction_name": "Mattawa",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mattawa",
+      "status": "passed",
+      "target_id": "WA-PB01-037",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5344690",
+      "jurisdiction_name": "Medical Lake",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:medical_lake",
+      "status": "passed",
+      "target_id": "WA-PB01-038",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5344725",
+      "jurisdiction_name": "Medina",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:medina",
+      "status": "passed",
+      "target_id": "WA-PB01-039",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5345005",
+      "jurisdiction_name": "Mercer Island",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mercer_island",
+      "status": "passed",
+      "target_id": "WA-PB01-040",
+      "wave": "WA-PB01-B"
+    },
+    {
+      "census_geoid": "5345180",
+      "jurisdiction_name": "Mesa",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mesa",
+      "status": "passed",
+      "target_id": "WA-PB01-041",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5345285",
+      "jurisdiction_name": "Metaline",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:metaline",
+      "status": "passed",
+      "target_id": "WA-PB01-042",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5345320",
+      "jurisdiction_name": "Metaline Falls",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:metaline_falls",
+      "status": "passed",
+      "target_id": "WA-PB01-043",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5345865",
+      "jurisdiction_name": "Mill Creek",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mill_creek",
+      "status": "passed",
+      "target_id": "WA-PB01-044",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5345985",
+      "jurisdiction_name": "Millwood",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:millwood",
+      "status": "passed",
+      "target_id": "WA-PB01-045",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5346020",
+      "jurisdiction_name": "Milton",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:milton",
+      "status": "passed",
+      "target_id": "WA-PB01-046",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5346685",
+      "jurisdiction_name": "Monroe",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:monroe",
+      "status": "passed",
+      "target_id": "WA-PB01-047",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5346895",
+      "jurisdiction_name": "Montesano",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:montesano",
+      "status": "passed",
+      "target_id": "WA-PB01-048",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347175",
+      "jurisdiction_name": "Morton",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:morton",
+      "status": "passed",
+      "target_id": "WA-PB01-049",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347245",
+      "jurisdiction_name": "Moses Lake",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:moses_lake",
+      "status": "passed",
+      "target_id": "WA-PB01-050",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347315",
+      "jurisdiction_name": "Mossyrock",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mossyrock",
+      "status": "passed",
+      "target_id": "WA-PB01-051",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347490",
+      "jurisdiction_name": "Mountlake Terrace",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mountlake_terrace",
+      "status": "passed",
+      "target_id": "WA-PB01-052",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347560",
+      "jurisdiction_name": "Mount Vernon",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mount_vernon",
+      "status": "passed",
+      "target_id": "WA-PB01-053",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347665",
+      "jurisdiction_name": "Moxee",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:moxee",
+      "status": "passed",
+      "target_id": "WA-PB01-054",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347735",
+      "jurisdiction_name": "Mukilteo",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mukilteo",
+      "status": "passed",
+      "target_id": "WA-PB01-055",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347805",
+      "jurisdiction_name": "Naches",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:naches",
+      "status": "passed",
+      "target_id": "WA-PB01-056",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347980",
+      "jurisdiction_name": "Napavine",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:napavine",
+      "status": "passed",
+      "target_id": "WA-PB01-057",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5348540",
+      "jurisdiction_name": "Nespelem",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:nespelem",
+      "status": "passed",
+      "target_id": "WA-PB01-058",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5348645",
+      "jurisdiction_name": "Newcastle",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:newcastle",
+      "status": "passed",
+      "target_id": "WA-PB01-059",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5348820",
+      "jurisdiction_name": "Newport",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:newport",
+      "status": "passed",
+      "target_id": "WA-PB01-060",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5349275",
+      "jurisdiction_name": "Nooksack",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:nooksack",
+      "status": "passed",
+      "target_id": "WA-PB01-061",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5349415",
+      "jurisdiction_name": "Normandy Park",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:normandy_park",
+      "status": "passed",
+      "target_id": "WA-PB01-062",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5349485",
+      "jurisdiction_name": "North Bend",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:north_bend",
+      "status": "passed",
+      "target_id": "WA-PB01-063",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5349555",
+      "jurisdiction_name": "North Bonneville",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:north_bonneville",
+      "status": "passed",
+      "target_id": "WA-PB01-064",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5350045",
+      "jurisdiction_name": "Northport",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:northport",
+      "status": "passed",
+      "target_id": "WA-PB01-065",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5350325",
+      "jurisdiction_name": "Oakesdale",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:oakesdale",
+      "status": "passed",
+      "target_id": "WA-PB01-066",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5350360",
+      "jurisdiction_name": "Oak Harbor",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:oak_harbor",
+      "status": "passed",
+      "target_id": "WA-PB01-067",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5350430",
+      "jurisdiction_name": "Oakville",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:oakville",
+      "status": "passed",
+      "target_id": "WA-PB01-068",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5350570",
+      "jurisdiction_name": "Ocean Shores",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:ocean_shores",
+      "status": "passed",
+      "target_id": "WA-PB01-069",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5350745",
+      "jurisdiction_name": "Odessa",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:odessa",
+      "status": "passed",
+      "target_id": "WA-PB01-070",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5350920",
+      "jurisdiction_name": "Okanogan",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:okanogan",
+      "status": "passed",
+      "target_id": "WA-PB01-071",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5351340",
+      "jurisdiction_name": "Omak",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:omak",
+      "status": "passed",
+      "target_id": "WA-PB01-072",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5351970",
+      "jurisdiction_name": "Oroville",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:oroville",
+      "status": "passed",
+      "target_id": "WA-PB01-073",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5352005",
+      "jurisdiction_name": "Orting",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:orting",
+      "status": "passed",
+      "target_id": "WA-PB01-074",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5352215",
+      "jurisdiction_name": "Othello",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:othello",
+      "status": "passed",
+      "target_id": "WA-PB01-075",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5352495",
+      "jurisdiction_name": "Pacific",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:pacific",
+      "status": "passed",
+      "target_id": "WA-PB01-076",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5352950",
+      "jurisdiction_name": "Palouse",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:palouse",
+      "status": "passed",
+      "target_id": "WA-PB01-077",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5353545",
+      "jurisdiction_name": "Pasco",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:pasco",
+      "status": "passed",
+      "target_id": "WA-PB01-078",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5353720",
+      "jurisdiction_name": "Pateros",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:pateros",
+      "status": "passed",
+      "target_id": "WA-PB01-079",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5353930",
+      "jurisdiction_name": "Pe Ell",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:pe_ell",
+      "status": "passed",
+      "target_id": "WA-PB01-080",
+      "wave": "WA-PB01-D"
+    },
+    {
+      "census_geoid": "5355120",
+      "jurisdiction_name": "Pomeroy",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:pomeroy",
+      "status": "passed",
+      "target_id": "WA-PB01-081",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5355785",
+      "jurisdiction_name": "Port Orchard",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:port_orchard",
+      "status": "passed",
+      "target_id": "WA-PB01-082",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5355855",
+      "jurisdiction_name": "Port Townsend",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:port_townsend",
+      "status": "passed",
+      "target_id": "WA-PB01-083",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5355995",
+      "jurisdiction_name": "Poulsbo",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:poulsbo",
+      "status": "passed",
+      "target_id": "WA-PB01-084",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5356240",
+      "jurisdiction_name": "Prescott",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:prescott",
+      "status": "passed",
+      "target_id": "WA-PB01-085",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5356450",
+      "jurisdiction_name": "Prosser",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:prosser",
+      "status": "passed",
+      "target_id": "WA-PB01-086",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5356695",
+      "jurisdiction_name": "Puyallup",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:puyallup",
+      "status": "passed",
+      "target_id": "WA-PB01-087",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357115",
+      "jurisdiction_name": "Quincy",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:quincy",
+      "status": "passed",
+      "target_id": "WA-PB01-088",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357220",
+      "jurisdiction_name": "Rainier",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:rainier",
+      "status": "passed",
+      "target_id": "WA-PB01-089",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357430",
+      "jurisdiction_name": "Raymond",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:raymond",
+      "status": "passed",
+      "target_id": "WA-PB01-090",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357465",
+      "jurisdiction_name": "Reardan",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:reardan",
+      "status": "passed",
+      "target_id": "WA-PB01-091",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357535",
+      "jurisdiction_name": "Redmond",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:redmond",
+      "status": "passed",
+      "target_id": "WA-PB01-092",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357745",
+      "jurisdiction_name": "Renton",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:renton",
+      "status": "passed",
+      "target_id": "WA-PB01-093",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357850",
+      "jurisdiction_name": "Republic",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:republic",
+      "status": "passed",
+      "target_id": "WA-PB01-094",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5358235",
+      "jurisdiction_name": "Richland",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:richland",
+      "status": "passed",
+      "target_id": "WA-PB01-095",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5358410",
+      "jurisdiction_name": "Ridgefield",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:ridgefield",
+      "status": "passed",
+      "target_id": "WA-PB01-096",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5358795",
+      "jurisdiction_name": "Riverside",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:riverside",
+      "status": "passed",
+      "target_id": "WA-PB01-097",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5359145",
+      "jurisdiction_name": "Rockford",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:rockford",
+      "status": "passed",
+      "target_id": "WA-PB01-098",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5359180",
+      "jurisdiction_name": "Rock Island",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:rock_island",
+      "status": "passed",
+      "target_id": "WA-PB01-099",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5359775",
+      "jurisdiction_name": "Rosalia",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:rosalia",
+      "status": "passed",
+      "target_id": "WA-PB01-100",
+      "wave": "WA-PB01-E"
+    }
+  ],
+  "upstream": {
+    "repository": "openstates/jurisdictions",
+    "revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
+  },
+  "waves": [
+    {
+      "acceptance_path": "evidence/production-batch-wa-100/wave-a/2026-08-03/wave-a-acceptance.json",
+      "acceptance_sha256": "aea400c0c6129ff564f771874ca2fddad55e96c40262d1f5367fdb84cec6b535",
+      "artifact_count": 42,
+      "deterministic_count": 20,
+      "evaluation_id": "cd9fea3aad75dc97e7c4",
+      "gate_passed": true,
+      "inventory_sha256": "8f8328ad6d1d1e995a64905fb651d39b727eca69d436baa8c157dab2237a5cf2",
+      "nesting_parity_count": 20,
+      "passed_count": 20,
+      "run_asof": "2026-08-03T18:00:00Z",
+      "run_id": "7ad97093b4ee98e829e8",
+      "shared_artifact_count": 2,
+      "target_artifact_count": 40,
+      "target_count": 20,
+      "wave": "WA-PB01-A"
+    },
+    {
+      "acceptance_path": "evidence/production-batch-wa-100/wave-b/2026-08-03/wave-b-acceptance.json",
+      "acceptance_sha256": "19ed0f8df3e32d8c09cf1f112ff2b31a343e83669147d0e8426aaed3257a1deb",
+      "artifact_count": 42,
+      "deterministic_count": 20,
+      "evaluation_id": "d65b1634e7b02d1fe0b5",
+      "gate_passed": true,
+      "inventory_sha256": "cf8fa6e4571f2a367a4faac63266abc03e19d2c78596c312710214763a0e16d2",
+      "nesting_parity_count": 20,
+      "passed_count": 20,
+      "run_asof": "2026-08-03T20:00:00Z",
+      "run_id": "bece54b9e87136456a55",
+      "shared_artifact_count": 2,
+      "target_artifact_count": 40,
+      "target_count": 20,
+      "wave": "WA-PB01-B"
+    },
+    {
+      "acceptance_path": "evidence/production-batch-wa-100/wave-c/2026-08-04/wave-c-acceptance.json",
+      "acceptance_sha256": "5ee1a7bcd0114f15ce925847cd5de2a09cd54428acb1dcf96960df36d93ed18b",
+      "artifact_count": 42,
+      "deterministic_count": 20,
+      "evaluation_id": "f74a0997789659e39e64",
+      "gate_passed": true,
+      "inventory_sha256": "62ab678c8b58d9f01508a66fcdb535cbd6c968387ae6743f24a5441bce707465",
+      "nesting_parity_count": 20,
+      "passed_count": 20,
+      "run_asof": "2026-08-04T12:00:00Z",
+      "run_id": "3b5a11e5bf9870f69730",
+      "shared_artifact_count": 2,
+      "target_artifact_count": 40,
+      "target_count": 20,
+      "wave": "WA-PB01-C"
+    },
+    {
+      "acceptance_path": "evidence/production-batch-wa-100/wave-d/2026-08-04/wave-d-acceptance.json",
+      "acceptance_sha256": "8ab589b34008670b4449dc65c2c82b5aea2e1c27173bf8013d4fe09c9efeae4d",
+      "artifact_count": 42,
+      "deterministic_count": 20,
+      "evaluation_id": "723b9ea9d19a58f55574",
+      "gate_passed": true,
+      "inventory_sha256": "f30b8668c211535f97a275c553bb3fd51f78a615c0095abd1ad7f0242dfe5052",
+      "nesting_parity_count": 20,
+      "passed_count": 20,
+      "run_asof": "2026-08-04T13:00:00Z",
+      "run_id": "0f66c79b81482f1fa935",
+      "shared_artifact_count": 2,
+      "target_artifact_count": 40,
+      "target_count": 20,
+      "wave": "WA-PB01-D"
+    },
+    {
+      "acceptance_path": "evidence/production-batch-wa-100/wave-e/2026-08-04/wave-e-acceptance.json",
+      "acceptance_sha256": "61e73752bc6415d19035038ca3d9f032c550c040d2eecf2ab2f810e38105b50e",
+      "artifact_count": 42,
+      "deterministic_count": 20,
+      "evaluation_id": "05a1a026787927c1f36a",
+      "gate_passed": true,
+      "inventory_sha256": "b375c0f5fada9061f03e0369d0197b67412b1373f6c15997195fd714063d9550",
+      "nesting_parity_count": 20,
+      "passed_count": 20,
+      "run_asof": "2026-08-04T15:00:00Z",
+      "run_id": "761e4fa9c2eda4a520e0",
+      "shared_artifact_count": 2,
+      "target_artifact_count": 40,
+      "target_count": 20,
+      "wave": "WA-PB01-E"
+    }
+  ]
+}

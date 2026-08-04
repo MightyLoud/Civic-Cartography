@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://civic-cartography.example/schemas/production-batch-rollup.schema.json",
+  "title": "Production batch roll-up",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "batch_id",
+    "rollup_id",
+    "crosswalk_sha256",
+    "upstream",
+    "summary",
+    "criteria",
+    "waves",
+    "targets"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "batch_id": {"const": "WA-PB01"},
+    "rollup_id": {"type": "string", "pattern": "^[0-9a-f]{20}$"},
+    "crosswalk_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "upstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "revision"],
+      "properties": {
+        "repository": {"const": "openstates/jurisdictions"},
+        "revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "wave_count",
+        "target_count",
+        "passed_count",
+        "deterministic_count",
+        "nesting_parity_count",
+        "target_artifact_count",
+        "wave_scoped_shared_artifact_count",
+        "artifact_hash_count",
+        "exception_or_review_count",
+        "target_only_patch_count",
+        "gate_passed"
+      ],
+      "properties": {
+        "wave_count": {"const": 5},
+        "target_count": {"const": 100},
+        "passed_count": {"const": 100},
+        "deterministic_count": {"const": 100},
+        "nesting_parity_count": {"const": 100},
+        "target_artifact_count": {"const": 200},
+        "wave_scoped_shared_artifact_count": {"const": 10},
+        "artifact_hash_count": {"const": 210},
+        "exception_or_review_count": {"const": 0},
+        "target_only_patch_count": {"const": 0},
+        "gate_passed": {"const": true}
+      }
+    },
+    "criteria": {
+      "type": "object",
+      "minProperties": 17,
+      "additionalProperties": {"const": true}
+    },
+    "waves": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["wave", "acceptance_sha256", "gate_passed"],
+        "properties": {
+          "wave": {"type": "string", "pattern": "^WA-PB01-[A-E]$"},
+          "acceptance_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "gate_passed": {"const": true}
+        }
+      }
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 100,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target_id",
+          "wave",
+          "census_geoid",
+          "jurisdiction_name",
+          "maintained_ocdid",
+          "status"
+        ],
+        "properties": {
+          "target_id": {
+            "type": "string",
+            "pattern": "^WA-PB01-[0-9]{3}$"
+          },
+          "wave": {"type": "string", "pattern": "^WA-PB01-[A-E]$"},
+          "census_geoid": {"type": "string", "pattern": "^53[0-9]{5}$"},
+          "jurisdiction_name": {"type": "string", "minLength": 1},
+          "maintained_ocdid": {
+            "type": "string",
+            "pattern": "^ocd-division/country:us/state:wa/place:"
+          },
+          "status": {"const": "passed"}
+        }
+      }
+    }
+  }
+}

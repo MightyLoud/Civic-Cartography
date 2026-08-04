@@ -225,6 +225,66 @@ def test_wave_d_acceptance_uses_the_reusable_wave_contract(
     assert all(evaluation["criteria"].values())
 
 
+def test_wave_e_selection_is_the_frozen_final_twenty_targets() -> None:
+    wave = select_production_wave(
+        load_manifest(FULL_MANIFEST_PATH), "WA-PB01-E"
+    )
+    assert [target.target_id for target in wave.targets] == [
+        f"WA-PB01-{number:03d}" for number in range(81, 101)
+    ]
+    assert wave.targets[0].jurisdiction_name == "Pomeroy"
+    assert wave.targets[-1].jurisdiction_name == "Rosalia"
+    assert {target.wave for target in wave.targets} == {"WA-PB01-E"}
+
+
+def test_wave_e_acceptance_uses_the_reusable_wave_contract(
+    tmp_path: Path,
+) -> None:
+    manifest, first, second, first_inventory, second_inventory = _reports(
+        tmp_path, "WA-PB01-E"
+    )
+    evaluation = evaluate_production_wave(
+        manifest,
+        first,
+        second,
+        load_crosswalk(CROSSWALK_PATH),
+        first_inventory,
+        second_inventory,
+        upstream_repository="openstates/jurisdictions",
+        upstream_revision=UPSTREAM_REVISION,
+    )
+
+    assert evaluation["summary"]["target_count"] == 20
+    assert evaluation["summary"]["passed_count"] == 20
+    assert evaluation["summary"]["deterministic_count"] == 20
+    assert evaluation["summary"]["nesting_parity_count"] == 20
+    assert evaluation["summary"]["artifact_count"] == 40
+    assert evaluation["summary"]["gate_passed"] is True
+    assert all(evaluation["criteria"].values())
+
+
+@pytest.mark.parametrize("wave_letter", list("ABCDE"))
+def test_each_production_wave_workflow_invokes_its_matching_runner(
+    wave_letter: str,
+) -> None:
+    wave_slug = wave_letter.lower()
+    workflow_path = (
+        ROOT
+        / ".github"
+        / "workflows"
+        / f"validate-production-batch-wa-wave-{wave_slug}.yml"
+    )
+    runner_lines = [
+        line.strip()
+        for line in workflow_path.read_text(encoding="utf-8").splitlines()
+        if "run: bash scripts/run_production_batch_wa_wave_" in line
+    ]
+
+    assert runner_lines == [
+        f"run: bash scripts/run_production_batch_wa_wave_{wave_slug}_ci.sh"
+    ]
+
+
 def test_wave_a_acceptance_passes_all_gates_and_schemas(tmp_path: Path) -> None:
     manifest, first, second, first_inventory, second_inventory = _reports(tmp_path)
     evaluation = evaluate_production_wave(
