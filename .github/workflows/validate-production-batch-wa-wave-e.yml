@@ -78,7 +78,7 @@ jobs:
         run: python -m pip install -r requirements-dev.txt
 
       - name: Run and enforce WA-PB01-E
-        run: bash scripts/run_production_batch_wa_wave_d_ci.sh
+        run: bash scripts/run_production_batch_wa_wave_e_ci.sh
 
       - name: Upload WA-PB01-E evidence
         if: always()

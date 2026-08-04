@@ -263,6 +263,28 @@ def test_wave_e_acceptance_uses_the_reusable_wave_contract(
     assert all(evaluation["criteria"].values())
 
 
+@pytest.mark.parametrize("wave_letter", list("ABCDE"))
+def test_each_production_wave_workflow_invokes_its_matching_runner(
+    wave_letter: str,
+) -> None:
+    wave_slug = wave_letter.lower()
+    workflow_path = (
+        ROOT
+        / ".github"
+        / "workflows"
+        / f"validate-production-batch-wa-wave-{wave_slug}.yml"
+    )
+    runner_lines = [
+        line.strip()
+        for line in workflow_path.read_text(encoding="utf-8").splitlines()
+        if "run: bash scripts/run_production_batch_wa_wave_" in line
+    ]
+
+    assert runner_lines == [
+        f"run: bash scripts/run_production_batch_wa_wave_{wave_slug}_ci.sh"
+    ]
+
+
 def test_wave_a_acceptance_passes_all_gates_and_schemas(tmp_path: Path) -> None:
     manifest, first, second, first_inventory, second_inventory = _reports(tmp_path)
     evaluation = evaluate_production_wave(
