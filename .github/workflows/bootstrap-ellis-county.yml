@@ -14,25 +14,40 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Fetch exact county Commissioner layer
+      - name: Diagnose official layer geometry query modes
         run: |
-          python scripts/fetch_ellis_commissioner_precincts.py \
-            --retrieved-at 2026-08-04 \
-            --raw-output build/ellis-bootstrap/commissioner-precincts-1-4.geojson \
-            --output build/ellis-bootstrap/ellis_county_commissioner_precincts.geojson \
-            --contract-output build/ellis-bootstrap/gis-source-contract.json
           python - <<'PY'
-          import json
-          from pathlib import Path
-          raw=json.loads(Path('build/ellis-bootstrap/commissioner-precincts-1-4.geojson').read_text())
-          canonical=json.loads(Path('build/ellis-bootstrap/ellis_county_commissioner_precincts.geojson').read_text())
-          ids=[str(feature['properties']['Commissioner_Pct']) for feature in raw['features']]
-          geometry_types={feature['geometry']['type'] for feature in raw['features']}
-          if ids != ['1','2','3','4'] or len(canonical['features']) != 4:
-              raise SystemExit(f'Unexpected Commissioner output: ids={ids}')
-          if not geometry_types <= {'Polygon','MultiPolygon'}:
-              raise SystemExit(f'Unexpected geometry types: {geometry_types}')
-          print(json.dumps({'district_ids':ids,'geometry_types':sorted(geometry_types)},indent=2))
+          import json, pathlib, urllib.parse, urllib.request
+          out=pathlib.Path('build/ellis-bootstrap');out.mkdir(parents=True,exist_ok=True)
+          layer='https://maps.co.ellis.tx.us/arcgis/rest/services/Commissioner/Commissioner_Web_Map/MapServer/680'
+          headers={'User-Agent':'Civic-Cartography/0.1 (+https://github.com/MightyLoud/Civic-Cartography)'}
+          def get(name,url,params):
+              full=url+'?'+urllib.parse.urlencode(params)
+              try:
+                  req=urllib.request.Request(full,headers=headers)
+                  with urllib.request.urlopen(req,timeout=120) as r:data=json.load(r)
+              except Exception as exc:data={'_error':repr(exc),'_url':full}
+              (out/f'{name}.json').write_text(json.dumps(data,indent=2,sort_keys=True)+'\n')
+              return data
+          meta=get('layer-metadata',layer,{'f':'json'})
+          ids=get('ids',layer+'/query',{'where':'1=1','returnIdsOnly':'true','f':'json'})
+          object_ids=ids.get('objectIds') or []
+          variants={
+            'bulk-json':{'where':'1=1','outFields':'*','returnGeometry':'true','outSR':'4326','returnZ':'false','returnM':'false','f':'json'},
+            'bulk-geojson':{'where':'1=1','outFields':'*','returnGeometry':'true','outSR':'4326','f':'geojson'},
+            'pct-only':{'where':'Commissioner_Pct IN (1,2,3,4)','outFields':'*','returnGeometry':'true','outSR':'4326','returnZ':'false','returnM':'false','f':'json'},
+          }
+          summary={'object_ids':object_ids,'metadata_geometry_type':meta.get('geometryType'),'variants':{}}
+          for name,params in variants.items():
+              data=get(name,layer+'/query',params)
+              feats=data.get('features') or []
+              summary['variants'][name]={'feature_count':len(feats),'geometry_count':sum(isinstance(f.get('geometry'),dict) for f in feats),'attributes':[f.get('attributes') or f.get('properties') for f in feats[:12]]}
+          for oid in object_ids:
+              data=get(f'object-{oid}',layer+'/query',{'objectIds':str(oid),'outFields':'*','returnGeometry':'true','outSR':'4326','returnZ':'false','returnM':'false','f':'json'})
+              feats=data.get('features') or []
+              summary.setdefault('objects',{})[str(oid)]={'feature_count':len(feats),'geometry_count':sum(isinstance(f.get('geometry'),dict) for f in feats),'attributes':[f.get('attributes') for f in feats]}
+          (out/'diagnostic-summary.json').write_text(json.dumps(summary,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(summary,indent=2,sort_keys=True))
           PY
       - uses: actions/upload-artifact@v4
         with:
