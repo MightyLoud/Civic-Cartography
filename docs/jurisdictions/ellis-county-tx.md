@@ -36,16 +36,29 @@ Commissioners Court appointed John Wray on May 7, 2025. He assumed office May 15
 
 ## Commissioner geography
 
-Ellis County's county-owned ArcGIS Enterprise Web Map identifies current MapServer layer `680`, **Commissioner Precincts (2023-2032)**. Field `Commissioner_Pct` controls precinct identity.
+Ellis County's county-owned ArcGIS Enterprise Web Map identifies MapServer layer `680`, **Commissioner Precincts (2023-2032)**. Fields `Commissioner_Pct` and `Election_Pct_Range` control precinct identity:
+
+- Commissioner Precinct 1 — election precincts `1001-1014`
+- Commissioner Precinct 2 — election precincts `1015-1026`
+- Commissioner Precinct 3 — election precincts `1027-1039`
+- Commissioner Precinct 4 — election precincts `1040-1059`
+
+The county accepted two election-precinct splits on April 15, 2025, effective January 1, 2026:
+
+- `1060` was split from `1006` and inherits Commissioner Precinct 1;
+- `1061` was split from `1038` and inherits Commissioner Precinct 3.
+
+The maintained derivation combines county identity evidence with current Texas Legislative Council `Precincts26P` polygons. It assigns all 61 current voting precincts, dissolves them into four nonempty Commissioner features, and requires zero interdistrict overlap and zero difference from the source-precinct union.
 
 The source contract preserves:
 
 - Web Map item `05e4901568c044819986934e3715b292`;
 - Map Service item `484f13cc3dc64f20a64f5528ef79e035`;
-- four publishable polygons labeled `1` through `4`;
-- explicit exclusion of geometryless service-maintenance records;
-- November 30, 2021 adoption; and
-- January 1, 2023 effective date.
+- November 30, 2021 Commissioner-plan adoption;
+- January 1, 2023 Commissioner-plan effective date;
+- April 15, 2025 split acceptance;
+- January 1, 2026 split effective date; and
+- the exact 61-to-4 precinct assignment.
 
 ## Canonical output
 
@@ -53,4 +66,4 @@ The release publishes one Census countywide feature for GEOID `48139`, four Comm
 
 Combined canonical SHA-256:
 
-`__DIGEST__`
+`cbac5b521198324dc1fa4e7a94974a27a5c91a84db401803d7235c5f3f2ae343`
