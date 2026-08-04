@@ -1,5 +1,6 @@
 name: Publish Concho County permanent data package
 
+# Activation edit after workflow registration.
 on:
   pull_request:
     paths:
