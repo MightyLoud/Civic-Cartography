@@ -2,7 +2,7 @@ from __future__ import annotations
 import csv, hashlib, json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-ROSTER=ROOT/"data/raw/concho-county/current-elected-offices.csv";COMBINED=ROOT/"data/raw/concho-county/combined-office-structure.csv";NORMALIZED=ROOT/"data/normalized/concho_county_elected_offices.csv";COUNTYWIDE=ROOT/"data/geojson/concho_county_countywide.geojson";COMMISSIONERS=ROOT/"data/geojson/concho_county_commissioner_precincts.geojson";EXPECTED_DIGEST="__DIGEST__"
+ROSTER=ROOT/"data/raw/concho-county/current-elected-offices.csv";COMBINED=ROOT/"data/raw/concho-county/combined-office-structure.csv";NORMALIZED=ROOT/"data/normalized/concho_county_elected_offices.csv";COUNTYWIDE=ROOT/"data/geojson/concho_county_countywide.geojson";COMMISSIONERS=ROOT/"data/geojson/concho_county_commissioner_precincts.geojson";EXPECTED_DIGEST="3836eb848201930578016b63397e9d0ad5678639c49fa144a6c02f234389b626"
 def rows(path):
     with path.open(newline="",encoding="utf-8") as h:return list(csv.DictReader(h))
 def features(path):return json.loads(path.read_text(encoding="utf-8"))["features"]
