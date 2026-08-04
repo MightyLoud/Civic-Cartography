@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Derive Ellis County Commissioner precincts from official current sources."""
 from __future__ import annotations
-import argparse, hashlib, json, re, shutil, sys, time, urllib.parse, urllib.request, zipfile
+import argparse, hashlib, json, re, shutil, time, urllib.parse, urllib.request, zipfile
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -15,10 +15,12 @@ WEB_MAP_ITEM_ID="05e4901568c044819986934e3715b292"
 MAP_SERVICE_ITEM_ID="484f13cc3dc64f20a64f5528ef79e035"
 LAYER_URL="https://maps.co.ellis.tx.us/arcgis/rest/services/Commissioner/Commissioner_Web_Map/MapServer/680"
 LAYER_NAME="Commissioner Precincts (2023-2032)"
+REDISTRICTING_URL="https://www.elliscountytx.gov/1072/Redistricting-Maps-20212025"
 TLC_URL="https://data.capitol.texas.gov/dataset/d04c72b9-16c4-4ab2-8c6d-c666d41e04b7/resource/33ec5b30-ee4d-424f-9769-57b87cb5e311/download/precincts26p.zip"
 TLC_SHA="70a67743d55a218ba5ce6057816563376f61cf0bc531a77d1edc98644c310107"
 COUNTY_FIPS="139";COUNTY_NAME="ellis"
-EXPECTED_RANGES={"1":(1001,1014),"2":(1015,1026),"3":(1027,1039),"4":(1040,1059)}
+BASE_RANGES={"1":(1001,1014),"2":(1015,1026),"3":(1027,1039),"4":(1040,1059)}
+SPLIT_DESCENDANTS={"1060":{"parent":"1006","district":"1"},"1061":{"parent":"1038","district":"3"}}
 UA="Civic-Cartography/0.1 (+https://github.com/MightyLoud/Civic-Cartography)"
 
 def dump(path:Path,value:Any)->None:path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value,sort_keys=True,separators=(",",":"))+"\n",encoding="utf-8")
@@ -70,11 +72,14 @@ def rounded(value:Any):
     if isinstance(value,(list,tuple)):return [rounded(v) for v in value]
     if isinstance(value,dict):return {k:rounded(v) for k,v in value.items()}
     return value
-def expected_ids(start:int,end:int)->list[str]:return [str(value) for value in range(start,end+1)]
+def sequential(start:int,end:int)->list[str]:return [str(value) for value in range(start,end+1)]
+def expected_for_district(district:str)->list[str]:
+    start,end=BASE_RANGES[district];ids=sequential(start,end)
+    ids.extend(pid for pid,rule in SPLIT_DESCENDANTS.items() if rule["district"]==district)
+    return sorted(ids,key=int)
 
 def county_identity_contract()->tuple[dict[str,dict[str,Any]],str]:
-    webmap_url=f"{PORTAL}/sharing/rest/content/items/{WEB_MAP_ITEM_ID}/data"
-    webmap,_=get_json(webmap_url,{"f":"json"})
+    webmap,_=get_json(f"{PORTAL}/sharing/rest/content/items/{WEB_MAP_ITEM_ID}/data",{"f":"json"})
     refs=[]
     for operational in webmap.get("operationalLayers",[]):
         for layer in operational.get("layers",[]):
@@ -87,21 +92,17 @@ def county_identity_contract()->tuple[dict[str,dict[str,Any]],str]:
     if not isinstance(features,list) or len(features)!=4:raise ValueError(f"Expected four identity rows, found {len(features or [])}")
     result={}
     for feature in features:
-        attrs=feature.get("attributes") or {}
-        district=code(attrs.get("Commissioner_Pct"));range_text=str(attrs.get("Election_Pct_Range") or "")
-        match=re.fullmatch(r"(\d{4})-(\d{4})",range_text)
-        if district not in EXPECTED_RANGES or not match:raise ValueError(attrs)
+        attrs=feature.get("attributes") or {};district=code(attrs.get("Commissioner_Pct"));range_text=str(attrs.get("Election_Pct_Range") or "");match=re.fullmatch(r"(\d{4})-(\d{4})",range_text)
+        if district not in BASE_RANGES or not match:raise ValueError(attrs)
         observed=(int(match.group(1)),int(match.group(2)))
-        if observed!=EXPECTED_RANGES[district]:raise ValueError({district:observed})
-        if attrs.get("Source")!="2021 Redistricting":raise ValueError(attrs)
+        if observed!=BASE_RANGES[district] or attrs.get("Source")!="2021 Redistricting":raise ValueError({district:attrs})
         result[district]=attrs
     if set(result)!={"1","2","3","4"}:raise ValueError(result)
     return result,request_url
 
 def main()->int:
     p=argparse.ArgumentParser();p.add_argument("--retrieved-at",required=True);p.add_argument("--work-dir",type=Path,required=True);p.add_argument("--raw-output",type=Path,required=True);p.add_argument("--output",type=Path,required=True);p.add_argument("--contract-output",type=Path,required=True);p.add_argument("--evidence-output",type=Path,required=True);a=p.parse_args();a.work_dir.mkdir(parents=True,exist_ok=True)
-    identity_rows,identity_request=county_identity_contract()
-    z=a.work_dir/"precincts26p.zip";download(TLC_URL,z)
+    identity_rows,identity_request=county_identity_contract();z=a.work_dir/"precincts26p.zip";download(TLC_URL,z)
     if digest(z)!=TLC_SHA:raise ValueError(f"TLC source changed: {digest(z)}")
     extract=a.work_dir/"precincts";shutil.rmtree(extract,ignore_errors=True);extract.mkdir(parents=True)
     with zipfile.ZipFile(z) as archive:archive.extractall(extract)
@@ -113,26 +114,30 @@ def main()->int:
     rows=[]
     for sr in reader.iterShapeRecords():
         attrs=dict(zip(fields,sr.record));match=bool(fips and code(attrs.get(fips))==COUNTY_FIPS) or bool(county and str(attrs.get(county) or "").strip().casefold()==COUNTY_NAME)
-        if not match:continue
-        pid=code(attrs.get(prec));g=repair(transform(to4326,shape(sr.shape.__geo_interface__)));rows.append({"id":pid,"attrs":attrs,"geometry":g})
-    ids=sorted([r["id"] for r in rows],key=int);expected=[str(value) for value in range(1001,1060)]
+        if match:rows.append({"id":code(attrs.get(prec)),"attrs":attrs,"geometry":repair(transform(to4326,shape(sr.shape.__geo_interface__)))})
+    ids=sorted([r["id"] for r in rows],key=int);expected=sequential(1001,1061)
     if ids!=expected:raise ValueError(f"Ellis voting precincts changed: expected {expected}, found {ids}")
     groups=defaultdict(list)
     for row in rows:
-        number=int(row["id"]);matches=[district for district,(start,end) in EXPECTED_RANGES.items() if start<=number<=end]
-        if len(matches)!=1:raise ValueError({row["id"]:matches})
-        groups[matches[0]].append(row)
+        pid=row["id"]
+        if pid in SPLIT_DESCENDANTS:district=SPLIT_DESCENDANTS[pid]["district"]
+        else:
+            number=int(pid);matches=[d for d,(start,end) in BASE_RANGES.items() if start<=number<=end]
+            if len(matches)!=1:raise ValueError({pid:matches})
+            district=matches[0]
+        groups[district].append(row)
     raw=[];canonical=[];geoms=[];summary={}
     for district in ("1","2","3","4"):
-        source_rows=groups[district];g=repair(unary_union([r["geometry"] for r in source_rows]));geoms.append(g);source_ids=sorted([r["id"] for r in source_rows],key=int);start,end=EXPECTED_RANGES[district]
-        if source_ids!=expected_ids(start,end):raise ValueError({district:source_ids})
-        identity=identity_rows[district]
-        props={"commissioner_precinct":district,"election_precinct_range":identity["Election_Pct_Range"],"source_voting_precinct_count":len(source_ids),"source_voting_precinct_ids":source_ids,"identity_rule":"Ellis County GIS layer 680 Election_Pct_Range","county_layer_attributes":identity,"tlc_precinct_zip_sha256":TLC_SHA}
-        geom=rounded(mapping(g));raw.append({"type":"Feature","properties":props,"geometry":geom});canonical.append({"type":"Feature","properties":{"geometry_id":f"ellis-county-commissioner-precinct-{district}","record_id":f"TX:county:ellis:commissioner_precinct:{district}","jurisdiction_name":"Ellis County","district_type":"commissioner_precinct","district_id":district,"district_name":f"Commissioner Precinct {district}","source_agency":"Ellis County GIS and Texas Legislative Council","source_layer":TLC_URL,"source_request_url":identity_request,"source_retrieved_at":a.retrieved_at,"source_district_field":"Commissioner_Pct and Election_Pct_Range","source_attributes":props},"geometry":geom});summary[district]=source_ids
+        source_rows=groups[district];source_ids=sorted([r["id"] for r in source_rows],key=int)
+        if source_ids!=expected_for_district(district):raise ValueError({district:source_ids})
+        g=repair(unary_union([r["geometry"] for r in source_rows]));geoms.append(g);identity=identity_rows[district]
+        descendants={pid:rule for pid,rule in SPLIT_DESCENDANTS.items() if rule["district"]==district}
+        props={"commissioner_precinct":district,"base_election_precinct_range":identity["Election_Pct_Range"],"source_voting_precinct_count":len(source_ids),"source_voting_precinct_ids":source_ids,"2025_split_descendants":descendants,"identity_rule":"Ellis County GIS layer 680 ranges plus official 2025 parent-child precinct splits","county_layer_attributes":identity,"tlc_precinct_zip_sha256":TLC_SHA}
+        geom=rounded(mapping(g));raw.append({"type":"Feature","properties":props,"geometry":geom});canonical.append({"type":"Feature","properties":{"geometry_id":f"ellis-county-commissioner-precinct-{district}","record_id":f"TX:county:ellis:commissioner_precinct:{district}","jurisdiction_name":"Ellis County","district_type":"commissioner_precinct","district_id":district,"district_name":f"Commissioner Precinct {district}","source_agency":"Ellis County GIS and Texas Legislative Council","source_layer":TLC_URL,"source_request_url":identity_request,"source_retrieved_at":a.retrieved_at,"source_district_field":"Commissioner_Pct, Election_Pct_Range, and 2025 split parentage","source_attributes":props},"geometry":geom});summary[district]=source_ids
     union_source=repair(unary_union([r["geometry"] for r in rows]));union_output=repair(unary_union(geoms));difference=union_output.symmetric_difference(union_source).area;overlap=sum(geoms[i].intersection(geoms[j]).area for i in range(4) for j in range(i+1,4))
     if difference!=0 or overlap!=0:raise ValueError({"difference":difference,"overlap":overlap})
     dump(a.raw_output,{"type":"FeatureCollection","features":raw});dump(a.output,{"type":"FeatureCollection","features":canonical})
-    contract={"county":"Ellis County","county_fips":COUNTY_FIPS,"county_portal_url":PORTAL,"web_map_item_id":WEB_MAP_ITEM_ID,"map_service_item_id":MAP_SERVICE_ITEM_ID,"commissioner_identity_layer_url":LAYER_URL,"commissioner_identity_layer_name":LAYER_NAME,"commissioner_identity_request_url":identity_request,"district_field":"Commissioner_Pct","election_precinct_range_field":"Election_Pct_Range","commissioner_ranges":{d:f"{s}-{e}" for d,(s,e) in EXPECTED_RANGES.items()},"tlc_precinct_url":TLC_URL,"tlc_precinct_zip_sha256":TLC_SHA,"voting_precinct_ids":expected,"commissioner_source_voting_precinct_ids":summary,"voting_precinct_count":59,"commissioner_precinct_count":4,"identity_method":"Ellis County GIS layer 680 controls Commissioner_Pct and Election_Pct_Range; current TLC precinct polygons control exact geometry.","adopted_at":"2021-11-30","effective_at":"2023-01-01","interdistrict_overlap_area_degrees":round(overlap,12),"union_symmetric_difference_area_degrees":round(difference,12),"all_voting_precincts_assigned":True}
+    contract={"county":"Ellis County","county_fips":COUNTY_FIPS,"county_portal_url":PORTAL,"web_map_item_id":WEB_MAP_ITEM_ID,"map_service_item_id":MAP_SERVICE_ITEM_ID,"commissioner_identity_layer_url":LAYER_URL,"commissioner_identity_layer_name":LAYER_NAME,"commissioner_identity_request_url":identity_request,"district_field":"Commissioner_Pct","election_precinct_range_field":"Election_Pct_Range","base_commissioner_ranges":{d:f"{s}-{e}" for d,(s,e) in BASE_RANGES.items()},"election_precinct_split_authority_url":REDISTRICTING_URL,"split_descendants":SPLIT_DESCENDANTS,"split_accepted_at":"2025-04-15","split_effective_at":"2026-01-01","tlc_precinct_url":TLC_URL,"tlc_precinct_zip_sha256":TLC_SHA,"voting_precinct_ids":expected,"commissioner_source_voting_precinct_ids":summary,"voting_precinct_count":61,"commissioner_precinct_count":4,"identity_method":"Ellis County GIS layer 680 controls the 2021 base ranges. Official 2025 splits created 1060 from 1006 and 1061 from 1038, inheriting their parent Commissioner precincts. Current TLC polygons control exact geometry.","commissioner_adopted_at":"2021-11-30","commissioner_effective_at":"2023-01-01","interdistrict_overlap_area_degrees":round(overlap,12),"union_symmetric_difference_area_degrees":round(difference,12),"all_voting_precincts_assigned":True}
     dump(a.contract_output,contract);dump(a.evidence_output,{"contract":contract,"county_identity_rows":identity_rows,"raw_output_sha256":digest(a.raw_output),"canonical_output_sha256":digest(a.output)})
-    print(json.dumps({"voting_precincts_assigned":59,"commissioner_precincts":4,"assignments":{d:[ids[0],ids[-1],len(ids)] for d,ids in summary.items()},"overlap":overlap,"union_difference":difference},indent=2));return 0
+    print(json.dumps({"voting_precincts_assigned":61,"commissioner_precincts":4,"assignments":{d:[ids[0],ids[-1],len(ids)] for d,ids in summary.items()},"overlap":overlap,"union_difference":difference},indent=2));return 0
 if __name__=="__main__":raise SystemExit(main())
