@@ -8,6 +8,8 @@ import fitz, shapefile
 MAP_URL="https://www.co.concho.tx.us/upload/page/6097/County%20Precinct%20Map_11222023102640.PDF"
 TLC_URL="https://data.capitol.texas.gov/dataset/d04c72b9-16c4-4ab2-8c6d-c666d41e04b7/resource/33ec5b30-ee4d-424f-9769-57b87cb5e311/download/precincts26p.zip"
 UA="Civic-Cartography/0.1 (+https://github.com/MightyLoud/Civic-Cartography)"
+COUNTY_FIPS="95"
+COUNTY_NAME="concho"
 
 def download(url: str, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -46,9 +48,11 @@ def main()->int:
     if not prec or not (fips or county):raise SystemExit(fields)
     records=[]
     for sr in reader.iterShapeRecords():
-        row=dict(zip(fields,sr.record));match=bool(fips and code(row.get(fips))=="48") or bool(county and str(row.get(county) or "").strip().casefold()=="concho")
+        row=dict(zip(fields,sr.record));match=bool(fips and code(row.get(fips))==COUNTY_FIPS) or bool(county and str(row.get(county) or "").strip().casefold()==COUNTY_NAME)
         if match:records.append(row)
     ids=sorted({code(r.get(prec)) for r in records},key=int)
+    expected=["101","102","203","204","205","306","407","408"]
+    if ids!=expected:raise SystemExit(f"Unexpected Concho precinct IDs: {ids}")
     report={"official_map_url":MAP_URL,"official_map_sha256":sha(pdf),"official_map_bytes":pdf.stat().st_size,"official_map_page_count":len(doc),"official_map_render_size":[pix.width,pix.height],"tlc_url":TLC_URL,"tlc_zip_sha256":sha(z),"tlc_zip_bytes":z.stat().st_size,"fields":fields,"fips_field":fips,"county_field":county,"precinct_field":prec,"voting_precinct_count":len(records),"normalized_precinct_ids":ids,"commissioner_assignments":{i:i[0] for i in ids},"records":records}
     (out/"discovery.json").write_text(json.dumps(report,indent=2,sort_keys=True,default=str)+"\n")
     print(json.dumps({k:report[k] for k in ("official_map_sha256","official_map_page_count","official_map_render_size","tlc_zip_sha256","voting_precinct_count","normalized_precinct_ids","commissioner_assignments")},indent=2))
