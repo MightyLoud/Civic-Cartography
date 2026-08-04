@@ -1,0 +1,610 @@
+{
+  "artifact_inventory": {
+    "first_failures": [],
+    "first_inventory_sha256": "62ab678c8b58d9f01508a66fcdb535cbd6c968387ae6743f24a5441bce707465",
+    "identical": true,
+    "second_failures": [],
+    "second_inventory_sha256": "62ab678c8b58d9f01508a66fcdb535cbd6c968387ae6743f24a5441bce707465"
+  },
+  "batch_id": "WA-PB01",
+  "criteria": {
+    "all_generated_artifacts_have_sha256": true,
+    "all_nesting_relationships_preserved_as_lists": true,
+    "all_output_paths_are_unique": true,
+    "all_targets_are_deterministic": true,
+    "all_targets_have_one_result_per_run": true,
+    "all_targets_resolve_classify_and_generate": true,
+    "artifact_inventories_are_identical": true,
+    "target_crosswalk_parity": true,
+    "zero_target_only_production_patches": true
+  },
+  "crosswalk_sha256": "e5e9739380738142535040bd643225638f236706a684374c83d1178fc3a96d38",
+  "evaluation_id": "f74a0997789659e39e64",
+  "first_run_id": "3b5a11e5bf9870f69730",
+  "manifest_name": "production_batch_wa_100_wa_pb01_c",
+  "manifest_sha256": "30bc67ae4154db3a840214787fe09c56836992d96052d30285952df38445a8dc",
+  "run_asof": "2026-08-04T12:00:00Z",
+  "schema_version": 1,
+  "second_run_id": "3b5a11e5bf9870f69730",
+  "summary": {
+    "artifact_count": 42,
+    "artifact_inventories_identical": true,
+    "deterministic_count": 20,
+    "gate_passed": true,
+    "nesting_parity_count": 20,
+    "passed_count": 20,
+    "reports_identical": true,
+    "shared_artifact_count": 2,
+    "target_artifact_count": 40,
+    "target_count": 20,
+    "target_only_patch_count": 0,
+    "unique_output_paths": true
+  },
+  "targets": [
+    {
+      "census_geoid": "5345180",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/mesa_5345180_c9a2a857-911b-5697-a97f-a15811ac95d7.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Mesa",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/mesa_8f3f04a7-fc08-587c-99b8-4d556bb7f983.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mesa",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/mesa_5345180_c9a2a857-911b-5697-a97f-a15811ac95d7.yaml": "153ad248b0c663a8ebd8bd73c5c49dfbe5fd69f3d06f0a1e327572236b7743b4",
+        "jurisdictions/wa/local/mesa_8f3f04a7-fc08-587c-99b8-4d556bb7f983.yaml": "84e3120a65474a7e270a1384e58a3f16c56373cdfac436efdc0b5f1716b28011"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:mesa"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-041",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5345285",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/metaline_5345285_6c3cf7f6-9063-5c6a-b42f-1b9393506ad9.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Metaline",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/metaline_cd25ef67-4d0b-502b-a7c2-0575776e2e27.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:metaline",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/metaline_5345285_6c3cf7f6-9063-5c6a-b42f-1b9393506ad9.yaml": "86d8a8b33a1270c45eca1831eb4b0771fdca134b8d29c2867023338ba3fea650",
+        "jurisdictions/wa/local/metaline_cd25ef67-4d0b-502b-a7c2-0575776e2e27.yaml": "10cfec62a1d44fb0311565a31e28744e5c521652242add3a5c3e3bb8459b4126"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:metaline"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-042",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5345320",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/metaline_falls_5345320_9b3b1a77-0700-5a7c-a8ae-2e6eb3452c41.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Metaline Falls",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/metaline_falls_210a261e-fcca-5c51-942d-f7a7b75b6636.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:metaline_falls",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/metaline_falls_5345320_9b3b1a77-0700-5a7c-a8ae-2e6eb3452c41.yaml": "b06bc8bee3fcfe4be9b5b255adad487d604024017f40c37621401de88e0e8e09",
+        "jurisdictions/wa/local/metaline_falls_210a261e-fcca-5c51-942d-f7a7b75b6636.yaml": "426ff80896ff1b05b5da64952742e1d5b847f77b91b489ef6b017f85b41734e9"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:metaline_falls"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-043",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5345865",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/mill_creek_5345865_1bb967dc-f233-5223-b2a2-ff1ae4cb7782.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Mill Creek",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/mill_creek_61b13f38-14c4-5c4d-849c-8380d041406c.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mill_creek",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/mill_creek_5345865_1bb967dc-f233-5223-b2a2-ff1ae4cb7782.yaml": "e5de32cfa4d6576c8e38445006dfa281026434e50edd787357645159404d8c55",
+        "jurisdictions/wa/local/mill_creek_61b13f38-14c4-5c4d-849c-8380d041406c.yaml": "b9e7d38abde96d6b35f7bb363086601338af36c50c250f430abd66dcf932732c"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:mill_creek"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-044",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5345985",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/millwood_5345985_3c99b76a-9b4d-5f60-8404-7330aa9f5bfa.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Millwood",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/millwood_0eace6fb-61af-5db2-97bf-583905405a32.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:millwood",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/millwood_5345985_3c99b76a-9b4d-5f60-8404-7330aa9f5bfa.yaml": "a860c2a50fdc7c9c8f9b93f64c3a38fa954f443369e873ccd9459d43644566d2",
+        "jurisdictions/wa/local/millwood_0eace6fb-61af-5db2-97bf-583905405a32.yaml": "c3f26be9f5c66bfe2b266a215438784aa17afb115941cb9e3a69b2db86998ec2"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:millwood"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-045",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5346020",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/milton_5346020_4b596d24-9cea-5fee-8820-f972920e0cfa.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Milton",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/milton_a527725f-6689-5cf3-a756-1ef9eff93dfb.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:milton",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/milton_5346020_4b596d24-9cea-5fee-8820-f972920e0cfa.yaml": "67119878ec8f748e1043d4fd9282f0826d692275beda9d50f670eb77bb1e6170",
+        "jurisdictions/wa/local/milton_a527725f-6689-5cf3-a756-1ef9eff93dfb.yaml": "4acc2719968814e180b9055663c7247186ce5ee5f39d9a166dcb3daef217f4f3"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:milton"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-046",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5346685",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/monroe_5346685_2bc4ced9-1cca-5981-b995-5c5a014903af.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Monroe",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/monroe_8588fcd6-ee61-5a14-b7de-9387410648fb.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:monroe",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/monroe_5346685_2bc4ced9-1cca-5981-b995-5c5a014903af.yaml": "3108f60e464816a0ba221b72ccf7f92fe32c97f2c3af99ce6835782e9abcf0cd",
+        "jurisdictions/wa/local/monroe_8588fcd6-ee61-5a14-b7de-9387410648fb.yaml": "d95a6956ae01a63c88d62a22caf70245387ab1ef0039e37d4c460ae3eb2d421c"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:monroe"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-047",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5346895",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/montesano_5346895_b28a2f4c-d0e8-5275-ab10-f2d2fd9b5e2d.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Montesano",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/montesano_0f72b583-780d-53f5-b7ce-250952d57604.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:montesano",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/montesano_5346895_b28a2f4c-d0e8-5275-ab10-f2d2fd9b5e2d.yaml": "e8df5c8f77fa42b5a704d0e0afae3458d9abb214706c826e92a63ea6d6f287c4",
+        "jurisdictions/wa/local/montesano_0f72b583-780d-53f5-b7ce-250952d57604.yaml": "2abfaf75f5a28d360d17663e341e6a9333dc2417e9c36d2aeb7b778b9d03e033"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:montesano"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-048",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347175",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/morton_5347175_4142099d-2e3c-503b-a774-5ec2ec9c0074.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Morton",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/morton_56a1fcd7-2b36-5358-ab24-a0f0a5a37594.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:morton",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/morton_5347175_4142099d-2e3c-503b-a774-5ec2ec9c0074.yaml": "a86f887119e78876c27bcb9d660e5f0f4b6ec6f67379304acf3f7ec047c817e7",
+        "jurisdictions/wa/local/morton_56a1fcd7-2b36-5358-ab24-a0f0a5a37594.yaml": "16e453d28275ca9b291beb099bd4877e856e30de4deadc081bb532312bd58021"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:morton"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-049",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347245",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/moses_lake_5347245_aa1afbe1-a6a7-5822-971f-d34d0e645411.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Moses Lake",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/moses_lake_20b0c03d-89cc-52ca-847a-7e4849fa0e5f.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:moses_lake",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/moses_lake_5347245_aa1afbe1-a6a7-5822-971f-d34d0e645411.yaml": "2db023635def965f3fba1d0ff216d7a098f760a2596c9cbcfa8d5a0ac37c89af",
+        "jurisdictions/wa/local/moses_lake_20b0c03d-89cc-52ca-847a-7e4849fa0e5f.yaml": "63b2f2146efb76f725185d84c86091017a1761cd91a86e91c2d67c98cc8ba05e"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:moses_lake"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-050",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347315",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/mossyrock_5347315_02836cef-fe9e-56eb-9e55-c39aeed4171b.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Mossyrock",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/mossyrock_9994c805-c2f8-518f-b54b-df377f156dd8.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mossyrock",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/mossyrock_5347315_02836cef-fe9e-56eb-9e55-c39aeed4171b.yaml": "18a130e04862b2cada299bf552341b1489b7e1d2024fe23c48446fd3baf4803f",
+        "jurisdictions/wa/local/mossyrock_9994c805-c2f8-518f-b54b-df377f156dd8.yaml": "7e7403f7c0ef4dd0d705a4acc39bf54dc334fb6456a2a8cd84d63821194fa8c3"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:mossyrock"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-051",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347490",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/mountlake_terrace_5347490_74fc1a5a-5efb-51f7-ae70-363f89ef2950.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Mountlake Terrace",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/mountlake_terrace_bb4dc5ed-5f3a-5962-8697-e6691e5e7328.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mountlake_terrace",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/mountlake_terrace_5347490_74fc1a5a-5efb-51f7-ae70-363f89ef2950.yaml": "48af97be9add7b9bc42447f92087ed28fa01ddbd4e73c21e4f7b64f282a5cfd0",
+        "jurisdictions/wa/local/mountlake_terrace_bb4dc5ed-5f3a-5962-8697-e6691e5e7328.yaml": "e5b84aae6a61272e1d38453744374fbb0340816791b806f9dde60726166b69b8"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:mountlake_terrace"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-052",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347560",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/mount_vernon_5347560_6d152c92-e6ce-55e1-877a-142dbb441aa1.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Mount Vernon",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/mount_vernon_9d3683f8-b48a-5943-80d2-c08652d867ae.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mount_vernon",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/mount_vernon_5347560_6d152c92-e6ce-55e1-877a-142dbb441aa1.yaml": "66d8601f1b62e934b4f931417bce5131756dbffe6e8d70593f81fcf1a898a8b0",
+        "jurisdictions/wa/local/mount_vernon_9d3683f8-b48a-5943-80d2-c08652d867ae.yaml": "89b062052fc422a727afee71d89547f96d9f67e0920f4aa759f4409e81e26fe7"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:mount_vernon"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-053",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347665",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/moxee_5347665_4c5f7e7e-7a97-50b4-9827-52ffc56c74c9.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Moxee",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/moxee_f8a4cca6-4c45-5f04-839d-f6f06ae51ee2.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:moxee",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/moxee_5347665_4c5f7e7e-7a97-50b4-9827-52ffc56c74c9.yaml": "a5182ee2435a6d25570968511ec1ca5dbdd3653c730ff8dc8d95a2487a441653",
+        "jurisdictions/wa/local/moxee_f8a4cca6-4c45-5f04-839d-f6f06ae51ee2.yaml": "f56a57967fda293a7361bcf09fa82f7a984158b61d7beb7d3abfe20db3b2e6f2"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:moxee"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-054",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347735",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/mukilteo_5347735_ec6a668d-a6a4-5c00-9764-d34fbf90d1d9.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Mukilteo",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/mukilteo_c2ce434d-6726-5c67-bef6-d2acdbe2c203.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:mukilteo",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/mukilteo_5347735_ec6a668d-a6a4-5c00-9764-d34fbf90d1d9.yaml": "20d91c764847752a582728240e9cc46a4b12a67d6dad93c12893de9380930d90",
+        "jurisdictions/wa/local/mukilteo_c2ce434d-6726-5c67-bef6-d2acdbe2c203.yaml": "5af4e6efab6e4f61b16cf2bd5669df7ad68320bf67787a8f85db0b26aa72e098"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:mukilteo"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-055",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347805",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/naches_5347805_55352a87-4cf1-5ccb-b110-5730ce8da400.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Naches",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/naches_2a52252f-78be-50a0-a665-59553ab0dfb7.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:naches",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/naches_5347805_55352a87-4cf1-5ccb-b110-5730ce8da400.yaml": "6e1659cbd6f826c828a0f8e0b060d62dbf10329ddcffd70b969dba502a47784c",
+        "jurisdictions/wa/local/naches_2a52252f-78be-50a0-a665-59553ab0dfb7.yaml": "ae279b5df85d9c19dfbe3510562d9837d66fde452d9e745c882c38f0c609c9ff"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:naches"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-056",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5347980",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/napavine_5347980_e93f8b9b-97bd-5f00-8a32-1629ebc189cf.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Napavine",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/napavine_1b571e59-7389-52dd-af4f-e991f03f5c95.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:napavine",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/napavine_5347980_e93f8b9b-97bd-5f00-8a32-1629ebc189cf.yaml": "8e0ea1ad51b69f41f660eb102b6d9e978964dde43306ebb2aaf07a6c4a114eda",
+        "jurisdictions/wa/local/napavine_1b571e59-7389-52dd-af4f-e991f03f5c95.yaml": "c6bd3a8174aa74152e4c6cc6839b3952af1934196db6d7c93e48268314d72ba1"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:napavine"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-057",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5348540",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/nespelem_5348540_e77a5f87-bee8-5979-b475-d07c063478dd.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Nespelem",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/nespelem_ba094926-4699-5aca-9762-aac7cfc78884.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:nespelem",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/nespelem_5348540_e77a5f87-bee8-5979-b475-d07c063478dd.yaml": "d5a6c0f9f16bcf53fbdebb28cd670ca93d11b3d5849ea63c30e4d194060ae675",
+        "jurisdictions/wa/local/nespelem_ba094926-4699-5aca-9762-aac7cfc78884.yaml": "ccf4fa3d0f5e1bc70969a0ab53495e0a69a95e5f32cb181cb04145b3155e95c8"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:nespelem"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-058",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5348645",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/newcastle_5348645_ab4fd4c6-a4fc-58ab-963f-49c5a2b0a67e.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Newcastle",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/newcastle_8056cc24-5931-5f0d-b6e1-8c33e01b1998.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:newcastle",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/newcastle_5348645_ab4fd4c6-a4fc-58ab-963f-49c5a2b0a67e.yaml": "26037dac69e9511864a0238a952036562b55e09e72fb87cc1ed45eb7db359bb0",
+        "jurisdictions/wa/local/newcastle_8056cc24-5931-5f0d-b6e1-8c33e01b1998.yaml": "f7d6c43e50c6cc3aaf14c2b9828595cc7db4e56d57397611a7dbe9d20cd3744f"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:newcastle"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-059",
+      "wave": "WA-PB01-C"
+    },
+    {
+      "census_geoid": "5348820",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/newport_5348820_d41de8ef-7eda-5468-b0db-24bc5f6412c2.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Newport",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/newport_6a096066-b619-510c-9622-9cd227e3101f.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:newport",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/newport_5348820_d41de8ef-7eda-5468-b0db-24bc5f6412c2.yaml": "511fc986719c809caedc524e465f23b8d6c0a32779c87032c63f7b24f8ecf770",
+        "jurisdictions/wa/local/newport_6a096066-b619-510c-9622-9cd227e3101f.yaml": "4037f79bdc5e326ec6b2871069e2a583a48689a346ad75754381277c6bf13b20"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:newport"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-060",
+      "wave": "WA-PB01-C"
+    }
+  ],
+  "upstream": {
+    "repository": "openstates/jurisdictions",
+    "revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
+  },
+  "wave": "WA-PB01-C"
+}
