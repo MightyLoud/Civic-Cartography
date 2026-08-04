@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/bootstrap-ellis-county.yml"
+      - "scripts/fetch_ellis_commissioner_precincts.py"
 
 jobs:
   probe-ellis-gis:
@@ -13,45 +14,25 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Query exact county Commissioner layer
+      - name: Fetch exact county Commissioner layer
         run: |
-          python scripts/fetch_arcgis_districts.py \
-            --layer-url https://maps.co.ellis.tx.us/arcgis/rest/services/Commissioner/Commissioner_Web_Map/MapServer/680 \
-            --district-ids 1,2,3,4 \
-            --district-field Commissioner_Pct \
-            --district-type commissioner_precinct \
-            --district-name-prefix "Commissioner Precinct" \
-            --jurisdiction-name "Ellis County" \
-            --record-id-prefix TX:county:ellis:commissioner_precinct \
-            --geometry-id-prefix ellis-county-commissioner-precinct \
-            --source-agency "Ellis County GIS" \
+          python scripts/fetch_ellis_commissioner_precincts.py \
             --retrieved-at 2026-08-04 \
             --raw-output build/ellis-bootstrap/commissioner-precincts-1-4.geojson \
-            --output build/ellis-bootstrap/ellis_county_commissioner_precincts.geojson
+            --output build/ellis-bootstrap/ellis_county_commissioner_precincts.geojson \
+            --contract-output build/ellis-bootstrap/gis-source-contract.json
           python - <<'PY'
           import json
           from pathlib import Path
           raw=json.loads(Path('build/ellis-bootstrap/commissioner-precincts-1-4.geojson').read_text())
           canonical=json.loads(Path('build/ellis-bootstrap/ellis_county_commissioner_precincts.geojson').read_text())
-          props=[feature['properties'] for feature in raw['features']]
-          ids=[str(value.get('Commissioner_Pct')) for value in props]
-          if ids != ['1','2','3','4']:
-              raise SystemExit(f'Unexpected Commissioner IDs: {ids}')
-          if len(canonical['features']) != 4:
-              raise SystemExit('Expected four canonical Commissioner features')
-          report={
-              'layer_url':'https://maps.co.ellis.tx.us/arcgis/rest/services/Commissioner/Commissioner_Web_Map/MapServer/680',
-              'portal_item_id':'484f13cc3dc64f20a64f5528ef79e035',
-              'web_map_item_id':'05e4901568c044819986934e3715b292',
-              'layer_name':'Commissioner Precincts (2023-2032)',
-              'district_field':'Commissioner_Pct',
-              'feature_count':4,
-              'district_ids':ids,
-              'adopted_at':'2021-11-30',
-              'effective_at':'2023-01-01',
-          }
-          Path('build/ellis-bootstrap/gis-source-contract.json').write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
-          print(json.dumps(report,indent=2,sort_keys=True))
+          ids=[str(feature['properties']['Commissioner_Pct']) for feature in raw['features']]
+          geometry_types={feature['geometry']['type'] for feature in raw['features']}
+          if ids != ['1','2','3','4'] or len(canonical['features']) != 4:
+              raise SystemExit(f'Unexpected Commissioner output: ids={ids}')
+          if not geometry_types <= {'Polygon','MultiPolygon'}:
+              raise SystemExit(f'Unexpected geometry types: {geometry_types}')
+          print(json.dumps({'district_ids':ids,'geometry_types':sorted(geometry_types)},indent=2))
           PY
       - uses: actions/upload-artifact@v4
         with:
