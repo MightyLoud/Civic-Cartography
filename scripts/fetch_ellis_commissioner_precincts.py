@@ -5,11 +5,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 import time
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.fetch_arcgis_districts import (
     canonicalize,
@@ -49,7 +53,7 @@ def get_json(url: str, params: dict[str, str] | None = None) -> tuple[dict[str, 
             if payload.get("error"):
                 raise ValueError(f"ArcGIS error: {payload['error']}")
             return payload, url
-        except Exception as exc:  # network and provider errors are retried together
+        except Exception as exc:
             last_error = exc
             if attempt == 5:
                 raise
