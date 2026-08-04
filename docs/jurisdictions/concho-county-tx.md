@@ -2,7 +2,7 @@
 
 ## Release scope
 
-Concho County is modeled as a bounded eight-office county release:
+Concho County is modeled as a bounded eight-office county release, verified August 4, 2026:
 
 - County Judge — David Dillard
 - Commissioner Precinct 1 — Trey Bradshaw
