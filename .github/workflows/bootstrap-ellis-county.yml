@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/bootstrap-ellis-county.yml"
-      - "scripts/fetch_ellis_commissioner_precincts.py"
+      - "scripts/derive_ellis_commissioner_precincts.py"
 
 jobs:
   probe-ellis-gis:
@@ -14,40 +14,34 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Diagnose official layer geometry query modes
+      - name: Install geometry dependencies
+        run: python -m pip install pyshp pyproj shapely
+      - name: Generate current Commissioner and county geometry
         run: |
+          python scripts/derive_ellis_commissioner_precincts.py \
+            --retrieved-at 2026-08-04 \
+            --work-dir build/ellis-bootstrap/work \
+            --raw-output build/ellis-bootstrap/data/raw/ellis-county/commissioner-precincts-1-4.geojson \
+            --output build/ellis-bootstrap/data/geojson/ellis_county_commissioner_precincts.geojson \
+            --contract-output build/ellis-bootstrap/data/raw/ellis-county/gis-source-contract.json \
+            --evidence-output build/ellis-bootstrap/data/raw/ellis-county/derivation-evidence.json
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48139 \
+            --record-id TX:county:ellis:countywide:COUNTYWIDE \
+            --geometry-id ellis-county-countywide \
+            --retrieved-at 2026-08-04 \
+            --raw-output build/ellis-bootstrap/data/raw/ellis-county/tigerweb-county-48139.geojson \
+            --output build/ellis-bootstrap/data/geojson/ellis_county_countywide.geojson
           python - <<'PY'
-          import json, pathlib, urllib.parse, urllib.request
-          out=pathlib.Path('build/ellis-bootstrap');out.mkdir(parents=True,exist_ok=True)
-          layer='https://maps.co.ellis.tx.us/arcgis/rest/services/Commissioner/Commissioner_Web_Map/MapServer/680'
-          headers={'User-Agent':'Civic-Cartography/0.1 (+https://github.com/MightyLoud/Civic-Cartography)'}
-          def get(name,url,params):
-              full=url+'?'+urllib.parse.urlencode(params)
-              try:
-                  req=urllib.request.Request(full,headers=headers)
-                  with urllib.request.urlopen(req,timeout=120) as r:data=json.load(r)
-              except Exception as exc:data={'_error':repr(exc),'_url':full}
-              (out/f'{name}.json').write_text(json.dumps(data,indent=2,sort_keys=True)+'\n')
-              return data
-          meta=get('layer-metadata',layer,{'f':'json'})
-          ids=get('ids',layer+'/query',{'where':'1=1','returnIdsOnly':'true','f':'json'})
-          object_ids=ids.get('objectIds') or []
-          variants={
-            'bulk-json':{'where':'1=1','outFields':'*','returnGeometry':'true','outSR':'4326','returnZ':'false','returnM':'false','f':'json'},
-            'bulk-geojson':{'where':'1=1','outFields':'*','returnGeometry':'true','outSR':'4326','f':'geojson'},
-            'pct-only':{'where':'Commissioner_Pct IN (1,2,3,4)','outFields':'*','returnGeometry':'true','outSR':'4326','returnZ':'false','returnM':'false','f':'json'},
-          }
-          summary={'object_ids':object_ids,'metadata_geometry_type':meta.get('geometryType'),'variants':{}}
-          for name,params in variants.items():
-              data=get(name,layer+'/query',params)
-              feats=data.get('features') or []
-              summary['variants'][name]={'feature_count':len(feats),'geometry_count':sum(isinstance(f.get('geometry'),dict) for f in feats),'attributes':[f.get('attributes') or f.get('properties') for f in feats[:12]]}
-          for oid in object_ids:
-              data=get(f'object-{oid}',layer+'/query',{'objectIds':str(oid),'outFields':'*','returnGeometry':'true','outSR':'4326','returnZ':'false','returnM':'false','f':'json'})
-              feats=data.get('features') or []
-              summary.setdefault('objects',{})[str(oid)]={'feature_count':len(feats),'geometry_count':sum(isinstance(f.get('geometry'),dict) for f in feats),'attributes':[f.get('attributes') for f in feats]}
-          (out/'diagnostic-summary.json').write_text(json.dumps(summary,indent=2,sort_keys=True)+'\n')
-          print(json.dumps(summary,indent=2,sort_keys=True))
+          import hashlib
+          from pathlib import Path
+          paths=[Path('build/ellis-bootstrap/data/geojson/ellis_county_countywide.geojson'),Path('build/ellis-bootstrap/data/geojson/ellis_county_commissioner_precincts.geojson')]
+          digest=hashlib.sha256()
+          for path in sorted(paths,key=lambda p:p.name):
+              digest.update(path.name.encode());digest.update(b'\0');digest.update(path.read_bytes());digest.update(b'\0')
+          value=digest.hexdigest()
+          Path('build/ellis-bootstrap/release-sha256.txt').write_text(value+'\n')
+          print('Ellis County combined canonical SHA-256:',value)
           PY
       - uses: actions/upload-artifact@v4
         with:
