@@ -57,7 +57,8 @@ def committed():
     if contract["interdistrict_overlap_area_degrees"]!=0 or contract["union_symmetric_difference_area_degrees"]!=0 or contract["all_voting_precincts_assigned"] is not True:raise SystemExit("Ellis topology contract changed")
 def live():
     contracts=[
-      ("https://www.elliscountytx.gov/128/County-Judge",("John Wray","May 15 2025")),
+      ("https://www.elliscountytx.gov/128/County-Judge",("John Wray",)),
+      ("https://www.co.ellis.tx.us/CivicAlerts.aspx?AID=1119",("John Wray","May 15 2025","November 2026")),
       ("https://www.elliscountytx.gov/Directory.aspx?did=46",("Randy Stinson","Lane Grayson","Louis Ponder","Kyle Butler")),
       ("https://www.elliscountytx.gov/directory.aspx?EID=220",("Brad Norman","Sheriff")),
       ("https://www.elliscountytx.gov/73/County-and-District-Attorney",("Lindy Beaty","felony","misdemeanor","legal advice")),
