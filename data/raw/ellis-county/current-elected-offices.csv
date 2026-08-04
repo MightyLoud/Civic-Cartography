@@ -1,0 +1,12 @@
+office_name,geography_type,geography_id,officeholder,selection_method,source_url,source_retrieved_at,notes
+County Judge,countywide,COUNTYWIDE,John Wray,appointment,https://www.elliscountytx.gov/128/County-Judge,2026-08-04,"Commissioners Court appointed Wray on May 7, 2025; he assumed office May 15, 2025 and completes the term through the November 2026 election."
+County Commissioner Precinct 1,commissioner_precinct,1,Randy Stinson,election,https://www.elliscountytx.gov/Directory.aspx?did=46,2026-08-04,Current elected Commissioner for Precinct 1.
+County Commissioner Precinct 2,commissioner_precinct,2,Lane Grayson,election,https://www.elliscountytx.gov/Directory.aspx?did=46,2026-08-04,Current elected Commissioner for Precinct 2.
+County Commissioner Precinct 3,commissioner_precinct,3,Louis Ponder,election,https://www.elliscountytx.gov/Directory.aspx?did=46,2026-08-04,Current elected Commissioner for Precinct 3.
+County Commissioner Precinct 4,commissioner_precinct,4,Kyle Butler,election,https://www.elliscountytx.gov/Directory.aspx?did=46,2026-08-04,Current elected Commissioner for Precinct 4.
+Sheriff,countywide,COUNTYWIDE,Brad Norman,election,https://www.elliscountytx.gov/directory.aspx?EID=220,2026-08-04,Current elected Sheriff.
+County and District Attorney,countywide,COUNTYWIDE,Lindy Beaty,election,https://www.elliscountytx.gov/73/County-and-District-Attorney,2026-08-04,One combined elected prosecutor office performing both county-attorney and district-attorney functions.
+County Clerk,countywide,COUNTYWIDE,Krystal Valdez,election,https://www.elliscountytx.gov/74/County-Clerk,2026-08-04,Current elected County Clerk; separate from the District Clerk.
+District Clerk,countywide,COUNTYWIDE,Melanie Reed,election,https://www.elliscountytx.gov/79/District-Clerk,2026-08-04,Current elected District Clerk; separate from the County Clerk.
+Tax Assessor-Collector,countywide,COUNTYWIDE,Richard Rozier,election,https://www.elliscountytx.gov/directory.aspx?EID=58,2026-08-04,Current elected Tax Assessor and Collector.
+County Treasurer,countywide,COUNTYWIDE,Cheryl Chambers,election,https://www.elliscountytx.gov/78/County-Treasurer,2026-08-04,Current elected County Treasurer.
