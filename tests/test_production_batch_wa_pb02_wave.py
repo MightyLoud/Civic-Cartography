@@ -1,9 +1,14 @@
 from __future__ import annotations
 
 import copy
+import json
 from pathlib import Path
 
+import pytest
+from jsonschema import Draft202012Validator
+
 from civic_cartography.production_wave import (
+    ProductionWaveError,
     build_artifact_inventory,
     evaluate_production_wave,
     load_crosswalk,
@@ -23,6 +28,7 @@ CROSSWALK_PATH = (
 )
 UPSTREAM_REVISION = "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
 RUN_ASOF = "2026-08-04T18:00:00Z"
+WAVE_SCHEMA_PATH = ROOT / "schemas" / "production-wave-report.schema.json"
 
 
 def _reports(tmp_path: Path) -> tuple[object, dict, dict, dict, dict]:
@@ -109,7 +115,31 @@ def test_wave_a_acceptance_uses_the_reusable_wave_contract(tmp_path: Path) -> No
         "target_only_patch_count": 0,
         "gate_passed": True,
     }
+    assert evaluation["batch_id"] == "WA-PB02"
+    assert evaluation["wave"] == "WA-PB02-A"
     assert all(evaluation["criteria"].values())
+    schema = json.loads(WAVE_SCHEMA_PATH.read_text(encoding="utf-8"))
+    Draft202012Validator(schema).validate(evaluation)
+
+
+def test_wave_a_rejects_crosswalk_from_a_different_batch(tmp_path: Path) -> None:
+    manifest, first, second, first_inventory, second_inventory = _reports(tmp_path)
+    crosswalk = load_crosswalk(CROSSWALK_PATH)
+    crosswalk["batch_id"] = "WA-PB01"
+
+    with pytest.raises(
+        ProductionWaveError, match="crosswalk batch_id does not match"
+    ):
+        evaluate_production_wave(
+            manifest,
+            first,
+            second,
+            crosswalk,
+            first_inventory,
+            second_inventory,
+            upstream_repository="openstates/jurisdictions",
+            upstream_revision=UPSTREAM_REVISION,
+        )
 
 
 def test_wave_a_rejects_flattened_nesting(tmp_path: Path) -> None:
