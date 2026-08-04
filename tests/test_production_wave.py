@@ -187,6 +187,44 @@ def test_wave_c_acceptance_uses_the_reusable_wave_contract(
     assert all(evaluation["criteria"].values())
 
 
+def test_wave_d_selection_is_the_frozen_fourth_twenty_targets() -> None:
+    wave = select_production_wave(
+        load_manifest(FULL_MANIFEST_PATH), "WA-PB01-D"
+    )
+    assert [target.target_id for target in wave.targets] == [
+        f"WA-PB01-{number:03d}" for number in range(61, 81)
+    ]
+    assert wave.targets[0].jurisdiction_name == "Nooksack"
+    assert wave.targets[-1].jurisdiction_name == "Pe Ell"
+    assert {target.wave for target in wave.targets} == {"WA-PB01-D"}
+
+
+def test_wave_d_acceptance_uses_the_reusable_wave_contract(
+    tmp_path: Path,
+) -> None:
+    manifest, first, second, first_inventory, second_inventory = _reports(
+        tmp_path, "WA-PB01-D"
+    )
+    evaluation = evaluate_production_wave(
+        manifest,
+        first,
+        second,
+        load_crosswalk(CROSSWALK_PATH),
+        first_inventory,
+        second_inventory,
+        upstream_repository="openstates/jurisdictions",
+        upstream_revision=UPSTREAM_REVISION,
+    )
+
+    assert evaluation["summary"]["target_count"] == 20
+    assert evaluation["summary"]["passed_count"] == 20
+    assert evaluation["summary"]["deterministic_count"] == 20
+    assert evaluation["summary"]["nesting_parity_count"] == 20
+    assert evaluation["summary"]["artifact_count"] == 40
+    assert evaluation["summary"]["gate_passed"] is True
+    assert all(evaluation["criteria"].values())
+
+
 def test_wave_a_acceptance_passes_all_gates_and_schemas(tmp_path: Path) -> None:
     manifest, first, second, first_inventory, second_inventory = _reports(tmp_path)
     evaluation = evaluate_production_wave(
