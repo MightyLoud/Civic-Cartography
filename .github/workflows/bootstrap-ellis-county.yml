@@ -13,60 +13,45 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Inspect official Commissioner MapServer
+      - name: Query exact county Commissioner layer
         run: |
+          python scripts/fetch_arcgis_districts.py \
+            --layer-url https://maps.co.ellis.tx.us/arcgis/rest/services/Commissioner/Commissioner_Web_Map/MapServer/680 \
+            --district-ids 1,2,3,4 \
+            --district-field Commissioner_Pct \
+            --district-type commissioner_precinct \
+            --district-name-prefix "Commissioner Precinct" \
+            --jurisdiction-name "Ellis County" \
+            --record-id-prefix TX:county:ellis:commissioner_precinct \
+            --geometry-id-prefix ellis-county-commissioner-precinct \
+            --source-agency "Ellis County GIS" \
+            --retrieved-at 2026-08-04 \
+            --raw-output build/ellis-bootstrap/commissioner-precincts-1-4.geojson \
+            --output build/ellis-bootstrap/ellis_county_commissioner_precincts.geojson
           python - <<'PY'
-          import json, pathlib, urllib.parse, urllib.request
-
-          out = pathlib.Path('build/ellis-bootstrap')
-          out.mkdir(parents=True, exist_ok=True)
-          headers = {'User-Agent': 'Civic-Cartography/0.1 (+https://github.com/MightyLoud/Civic-Cartography)'}
-          service = 'https://maps.co.ellis.tx.us/arcgis/rest/services/Commissioner/Commissioner_Web_Map/MapServer'
-
-          def get(url, params=None):
-              if params:
-                  url += ('&' if '?' in url else '?') + urllib.parse.urlencode(params)
-              req = urllib.request.Request(url, headers=headers)
-              with urllib.request.urlopen(req, timeout=120) as response:
-                  return json.load(response)
-
-          metadata = get(service, {'f':'pjson'})
-          (out/'mapserver.json').write_text(json.dumps(metadata, indent=2, sort_keys=True) + '\n')
-
-          report = []
-          candidates = []
-          for layer in metadata.get('layers', []):
-              layer_id = int(layer['id'])
-              layer_url = f'{service}/{layer_id}'
-              layer_meta = get(layer_url, {'f':'pjson'})
-              query = get(layer_url + '/query', {
-                  'where':'1=1',
-                  'outFields':'*',
-                  'returnGeometry':'true',
-                  'outSR':'4326',
-                  'f':'geojson',
-              })
-              features = query.get('features', []) if isinstance(query, dict) else []
-              record = {
-                  'id': layer_id,
-                  'name': layer_meta.get('name'),
-                  'geometryType': layer_meta.get('geometryType'),
-                  'displayField': layer_meta.get('displayField'),
-                  'fields': [field.get('name') for field in layer_meta.get('fields', [])],
-                  'feature_count': len(features),
-                  'sample_properties': [feature.get('properties', {}) for feature in features[:8]],
-              }
-              report.append(record)
-              (out/f'layer-{layer_id}-metadata.json').write_text(json.dumps(layer_meta, indent=2, sort_keys=True) + '\n')
-              (out/f'layer-{layer_id}.geojson').write_text(json.dumps(query, sort_keys=True, separators=(',', ':')) + '\n')
-              print(json.dumps(record, sort_keys=True))
-              if layer_meta.get('geometryType') == 'esriGeometryPolygon' and len(features) == 4:
-                  candidates.append(record)
-
-          (out/'layer-report.json').write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
-          if not candidates:
-              raise SystemExit('No four-feature polygon layer found')
-          print('four-feature polygon candidates:', json.dumps(candidates, sort_keys=True))
+          import json
+          from pathlib import Path
+          raw=json.loads(Path('build/ellis-bootstrap/commissioner-precincts-1-4.geojson').read_text())
+          canonical=json.loads(Path('build/ellis-bootstrap/ellis_county_commissioner_precincts.geojson').read_text())
+          props=[feature['properties'] for feature in raw['features']]
+          ids=[str(value.get('Commissioner_Pct')) for value in props]
+          if ids != ['1','2','3','4']:
+              raise SystemExit(f'Unexpected Commissioner IDs: {ids}')
+          if len(canonical['features']) != 4:
+              raise SystemExit('Expected four canonical Commissioner features')
+          report={
+              'layer_url':'https://maps.co.ellis.tx.us/arcgis/rest/services/Commissioner/Commissioner_Web_Map/MapServer/680',
+              'portal_item_id':'484f13cc3dc64f20a64f5528ef79e035',
+              'web_map_item_id':'05e4901568c044819986934e3715b292',
+              'layer_name':'Commissioner Precincts (2023-2032)',
+              'district_field':'Commissioner_Pct',
+              'feature_count':4,
+              'district_ids':ids,
+              'adopted_at':'2021-11-30',
+              'effective_at':'2023-01-01',
+          }
+          Path('build/ellis-bootstrap/gis-source-contract.json').write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(report,indent=2,sort_keys=True))
           PY
       - uses: actions/upload-artifact@v4
         with:
