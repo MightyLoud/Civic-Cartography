@@ -1,0 +1,100 @@
+name: Validate Concho County dual combined-office schema
+
+on:
+  push:
+    paths:
+      - ".github/workflows/validate-concho-county.yml"
+      - "data/geojson/concho_county_*.geojson"
+      - "data/normalized/concho_county_elected_offices.csv"
+      - "data/raw/concho-county/**"
+      - "docs/jurisdictions/concho-county-tx.md"
+      - "scripts/derive_concho_commissioner_precincts.py"
+      - "scripts/validate_concho_sources.py"
+      - "tests/test_concho_county_roster.py"
+  pull_request:
+    paths:
+      - ".github/workflows/validate-concho-county.yml"
+      - "data/geojson/concho_county_*.geojson"
+      - "data/normalized/concho_county_elected_offices.csv"
+      - "data/raw/concho-county/**"
+      - "docs/jurisdictions/concho-county-tx.md"
+      - "scripts/derive_concho_commissioner_precincts.py"
+      - "scripts/validate_concho_sources.py"
+      - "tests/test_concho_county_roster.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-concho-county:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install validation and geometry dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install pymupdf pyshp pyproj shapely
+      - name: Validate roster, dual combined offices, scope, and sources
+        run: python scripts/validate_concho_sources.py
+      - name: Regenerate current Commissioner geometry
+        run: |
+          python scripts/derive_concho_commissioner_precincts.py \
+            --retrieved-at 2026-08-04 \
+            --work-dir build/concho-county/commissioners/work \
+            --raw-output build/concho-county/commissioners/raw/commissioner-precincts-1-4.geojson \
+            --output build/concho-county/commissioners/geojson/concho_county_commissioner_precincts.geojson \
+            --contract-output build/concho-county/commissioners/gis-source-contract.json \
+            --evidence-output build/concho-county/commissioners/derivation-evidence.json
+      - name: Verify committed Commissioner snapshots and contract
+        run: |
+          cmp data/raw/concho-county/commissioner-precincts-1-4.geojson build/concho-county/commissioners/raw/commissioner-precincts-1-4.geojson
+          cmp data/geojson/concho_county_commissioner_precincts.geojson build/concho-county/commissioners/geojson/concho_county_commissioner_precincts.geojson
+          cmp data/raw/concho-county/gis-source-contract.json build/concho-county/commissioners/gis-source-contract.json
+      - name: Fetch current county boundary
+        run: |
+          python scripts/fetch_tigerweb_county.py \
+            --geoid 48095 \
+            --record-id TX:county:concho:countywide:COUNTYWIDE \
+            --geometry-id concho-county-countywide \
+            --retrieved-at 2026-08-04 \
+            --raw-output build/concho-county/county/raw/tigerweb-county-48095.geojson \
+            --output build/concho-county/county/geojson/concho_county_countywide.geojson
+      - name: Verify committed county boundary matches Census
+        run: |
+          python scripts/compare_tigerweb_snapshot.py \
+            --committed-raw data/raw/concho-county/tigerweb-county-48095.geojson \
+            --fresh-raw build/concho-county/county/raw/tigerweb-county-48095.geojson \
+            --committed-canonical data/geojson/concho_county_countywide.geojson \
+            --fresh-canonical build/concho-county/county/geojson/concho_county_countywide.geojson
+      - name: Run automated tests
+        run: pytest -q
+      - name: Validate normalized datasets
+        run: python scripts/validate.py
+      - name: Validate geometry joins
+        run: python scripts/validate_geojson.py
+      - name: Verify Concho County release digest
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          paths=[Path('data/geojson/concho_county_countywide.geojson'),Path('data/geojson/concho_county_commissioner_precincts.geojson')]
+          digest=hashlib.sha256()
+          for path in sorted(paths,key=lambda p:p.name):
+              digest.update(path.name.encode());digest.update(b'\0');digest.update(path.read_bytes());digest.update(b'\0')
+          value=digest.hexdigest()
+          expected=Path('tests/test_concho_county_roster.py').read_text().split('EXPECTED_DIGEST="',1)[1].split('"',1)[0]
+          if value!=expected:raise SystemExit(f'{value} != {expected}')
+          output=Path('build/concho-county/release-sha256.txt');output.parent.mkdir(parents=True,exist_ok=True);output.write_text(value+'\n')
+          print(f'Concho County combined canonical SHA-256: {value}')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: concho-county-validation
+          path: build/concho-county/
+          if-no-files-found: error
