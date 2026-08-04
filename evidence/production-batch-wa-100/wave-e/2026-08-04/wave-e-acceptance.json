@@ -1,0 +1,610 @@
+{
+  "artifact_inventory": {
+    "first_failures": [],
+    "first_inventory_sha256": "b375c0f5fada9061f03e0369d0197b67412b1373f6c15997195fd714063d9550",
+    "identical": true,
+    "second_failures": [],
+    "second_inventory_sha256": "b375c0f5fada9061f03e0369d0197b67412b1373f6c15997195fd714063d9550"
+  },
+  "batch_id": "WA-PB01",
+  "criteria": {
+    "all_generated_artifacts_have_sha256": true,
+    "all_nesting_relationships_preserved_as_lists": true,
+    "all_output_paths_are_unique": true,
+    "all_targets_are_deterministic": true,
+    "all_targets_have_one_result_per_run": true,
+    "all_targets_resolve_classify_and_generate": true,
+    "artifact_inventories_are_identical": true,
+    "target_crosswalk_parity": true,
+    "zero_target_only_production_patches": true
+  },
+  "crosswalk_sha256": "e5e9739380738142535040bd643225638f236706a684374c83d1178fc3a96d38",
+  "evaluation_id": "05a1a026787927c1f36a",
+  "first_run_id": "761e4fa9c2eda4a520e0",
+  "manifest_name": "production_batch_wa_100_wa_pb01_e",
+  "manifest_sha256": "afa4a15acaef1e1a37fcebf153d08eb6bf76899a90050f123b01877d960bfb96",
+  "run_asof": "2026-08-04T15:00:00Z",
+  "schema_version": 1,
+  "second_run_id": "761e4fa9c2eda4a520e0",
+  "summary": {
+    "artifact_count": 42,
+    "artifact_inventories_identical": true,
+    "deterministic_count": 20,
+    "gate_passed": true,
+    "nesting_parity_count": 20,
+    "passed_count": 20,
+    "reports_identical": true,
+    "shared_artifact_count": 2,
+    "target_artifact_count": 40,
+    "target_count": 20,
+    "target_only_patch_count": 0,
+    "unique_output_paths": true
+  },
+  "targets": [
+    {
+      "census_geoid": "5355120",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/pomeroy_5355120_b975d1a9-e7a9-5857-bb30-00d0cde3f3b4.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Pomeroy",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/pomeroy_e3f22f7c-9c4b-56e4-b444-a422436c3e36.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:pomeroy",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/pomeroy_5355120_b975d1a9-e7a9-5857-bb30-00d0cde3f3b4.yaml": "76993f37985f7dc2faada3557cdfbc269569d040f10bd6e50069ff5dfe5c0beb",
+        "jurisdictions/wa/local/pomeroy_e3f22f7c-9c4b-56e4-b444-a422436c3e36.yaml": "5172301badcc2816140fa9739aa1ee36d71640715b78a4ef2083a2f32e8916e9"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:pomeroy"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-081",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5355785",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/port_orchard_5355785_7daffe98-96d8-5d9b-b420-8cd7a223d139.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Port Orchard",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/port_orchard_88754e0b-6173-54a1-9920-851966d9feec.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:port_orchard",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/port_orchard_5355785_7daffe98-96d8-5d9b-b420-8cd7a223d139.yaml": "b74ba7c366d383bb031e81a00a4ef25aa3e56ac15cf440891c878364f7a6ba7e",
+        "jurisdictions/wa/local/port_orchard_88754e0b-6173-54a1-9920-851966d9feec.yaml": "c229699cbffaca385c2e7abecaf6ec6a643cab8fbb6ad49fb540ffc526f029e1"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:port_orchard"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-082",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5355855",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/port_townsend_5355855_b0faa789-df35-5ded-87b6-ad987008744e.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Port Townsend",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/port_townsend_db6952a8-5540-53bd-bd00-5b1dc6825013.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:port_townsend",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/port_townsend_5355855_b0faa789-df35-5ded-87b6-ad987008744e.yaml": "1f221317ffea43ce2f25999406eb8db720efc2cce3d2c81b9d1ea403ddb8ee99",
+        "jurisdictions/wa/local/port_townsend_db6952a8-5540-53bd-bd00-5b1dc6825013.yaml": "e99a4f13f7997c7b82d660a1094fd7fab46b910b9feaa26e15eab046a9a9e867"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:port_townsend"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-083",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5355995",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/poulsbo_5355995_f6820812-92f5-5672-a7ed-6cb50f6f0c05.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Poulsbo",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/poulsbo_c82474c5-40d6-57df-af49-ce689d65506e.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:poulsbo",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/poulsbo_5355995_f6820812-92f5-5672-a7ed-6cb50f6f0c05.yaml": "70a4db4342c49545615fdfce7e86be435b7632e2d09db6155d165c0201d20f06",
+        "jurisdictions/wa/local/poulsbo_c82474c5-40d6-57df-af49-ce689d65506e.yaml": "84af255004df978c6286c1c4bdbee60ccdfbee3cd183f7ea6d594a7761aad1ac"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:poulsbo"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-084",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5356240",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/prescott_5356240_e62323d1-d374-5354-8f49-5db524a47ddc.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Prescott",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/prescott_1d8117fa-933e-534c-b5cd-e842f7019738.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:prescott",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/prescott_5356240_e62323d1-d374-5354-8f49-5db524a47ddc.yaml": "c52e2e48e6b0ebde5fe4707056075a89c29515f62b520bddfcdf4b5878af73ba",
+        "jurisdictions/wa/local/prescott_1d8117fa-933e-534c-b5cd-e842f7019738.yaml": "c9df2d0024f56fb355ad2e7177920c0ed6cdd4dd549a283717566ea123bfed8a"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:prescott"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-085",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5356450",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/prosser_5356450_e1794f34-3a51-5b23-8b26-be35501b09f4.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Prosser",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/prosser_44aa97e1-89e1-5f46-b1ea-ad6da0c69dfb.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:prosser",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/prosser_5356450_e1794f34-3a51-5b23-8b26-be35501b09f4.yaml": "6a9b7596be35aae1c8b4dfa0a0469ffb224b119219f4cca68006b1fc6f4b1b75",
+        "jurisdictions/wa/local/prosser_44aa97e1-89e1-5f46-b1ea-ad6da0c69dfb.yaml": "066eb73a26438665700e50f274f321f1d395e9a0c499cfeb5e001532f5c3cf63"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:prosser"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-086",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5356695",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/puyallup_5356695_48e6328d-b1d6-51bf-86bb-9d42a48c4d3f.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Puyallup",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/puyallup_79a5103f-47c3-5127-90b3-ff4e3a7c05d9.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:puyallup",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/puyallup_5356695_48e6328d-b1d6-51bf-86bb-9d42a48c4d3f.yaml": "937e98c4620049196dbb01804edd39cab529b3918152a31eb1f96a87ac944ccb",
+        "jurisdictions/wa/local/puyallup_79a5103f-47c3-5127-90b3-ff4e3a7c05d9.yaml": "2fd284b158b21a686c2cf858b07fbaaf2ee2fc458c18cfbf9e39dcd83a18215c"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:puyallup"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-087",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357115",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/quincy_5357115_d82413ed-f18c-5291-acd6-a97667461a90.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Quincy",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/quincy_4452fa7e-26b7-51c0-b674-bb7f36bb430a.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:quincy",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/quincy_5357115_d82413ed-f18c-5291-acd6-a97667461a90.yaml": "ceaef8f33c8fb45bb49e2b36fa1eb720fde0804432c45399d212fedc71dfa683",
+        "jurisdictions/wa/local/quincy_4452fa7e-26b7-51c0-b674-bb7f36bb430a.yaml": "7efb92ee521bf2c5a5afdaed07c39e7d36327061c37363dbdc2e89a0c6d47597"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:quincy"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-088",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357220",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/rainier_5357220_b3a1f808-b417-5fde-bf33-bceb76b4d09c.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Rainier",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/rainier_3aa3f6cf-cf50-5afb-aab4-5966c8cbb9d2.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:rainier",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/rainier_5357220_b3a1f808-b417-5fde-bf33-bceb76b4d09c.yaml": "4c9cdcd8b7e01af93aa8dabfda75216953c6f2fc81aee1fc40a146ad582fcaf6",
+        "jurisdictions/wa/local/rainier_3aa3f6cf-cf50-5afb-aab4-5966c8cbb9d2.yaml": "e4bb17ae77fa77cb00f526f823bb8a064111a1f9ed45328821421d16e19ad362"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:rainier"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-089",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357430",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/raymond_5357430_60ff69ec-7184-5230-9516-9859939750dd.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Raymond",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/raymond_80947378-611d-571b-ae80-8d358c7ad98b.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:raymond",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/raymond_5357430_60ff69ec-7184-5230-9516-9859939750dd.yaml": "2df090c3a41ab3cfdf9d1c8d93ee5fe95021143c8ea51eff2da468b40e3c637f",
+        "jurisdictions/wa/local/raymond_80947378-611d-571b-ae80-8d358c7ad98b.yaml": "64b12cd731f62aa1d07071fc5e65ed2711ae655de20109bc9e15e7f810146030"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:raymond"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-090",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357465",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/reardan_5357465_429d6b5d-1835-51f6-899c-966fd41412e3.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Reardan",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/reardan_5365ad50-eec4-580f-9388-c74b527f5499.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:reardan",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/reardan_5357465_429d6b5d-1835-51f6-899c-966fd41412e3.yaml": "230185d72ea61e9da0c564908cde4698910ba29702aac5571c8106aeb66ab36c",
+        "jurisdictions/wa/local/reardan_5365ad50-eec4-580f-9388-c74b527f5499.yaml": "0a705f3aed6484c955385a27ebae1f03e4aa0a6613b806664a09b0439b9c802e"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:reardan"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-091",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357535",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/redmond_5357535_26c56ab8-c513-537a-9170-87d01bb4c0f9.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Redmond",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/redmond_8b27920b-c403-5666-bb9a-fb6f4f0fbdb4.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:redmond",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/redmond_5357535_26c56ab8-c513-537a-9170-87d01bb4c0f9.yaml": "272ba4175bf3efef52dc0c03a4fd9a113f39177027c6b8aca9d4abaf7d366a12",
+        "jurisdictions/wa/local/redmond_8b27920b-c403-5666-bb9a-fb6f4f0fbdb4.yaml": "4368b3986a318c5545b4e38132f92a459de993a115172ea8213bae77e2f9eea2"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:redmond"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-092",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357745",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/renton_5357745_77aadab9-c786-5f86-b4ae-30b97053fd8c.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Renton",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/renton_332dcb0f-8633-5534-92dd-9bfc8a084189.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:renton",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/renton_5357745_77aadab9-c786-5f86-b4ae-30b97053fd8c.yaml": "e3c2ec93cd4c353c0fa4fa09a0ca4428f5577d341c06d5db3eb3840290da0bb6",
+        "jurisdictions/wa/local/renton_332dcb0f-8633-5534-92dd-9bfc8a084189.yaml": "202503f93ed083f302dab704a6f690ef5de2096957e2b17848a4c8347db8f818"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:renton"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-093",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5357850",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/republic_5357850_fec45fe6-0206-5ee1-afe8-46a4e70685b0.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Republic",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/republic_e9e3a48e-4232-5973-85d1-5b7bad2b049d.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:republic",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/republic_5357850_fec45fe6-0206-5ee1-afe8-46a4e70685b0.yaml": "3c45e86e50a4a667c07c32393ddaeb0f3571552263a31e4731d943aaeba22fa1",
+        "jurisdictions/wa/local/republic_e9e3a48e-4232-5973-85d1-5b7bad2b049d.yaml": "280e8f517f216bdd5f3f45388beead38f0a0230cf8ec4e9370819590a4ca0997"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:republic"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-094",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5358235",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/richland_5358235_350d6cf4-4e70-53bd-ba3a-56575ee8b09e.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Richland",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/richland_72d952ae-9375-5259-95b2-e79480525203.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:richland",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/richland_5358235_350d6cf4-4e70-53bd-ba3a-56575ee8b09e.yaml": "26f3524d6d26db3b3b736196ee5e19e5fd9e8531a7ebe5d5a0a69a9c46b9e398",
+        "jurisdictions/wa/local/richland_72d952ae-9375-5259-95b2-e79480525203.yaml": "4a78b9b458db2310339640639be4ef7c2b05a5d5882f19e650c1fe1bb25cd740"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:richland"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-095",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5358410",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/ridgefield_5358410_7edb50c1-050c-5afd-a1bd-67db013a2a64.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Ridgefield",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/ridgefield_762ce56b-a4d0-5204-9dc8-2c05e408b206.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:ridgefield",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/ridgefield_5358410_7edb50c1-050c-5afd-a1bd-67db013a2a64.yaml": "160c8b0c963d16440da3213e5e0934cb3ae8c862792fea2fc509d1dc8d6670f9",
+        "jurisdictions/wa/local/ridgefield_762ce56b-a4d0-5204-9dc8-2c05e408b206.yaml": "2fc94d0bc52db464fdd5ba4b79c4a1c88e45bf80a650df7ad9d54e4a90b3e471"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:ridgefield"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-096",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5358795",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/riverside_5358795_fbd3d4ab-9109-5047-9316-373442e455ea.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Riverside",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/riverside_e3245400-7c5e-5d0d-8844-dc3edeac5e86.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:riverside",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/riverside_5358795_fbd3d4ab-9109-5047-9316-373442e455ea.yaml": "d01730b471103b5f036e2d443ae84483af9374741029653c35dca7d5742cb6b8",
+        "jurisdictions/wa/local/riverside_e3245400-7c5e-5d0d-8844-dc3edeac5e86.yaml": "45bed60e3055fdf6dd03f183b77b2a8af014c5a2836849281d0f24dbc513e4cd"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:riverside"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-097",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5359145",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/rockford_5359145_963f6e8d-9c19-56e1-8e23-8ba1551fd26b.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Rockford",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/rockford_75a79956-4d37-5fee-836c-e3f2fa851f60.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:rockford",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/rockford_5359145_963f6e8d-9c19-56e1-8e23-8ba1551fd26b.yaml": "642236fd7289cc98b80d5f8346fd2f7bf9c540affa83c4b8916299f1870f9023",
+        "jurisdictions/wa/local/rockford_75a79956-4d37-5fee-836c-e3f2fa851f60.yaml": "c93ca556933172bde046fa516468e751b5f3c8a1eade449d49a423983bfbef65"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:rockford"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-098",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5359180",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/rock_island_5359180_de7871c4-a756-50a0-a680-606d02e7acc6.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Rock Island",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/rock_island_59f4ac4e-de68-53c1-ac40-7bb2fdd2b4f6.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:rock_island",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/rock_island_5359180_de7871c4-a756-50a0-a680-606d02e7acc6.yaml": "598f47815066524bda25db7872f00334aa1d2bc6721a5bfc0a905c6395b20df9",
+        "jurisdictions/wa/local/rock_island_59f4ac4e-de68-53c1-ac40-7bb2fdd2b4f6.yaml": "f6cdc9eeefc25ac5114c802aefc8fb7c71b37e83602756ca4dccd360a7c2d419"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:rock_island"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-099",
+      "wave": "WA-PB01-E"
+    },
+    {
+      "census_geoid": "5359775",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/rosalia_5359775_c4a97148-d5a8-5aa8-ab89-eb8641cb125e.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Rosalia",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/rosalia_25c61548-c92e-57f7-b5ba-11fbd83db350.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:rosalia",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/rosalia_5359775_c4a97148-d5a8-5aa8-ab89-eb8641cb125e.yaml": "4e51aaa9acfcd4ecfc54377aa3277537dc2f60c44339d882be62865cb10a6f29",
+        "jurisdictions/wa/local/rosalia_25c61548-c92e-57f7-b5ba-11fbd83db350.yaml": "56c7d2d75278c9b05a167d3627a11ae6cae8eb1e7623a20f24b9111d24e8195f"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:rosalia"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB01-100",
+      "wave": "WA-PB01-E"
+    }
+  ],
+  "upstream": {
+    "repository": "openstates/jurisdictions",
+    "revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
+  },
+  "wave": "WA-PB01-E"
+}
