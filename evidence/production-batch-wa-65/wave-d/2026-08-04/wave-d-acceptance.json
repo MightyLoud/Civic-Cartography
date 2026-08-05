@@ -1,0 +1,190 @@
+{
+  "artifact_inventory": {
+    "first_failures": [],
+    "first_inventory_sha256": "c308ca08ed6fbac2002a852f2896670989b6131797e26d9d6f55d6589617a489",
+    "identical": true,
+    "second_failures": [],
+    "second_inventory_sha256": "c308ca08ed6fbac2002a852f2896670989b6131797e26d9d6f55d6589617a489"
+  },
+  "batch_id": "WA-PB02",
+  "criteria": {
+    "all_generated_artifacts_have_sha256": true,
+    "all_nesting_relationships_preserved_as_lists": true,
+    "all_output_paths_are_unique": true,
+    "all_targets_are_deterministic": true,
+    "all_targets_have_one_result_per_run": true,
+    "all_targets_resolve_classify_and_generate": true,
+    "artifact_inventories_are_identical": true,
+    "target_crosswalk_parity": true,
+    "zero_target_only_production_patches": true
+  },
+  "crosswalk_sha256": "1dcdf1026ae9875bab895de38913ffe51df03461d376dbef16ef0045338b291d",
+  "evaluation_id": "19f51f1c346f3011e982",
+  "first_run_id": "a786a6078806da7ec3c5",
+  "manifest_name": "production_batch_wa_65_wa_pb02_d",
+  "manifest_sha256": "b994e370de7ccf96a214cbf8ae1b28bf386a444d32c884456e2d106415fc5847",
+  "run_asof": "2026-08-04T18:00:00Z",
+  "schema_version": 1,
+  "second_run_id": "a786a6078806da7ec3c5",
+  "summary": {
+    "artifact_count": 12,
+    "artifact_inventories_identical": true,
+    "deterministic_count": 5,
+    "gate_passed": true,
+    "nesting_parity_count": 5,
+    "passed_count": 5,
+    "reports_identical": true,
+    "shared_artifact_count": 2,
+    "target_artifact_count": 10,
+    "target_count": 5,
+    "target_only_patch_count": 0,
+    "unique_output_paths": true
+  },
+  "targets": [
+    {
+      "census_geoid": "5379625",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/woodland_5379625_26c15297-75b5-506d-95b8-e6807b14bda5.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Woodland",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/woodland_d15f4eff-02d3-591a-8874-ba32393717ef.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:woodland",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/woodland_5379625_26c15297-75b5-506d-95b8-e6807b14bda5.yaml": "7c0340b8680a267cc117610372d3869aded0045439484d4aebf4dd43d7ba7b4b",
+        "jurisdictions/wa/local/woodland_d15f4eff-02d3-591a-8874-ba32393717ef.yaml": "55fb57b52694fbf2d9d89af7b886b2f58119a9de361022d0b2a307e557ba80b8"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:woodland"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-061",
+      "wave": "WA-PB02-D"
+    },
+    {
+      "census_geoid": "5379835",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/woodway_5379835_f5ef4caf-b299-5e30-9394-7863bd8dd1f7.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Woodway",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/woodway_536082af-408e-5944-9f0f-1403d97cb30c.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:woodway",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/woodway_5379835_f5ef4caf-b299-5e30-9394-7863bd8dd1f7.yaml": "2b44d2cd7fd92431f1763ba5a277228cdd2934e639db136d92c199535cb21b54",
+        "jurisdictions/wa/local/woodway_536082af-408e-5944-9f0f-1403d97cb30c.yaml": "f10b6dc05f5d69de5ec4bcaf9e0f38e246a8c9a9355a217bd2a5656cae13919d"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:woodway"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-062",
+      "wave": "WA-PB02-D"
+    },
+    {
+      "census_geoid": "5380150",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/yarrow_point_5380150_53660a65-fbb1-513c-8242-a44c7595cd8c.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Yarrow Point",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/yarrow_point_4aa88875-8f6d-5784-90dd-c4bb19c9f9f2.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:yarrow_point",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/yarrow_point_5380150_53660a65-fbb1-513c-8242-a44c7595cd8c.yaml": "d51d89b2ffb1482d08c25e2570336f7495663d875d2a7dcd336a5fdd1371f38d",
+        "jurisdictions/wa/local/yarrow_point_4aa88875-8f6d-5784-90dd-c4bb19c9f9f2.yaml": "338680aa51ede7eb8e0c21bb1ac781df93ee83cd007842252442d286293bbbe6"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:yarrow_point"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-063",
+      "wave": "WA-PB02-D"
+    },
+    {
+      "census_geoid": "5380220",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/yelm_5380220_3ee822b9-71c9-501d-a043-d3c88b9fbae5.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Yelm",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/yelm_622d782d-b3c3-5622-8bd9-28f9cb6ed94a.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:yelm",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/yelm_5380220_3ee822b9-71c9-501d-a043-d3c88b9fbae5.yaml": "cf543033634dd40c76fa9f786965a3ffce75ba41d09dc666537cda61c63eea21",
+        "jurisdictions/wa/local/yelm_622d782d-b3c3-5622-8bd9-28f9cb6ed94a.yaml": "dc49f7bc43e805d5a48acae2af344891b281bc6c163d91d28e3815d2be402f87"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:yelm"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-064",
+      "wave": "WA-PB02-D"
+    },
+    {
+      "census_geoid": "5380500",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/zillah_5380500_83e06d77-6dde-5244-bfaa-ed753054db7d.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Zillah",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/zillah_ddc84a11-5bae-5378-bd99-8fdf0effd162.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:zillah",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/zillah_5380500_83e06d77-6dde-5244-bfaa-ed753054db7d.yaml": "0f4f68fce7b324f890483b5d19d47e90d67c926f6025fe0a12b5a0cd5b4c50bf",
+        "jurisdictions/wa/local/zillah_ddc84a11-5bae-5378-bd99-8fdf0effd162.yaml": "fc510f20228b33e16efc2964557115357b34708d3d985530910efd2845e6bfa2"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:zillah"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-065",
+      "wave": "WA-PB02-D"
+    }
+  ],
+  "upstream": {
+    "repository": "openstates/jurisdictions",
+    "revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
+  },
+  "wave": "WA-PB02-D"
+}

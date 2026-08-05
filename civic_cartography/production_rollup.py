@@ -39,12 +39,25 @@ def build_production_batch_rollup(
     *,
     batch_id: str = "WA-PB01",
     expected_target_count: int = 100,
+    expected_wave_letters: str = "ABCDE",
 ) -> dict[str, object]:
     paths = [Path(path) for path in acceptance_paths]
     if not paths:
         raise ProductionRollupError("at least one wave acceptance path is required")
 
-    expected_waves = [f"{batch_id}-{letter}" for letter in "ABCDE"]
+    if (
+        not expected_wave_letters
+        or not expected_wave_letters.isalpha()
+        or not expected_wave_letters.isupper()
+        or len(set(expected_wave_letters)) != len(expected_wave_letters)
+    ):
+        raise ProductionRollupError(
+            "expected_wave_letters must contain unique uppercase letters"
+        )
+
+    expected_waves = [
+        f"{batch_id}-{letter}" for letter in expected_wave_letters
+    ]
     expected_target_ids = [
         f"{batch_id}-{number:03d}"
         for number in range(1, expected_target_count + 1)
@@ -177,8 +190,13 @@ def build_production_batch_rollup(
     duplicate_target_output_paths = len(target_output_paths) != len(
         set(target_output_paths)
     )
+    wave_coverage_criterion = (
+        "all_five_waves_present"
+        if expected_wave_letters == "ABCDE"
+        else "all_expected_waves_present"
+    )
     criteria = {
-        "all_five_waves_present": [
+        wave_coverage_criterion: [
             wave["wave"] for wave in wave_records
         ]
         == expected_waves,

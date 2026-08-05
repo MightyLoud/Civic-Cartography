@@ -23,6 +23,25 @@ ROLLUP_PATH = Path(
     "production-batch-wa-100-rollup.json"
 )
 SCHEMA_PATH = ROOT / "schemas" / "production-batch-rollup.schema.json"
+PB02_WAVE_PATHS = [
+    Path("evidence")
+    / "production-batch-wa-65"
+    / f"wave-{letter.lower()}"
+    / "2026-08-04"
+    / f"wave-{letter.lower()}-acceptance.json"
+    for letter in "ABCD"
+]
+PB02_ROLLUP_PATH = (
+    ROOT
+    / "evidence"
+    / "production-batch-wa-65"
+    / "closeout"
+    / "2026-08-04"
+    / "production-batch-wa-65-rollup.json"
+)
+PB02_SCHEMA_PATH = (
+    ROOT / "schemas" / "production-batch-wa-65-rollup.schema.json"
+)
 
 
 def test_production_batch_rollup_passes_all_100_target_gates() -> None:
@@ -75,3 +94,44 @@ def test_rollup_gate_rejects_duplicate_or_missing_target(tmp_path: Path) -> None
     assert rollup["criteria"]["complete_target_id_coverage"] is False
     assert rollup["criteria"]["no_duplicate_target_ids"] is False
     assert rollup["summary"]["gate_passed"] is False
+
+
+def test_production_batch_2_rollup_passes_all_65_target_gates() -> None:
+    rollup = build_production_batch_rollup(
+        PB02_WAVE_PATHS,
+        batch_id="WA-PB02",
+        expected_target_count=65,
+        expected_wave_letters="ABCD",
+    )
+
+    assert rollup["summary"] == {
+        "wave_count": 4,
+        "target_count": 65,
+        "passed_count": 65,
+        "deterministic_count": 65,
+        "nesting_parity_count": 65,
+        "target_artifact_count": 130,
+        "wave_scoped_shared_artifact_count": 8,
+        "artifact_hash_count": 138,
+        "exception_or_review_count": 0,
+        "target_only_patch_count": 0,
+        "gate_passed": True,
+    }
+    assert all(rollup["criteria"].values())
+    assert [target["target_id"] for target in rollup["targets"]] == [
+        f"WA-PB02-{number:03d}" for number in range(1, 66)
+    ]
+
+
+def test_committed_batch_2_rollup_is_reproducible_and_schema_valid() -> None:
+    expected = build_production_batch_rollup(
+        PB02_WAVE_PATHS,
+        batch_id="WA-PB02",
+        expected_target_count=65,
+        expected_wave_letters="ABCD",
+    )
+    committed = json.loads(PB02_ROLLUP_PATH.read_text(encoding="utf-8"))
+    schema = json.loads(PB02_SCHEMA_PATH.read_text(encoding="utf-8"))
+
+    assert committed == expected
+    Draft202012Validator(schema).validate(committed)
