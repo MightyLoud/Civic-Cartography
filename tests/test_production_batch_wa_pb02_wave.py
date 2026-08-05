@@ -30,13 +30,7 @@ CROSSWALK_PATH = (
 UPSTREAM_REVISION = "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
 RUN_ASOF = "2026-08-04T18:00:00Z"
 WAVE_SCHEMA_PATH = ROOT / "schemas" / "production-wave-report.schema.json"
-EVIDENCE_ROOT = (
-    ROOT
-    / "evidence"
-    / "production-batch-wa-65"
-    / "wave-a"
-    / "2026-08-04"
-)
+EVIDENCE_ROOT = ROOT / "evidence" / "production-batch-wa-65"
 
 
 def _reports(
@@ -201,10 +195,33 @@ def test_wave_a_rejects_crosswalk_from_a_different_batch(tmp_path: Path) -> None
         )
 
 
-def test_committed_wave_a_evidence_is_valid_and_self_hashing() -> None:
-    acceptance_path = EVIDENCE_ROOT / "wave-a-acceptance.json"
-    inventory_path = EVIDENCE_ROOT / "artifact-inventory.json"
-    evidence_path = EVIDENCE_ROOT / "evidence-manifest.json"
+@pytest.mark.parametrize(
+    ("wave_slug", "first_number", "last_number", "implementation_head"),
+    [
+        (
+            "a",
+            1,
+            20,
+            "167b8b077589a1d67366161f3e6475db948cb45c",
+        ),
+        (
+            "b",
+            21,
+            40,
+            "7643fc1d7a7fbbbcde2f28bb2c15a8277f71a242",
+        ),
+    ],
+)
+def test_committed_pb02_wave_evidence_is_valid_and_self_hashing(
+    wave_slug: str,
+    first_number: int,
+    last_number: int,
+    implementation_head: str,
+) -> None:
+    root = EVIDENCE_ROOT / f"wave-{wave_slug}" / "2026-08-04"
+    acceptance_path = root / f"wave-{wave_slug}-acceptance.json"
+    inventory_path = root / "artifact-inventory.json"
+    evidence_path = root / "evidence-manifest.json"
     acceptance = json.loads(acceptance_path.read_text(encoding="utf-8"))
     inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
     evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
@@ -212,10 +229,11 @@ def test_committed_wave_a_evidence_is_valid_and_self_hashing() -> None:
 
     Draft202012Validator(schema).validate(acceptance)
     assert acceptance["batch_id"] == "WA-PB02"
-    assert acceptance["wave"] == "WA-PB02-A"
+    assert acceptance["wave"] == f"WA-PB02-{wave_slug.upper()}"
     assert acceptance["summary"]["gate_passed"] is True
     assert [row["target_id"] for row in acceptance["targets"]] == [
-        f"WA-PB02-{number:03d}" for number in range(1, 21)
+        f"WA-PB02-{number:03d}"
+        for number in range(first_number, last_number + 1)
     ]
     assert evidence["summary"] == acceptance["summary"]
     assert evidence["criteria"] == acceptance["criteria"]
@@ -234,9 +252,7 @@ def test_committed_wave_a_evidence_is_valid_and_self_hashing() -> None:
     assert evidence["evidence_files"]["first_inventory"]["size_bytes"] == (
         evidence["evidence_files"]["second_inventory"]["size_bytes"]
     )
-    assert evidence["workflow"]["head_sha"] == (
-        "167b8b077589a1d67366161f3e6475db948cb45c"
-    )
+    assert evidence["workflow"]["head_sha"] == implementation_head
 
 
 def test_wave_a_rejects_flattened_nesting(tmp_path: Path) -> None:
