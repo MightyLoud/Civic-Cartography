@@ -1,0 +1,610 @@
+{
+  "artifact_inventory": {
+    "first_failures": [],
+    "first_inventory_sha256": "6c966afe5edc87fc23951c9ae145ed4417bd47c14ea2f0859c722ae7cc53a153",
+    "identical": true,
+    "second_failures": [],
+    "second_inventory_sha256": "6c966afe5edc87fc23951c9ae145ed4417bd47c14ea2f0859c722ae7cc53a153"
+  },
+  "batch_id": "WA-PB02",
+  "criteria": {
+    "all_generated_artifacts_have_sha256": true,
+    "all_nesting_relationships_preserved_as_lists": true,
+    "all_output_paths_are_unique": true,
+    "all_targets_are_deterministic": true,
+    "all_targets_have_one_result_per_run": true,
+    "all_targets_resolve_classify_and_generate": true,
+    "artifact_inventories_are_identical": true,
+    "target_crosswalk_parity": true,
+    "zero_target_only_production_patches": true
+  },
+  "crosswalk_sha256": "1dcdf1026ae9875bab895de38913ffe51df03461d376dbef16ef0045338b291d",
+  "evaluation_id": "a810b4ee63faa9ee6007",
+  "first_run_id": "cef6e1399e1ca6a135d9",
+  "manifest_name": "production_batch_wa_65_wa_pb02_c",
+  "manifest_sha256": "d5d6397efe9d652da0a46068f3b3dc47825cf6fc22e82ae22b40969dfd9425f6",
+  "run_asof": "2026-08-04T18:00:00Z",
+  "schema_version": 1,
+  "second_run_id": "cef6e1399e1ca6a135d9",
+  "summary": {
+    "artifact_count": 42,
+    "artifact_inventories_identical": true,
+    "deterministic_count": 20,
+    "gate_passed": true,
+    "nesting_parity_count": 20,
+    "passed_count": 20,
+    "reports_identical": true,
+    "shared_artifact_count": 2,
+    "target_artifact_count": 40,
+    "target_count": 20,
+    "target_only_patch_count": 0,
+    "unique_output_paths": true
+  },
+  "targets": [
+    {
+      "census_geoid": "5373290",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/union_gap_5373290_90009c92-257f-585c-8ed6-30365960bc69.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Union Gap",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/union_gap_9a4e6a65-9dc4-5bea-88ef-9c8a935f7da4.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:union_gap",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/union_gap_5373290_90009c92-257f-585c-8ed6-30365960bc69.yaml": "4ec912dfaaae263b6318ce81928092332934fe3cfa77ff0a659f49d8504d9df2",
+        "jurisdictions/wa/local/union_gap_9a4e6a65-9dc4-5bea-88ef-9c8a935f7da4.yaml": "646a2d3faad2f09bc26f6fa45b1d19bfdc6e0d05a5efa51fa1189c8dc6ea4651"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:union_gap"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-041",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5373360",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/uniontown_5373360_8f119f8c-e66a-5ba9-ba33-f2ab75a61b60.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Uniontown",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/uniontown_a8306856-b7a0-52c9-a557-46bfb55706a3.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:uniontown",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/uniontown_5373360_8f119f8c-e66a-5ba9-ba33-f2ab75a61b60.yaml": "3092771044e638a6e16c5cdf1af82e9c8797130ab009050099f6a731543aed15",
+        "jurisdictions/wa/local/uniontown_a8306856-b7a0-52c9-a557-46bfb55706a3.yaml": "705005b454eeba56b8d2642f3be1a4379b3e2c513e938a752b6be376b2f611e0"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:uniontown"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-042",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5373465",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/university_place_5373465_1381b627-0928-543d-a829-31fdb765a482.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "University Place",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/university_place_665104bf-f57e-5532-a11a-e72663330552.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:university_place",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/university_place_5373465_1381b627-0928-543d-a829-31fdb765a482.yaml": "48879ac414a077da249788ccb372e7bcedfb1830bb92eaaf06b233109b2bb0d7",
+        "jurisdictions/wa/local/university_place_665104bf-f57e-5532-a11a-e72663330552.yaml": "1910533003cca4f6cb8ad5210231a9bddf991b255a88f6cf722ed5a44e6a2970"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:university_place"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-043",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5373780",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/vader_5373780_4a8dd1bd-2872-52f2-a3da-ba90f32b8c77.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Vader",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/vader_77d9ac76-df0f-58b4-a8a4-f9509ad0f285.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:vader",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/vader_5373780_4a8dd1bd-2872-52f2-a3da-ba90f32b8c77.yaml": "cecfad3a3c0a0e52d2783a1680b351ae557fc901553be2ed1def9c712544d9b5",
+        "jurisdictions/wa/local/vader_77d9ac76-df0f-58b4-a8a4-f9509ad0f285.yaml": "6a51fb35ac410fbf103618511cafc2277db57beafc174e3f72532a84fa9dbd55"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:vader"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-044",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5375775",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/walla_walla_5375775_e9393034-16fd-52e3-a9f4-b6ff1974ab8e.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Walla Walla",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/walla_walla_b2ca7ac6-7524-52a6-90ff-fde62520bb74.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:walla_walla",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/walla_walla_5375775_e9393034-16fd-52e3-a9f4-b6ff1974ab8e.yaml": "744b7da6d8100e5a471a71feab02fbea8db52ce71f79a6a5e26fdfcf932f4fbf",
+        "jurisdictions/wa/local/walla_walla_b2ca7ac6-7524-52a6-90ff-fde62520bb74.yaml": "270617dce0ac254da74d016d5233af592743c0eba5b9c6a64af161dbcaaebed1"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:walla_walla"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-045",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5376125",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/wapato_5376125_0860c081-1d5f-5f54-866e-aea39f3ef446.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Wapato",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/wapato_6f8e2269-6c01-5a78-ace5-43a5276b4ff3.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:wapato",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/wapato_5376125_0860c081-1d5f-5f54-866e-aea39f3ef446.yaml": "3c44fe3548eab51095f2d5ea5f4b6fa21bd442692923159ea2c8cc1c0df6543b",
+        "jurisdictions/wa/local/wapato_6f8e2269-6c01-5a78-ace5-43a5276b4ff3.yaml": "d67a669bf26abf9546ed24080963684843d177214ce85423736afdf25b3cbe4f"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:wapato"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-046",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5376160",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/warden_5376160_fe680b29-66e0-523f-bae1-8e73094f2936.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Warden",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/warden_b2f9e199-95a2-5e07-b495-f051a0a773bc.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:warden",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/warden_5376160_fe680b29-66e0-523f-bae1-8e73094f2936.yaml": "86e909e63d5050ff2c03210b907a5b654506f233798d8ca7a27693c7692845bd",
+        "jurisdictions/wa/local/warden_b2f9e199-95a2-5e07-b495-f051a0a773bc.yaml": "54a5ba137884a0014f88feb3775ac811ddcde4f3d8e6086888b2c93a2dd3acde"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:warden"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-047",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5376405",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/washougal_5376405_e309b074-0328-502e-b093-21f5679a1120.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Washougal",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/washougal_59ffff07-65b4-550a-ac00-2c3805b319e9.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:washougal",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/washougal_5376405_e309b074-0328-502e-b093-21f5679a1120.yaml": "9216c472c598e2b7e486c1631f31d52e2185a317ba72b9c99da0d87fb4b71a38",
+        "jurisdictions/wa/local/washougal_59ffff07-65b4-550a-ac00-2c3805b319e9.yaml": "b31e0bd53732846b1e0152bc1aa2b9ba34ce29e5c65e194a19e5d6401c497c86"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:washougal"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-048",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5376440",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/washtucna_5376440_32c2b7e8-cca3-5790-bfed-86bf0817f699.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Washtucna",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/washtucna_f35ae7f9-50c9-59c3-ae5c-357dc071083c.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:washtucna",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/washtucna_5376440_32c2b7e8-cca3-5790-bfed-86bf0817f699.yaml": "327962c50d173720fe30ad890ec7d27c1a05c212964f2760dd8a6ae551f2f3a0",
+        "jurisdictions/wa/local/washtucna_f35ae7f9-50c9-59c3-ae5c-357dc071083c.yaml": "b993b6cf6d2a1b6473427bbdc34ade35632051980293b9afe7d46e03eace0b2e"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:washtucna"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-049",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5376510",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/waterville_5376510_8654f214-ebfd-5cea-9ecb-bec22609945a.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Waterville",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/waterville_6da3bf80-e651-5417-ba45-15ef77552774.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:waterville",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/waterville_5376510_8654f214-ebfd-5cea-9ecb-bec22609945a.yaml": "37d629cf508807f432c5f6ffacd83234326185b0ef0944294d92fabdcf877831",
+        "jurisdictions/wa/local/waterville_6da3bf80-e651-5417-ba45-15ef77552774.yaml": "accbce4a0aa4bf39e13e250d2aebaae9c1466367aeaf7c96ea71cf6eb9531552"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:waterville"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-050",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5376720",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/waverly_5376720_52665288-6b9e-51f2-8bfb-da784a749166.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Waverly",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/waverly_22b57c1c-4d3b-583f-b6eb-aa7645c4ae77.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:waverly",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/waverly_5376720_52665288-6b9e-51f2-8bfb-da784a749166.yaml": "a1f1723058b395b0933b097340c55a338d7d9dc4f8cc79cbe811e63119728b06",
+        "jurisdictions/wa/local/waverly_22b57c1c-4d3b-583f-b6eb-aa7645c4ae77.yaml": "e53f29dbf28ee268843b53b77e5bec62a897c643ae66717c2a2997ab5c2095cd"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:waverly"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-051",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5377630",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/westport_5377630_9c615313-a4c5-5132-afc5-7dbd52928935.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Westport",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/westport_c7dbaef9-a8e4-5715-99ae-30a10bff1b19.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:westport",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/westport_5377630_9c615313-a4c5-5132-afc5-7dbd52928935.yaml": "c31e5d4fcecbae2b41145eda54be0b4c2a958e0294cfb64052259b83e516996e",
+        "jurisdictions/wa/local/westport_c7dbaef9-a8e4-5715-99ae-30a10bff1b19.yaml": "a1a2b5a6d2ae0875c423404f138edc183d201b31b6d9aea7ef6b527138045b34"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:westport"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-052",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5377665",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/west_richland_5377665_5f86d8a7-cc72-5ac9-befa-a807c0308859.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "West Richland",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/west_richland_a8afb206-9ec9-50e1-b09e-ff2054b86cba.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:west_richland",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/west_richland_5377665_5f86d8a7-cc72-5ac9-befa-a807c0308859.yaml": "6a104ceb428cafd7fbae8a8f0f6293e0c07511009c88371308c6413b1aa0a4f9",
+        "jurisdictions/wa/local/west_richland_a8afb206-9ec9-50e1-b09e-ff2054b86cba.yaml": "1d6d4163e768de0565ce32f03e798ba7b48e51170c125ca778ab16b1f36ed4b6"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:west_richland"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-053",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5378330",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/white_salmon_5378330_9c0a840d-a457-5a23-9954-b56684de48e4.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "White Salmon",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/white_salmon_0033b918-e124-5956-86c5-642f19b7697b.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:white_salmon",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/white_salmon_5378330_9c0a840d-a457-5a23-9954-b56684de48e4.yaml": "a1321d8472ef07392c79654ce8b82c9169df949a4c61252334ba50f642f1ad72",
+        "jurisdictions/wa/local/white_salmon_0033b918-e124-5956-86c5-642f19b7697b.yaml": "740a7ba505a7414c9f25b1802b98b1b5ea226afdeba8aca89c910f3315e8f3fd"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:white_salmon"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-054",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5378680",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/wilbur_5378680_cf425797-6717-5d38-ab01-b3554be82043.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Wilbur",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/wilbur_173eb974-8961-54c8-b5d1-d64476cb7d6d.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:wilbur",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/wilbur_5378680_cf425797-6717-5d38-ab01-b3554be82043.yaml": "ac30df4bbbad0433290668df1592ecb454cd55813d2aa8436d80f49d283970e6",
+        "jurisdictions/wa/local/wilbur_173eb974-8961-54c8-b5d1-d64476cb7d6d.yaml": "16a97d4e6c784817bf2778efc3f1b966454ac3dfb3a729fdc83d62d9fc321792"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:wilbur"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-055",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5378925",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/wilkeson_5378925_a3e334af-3364-53d8-abdf-4c04a927ebbe.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Wilkeson",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/wilkeson_006d8171-a4b9-5f30-b9a5-79c67eebbdfd.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:wilkeson",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/wilkeson_5378925_a3e334af-3364-53d8-abdf-4c04a927ebbe.yaml": "261778be750516de59d2a99465503d51a9c35d55637c820d1cc31db7d1f1a2a5",
+        "jurisdictions/wa/local/wilkeson_006d8171-a4b9-5f30-b9a5-79c67eebbdfd.yaml": "d14d64173acd8fbf8105eeede1a93f508221a5222e517ec107ca084ee9669e41"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:wilkeson"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-056",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5379135",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/wilson_creek_5379135_5f8899eb-0dd2-5f0b-9398-5ffb531c106a.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Wilson Creek",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/wilson_creek_d74321d8-775f-53e3-b0ac-2da7a28d61f4.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:wilson_creek",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/wilson_creek_5379135_5f8899eb-0dd2-5f0b-9398-5ffb531c106a.yaml": "65d37ce1119f1b54aa168096f3b503921e5ea2a76ffdb78919dfaa061c0e7188",
+        "jurisdictions/wa/local/wilson_creek_d74321d8-775f-53e3-b0ac-2da7a28d61f4.yaml": "76f4b2c55374d7354bd3c4bff4f39d7e56e93a3e82c754513afc0d4981d706eb"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:wilson_creek"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-057",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5379275",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/winlock_5379275_9aab6928-c913-54d6-8307-0a1a8a533946.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Winlock",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/winlock_bc938cda-24c3-524a-b094-b09c5e0b5f91.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:winlock",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/winlock_5379275_9aab6928-c913-54d6-8307-0a1a8a533946.yaml": "ef45a51dd48ea3c26c7f3bacc79794a14bcaa6f906b6d04255c73e3e49882f6e",
+        "jurisdictions/wa/local/winlock_bc938cda-24c3-524a-b094-b09c5e0b5f91.yaml": "da40aeafb41157ee0c0a4ec09430763b7f11a2e6decbb8cb0966ab6049e0785d"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:winlock"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-058",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5379380",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/winthrop_5379380_829bbba5-c15d-5445-8dbe-c7e09c163c90.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Winthrop",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/winthrop_715f8949-9674-5c3d-b0f2-ffbf0b7933b3.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:winthrop",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/winthrop_5379380_829bbba5-c15d-5445-8dbe-c7e09c163c90.yaml": "d4d9a1b0e60c52ccb584c068a238a0d26902d59dec4d469fe90d23395f904d3f",
+        "jurisdictions/wa/local/winthrop_715f8949-9674-5c3d-b0f2-ffbf0b7933b3.yaml": "a8ba637fc564b062f4dcbdb69a8dff9df79f20e64ffefa0d4f388a10e3ab6780"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:winthrop"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-059",
+      "wave": "WA-PB02-C"
+    },
+    {
+      "census_geoid": "5379590",
+      "deterministic": true,
+      "division_paths": [
+        "divisions/wa/local/woodinville_5379590_fa171dad-f33a-5902-a372-3a6349d2cd91.yaml"
+      ],
+      "exception_class": null,
+      "failures": [],
+      "generation_status": "generated",
+      "inferred_classification": "government",
+      "jurisdiction_name": "Woodinville",
+      "jurisdiction_paths": [
+        "jurisdictions/wa/local/woodinville_0a87e709-ec34-51d6-9f36-87c625e02dce.yaml"
+      ],
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:woodinville",
+      "nesting_parity": true,
+      "output_hashes": {
+        "divisions/wa/local/woodinville_5379590_fa171dad-f33a-5902-a372-3a6349d2cd91.yaml": "cecbd893770d792ff6cf3035e3b4935d2b4de56d4aba433ccbf6103fb4465d64",
+        "jurisdictions/wa/local/woodinville_0a87e709-ec34-51d6-9f36-87c625e02dce.yaml": "444d7ffb2604e8fdf0e3b890ba886ab8609e503531c88f1b40a5a1c6d6c31a44"
+      },
+      "resolved_ocdids": [
+        "ocd-division/country:us/state:wa/place:woodinville"
+      ],
+      "review_reason": null,
+      "status": "passed",
+      "target_id": "WA-PB02-060",
+      "wave": "WA-PB02-C"
+    }
+  ],
+  "upstream": {
+    "repository": "openstates/jurisdictions",
+    "revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
+  },
+  "wave": "WA-PB02-C"
+}

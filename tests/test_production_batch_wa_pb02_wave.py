@@ -259,6 +259,12 @@ def test_wave_a_rejects_crosswalk_from_a_different_batch(tmp_path: Path) -> None
             40,
             "7643fc1d7a7fbbbcde2f28bb2c15a8277f71a242",
         ),
+        (
+            "c",
+            41,
+            60,
+            "e96839ae0d55069be458c0a992f12724a3aa8440",
+        ),
     ],
 )
 def test_committed_pb02_wave_evidence_is_valid_and_self_hashing(
