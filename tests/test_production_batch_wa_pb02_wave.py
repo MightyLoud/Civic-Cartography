@@ -30,18 +30,14 @@ CROSSWALK_PATH = (
 UPSTREAM_REVISION = "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
 RUN_ASOF = "2026-08-04T18:00:00Z"
 WAVE_SCHEMA_PATH = ROOT / "schemas" / "production-wave-report.schema.json"
-EVIDENCE_ROOT = (
-    ROOT
-    / "evidence"
-    / "production-batch-wa-65"
-    / "wave-a"
-    / "2026-08-04"
-)
+EVIDENCE_ROOT = ROOT / "evidence" / "production-batch-wa-65"
 
 
-def _reports(tmp_path: Path) -> tuple[object, dict, dict, dict, dict]:
+def _reports(
+    tmp_path: Path, wave: str = "WA-PB02-A"
+) -> tuple[object, dict, dict, dict, dict]:
     manifest = select_production_wave(
-        load_manifest(FULL_MANIFEST_PATH), "WA-PB02-A"
+        load_manifest(FULL_MANIFEST_PATH), wave
     )
     overlays: dict[str, dict[str, object]] = {}
     for target in manifest.targets:
@@ -130,6 +126,55 @@ def test_wave_a_acceptance_uses_the_reusable_wave_contract(tmp_path: Path) -> No
     Draft202012Validator(schema).validate(evaluation)
 
 
+def test_wave_b_selection_is_the_frozen_second_twenty_targets() -> None:
+    wave = select_production_wave(
+        load_manifest(FULL_MANIFEST_PATH), "WA-PB02-B"
+    )
+
+    assert [target.target_id for target in wave.targets] == [
+        f"WA-PB02-{number:03d}" for number in range(21, 41)
+    ]
+    assert wave.targets[0].jurisdiction_name == "Spokane Valley"
+    assert wave.targets[-1].jurisdiction_name == "Twisp"
+    assert {target.wave for target in wave.targets} == {"WA-PB02-B"}
+
+
+def test_wave_b_acceptance_uses_the_reusable_wave_contract(tmp_path: Path) -> None:
+    manifest, first, second, first_inventory, second_inventory = _reports(
+        tmp_path, "WA-PB02-B"
+    )
+    evaluation = evaluate_production_wave(
+        manifest,
+        first,
+        second,
+        load_crosswalk(CROSSWALK_PATH),
+        first_inventory,
+        second_inventory,
+        upstream_repository="openstates/jurisdictions",
+        upstream_revision=UPSTREAM_REVISION,
+    )
+
+    assert evaluation["summary"] == {
+        "target_count": 20,
+        "passed_count": 20,
+        "deterministic_count": 20,
+        "nesting_parity_count": 20,
+        "reports_identical": True,
+        "unique_output_paths": True,
+        "artifact_count": 40,
+        "target_artifact_count": 40,
+        "shared_artifact_count": 0,
+        "artifact_inventories_identical": True,
+        "target_only_patch_count": 0,
+        "gate_passed": True,
+    }
+    assert evaluation["batch_id"] == "WA-PB02"
+    assert evaluation["wave"] == "WA-PB02-B"
+    assert all(evaluation["criteria"].values())
+    schema = json.loads(WAVE_SCHEMA_PATH.read_text(encoding="utf-8"))
+    Draft202012Validator(schema).validate(evaluation)
+
+
 def test_wave_a_rejects_crosswalk_from_a_different_batch(tmp_path: Path) -> None:
     manifest, first, second, first_inventory, second_inventory = _reports(tmp_path)
     crosswalk = load_crosswalk(CROSSWALK_PATH)
@@ -150,10 +195,33 @@ def test_wave_a_rejects_crosswalk_from_a_different_batch(tmp_path: Path) -> None
         )
 
 
-def test_committed_wave_a_evidence_is_valid_and_self_hashing() -> None:
-    acceptance_path = EVIDENCE_ROOT / "wave-a-acceptance.json"
-    inventory_path = EVIDENCE_ROOT / "artifact-inventory.json"
-    evidence_path = EVIDENCE_ROOT / "evidence-manifest.json"
+@pytest.mark.parametrize(
+    ("wave_slug", "first_number", "last_number", "implementation_head"),
+    [
+        (
+            "a",
+            1,
+            20,
+            "167b8b077589a1d67366161f3e6475db948cb45c",
+        ),
+        (
+            "b",
+            21,
+            40,
+            "7643fc1d7a7fbbbcde2f28bb2c15a8277f71a242",
+        ),
+    ],
+)
+def test_committed_pb02_wave_evidence_is_valid_and_self_hashing(
+    wave_slug: str,
+    first_number: int,
+    last_number: int,
+    implementation_head: str,
+) -> None:
+    root = EVIDENCE_ROOT / f"wave-{wave_slug}" / "2026-08-04"
+    acceptance_path = root / f"wave-{wave_slug}-acceptance.json"
+    inventory_path = root / "artifact-inventory.json"
+    evidence_path = root / "evidence-manifest.json"
     acceptance = json.loads(acceptance_path.read_text(encoding="utf-8"))
     inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
     evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
@@ -161,10 +229,11 @@ def test_committed_wave_a_evidence_is_valid_and_self_hashing() -> None:
 
     Draft202012Validator(schema).validate(acceptance)
     assert acceptance["batch_id"] == "WA-PB02"
-    assert acceptance["wave"] == "WA-PB02-A"
+    assert acceptance["wave"] == f"WA-PB02-{wave_slug.upper()}"
     assert acceptance["summary"]["gate_passed"] is True
     assert [row["target_id"] for row in acceptance["targets"]] == [
-        f"WA-PB02-{number:03d}" for number in range(1, 21)
+        f"WA-PB02-{number:03d}"
+        for number in range(first_number, last_number + 1)
     ]
     assert evidence["summary"] == acceptance["summary"]
     assert evidence["criteria"] == acceptance["criteria"]
@@ -183,9 +252,7 @@ def test_committed_wave_a_evidence_is_valid_and_self_hashing() -> None:
     assert evidence["evidence_files"]["first_inventory"]["size_bytes"] == (
         evidence["evidence_files"]["second_inventory"]["size_bytes"]
     )
-    assert evidence["workflow"]["head_sha"] == (
-        "167b8b077589a1d67366161f3e6475db948cb45c"
-    )
+    assert evidence["workflow"]["head_sha"] == implementation_head
 
 
 def test_wave_a_rejects_flattened_nesting(tmp_path: Path) -> None:
@@ -210,12 +277,15 @@ def test_wave_a_rejects_flattened_nesting(tmp_path: Path) -> None:
     ] is False
 
 
-def test_pb02_wave_a_workflow_invokes_only_its_matching_runner() -> None:
+@pytest.mark.parametrize("wave_slug", ["a", "b"])
+def test_each_pb02_wave_workflow_invokes_its_matching_runner(
+    wave_slug: str,
+) -> None:
     workflow = (
         ROOT
         / ".github"
         / "workflows"
-        / "validate-production-batch-wa-pb02-wave-a.yml"
+        / f"validate-production-batch-wa-pb02-wave-{wave_slug}.yml"
     ).read_text(encoding="utf-8")
     runner_lines = [
         line.strip()
@@ -224,5 +294,5 @@ def test_pb02_wave_a_workflow_invokes_only_its_matching_runner() -> None:
     ]
 
     assert runner_lines == [
-        "run: bash scripts/run_production_batch_wa_pb02_wave_a_ci.sh"
+        f"run: bash scripts/run_production_batch_wa_pb02_wave_{wave_slug}_ci.sh"
     ]
