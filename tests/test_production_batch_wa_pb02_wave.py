@@ -34,10 +34,14 @@ EVIDENCE_ROOT = ROOT / "evidence" / "production-batch-wa-65"
 
 
 def _reports(
-    tmp_path: Path, wave: str = "WA-PB02-A"
+    tmp_path: Path,
+    wave: str = "WA-PB02-A",
+    expected_target_count: int = 20,
 ) -> tuple[object, dict, dict, dict, dict]:
     manifest = select_production_wave(
-        load_manifest(FULL_MANIFEST_PATH), wave
+        load_manifest(FULL_MANIFEST_PATH),
+        wave,
+        expected_target_count=expected_target_count,
     )
     overlays: dict[str, dict[str, object]] = {}
     for target in manifest.targets:
@@ -224,6 +228,58 @@ def test_wave_c_acceptance_uses_the_reusable_wave_contract(tmp_path: Path) -> No
     Draft202012Validator(schema).validate(evaluation)
 
 
+def test_wave_d_selection_is_the_frozen_final_five_targets() -> None:
+    wave = select_production_wave(
+        load_manifest(FULL_MANIFEST_PATH),
+        "WA-PB02-D",
+        expected_target_count=5,
+    )
+
+    assert [target.target_id for target in wave.targets] == [
+        f"WA-PB02-{number:03d}" for number in range(61, 66)
+    ]
+    assert wave.targets[0].jurisdiction_name == "Woodland"
+    assert wave.targets[-1].jurisdiction_name == "Zillah"
+    assert {target.wave for target in wave.targets} == {"WA-PB02-D"}
+
+
+def test_wave_d_acceptance_uses_the_reusable_wave_contract(tmp_path: Path) -> None:
+    manifest, first, second, first_inventory, second_inventory = _reports(
+        tmp_path, "WA-PB02-D", expected_target_count=5
+    )
+    evaluation = evaluate_production_wave(
+        manifest,
+        first,
+        second,
+        load_crosswalk(CROSSWALK_PATH),
+        first_inventory,
+        second_inventory,
+        upstream_repository="openstates/jurisdictions",
+        upstream_revision=UPSTREAM_REVISION,
+        expected_target_count=5,
+    )
+
+    assert evaluation["summary"] == {
+        "target_count": 5,
+        "passed_count": 5,
+        "deterministic_count": 5,
+        "nesting_parity_count": 5,
+        "reports_identical": True,
+        "unique_output_paths": True,
+        "artifact_count": 10,
+        "target_artifact_count": 10,
+        "shared_artifact_count": 0,
+        "artifact_inventories_identical": True,
+        "target_only_patch_count": 0,
+        "gate_passed": True,
+    }
+    assert evaluation["batch_id"] == "WA-PB02"
+    assert evaluation["wave"] == "WA-PB02-D"
+    assert all(evaluation["criteria"].values())
+    schema = json.loads(WAVE_SCHEMA_PATH.read_text(encoding="utf-8"))
+    Draft202012Validator(schema).validate(evaluation)
+
+
 def test_wave_a_rejects_crosswalk_from_a_different_batch(tmp_path: Path) -> None:
     manifest, first, second, first_inventory, second_inventory = _reports(tmp_path)
     crosswalk = load_crosswalk(CROSSWALK_PATH)
@@ -332,7 +388,7 @@ def test_wave_a_rejects_flattened_nesting(tmp_path: Path) -> None:
     ] is False
 
 
-@pytest.mark.parametrize("wave_slug", ["a", "b", "c"])
+@pytest.mark.parametrize("wave_slug", ["a", "b", "c", "d"])
 def test_each_pb02_wave_workflow_invokes_its_matching_runner(
     wave_slug: str,
 ) -> None:
