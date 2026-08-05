@@ -1,0 +1,2044 @@
+{
+  "schema_version": 1,
+  "batch_id": "WA-PB02",
+  "selection_extracted_at": "2026-08-04T17:31:15Z",
+  "target_count": 65,
+  "replacement_count": 0,
+  "record_count": 65,
+  "ordering": "ascending Census GEOID after explicit completed exclusions",
+  "candidates": [
+    {
+      "census_geoid": "5360055",
+      "state_fips": "53",
+      "place_fips": "60055",
+      "display_name": "Roslyn",
+      "legal_name": "Roslyn city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:roslyn",
+      "maintained_name": "Roslyn city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "037"
+        ],
+        "county_names": [
+          "Kittitas"
+        ],
+        "sldu_fips": [
+          "013"
+        ],
+        "sldl_fips": [
+          "013"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-001",
+      "wave": "WA-PB02-A",
+      "sequence": 1
+    },
+    {
+      "census_geoid": "5360160",
+      "state_fips": "53",
+      "place_fips": "60160",
+      "display_name": "Roy",
+      "legal_name": "Roy city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:roy",
+      "maintained_name": "Roy city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "053"
+        ],
+        "county_names": [
+          "Pierce"
+        ],
+        "sldu_fips": [
+          "002"
+        ],
+        "sldl_fips": [
+          "002"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-002",
+      "wave": "WA-PB02-A",
+      "sequence": 2
+    },
+    {
+      "census_geoid": "5360230",
+      "state_fips": "53",
+      "place_fips": "60230",
+      "display_name": "Royal City",
+      "legal_name": "Royal City city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:royal_city",
+      "maintained_name": "Royal City city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "025"
+        ],
+        "county_names": [
+          "Grant"
+        ],
+        "sldu_fips": [
+          "013"
+        ],
+        "sldl_fips": [
+          "013"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-003",
+      "wave": "WA-PB02-A",
+      "sequence": 3
+    },
+    {
+      "census_geoid": "5360510",
+      "state_fips": "53",
+      "place_fips": "60510",
+      "display_name": "Ruston",
+      "legal_name": "Ruston city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:ruston",
+      "maintained_name": "Ruston town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "053"
+        ],
+        "county_names": [
+          "Pierce"
+        ],
+        "sldu_fips": [
+          "027"
+        ],
+        "sldl_fips": [
+          "027"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-004",
+      "wave": "WA-PB02-A",
+      "sequence": 4
+    },
+    {
+      "census_geoid": "5360860",
+      "state_fips": "53",
+      "place_fips": "60860",
+      "display_name": "St. John",
+      "legal_name": "St. John town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:st_john",
+      "maintained_name": "St. John town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "075"
+        ],
+        "county_names": [
+          "Whitman"
+        ],
+        "sldu_fips": [
+          "009"
+        ],
+        "sldl_fips": [
+          "009"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-005",
+      "wave": "WA-PB02-A",
+      "sequence": 5
+    },
+    {
+      "census_geoid": "5361115",
+      "state_fips": "53",
+      "place_fips": "61115",
+      "display_name": "Sammamish",
+      "legal_name": "Sammamish city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:sammamish",
+      "maintained_name": "Sammamish city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "033"
+        ],
+        "county_names": [
+          "King"
+        ],
+        "sldu_fips": [
+          "005",
+          "041",
+          "045"
+        ],
+        "sldl_fips": [
+          "005",
+          "041",
+          "045"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-006",
+      "wave": "WA-PB02-A",
+      "sequence": 6
+    },
+    {
+      "census_geoid": "5362288",
+      "state_fips": "53",
+      "place_fips": "62288",
+      "display_name": "SeaTac",
+      "legal_name": "SeaTac city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:seatac",
+      "maintained_name": "SeaTac city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "033"
+        ],
+        "county_names": [
+          "King"
+        ],
+        "sldu_fips": [
+          "033"
+        ],
+        "sldl_fips": [
+          "033"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-007",
+      "wave": "WA-PB02-A",
+      "sequence": 7
+    },
+    {
+      "census_geoid": "5363210",
+      "state_fips": "53",
+      "place_fips": "63210",
+      "display_name": "Sedro-Woolley",
+      "legal_name": "Sedro-Woolley city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:sedro-woolley",
+      "maintained_name": "Sedro-Woolley city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "057"
+        ],
+        "county_names": [
+          "Skagit"
+        ],
+        "sldu_fips": [
+          "039"
+        ],
+        "sldl_fips": [
+          "039"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-008",
+      "wave": "WA-PB02-A",
+      "sequence": 8
+    },
+    {
+      "census_geoid": "5363280",
+      "state_fips": "53",
+      "place_fips": "63280",
+      "display_name": "Selah",
+      "legal_name": "Selah city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:selah",
+      "maintained_name": "Selah city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "077"
+        ],
+        "county_names": [
+          "Yakima"
+        ],
+        "sldu_fips": [
+          "015"
+        ],
+        "sldl_fips": [
+          "015"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-009",
+      "wave": "WA-PB02-A",
+      "sequence": 9
+    },
+    {
+      "census_geoid": "5363385",
+      "state_fips": "53",
+      "place_fips": "63385",
+      "display_name": "Sequim",
+      "legal_name": "Sequim city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:sequim",
+      "maintained_name": "Sequim city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "009"
+        ],
+        "county_names": [
+          "Clallam"
+        ],
+        "sldu_fips": [
+          "024"
+        ],
+        "sldl_fips": [
+          "024"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-010",
+      "wave": "WA-PB02-A",
+      "sequence": 10
+    },
+    {
+      "census_geoid": "5363735",
+      "state_fips": "53",
+      "place_fips": "63735",
+      "display_name": "Shelton",
+      "legal_name": "Shelton city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:shelton",
+      "maintained_name": "Shelton city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "045"
+        ],
+        "county_names": [
+          "Mason"
+        ],
+        "sldu_fips": [
+          "035"
+        ],
+        "sldl_fips": [
+          "035"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-011",
+      "wave": "WA-PB02-A",
+      "sequence": 11
+    },
+    {
+      "census_geoid": "5363960",
+      "state_fips": "53",
+      "place_fips": "63960",
+      "display_name": "Shoreline",
+      "legal_name": "Shoreline city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:shoreline",
+      "maintained_name": "Shoreline city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "033"
+        ],
+        "county_names": [
+          "King"
+        ],
+        "sldu_fips": [
+          "032"
+        ],
+        "sldl_fips": [
+          "032"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-012",
+      "wave": "WA-PB02-A",
+      "sequence": 12
+    },
+    {
+      "census_geoid": "5364855",
+      "state_fips": "53",
+      "place_fips": "64855",
+      "display_name": "Skykomish",
+      "legal_name": "Skykomish town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:skykomish",
+      "maintained_name": "Skykomish town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "033"
+        ],
+        "county_names": [
+          "King"
+        ],
+        "sldu_fips": [
+          "012"
+        ],
+        "sldl_fips": [
+          "012"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-013",
+      "wave": "WA-PB02-A",
+      "sequence": 13
+    },
+    {
+      "census_geoid": "5365170",
+      "state_fips": "53",
+      "place_fips": "65170",
+      "display_name": "Snohomish",
+      "legal_name": "Snohomish city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:snohomish",
+      "maintained_name": "Snohomish city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "061"
+        ],
+        "county_names": [
+          "Snohomish"
+        ],
+        "sldu_fips": [
+          "039",
+          "044"
+        ],
+        "sldl_fips": [
+          "039",
+          "044"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-014",
+      "wave": "WA-PB02-A",
+      "sequence": 14
+    },
+    {
+      "census_geoid": "5365205",
+      "state_fips": "53",
+      "place_fips": "65205",
+      "display_name": "Snoqualmie",
+      "legal_name": "Snoqualmie city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:snoqualmie",
+      "maintained_name": "Snoqualmie city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "033"
+        ],
+        "county_names": [
+          "King"
+        ],
+        "sldu_fips": [
+          "005",
+          "012"
+        ],
+        "sldl_fips": [
+          "005",
+          "012"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-015",
+      "wave": "WA-PB02-A",
+      "sequence": 15
+    },
+    {
+      "census_geoid": "5365345",
+      "state_fips": "53",
+      "place_fips": "65345",
+      "display_name": "Soap Lake",
+      "legal_name": "Soap Lake city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:soap_lake",
+      "maintained_name": "Soap Lake city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "025"
+        ],
+        "county_names": [
+          "Grant"
+        ],
+        "sldu_fips": [
+          "013"
+        ],
+        "sldl_fips": [
+          "013"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-016",
+      "wave": "WA-PB02-A",
+      "sequence": 16
+    },
+    {
+      "census_geoid": "5365625",
+      "state_fips": "53",
+      "place_fips": "65625",
+      "display_name": "South Bend",
+      "legal_name": "South Bend city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:south_bend",
+      "maintained_name": "South Bend city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "049"
+        ],
+        "county_names": [
+          "Pacific"
+        ],
+        "sldu_fips": [
+          "019"
+        ],
+        "sldl_fips": [
+          "019"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-017",
+      "wave": "WA-PB02-A",
+      "sequence": 17
+    },
+    {
+      "census_geoid": "5365765",
+      "state_fips": "53",
+      "place_fips": "65765",
+      "display_name": "South Cle Elum",
+      "legal_name": "South Cle Elum town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:south_cle_elum",
+      "maintained_name": "South Cle Elum town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "037"
+        ],
+        "county_names": [
+          "Kittitas"
+        ],
+        "sldu_fips": [
+          "013"
+        ],
+        "sldl_fips": [
+          "013"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-018",
+      "wave": "WA-PB02-A",
+      "sequence": 18
+    },
+    {
+      "census_geoid": "5366045",
+      "state_fips": "53",
+      "place_fips": "66045",
+      "display_name": "South Prairie",
+      "legal_name": "South Prairie town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:south_prairie",
+      "maintained_name": "South Prairie town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "053"
+        ],
+        "county_names": [
+          "Pierce"
+        ],
+        "sldu_fips": [
+          "031"
+        ],
+        "sldl_fips": [
+          "031"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-019",
+      "wave": "WA-PB02-A",
+      "sequence": 19
+    },
+    {
+      "census_geoid": "5366290",
+      "state_fips": "53",
+      "place_fips": "66290",
+      "display_name": "Spangle",
+      "legal_name": "Spangle city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:spangle",
+      "maintained_name": "Spangle city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "063"
+        ],
+        "county_names": [
+          "Spokane"
+        ],
+        "sldu_fips": [
+          "009"
+        ],
+        "sldl_fips": [
+          "009"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-020",
+      "wave": "WA-PB02-A",
+      "sequence": 20
+    },
+    {
+      "census_geoid": "5367167",
+      "state_fips": "53",
+      "place_fips": "67167",
+      "display_name": "Spokane Valley",
+      "legal_name": "Spokane Valley city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:spokane_valley",
+      "maintained_name": "Spokane Valley city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "063"
+        ],
+        "county_names": [
+          "Spokane"
+        ],
+        "sldu_fips": [
+          "004"
+        ],
+        "sldl_fips": [
+          "004"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-021",
+      "wave": "WA-PB02-B",
+      "sequence": 21
+    },
+    {
+      "census_geoid": "5367175",
+      "state_fips": "53",
+      "place_fips": "67175",
+      "display_name": "Sprague",
+      "legal_name": "Sprague city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:sprague",
+      "maintained_name": "Sprague city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "043"
+        ],
+        "county_names": [
+          "Lincoln"
+        ],
+        "sldu_fips": [
+          "009"
+        ],
+        "sldl_fips": [
+          "009"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-022",
+      "wave": "WA-PB02-B",
+      "sequence": 22
+    },
+    {
+      "census_geoid": "5367210",
+      "state_fips": "53",
+      "place_fips": "67210",
+      "display_name": "Springdale",
+      "legal_name": "Springdale town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:springdale",
+      "maintained_name": "Springdale town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "065"
+        ],
+        "county_names": [
+          "Stevens"
+        ],
+        "sldu_fips": [
+          "007"
+        ],
+        "sldl_fips": [
+          "007"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-023",
+      "wave": "WA-PB02-B",
+      "sequence": 23
+    },
+    {
+      "census_geoid": "5367455",
+      "state_fips": "53",
+      "place_fips": "67455",
+      "display_name": "Stanwood",
+      "legal_name": "Stanwood city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:stanwood",
+      "maintained_name": "Stanwood city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "061"
+        ],
+        "county_names": [
+          "Snohomish"
+        ],
+        "sldu_fips": [
+          "010"
+        ],
+        "sldl_fips": [
+          "010"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-024",
+      "wave": "WA-PB02-B",
+      "sequence": 24
+    },
+    {
+      "census_geoid": "5367490",
+      "state_fips": "53",
+      "place_fips": "67490",
+      "display_name": "Starbuck",
+      "legal_name": "Starbuck town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:starbuck",
+      "maintained_name": "Starbuck town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "013"
+        ],
+        "county_names": [
+          "Columbia"
+        ],
+        "sldu_fips": [
+          "009"
+        ],
+        "sldl_fips": [
+          "009"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-025",
+      "wave": "WA-PB02-B",
+      "sequence": 25
+    },
+    {
+      "census_geoid": "5367770",
+      "state_fips": "53",
+      "place_fips": "67770",
+      "display_name": "Steilacoom",
+      "legal_name": "Steilacoom town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:steilacoom",
+      "maintained_name": "Steilacoom town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "053"
+        ],
+        "county_names": [
+          "Pierce"
+        ],
+        "sldu_fips": [
+          "028"
+        ],
+        "sldl_fips": [
+          "028"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-026",
+      "wave": "WA-PB02-B",
+      "sequence": 26
+    },
+    {
+      "census_geoid": "5367875",
+      "state_fips": "53",
+      "place_fips": "67875",
+      "display_name": "Stevenson",
+      "legal_name": "Stevenson city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:stevenson",
+      "maintained_name": "Stevenson city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "059"
+        ],
+        "county_names": [
+          "Skamania"
+        ],
+        "sldu_fips": [
+          "017"
+        ],
+        "sldl_fips": [
+          "017"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-027",
+      "wave": "WA-PB02-B",
+      "sequence": 27
+    },
+    {
+      "census_geoid": "5368260",
+      "state_fips": "53",
+      "place_fips": "68260",
+      "display_name": "Sultan",
+      "legal_name": "Sultan city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:sultan",
+      "maintained_name": "Sultan city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "061"
+        ],
+        "county_names": [
+          "Snohomish"
+        ],
+        "sldu_fips": [
+          "012",
+          "039"
+        ],
+        "sldl_fips": [
+          "012",
+          "039"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-028",
+      "wave": "WA-PB02-B",
+      "sequence": 28
+    },
+    {
+      "census_geoid": "5368330",
+      "state_fips": "53",
+      "place_fips": "68330",
+      "display_name": "Sumas",
+      "legal_name": "Sumas city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:sumas",
+      "maintained_name": "Sumas city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "073"
+        ],
+        "county_names": [
+          "Whatcom"
+        ],
+        "sldu_fips": [
+          "042"
+        ],
+        "sldl_fips": [
+          "042"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-029",
+      "wave": "WA-PB02-B",
+      "sequence": 29
+    },
+    {
+      "census_geoid": "5368435",
+      "state_fips": "53",
+      "place_fips": "68435",
+      "display_name": "Sumner",
+      "legal_name": "Sumner city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:sumner",
+      "maintained_name": "Sumner city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "053"
+        ],
+        "county_names": [
+          "Pierce"
+        ],
+        "sldu_fips": [
+          "025",
+          "031"
+        ],
+        "sldl_fips": [
+          "025",
+          "031"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-030",
+      "wave": "WA-PB02-B",
+      "sequence": 30
+    },
+    {
+      "census_geoid": "5368750",
+      "state_fips": "53",
+      "place_fips": "68750",
+      "display_name": "Sunnyside",
+      "legal_name": "Sunnyside city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:sunnyside",
+      "maintained_name": "Sunnyside city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "077"
+        ],
+        "county_names": [
+          "Yakima"
+        ],
+        "sldu_fips": [
+          "014",
+          "015"
+        ],
+        "sldl_fips": [
+          "014",
+          "015"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-031",
+      "wave": "WA-PB02-B",
+      "sequence": 31
+    },
+    {
+      "census_geoid": "5370560",
+      "state_fips": "53",
+      "place_fips": "70560",
+      "display_name": "Tekoa",
+      "legal_name": "Tekoa city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:tekoa",
+      "maintained_name": "Tekoa city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "075"
+        ],
+        "county_names": [
+          "Whitman"
+        ],
+        "sldu_fips": [
+          "009"
+        ],
+        "sldl_fips": [
+          "009"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-032",
+      "wave": "WA-PB02-B",
+      "sequence": 32
+    },
+    {
+      "census_geoid": "5370630",
+      "state_fips": "53",
+      "place_fips": "70630",
+      "display_name": "Tenino",
+      "legal_name": "Tenino city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:tenino",
+      "maintained_name": "Tenino city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "067"
+        ],
+        "county_names": [
+          "Thurston"
+        ],
+        "sldu_fips": [
+          "002"
+        ],
+        "sldl_fips": [
+          "002"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-033",
+      "wave": "WA-PB02-B",
+      "sequence": 33
+    },
+    {
+      "census_geoid": "5371400",
+      "state_fips": "53",
+      "place_fips": "71400",
+      "display_name": "Tieton",
+      "legal_name": "Tieton city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:tieton",
+      "maintained_name": "Tieton city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "077"
+        ],
+        "county_names": [
+          "Yakima"
+        ],
+        "sldu_fips": [
+          "015"
+        ],
+        "sldl_fips": [
+          "015"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-034",
+      "wave": "WA-PB02-B",
+      "sequence": 34
+    },
+    {
+      "census_geoid": "5371785",
+      "state_fips": "53",
+      "place_fips": "71785",
+      "display_name": "Toledo",
+      "legal_name": "Toledo city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:toledo",
+      "maintained_name": "Toledo city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "041"
+        ],
+        "county_names": [
+          "Lewis"
+        ],
+        "sldu_fips": [
+          "020"
+        ],
+        "sldl_fips": [
+          "020"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-035",
+      "wave": "WA-PB02-B",
+      "sequence": 35
+    },
+    {
+      "census_geoid": "5371890",
+      "state_fips": "53",
+      "place_fips": "71890",
+      "display_name": "Tonasket",
+      "legal_name": "Tonasket city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:tonasket",
+      "maintained_name": "Tonasket city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "047"
+        ],
+        "county_names": [
+          "Okanogan"
+        ],
+        "sldu_fips": [
+          "007"
+        ],
+        "sldl_fips": [
+          "007"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-036",
+      "wave": "WA-PB02-B",
+      "sequence": 36
+    },
+    {
+      "census_geoid": "5371960",
+      "state_fips": "53",
+      "place_fips": "71960",
+      "display_name": "Toppenish",
+      "legal_name": "Toppenish city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:toppenish",
+      "maintained_name": "Toppenish city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "077"
+        ],
+        "county_names": [
+          "Yakima"
+        ],
+        "sldu_fips": [
+          "014"
+        ],
+        "sldl_fips": [
+          "014"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-037",
+      "wave": "WA-PB02-B",
+      "sequence": 37
+    },
+    {
+      "census_geoid": "5372625",
+      "state_fips": "53",
+      "place_fips": "72625",
+      "display_name": "Tukwila",
+      "legal_name": "Tukwila city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:tukwila",
+      "maintained_name": "Tukwila city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "033"
+        ],
+        "county_names": [
+          "King"
+        ],
+        "sldu_fips": [
+          "011"
+        ],
+        "sldl_fips": [
+          "011"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-038",
+      "wave": "WA-PB02-B",
+      "sequence": 38
+    },
+    {
+      "census_geoid": "5372905",
+      "state_fips": "53",
+      "place_fips": "72905",
+      "display_name": "Tumwater",
+      "legal_name": "Tumwater city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:tumwater",
+      "maintained_name": "Tumwater city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "067"
+        ],
+        "county_names": [
+          "Thurston"
+        ],
+        "sldu_fips": [
+          "022"
+        ],
+        "sldl_fips": [
+          "022"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-039",
+      "wave": "WA-PB02-B",
+      "sequence": 39
+    },
+    {
+      "census_geoid": "5373080",
+      "state_fips": "53",
+      "place_fips": "73080",
+      "display_name": "Twisp",
+      "legal_name": "Twisp town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:twisp",
+      "maintained_name": "Twisp town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "047"
+        ],
+        "county_names": [
+          "Okanogan"
+        ],
+        "sldu_fips": [
+          "007"
+        ],
+        "sldl_fips": [
+          "007"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-040",
+      "wave": "WA-PB02-B",
+      "sequence": 40
+    },
+    {
+      "census_geoid": "5373290",
+      "state_fips": "53",
+      "place_fips": "73290",
+      "display_name": "Union Gap",
+      "legal_name": "Union Gap city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:union_gap",
+      "maintained_name": "Union Gap city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "077"
+        ],
+        "county_names": [
+          "Yakima"
+        ],
+        "sldu_fips": [
+          "014"
+        ],
+        "sldl_fips": [
+          "014"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-041",
+      "wave": "WA-PB02-C",
+      "sequence": 41
+    },
+    {
+      "census_geoid": "5373360",
+      "state_fips": "53",
+      "place_fips": "73360",
+      "display_name": "Uniontown",
+      "legal_name": "Uniontown town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:uniontown",
+      "maintained_name": "Uniontown town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "075"
+        ],
+        "county_names": [
+          "Whitman"
+        ],
+        "sldu_fips": [
+          "009"
+        ],
+        "sldl_fips": [
+          "009"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-042",
+      "wave": "WA-PB02-C",
+      "sequence": 42
+    },
+    {
+      "census_geoid": "5373465",
+      "state_fips": "53",
+      "place_fips": "73465",
+      "display_name": "University Place",
+      "legal_name": "University Place city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:university_place",
+      "maintained_name": "University Place city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "053"
+        ],
+        "county_names": [
+          "Pierce"
+        ],
+        "sldu_fips": [
+          "028"
+        ],
+        "sldl_fips": [
+          "028"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-043",
+      "wave": "WA-PB02-C",
+      "sequence": 43
+    },
+    {
+      "census_geoid": "5373780",
+      "state_fips": "53",
+      "place_fips": "73780",
+      "display_name": "Vader",
+      "legal_name": "Vader city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:vader",
+      "maintained_name": "Vader city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "041"
+        ],
+        "county_names": [
+          "Lewis"
+        ],
+        "sldu_fips": [
+          "019"
+        ],
+        "sldl_fips": [
+          "019"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-044",
+      "wave": "WA-PB02-C",
+      "sequence": 44
+    },
+    {
+      "census_geoid": "5375775",
+      "state_fips": "53",
+      "place_fips": "75775",
+      "display_name": "Walla Walla",
+      "legal_name": "Walla Walla city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:walla_walla",
+      "maintained_name": "Walla Walla city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "071"
+        ],
+        "county_names": [
+          "Walla Walla"
+        ],
+        "sldu_fips": [
+          "016"
+        ],
+        "sldl_fips": [
+          "016"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-045",
+      "wave": "WA-PB02-C",
+      "sequence": 45
+    },
+    {
+      "census_geoid": "5376125",
+      "state_fips": "53",
+      "place_fips": "76125",
+      "display_name": "Wapato",
+      "legal_name": "Wapato city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:wapato",
+      "maintained_name": "Wapato city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "077"
+        ],
+        "county_names": [
+          "Yakima"
+        ],
+        "sldu_fips": [
+          "014"
+        ],
+        "sldl_fips": [
+          "014"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-046",
+      "wave": "WA-PB02-C",
+      "sequence": 46
+    },
+    {
+      "census_geoid": "5376160",
+      "state_fips": "53",
+      "place_fips": "76160",
+      "display_name": "Warden",
+      "legal_name": "Warden city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:warden",
+      "maintained_name": "Warden city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "025"
+        ],
+        "county_names": [
+          "Grant"
+        ],
+        "sldu_fips": [
+          "013"
+        ],
+        "sldl_fips": [
+          "013"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-047",
+      "wave": "WA-PB02-C",
+      "sequence": 47
+    },
+    {
+      "census_geoid": "5376405",
+      "state_fips": "53",
+      "place_fips": "76405",
+      "display_name": "Washougal",
+      "legal_name": "Washougal city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:washougal",
+      "maintained_name": "Washougal city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "011"
+        ],
+        "county_names": [
+          "Clark"
+        ],
+        "sldu_fips": [
+          "017"
+        ],
+        "sldl_fips": [
+          "017"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-048",
+      "wave": "WA-PB02-C",
+      "sequence": 48
+    },
+    {
+      "census_geoid": "5376440",
+      "state_fips": "53",
+      "place_fips": "76440",
+      "display_name": "Washtucna",
+      "legal_name": "Washtucna town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:washtucna",
+      "maintained_name": "Washtucna town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "001"
+        ],
+        "county_names": [
+          "Adams"
+        ],
+        "sldu_fips": [
+          "009"
+        ],
+        "sldl_fips": [
+          "009"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-049",
+      "wave": "WA-PB02-C",
+      "sequence": 49
+    },
+    {
+      "census_geoid": "5376510",
+      "state_fips": "53",
+      "place_fips": "76510",
+      "display_name": "Waterville",
+      "legal_name": "Waterville town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:waterville",
+      "maintained_name": "Waterville town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "017"
+        ],
+        "county_names": [
+          "Douglas"
+        ],
+        "sldu_fips": [
+          "007"
+        ],
+        "sldl_fips": [
+          "007"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-050",
+      "wave": "WA-PB02-C",
+      "sequence": 50
+    },
+    {
+      "census_geoid": "5376720",
+      "state_fips": "53",
+      "place_fips": "76720",
+      "display_name": "Waverly",
+      "legal_name": "Waverly town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:waverly",
+      "maintained_name": "Waverly town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "063"
+        ],
+        "county_names": [
+          "Spokane"
+        ],
+        "sldu_fips": [
+          "009"
+        ],
+        "sldl_fips": [
+          "009"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-051",
+      "wave": "WA-PB02-C",
+      "sequence": 51
+    },
+    {
+      "census_geoid": "5377630",
+      "state_fips": "53",
+      "place_fips": "77630",
+      "display_name": "Westport",
+      "legal_name": "Westport city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:westport",
+      "maintained_name": "Westport city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "027"
+        ],
+        "county_names": [
+          "Grays Harbor"
+        ],
+        "sldu_fips": [
+          "019"
+        ],
+        "sldl_fips": [
+          "019"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-052",
+      "wave": "WA-PB02-C",
+      "sequence": 52
+    },
+    {
+      "census_geoid": "5377665",
+      "state_fips": "53",
+      "place_fips": "77665",
+      "display_name": "West Richland",
+      "legal_name": "West Richland city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:west_richland",
+      "maintained_name": "West Richland city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "005"
+        ],
+        "county_names": [
+          "Benton"
+        ],
+        "sldu_fips": [
+          "008",
+          "016"
+        ],
+        "sldl_fips": [
+          "008",
+          "016"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-053",
+      "wave": "WA-PB02-C",
+      "sequence": 53
+    },
+    {
+      "census_geoid": "5378330",
+      "state_fips": "53",
+      "place_fips": "78330",
+      "display_name": "White Salmon",
+      "legal_name": "White Salmon city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:white_salmon",
+      "maintained_name": "White Salmon city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "039"
+        ],
+        "county_names": [
+          "Klickitat"
+        ],
+        "sldu_fips": [
+          "017"
+        ],
+        "sldl_fips": [
+          "017"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-054",
+      "wave": "WA-PB02-C",
+      "sequence": 54
+    },
+    {
+      "census_geoid": "5378680",
+      "state_fips": "53",
+      "place_fips": "78680",
+      "display_name": "Wilbur",
+      "legal_name": "Wilbur town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:wilbur",
+      "maintained_name": "Wilbur town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "043"
+        ],
+        "county_names": [
+          "Lincoln"
+        ],
+        "sldu_fips": [
+          "009"
+        ],
+        "sldl_fips": [
+          "009"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-055",
+      "wave": "WA-PB02-C",
+      "sequence": 55
+    },
+    {
+      "census_geoid": "5378925",
+      "state_fips": "53",
+      "place_fips": "78925",
+      "display_name": "Wilkeson",
+      "legal_name": "Wilkeson town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:wilkeson",
+      "maintained_name": "Wilkeson town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "053"
+        ],
+        "county_names": [
+          "Pierce"
+        ],
+        "sldu_fips": [
+          "031"
+        ],
+        "sldl_fips": [
+          "031"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-056",
+      "wave": "WA-PB02-C",
+      "sequence": 56
+    },
+    {
+      "census_geoid": "5379135",
+      "state_fips": "53",
+      "place_fips": "79135",
+      "display_name": "Wilson Creek",
+      "legal_name": "Wilson Creek town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:wilson_creek",
+      "maintained_name": "Wilson Creek town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "025"
+        ],
+        "county_names": [
+          "Grant"
+        ],
+        "sldu_fips": [
+          "013"
+        ],
+        "sldl_fips": [
+          "013"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-057",
+      "wave": "WA-PB02-C",
+      "sequence": 57
+    },
+    {
+      "census_geoid": "5379275",
+      "state_fips": "53",
+      "place_fips": "79275",
+      "display_name": "Winlock",
+      "legal_name": "Winlock city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:winlock",
+      "maintained_name": "Winlock city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "041"
+        ],
+        "county_names": [
+          "Lewis"
+        ],
+        "sldu_fips": [
+          "019"
+        ],
+        "sldl_fips": [
+          "019"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-058",
+      "wave": "WA-PB02-C",
+      "sequence": 58
+    },
+    {
+      "census_geoid": "5379380",
+      "state_fips": "53",
+      "place_fips": "79380",
+      "display_name": "Winthrop",
+      "legal_name": "Winthrop town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:winthrop",
+      "maintained_name": "Winthrop town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "047"
+        ],
+        "county_names": [
+          "Okanogan"
+        ],
+        "sldu_fips": [
+          "007"
+        ],
+        "sldl_fips": [
+          "007"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-059",
+      "wave": "WA-PB02-C",
+      "sequence": 59
+    },
+    {
+      "census_geoid": "5379590",
+      "state_fips": "53",
+      "place_fips": "79590",
+      "display_name": "Woodinville",
+      "legal_name": "Woodinville city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:woodinville",
+      "maintained_name": "Woodinville city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "033"
+        ],
+        "county_names": [
+          "King"
+        ],
+        "sldu_fips": [
+          "001"
+        ],
+        "sldl_fips": [
+          "001"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-060",
+      "wave": "WA-PB02-C",
+      "sequence": 60
+    },
+    {
+      "census_geoid": "5379625",
+      "state_fips": "53",
+      "place_fips": "79625",
+      "display_name": "Woodland",
+      "legal_name": "Woodland city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:woodland",
+      "maintained_name": "Woodland city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "011",
+          "015"
+        ],
+        "county_names": [
+          "Clark",
+          "Cowlitz"
+        ],
+        "sldu_fips": [
+          "020"
+        ],
+        "sldl_fips": [
+          "020"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-061",
+      "wave": "WA-PB02-D",
+      "sequence": 61
+    },
+    {
+      "census_geoid": "5379835",
+      "state_fips": "53",
+      "place_fips": "79835",
+      "display_name": "Woodway",
+      "legal_name": "Woodway city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:woodway",
+      "maintained_name": "Woodway city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "061"
+        ],
+        "county_names": [
+          "Snohomish"
+        ],
+        "sldu_fips": [
+          "032"
+        ],
+        "sldl_fips": [
+          "032"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-062",
+      "wave": "WA-PB02-D",
+      "sequence": 62
+    },
+    {
+      "census_geoid": "5380150",
+      "state_fips": "53",
+      "place_fips": "80150",
+      "display_name": "Yarrow Point",
+      "legal_name": "Yarrow Point town",
+      "census_lsad": "43",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:yarrow_point",
+      "maintained_name": "Yarrow Point town",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "033"
+        ],
+        "county_names": [
+          "King"
+        ],
+        "sldu_fips": [
+          "048"
+        ],
+        "sldl_fips": [
+          "048"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-063",
+      "wave": "WA-PB02-D",
+      "sequence": 63
+    },
+    {
+      "census_geoid": "5380220",
+      "state_fips": "53",
+      "place_fips": "80220",
+      "display_name": "Yelm",
+      "legal_name": "Yelm city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:yelm",
+      "maintained_name": "Yelm city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "067"
+        ],
+        "county_names": [
+          "Thurston"
+        ],
+        "sldu_fips": [
+          "002"
+        ],
+        "sldl_fips": [
+          "002"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-064",
+      "wave": "WA-PB02-D",
+      "sequence": 64
+    },
+    {
+      "census_geoid": "5380500",
+      "state_fips": "53",
+      "place_fips": "80500",
+      "display_name": "Zillah",
+      "legal_name": "Zillah city",
+      "census_lsad": "25",
+      "census_classfp": "C1",
+      "census_funcstat": "A",
+      "maintained_ocdid": "ocd-division/country:us/state:wa/place:zillah",
+      "maintained_name": "Zillah city",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": [
+          "077"
+        ],
+        "county_names": [
+          "Yakima"
+        ],
+        "sldu_fips": [
+          "015"
+        ],
+        "sldl_fips": [
+          "015"
+        ]
+      },
+      "disposition": "target",
+      "target_id": "WA-PB02-065",
+      "wave": "WA-PB02-D",
+      "sequence": 65
+    }
+  ]
+}

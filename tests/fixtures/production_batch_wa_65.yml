@@ -2,6 +2,8 @@ version: 1
 name: production_batch_wa_65
 description: Final state-completion production batch of 65 active Washington municipal governments.
 state: wa
+source_manifest: evidence/production-batch-wa-65/selection/source-selection-manifest.json
+selection_crosswalk: evidence/production-batch-wa-65/selection/selection-crosswalk.json
 targets:
 - target_id: "WA-PB02-001"
   jurisdiction_name: "Roslyn"

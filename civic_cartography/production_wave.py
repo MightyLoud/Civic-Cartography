@@ -24,6 +24,9 @@ from civic_cartography.target_manifest import (
 
 
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+BATCH_WAVE_PATTERN = re.compile(
+    r"^(?P<batch_id>[A-Z]{2}-PB[0-9]{2})-(?P<wave_letter>[A-Z])$"
+)
 NESTING_FIELDS = (
     "county_fips",
     "county_names",
@@ -426,6 +429,21 @@ def evaluate_production_wave(
     if len(waves) != 1 or None in waves:
         raise ProductionWaveError("production wave manifest must contain one wave")
     wave = next(iter(waves))
+    if not isinstance(wave, str):
+        raise ProductionWaveError("production wave must be a string")
+    batch_match = BATCH_WAVE_PATTERN.fullmatch(wave)
+    if batch_match is None:
+        raise ProductionWaveError(
+            "production wave must use the <state>-PB<batch>-<wave> format"
+        )
+    batch_id = batch_match.group("batch_id")
+    if crosswalk.get("batch_id") != batch_id:
+        raise ProductionWaveError("selection crosswalk batch_id does not match wave")
+    if any(
+        not target.target_id.startswith(f"{batch_id}-")
+        for target in manifest.targets
+    ):
+        raise ProductionWaveError("target IDs do not match the production batch")
     if not UPSTREAM_REVISION_PATTERN.fullmatch(upstream_revision):
         raise ProductionWaveError("upstream revision must be a 40-character SHA")
     if isinstance(target_only_patch_count, bool) or target_only_patch_count < 0:
@@ -539,7 +557,7 @@ def evaluate_production_wave(
     }
     return {
         "schema_version": 1,
-        "batch_id": "WA-PB01",
+        "batch_id": batch_id,
         "wave": wave,
         "manifest_name": manifest.name,
         "manifest_sha256": manifest_sha,
