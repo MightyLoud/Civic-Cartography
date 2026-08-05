@@ -1,0 +1,38 @@
+{
+  "file_count": 12,
+  "files": {
+    "divisions/wa/local/woodland_5379625_26c15297-75b5-506d-95b8-e6807b14bda5.yaml": "7c0340b8680a267cc117610372d3869aded0045439484d4aebf4dd43d7ba7b4b",
+    "divisions/wa/local/woodway_5379835_f5ef4caf-b299-5e30-9394-7863bd8dd1f7.yaml": "2b44d2cd7fd92431f1763ba5a277228cdd2934e639db136d92c199535cb21b54",
+    "divisions/wa/local/yarrow_point_5380150_53660a65-fbb1-513c-8242-a44c7595cd8c.yaml": "d51d89b2ffb1482d08c25e2570336f7495663d875d2a7dcd336a5fdd1371f38d",
+    "divisions/wa/local/yelm_5380220_3ee822b9-71c9-501d-a043-d3c88b9fbae5.yaml": "cf543033634dd40c76fa9f786965a3ffce75ba41d09dc666537cda61c63eea21",
+    "divisions/wa/local/zillah_5380500_83e06d77-6dde-5244-bfaa-ed753054db7d.yaml": "0f4f68fce7b324f890483b5d19d47e90d67c926f6025fe0a12b5a0cd5b4c50bf",
+    "divisions/wa/washington_stub.yaml": "fbf75f75e69c3543dd46788a52a2feef88290b898f7294586fb146b551f1322f",
+    "jurisdictions/wa/local/woodland_d15f4eff-02d3-591a-8874-ba32393717ef.yaml": "55fb57b52694fbf2d9d89af7b886b2f58119a9de361022d0b2a307e557ba80b8",
+    "jurisdictions/wa/local/woodway_536082af-408e-5944-9f0f-1403d97cb30c.yaml": "f10b6dc05f5d69de5ec4bcaf9e0f38e246a8c9a9355a217bd2a5656cae13919d",
+    "jurisdictions/wa/local/yarrow_point_4aa88875-8f6d-5784-90dd-c4bb19c9f9f2.yaml": "338680aa51ede7eb8e0c21bb1ac781df93ee83cd007842252442d286293bbbe6",
+    "jurisdictions/wa/local/yelm_622d782d-b3c3-5622-8bd9-28f9cb6ed94a.yaml": "dc49f7bc43e805d5a48acae2af344891b281bc6c163d91d28e3815d2be402f87",
+    "jurisdictions/wa/local/zillah_ddc84a11-5bae-5378-bd99-8fdf0effd162.yaml": "fc510f20228b33e16efc2964557115357b34708d3d985530910efd2845e6bfa2",
+    "jurisdictions/wa/washington_stub.yaml": "2e6120611f3a8f45efc84502fa42bab887e0c95bc82ba500b05d650c81c1fc65"
+  },
+  "inventory_sha256": "c308ca08ed6fbac2002a852f2896670989b6131797e26d9d6f55d6589617a489",
+  "run_id": "a786a6078806da7ec3c5",
+  "schema_version": 1,
+  "shared_artifact_count": 2,
+  "shared_paths": [
+    "divisions/wa/washington_stub.yaml",
+    "jurisdictions/wa/washington_stub.yaml"
+  ],
+  "target_artifact_count": 10,
+  "target_paths": [
+    "divisions/wa/local/woodland_5379625_26c15297-75b5-506d-95b8-e6807b14bda5.yaml",
+    "divisions/wa/local/woodway_5379835_f5ef4caf-b299-5e30-9394-7863bd8dd1f7.yaml",
+    "divisions/wa/local/yarrow_point_5380150_53660a65-fbb1-513c-8242-a44c7595cd8c.yaml",
+    "divisions/wa/local/yelm_5380220_3ee822b9-71c9-501d-a043-d3c88b9fbae5.yaml",
+    "divisions/wa/local/zillah_5380500_83e06d77-6dde-5244-bfaa-ed753054db7d.yaml",
+    "jurisdictions/wa/local/woodland_d15f4eff-02d3-591a-8874-ba32393717ef.yaml",
+    "jurisdictions/wa/local/woodway_536082af-408e-5944-9f0f-1403d97cb30c.yaml",
+    "jurisdictions/wa/local/yarrow_point_4aa88875-8f6d-5784-90dd-c4bb19c9f9f2.yaml",
+    "jurisdictions/wa/local/yelm_622d782d-b3c3-5622-8bd9-28f9cb6ed94a.yaml",
+    "jurisdictions/wa/local/zillah_ddc84a11-5bae-5378-bd99-8fdf0effd162.yaml"
+  ]
+}
