@@ -1,0 +1,13 @@
+version: 1
+name: mb100_014
+description: Measured Batch 100 target MB100-014 Detroit, Michigan.
+targets:
+  - target_id: MB100-014
+    jurisdiction_name: Detroit
+    state: mi
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:mi/place:detroit
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
