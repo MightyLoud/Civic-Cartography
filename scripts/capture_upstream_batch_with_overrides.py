@@ -3,7 +3,9 @@ from __future__ import annotations
 import argparse
 import asyncio
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import httpx
 
@@ -25,6 +27,23 @@ def parse_args(argv: list[str] | None = None) -> tuple[argparse.Namespace, list[
     return parser.parse_known_args(argv)
 
 
+def install_target_timing() -> None:
+    original_capture_target = base_capture._capture_target
+
+    async def timed_capture_target(
+        *args: Any, **kwargs: Any
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
+        started = datetime.now(timezone.utc)
+        overlay, detail = await original_capture_target(*args, **kwargs)
+        stopped = datetime.now(timezone.utc)
+        detail["capture_started_at"] = started.isoformat().replace("+00:00", "Z")
+        detail["capture_stopped_at"] = stopped.isoformat().replace("+00:00", "Z")
+        detail["runtime_seconds"] = round((stopped - started).total_seconds(), 6)
+        return overlay, detail
+
+    base_capture._capture_target = timed_capture_target
+
+
 def main(argv: list[str] | None = None) -> int:
     registry_args, remaining = parse_args(argv)
 
@@ -40,6 +59,7 @@ def main(argv: list[str] | None = None) -> int:
     if registry_args.alias_registry:
         aliases = load_canonical_aliases(Path(registry_args.alias_registry))
         install_canonical_aliases(aliases)
+    install_target_timing()
 
     args = batch_capture.parse_args(remaining)
     try:
