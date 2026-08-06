@@ -5,6 +5,7 @@ on:
     paths:
       - ".github/workflows/capture-upstream-six-fixtures.yml"
       - "tests/fixtures/mb100_002_012.yml"
+      - "scripts/capture_upstream_batch_with_overrides.py"
   workflow_dispatch:
 
 permissions:
