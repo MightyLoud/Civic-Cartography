@@ -1,9 +1,9 @@
 version: 1
 name: mb100_002_012
-description: Measured Batch 100 targets MB100-002 through MB100-012.
+description: Frozen Measured Batch 100 targets MB100-002 through MB100-012.
 targets:
 - target_id: MB100-002
-  jurisdiction_name: Tacoma City
+  jurisdiction_name: Tacoma
   state: wa
   selector:
     type: ocdid
@@ -12,83 +12,88 @@ targets:
   expected_classification: government
   category: regression_fixture
 - target_id: MB100-003
-  jurisdiction_name: Cape May City
-  state: nj
+  jurisdiction_name: Pierce County
+  state: wa
   selector:
     type: ocdid
-    value: ocd-division/country:us/state:nj/place:cape_may
-  expected_archetype: AR-001
+    value: ocd-division/country:us/state:wa/county:pierce
+  expected_archetype: AR-002
   expected_classification: government
-  category: new_known_archetype
+  category: regression_fixture
 - target_id: MB100-004
-  jurisdiction_name: Birmingham
-  state: al
+  jurisdiction_name: Colorado Springs School District 11
+  state: co
   selector:
-    type: ocdid
-    value: ocd-division/country:us/state:al/place:birmingham
-  expected_archetype: AR-001
-  expected_classification: government
-  category: new_known_archetype
+    type: explicit_lookup
+    name: Colorado Springs School District 11
+    resolution_policy: override_or_exception
+  expected_archetype: AR-003
+  expected_classification: school_system
+  category: regression_fixture
 - target_id: MB100-005
-  jurisdiction_name: Sacramento
-  state: ca
+  jurisdiction_name: Regional Transportation District
+  state: co
   selector:
-    type: ocdid
-    value: ocd-division/country:us/state:ca/place:sacramento
-  expected_archetype: AR-001
-  expected_classification: government
-  category: new_known_archetype
+    type: explicit_lookup
+    name: Regional Transportation District
+    resolution_policy: override_or_exception
+  expected_archetype: AR-004
+  expected_classification: transit_authority
+  category: regression_fixture
 - target_id: MB100-006
-  jurisdiction_name: Beverly Hills
-  state: ca
+  jurisdiction_name: City and County of Denver
+  state: co
   selector:
-    type: ocdid
-    value: ocd-division/country:us/state:ca/place:beverly_hills
-  expected_archetype: AR-001
+    type: alias_group
+    members:
+    - ocd-division/country:us/state:co/place:denver
+    - ocd-division/country:us/state:co/county:denver
+    canonical_rule: maintained_alias
+  expected_archetype: AR-005
   expected_classification: government
-  category: new_known_archetype
+  category: regression_fixture
 - target_id: MB100-007
-  jurisdiction_name: Palm Springs
-  state: ca
+  jurisdiction_name: Spokane
+  state: wa
   selector:
     type: ocdid
-    value: ocd-division/country:us/state:ca/place:palm_springs
+    value: ocd-division/country:us/state:wa/place:spokane
   expected_archetype: AR-001
   expected_classification: government
   category: new_known_archetype
 - target_id: MB100-008
-  jurisdiction_name: Boca Raton
-  state: fl
+  jurisdiction_name: Albuquerque
+  state: nm
   selector:
     type: ocdid
-    value: ocd-division/country:us/state:fl/place:boca_raton
+    value: ocd-division/country:us/state:nm/place:albuquerque
   expected_archetype: AR-001
   expected_classification: government
   category: new_known_archetype
 - target_id: MB100-009
-  jurisdiction_name: Fort Lauderdale
-  state: fl
+  jurisdiction_name: Boston
+  state: ma
   selector:
     type: ocdid
-    value: ocd-division/country:us/state:fl/place:fort_lauderdale
+    value: ocd-division/country:us/state:ma/place:boston
   expected_archetype: AR-001
   expected_classification: government
   category: new_known_archetype
 - target_id: MB100-010
-  jurisdiction_name: Orlando
-  state: fl
+  jurisdiction_name: Phoenix
+  state: az
   selector:
     type: ocdid
-    value: ocd-division/country:us/state:fl/place:orlando
+    value: ocd-division/country:us/state:az/place:phoenix
   expected_archetype: AR-001
   expected_classification: government
   category: new_known_archetype
 - target_id: MB100-011
-  jurisdiction_name: Tampa
-  state: fl
+  jurisdiction_name: San Antonio
+  state: tx
   selector:
     type: ocdid
-    value: ocd-division/country:us/state:fl/place:tampa
+    value: ocd-division/country:us/state:tx/place:san_antonio
   expected_archetype: AR-001
   expected_classification: government
   category: new_known_archetype
