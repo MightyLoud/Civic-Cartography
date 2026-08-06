@@ -1,0 +1,13 @@
+version: 1
+name: mb100_015
+description: Measured Batch 100 target MB100-015 Milwaukee, Wisconsin.
+targets:
+  - target_id: MB100-015
+    jurisdiction_name: Milwaukee
+    state: wi
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:wi/place:milwaukee
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
