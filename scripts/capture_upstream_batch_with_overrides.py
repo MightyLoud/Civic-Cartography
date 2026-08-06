@@ -27,6 +27,14 @@ def parse_args(argv: list[str] | None = None) -> tuple[argparse.Namespace, list[
 
 def main(argv: list[str] | None = None) -> int:
     registry_args, remaining = parse_args(argv)
+
+    # MB100-004 is the unchanged D11 regression fixture under a new batch ID.
+    # Reuse the already validated exact-name aliases from BP25-014 rather than
+    # adding fuzzy matching or a new target-specific generator override.
+    base_capture.EXPLICIT_NAME_ALIASES["MB100-004"] = set(
+        base_capture.EXPLICIT_NAME_ALIASES["BP25-014"]
+    )
+
     overrides = load_authoritative_overrides(Path(registry_args.override_registry))
     install_authoritative_overrides(overrides)
     if registry_args.alias_registry:
