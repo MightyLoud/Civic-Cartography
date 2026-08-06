@@ -1,0 +1,103 @@
+version: 1
+name: mb100_002_012
+description: Measured Batch 100 targets MB100-002 through MB100-012.
+targets:
+- target_id: MB100-002
+  jurisdiction_name: Tacoma City
+  state: wa
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:wa/place:tacoma
+  expected_archetype: AR-001
+  expected_classification: government
+  category: regression_fixture
+- target_id: MB100-003
+  jurisdiction_name: Cape May City
+  state: nj
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:nj/place:cape_may
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: MB100-004
+  jurisdiction_name: Birmingham
+  state: al
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:al/place:birmingham
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: MB100-005
+  jurisdiction_name: Sacramento
+  state: ca
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:ca/place:sacramento
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: MB100-006
+  jurisdiction_name: Beverly Hills
+  state: ca
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:ca/place:beverly_hills
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: MB100-007
+  jurisdiction_name: Palm Springs
+  state: ca
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:ca/place:palm_springs
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: MB100-008
+  jurisdiction_name: Boca Raton
+  state: fl
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:fl/place:boca_raton
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: MB100-009
+  jurisdiction_name: Fort Lauderdale
+  state: fl
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:fl/place:fort_lauderdale
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: MB100-010
+  jurisdiction_name: Orlando
+  state: fl
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:fl/place:orlando
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: MB100-011
+  jurisdiction_name: Tampa
+  state: fl
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:fl/place:tampa
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
+- target_id: MB100-012
+  jurisdiction_name: Charlotte
+  state: nc
+  selector:
+    type: ocdid
+    value: ocd-division/country:us/state:nc/place:charlotte
+  expected_archetype: AR-001
+  expected_classification: government
+  category: new_known_archetype
