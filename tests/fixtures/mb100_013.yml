@@ -1,0 +1,13 @@
+version: 1
+name: mb100_013
+description: Measured Batch 100 target MB100-013 Columbus, Ohio.
+targets:
+  - target_id: MB100-013
+    jurisdiction_name: Columbus
+    state: oh
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:oh/place:columbus
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
