@@ -54,7 +54,7 @@ jobs:
       - name: Capture two clean runs
         run: |
           for n in 1 2; do
-            PYTHONPATH=. upstream/.venv/bin/python scripts/capture_upstream_with_authoritative_overrides.py \
+            PYTHONPATH=. upstream/.venv/bin/python scripts/capture_upstream_batch_with_overrides.py \
               --override-registry "$OVERRIDE_REGISTRY" \
               --alias-registry "$ALIAS_REGISTRY" \
               --upstream-root upstream \
