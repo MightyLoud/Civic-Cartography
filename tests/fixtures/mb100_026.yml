@@ -1,0 +1,13 @@
+version: 1
+name: mb100_026
+description: Measured Batch 100 target MB100-026 Cook County, Illinois.
+targets:
+  - target_id: MB100-026
+    jurisdiction_name: Cook County
+    state: il
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:il/county:cook
+    expected_archetype: AR-002
+    expected_classification: government
+    category: new_known_archetype
