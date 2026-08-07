@@ -1,0 +1,13 @@
+version: 1
+name: mb100_030
+description: Measured Batch 100 target MB100-030 Denver Public Schools, Colorado.
+targets:
+  - target_id: MB100-030
+    jurisdiction_name: Denver Public Schools
+    state: co
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:co/county:denver/school_district:denver_1
+    expected_archetype: AR-003
+    expected_classification: school_system
+    category: new_known_archetype
