@@ -1,0 +1,13 @@
+version: 1
+name: mb100_034
+description: Measured Batch 100 target MB100-034 Boston Public Schools, Massachusetts.
+targets:
+  - target_id: MB100-034
+    jurisdiction_name: Boston Public Schools
+    state: ma
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ma/county:suffolk/school_district:boston
+    expected_archetype: AR-003
+    expected_classification: school_system
+    category: new_known_archetype
