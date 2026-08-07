@@ -1,0 +1,13 @@
+version: 1
+name: mb100_028
+description: Measured Batch 100 target MB100-028 Fulton County, Georgia.
+targets:
+  - target_id: MB100-028
+    jurisdiction_name: Fulton County
+    state: ga
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ga/county:fulton
+    expected_archetype: AR-002
+    expected_classification: government
+    category: new_known_archetype
