@@ -1,0 +1,13 @@
+version: 1
+name: mb100_032
+description: Measured Batch 100 target MB100-032 Clark County School District, Nevada.
+targets:
+  - target_id: MB100-032
+    jurisdiction_name: Clark County School District
+    state: nv
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:nv/county:clark/school_district:clark_county_school_district
+    expected_archetype: AR-003
+    expected_classification: school_system
+    category: new_known_archetype
