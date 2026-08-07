@@ -14,6 +14,10 @@ class AcceptanceSemanticsError(ValueError):
     """Raised when capture evidence cannot be normalized safely."""
 
 
+MANIFEST_NAME_SOURCE = "Civic-Cartography target manifest"
+MANIFEST_NAME_SOURCE_URL = "https://github.com/MightyLoud/Civic-Cartography"
+
+
 def _require_mapping(value: Any, location: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise AcceptanceSemanticsError(f"{location} must be a mapping")
@@ -88,17 +92,140 @@ def _artifacts_complete(attempts: list[dict[str, Any]]) -> bool:
     )
 
 
+def _artifact_path(artifact_root: Path, raw_path: Any, location: str) -> Path:
+    if not isinstance(raw_path, str) or not raw_path.strip():
+        raise AcceptanceSemanticsError(f"{location} must be a non-empty relative path")
+    relative = Path(raw_path.replace("\\", "/"))
+    if relative.is_absolute() or ".." in relative.parts:
+        raise AcceptanceSemanticsError(f"{location} must stay inside artifact_root")
+    root = artifact_root.resolve()
+    resolved = (root / relative).resolve()
+    try:
+        resolved.relative_to(root)
+    except ValueError as exc:
+        raise AcceptanceSemanticsError(f"{location} escapes artifact_root") from exc
+    return resolved
+
+
+def _normalize_name_sourcing(raw: dict[str, Any]) -> None:
+    sourcing = raw.get("sourcing")
+    if sourcing is None:
+        sourcing = []
+    if not isinstance(sourcing, list):
+        raise AcceptanceSemanticsError("Jurisdiction sourcing must be a list")
+
+    normalized: list[dict[str, Any]] = []
+    for index, item in enumerate(sourcing):
+        source = _require_mapping(item, f"Jurisdiction sourcing[{index}]")
+        fields = source.get("field")
+        if isinstance(fields, list) and "name" in fields:
+            source["field"] = [field for field in fields if field != "name"]
+            if not source["field"]:
+                continue
+        normalized.append(source)
+
+    normalized.append(
+        {
+            "field": ["name"],
+            "source_name": MANIFEST_NAME_SOURCE,
+            "source_type": "human_researched",
+            "source_url": {"repository": MANIFEST_NAME_SOURCE_URL},
+            "source_description": (
+                "Human-facing Jurisdiction name supplied by the frozen "
+                "Civic-Cartography target manifest."
+            ),
+        }
+    )
+    raw["sourcing"] = normalized
+
+
+def _normalize_jurisdiction_names(
+    manifest_targets: Mapping[str, Mapping[str, Any]],
+    results: Mapping[str, Any],
+    diagnostic_by_id: Mapping[str, dict[str, Any]],
+    artifact_root: Path,
+) -> list[str]:
+    normalized_targets: list[str] = []
+    for target_id, raw_overlay in results.items():
+        target = manifest_targets.get(target_id)
+        detail = diagnostic_by_id.get(target_id)
+        if target is None or detail is None or not isinstance(raw_overlay, dict):
+            continue
+
+        expected_name = target.get("jurisdiction_name")
+        if not isinstance(expected_name, str) or not expected_name.strip():
+            raise AcceptanceSemanticsError(
+                f"target_manifest target {target_id} jurisdiction_name must be a string"
+            )
+        expected_name = expected_name.strip()
+
+        paths = raw_overlay.get("jurisdiction_paths")
+        if not isinstance(paths, list) or not paths:
+            continue
+
+        path_details: list[dict[str, Any]] = []
+        for index, raw_path in enumerate(paths):
+            path = _artifact_path(
+                artifact_root,
+                raw_path,
+                f"execution_results.results.{target_id}.jurisdiction_paths[{index}]",
+            )
+            if not path.is_file():
+                raise AcceptanceSemanticsError(
+                    f"Jurisdiction artifact for {target_id} not found: {raw_path}"
+                )
+            try:
+                artifact = yaml.safe_load(path.read_text(encoding="utf-8"))
+            except yaml.YAMLError as exc:
+                raise AcceptanceSemanticsError(
+                    f"Jurisdiction artifact for {target_id} is invalid YAML: {raw_path}"
+                ) from exc
+            artifact = _require_mapping(artifact, f"Jurisdiction artifact {raw_path}")
+            previous_name = artifact.get("name")
+            changed = previous_name != expected_name
+            if changed:
+                artifact["name"] = expected_name
+                _normalize_name_sourcing(artifact)
+                path.write_text(
+                    yaml.safe_dump(artifact, sort_keys=False, allow_unicode=True),
+                    encoding="utf-8",
+                )
+            path_details.append(
+                {
+                    "path": raw_path,
+                    "previous_name": previous_name,
+                    "normalized_name": expected_name,
+                    "changed": changed,
+                }
+            )
+
+        detail["jurisdiction_name_normalization"] = {
+            "expected_name": expected_name,
+            "paths": path_details,
+            "changed_count": sum(1 for item in path_details if item["changed"]),
+            "rule": (
+                "generated Jurisdiction artifacts retain the manifest jurisdiction_name; "
+                "OCDID and classification are unchanged"
+            ),
+        }
+        normalized_targets.append(target_id)
+    return normalized_targets
+
+
 def normalize_capture_semantics(
     manifest_targets: Mapping[str, Mapping[str, Any]],
     execution_results: Mapping[str, Any],
     diagnostics: Mapping[str, Any],
+    artifact_root: str | Path | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Separate artifact generation from upstream enrichment status.
+    """Separate artifact generation from enrichment and normalize display names.
 
     A target is generated when every selected upstream candidate produced both a
     Division and Jurisdiction artifact. Upstream partial status remains visible
     in diagnostics as enrichment metadata instead of being misreported as
-    partial generation.
+    partial generation. When an artifact root is supplied, each generated
+    Jurisdiction's human-facing ``name`` is normalized to the frozen manifest's
+    ``jurisdiction_name`` after classification/generation have already run.
     """
 
     execution = copy.deepcopy(_require_mapping(execution_results, "execution_results"))
@@ -180,6 +307,15 @@ def normalize_capture_semantics(
         detail["overlay"] = copy.deepcopy(overlay)
         results[target_id] = overlay
 
+    normalized_names: list[str] = []
+    if artifact_root is not None:
+        normalized_names = _normalize_jurisdiction_names(
+            manifest_targets,
+            results,
+            diagnostic_by_id,
+            Path(artifact_root),
+        )
+
     execution["results"] = results
     diagnostic_root["targets"] = normalized_diagnostics
     diagnostic_root["acceptance_semantics"] = {
@@ -192,6 +328,12 @@ def normalize_capture_semantics(
             "upstream response status is recorded separately and partial "
             "enrichment does not negate complete artifact generation"
         ),
+        "jurisdiction_name_rule": (
+            "after generation/classification, generated Jurisdiction names are "
+            "normalized to the frozen manifest jurisdiction_name without changing "
+            "OCDID or classification"
+        ),
+        "jurisdiction_name_targets": sorted(normalized_names),
     }
     return execution, diagnostic_root
 
@@ -205,7 +347,7 @@ def _write_json(path: Path, value: Mapping[str, Any]) -> None:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Normalize upstream capture generation and enrichment semantics."
+        description="Normalize upstream capture generation, enrichment, and display names."
     )
     parser.add_argument("--target-manifest", required=True)
     parser.add_argument("--execution-results", required=True)
@@ -223,6 +365,7 @@ def main(argv: list[str] | None = None) -> int:
             _load_targets(manifest_path),
             _load_json(execution_path, "execution_results"),
             _load_json(diagnostics_path, "diagnostics"),
+            artifact_root=execution_path.parent / "artifacts",
         )
         _write_json(execution_path, execution)
         _write_json(diagnostics_path, diagnostics)

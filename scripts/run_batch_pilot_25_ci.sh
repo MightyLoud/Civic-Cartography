@@ -18,6 +18,7 @@ python -m pytest \
   tests/test_authoritative_overrides.py \
   tests/test_canonical_aliases.py \
   tests/test_canonical_alias_acceptance.py \
+  tests/test_capture_acceptance.py \
   --color=yes
 
 python -m pip install uv
