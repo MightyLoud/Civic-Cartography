@@ -1,0 +1,13 @@
+version: 1
+name: mb100_018
+description: Measured Batch 100 target MB100-018 Memphis, Tennessee.
+targets:
+  - target_id: MB100-018
+    jurisdiction_name: Memphis
+    state: tn
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:tn/place:memphis
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
