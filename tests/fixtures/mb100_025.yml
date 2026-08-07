@@ -1,0 +1,13 @@
+version: 1
+name: mb100_025
+description: Measured Batch 100 target MB100-025 Allegheny County, Pennsylvania.
+targets:
+  - target_id: MB100-025
+    jurisdiction_name: Allegheny County
+    state: pa
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:pa/county:allegheny
+    expected_archetype: AR-002
+    expected_classification: government
+    category: new_known_archetype
