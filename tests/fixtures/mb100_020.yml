@@ -1,0 +1,13 @@
+version: 1
+name: mb100_020
+description: Measured Batch 100 target MB100-020 Atlanta, Georgia.
+targets:
+  - target_id: MB100-020
+    jurisdiction_name: Atlanta
+    state: ga
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ga/place:atlanta
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
