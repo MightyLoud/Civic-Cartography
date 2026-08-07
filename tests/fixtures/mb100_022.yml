@@ -1,0 +1,13 @@
+version: 1
+name: mb100_022
+description: Measured Batch 100 target MB100-022 King County, Washington.
+targets:
+  - target_id: MB100-022
+    jurisdiction_name: King County
+    state: wa
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:wa/county:king
+    expected_archetype: AR-002
+    expected_classification: government
+    category: new_known_archetype
