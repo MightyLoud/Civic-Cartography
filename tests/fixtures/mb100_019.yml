@@ -1,0 +1,12 @@
+version: 1
+description: Frozen Measured Batch 100 target MB100-019 for deterministic pinned-upstream validation.
+targets:
+  - target_id: MB100-019
+    category: new_known_archetype
+    state: nc
+    jurisdiction_name: Raleigh
+    expected_archetype: AR-001
+    expected_classification: government
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:nc/place:raleigh
