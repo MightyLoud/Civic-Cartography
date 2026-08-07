@@ -1,0 +1,13 @@
+version: 1
+name: mb100_027
+description: Measured Batch 100 target MB100-027 Dallas County, Texas.
+targets:
+  - target_id: MB100-027
+    jurisdiction_name: Dallas County
+    state: tx
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:tx/county:dallas
+    expected_archetype: AR-002
+    expected_classification: government
+    category: new_known_archetype
