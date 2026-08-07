@@ -1,0 +1,13 @@
+version: 1
+name: mb100_017
+description: Measured Batch 100 target MB100-017 Wichita, Kansas.
+targets:
+  - target_id: MB100-017
+    jurisdiction_name: Wichita
+    state: ks
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ks/place:wichita
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
