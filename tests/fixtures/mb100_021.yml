@@ -1,0 +1,13 @@
+version: 1
+name: mb100_021
+description: Measured Batch 100 target MB100-021 Salt Lake City, Utah.
+targets:
+  - target_id: MB100-021
+    jurisdiction_name: Salt Lake City
+    state: ut
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ut/place:salt_lake_city
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
