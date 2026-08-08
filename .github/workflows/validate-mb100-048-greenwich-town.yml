@@ -1,4 +1,5 @@
 name: Validate MB100-048 Greenwich Town
+# Post-merge evidence rerun; temporary branch only.
 
 on:
   pull_request:
