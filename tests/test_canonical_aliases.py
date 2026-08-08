@@ -31,6 +31,11 @@ BROOMFIELD_COUNTY = "ocd-division/country:us/state:co/county:broomfield"
 BROOMFIELD_JURISDICTION = (
     "ocd-jurisdiction/country:us/state:co/place:broomfield/government"
 )
+LOUISVILLE_PLACE = "ocd-division/country:us/state:ky/place:louisville"
+JEFFERSON_COUNTY = "ocd-division/country:us/state:ky/county:jefferson"
+LOUISVILLE_JURISDICTION = (
+    "ocd-jurisdiction/country:us/state:ky/county:jefferson/government"
+)
 
 
 def test_denver_alias_resolves_exact_member_set_order_independently() -> None:
@@ -141,6 +146,32 @@ def test_broomfield_alias_preserves_both_geographies_with_one_government() -> No
     assert alias.member_metadata(BROOMFIELD_COUNTY)[
         "_canonical_jurisdiction_ocdid"
     ] == BROOMFIELD_JURISDICTION
+
+
+def test_louisville_jefferson_alias_prefers_county_government_root() -> None:
+    aliases = load_canonical_aliases(REGISTRY)
+    alias = resolve_canonical_alias(
+        aliases,
+        state="KY",
+        members=[LOUISVILLE_PLACE, JEFFERSON_COUNTY],
+    )
+
+    assert alias is not None
+    assert alias.alias_id == "ky-louisville-jefferson-county-metro-government"
+    assert alias.canonical_member == JEFFERSON_COUNTY
+    assert alias.canonical_jurisdiction_ocdid == LOUISVILLE_JURISDICTION
+    assert alias.member_display_names == {LOUISVILLE_PLACE: "Louisville"}
+    assert alias.jurisdiction_name == "Louisville–Jefferson County Metro Government"
+    assert alias.generator_override["classification"] == "government"
+    assert alias.member_metadata(LOUISVILLE_PLACE)[
+        "_canonical_alias_member_display_name"
+    ] == "Louisville"
+    assert alias.member_metadata(JEFFERSON_COUNTY)[
+        "_suppress_jurisdiction_generation"
+    ] is False
+    assert alias.member_metadata(LOUISVILLE_PLACE)[
+        "_suppress_jurisdiction_generation"
+    ] is True
 
 
 def test_alias_registry_rejects_display_name_for_nonmember(tmp_path: Path) -> None:

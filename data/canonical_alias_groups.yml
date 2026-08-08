@@ -121,3 +121,36 @@ aliases:
       matching the frozen AR-005 manifest. The county Division remains a first-class
       geographic record but suppresses duplicate Jurisdiction generation and points
       to the same City and County government.
+  - alias_id: ky-louisville-jefferson-county-metro-government
+    state: ky
+    canonical_name: Louisville–Jefferson County Metro Government
+    members:
+      - ocd-division/country:us/state:ky/county:jefferson
+      - ocd-division/country:us/state:ky/place:louisville
+    canonical_member: ocd-division/country:us/state:ky/county:jefferson
+    member_display_names:
+      ocd-division/country:us/state:ky/place:louisville: Louisville
+    classification: government
+    jurisdiction_name: Louisville–Jefferson County Metro Government
+    url: https://louisvilleky.gov/
+    source:
+      source_name: Louisville–Jefferson County Metro Government
+      source_url:
+        official_website: https://louisvilleky.gov/
+        charter: https://louisvilleky.gov/government/internal-audit/charter
+        metro_council: https://louisvilleky.gov/government/metro-council
+        maintained_ocd_source: https://github.com/opencivicdata/ocd-division-ids/blob/a52719a15852fc8c8418194016c16657591930ad/identifiers/country-us.csv
+      source_description: >-
+        Official Louisville Metro materials identify the Louisville/Jefferson
+        County Metro Government as the consolidated local government established
+        in 2003, with a countywide Metro Mayor and 26-member Metro Council. The
+        maintained OCD source preserves both Louisville place and Jefferson
+        County Divisions and advises that county:jefferson is preferable for
+        government statistics.
+    verified_asof: '2026-08-08'
+    evidence_notes: >-
+      Jefferson County is the maintained canonical member because the
+      consolidated government operates countywide and the pinned OCD source
+      explicitly recommends county:jefferson for government statistics. The
+      Louisville place remains a first-class geographic Division that points to
+      the same canonical government Jurisdiction.
