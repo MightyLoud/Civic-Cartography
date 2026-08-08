@@ -8,8 +8,10 @@ on:
       - "civic_cartography/completion_register.py"
       - "scripts/check_completion_manifest.py"
       - "scripts/update_completion_register.py"
+      - "scripts/finalize_measured_target.py"
       - "tests/test_completion_manifest.py"
       - "tests/test_completion_register.py"
+      - "tests/test_measured_target_finalizer.py"
       - "evidence/measured-batch-100/completion-register.csv"
       - "civic_cartography/fixture_harness.py"
       - "civic_cartography/target_manifest.py"
@@ -35,5 +37,10 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install -r requirements-dev.txt
 
-      - name: Validate completion contract and register
-        run: python -m pytest tests/test_completion_manifest.py tests/test_completion_register.py --color=yes
+      - name: Validate completion contract, register, and finalizer
+        run: >-
+          python -m pytest
+          tests/test_completion_manifest.py
+          tests/test_completion_register.py
+          tests/test_measured_target_finalizer.py
+          --color=yes
