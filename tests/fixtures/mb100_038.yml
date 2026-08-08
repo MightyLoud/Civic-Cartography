@@ -7,7 +7,7 @@ targets:
     state: ca
     selector:
       type: lookup
-      value: Bay Area Rapid Transit District
+      name: Bay Area Rapid Transit District
     expected_archetype: AR-004
     expected_classification: transit_authority
     category: new_known_archetype
