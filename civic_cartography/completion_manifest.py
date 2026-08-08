@@ -11,7 +11,12 @@ from civic_cartography.fixture_harness import (
     PASSING_MATCH_STATUSES,
     load_result_report,
 )
-from civic_cartography.target_manifest import Target, TargetManifest, load_manifest
+from civic_cartography.target_manifest import (
+    Target,
+    TargetManifest,
+    load_manifest,
+    manifest_to_dict,
+)
 
 
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
@@ -190,8 +195,13 @@ def evaluate_completion_manifest(
     expected_ids = {target.target_id for target in manifest.targets}
     if set(first_by_id) != expected_ids or set(second_by_id) != expected_ids:
         raise CompletionManifestError("report target IDs must exactly match the manifest")
-    if first_report.get("manifest_sha256") != second_report.get("manifest_sha256"):
-        raise CompletionManifestError("report manifest hashes differ")
+
+    manifest_sha256 = _sha256_value(manifest_to_dict(manifest))
+    for label, report in (("first_report", first_report), ("second_report", second_report)):
+        if report.get("manifest_name") != manifest.name:
+            raise CompletionManifestError(f"{label}.manifest_name does not match")
+        if report.get("manifest_sha256") != manifest_sha256:
+            raise CompletionManifestError(f"{label}.manifest_sha256 does not match")
     if first_report.get("run_asof") != second_report.get("run_asof"):
         raise CompletionManifestError("report run_asof values differ")
 
@@ -218,11 +228,12 @@ def evaluate_completion_manifest(
     gate_counts = {
         gate: sum(bool(row[gate]) for row in targets) for gate in gate_names
     }
+    source_manifest_sha256 = _sha256_value(source_manifest)
     seed = {
-        "manifest_sha256": first_report.get("manifest_sha256"),
+        "manifest_sha256": manifest_sha256,
         "first_run_id": first_report.get("run_id"),
         "second_run_id": second_report.get("run_id"),
-        "source_manifest_sha256": _sha256_value(source_manifest),
+        "source_manifest_sha256": source_manifest_sha256,
         "targets": targets,
     }
     return {
@@ -232,11 +243,11 @@ def evaluate_completion_manifest(
             "PARITY_OK -> SOURCE_PROVENANCE_OK -> COMPLETE_OK"
         ),
         "manifest_name": manifest.name,
-        "manifest_sha256": first_report.get("manifest_sha256"),
+        "manifest_sha256": manifest_sha256,
         "run_asof": first_report.get("run_asof"),
         "first_run_id": first_report.get("run_id"),
         "second_run_id": second_report.get("run_id"),
-        "source_manifest_sha256": _sha256_value(source_manifest),
+        "source_manifest_sha256": source_manifest_sha256,
         "evaluation_id": _sha256_value(seed)[:20],
         "summary": {
             "target_count": len(targets),
