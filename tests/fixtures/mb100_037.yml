@@ -1,11 +1,13 @@
+version: 1
+name: mb100_037
+description: Measured Batch 100 target MB100-037 Philadelphia City School District, Pennsylvania.
 targets:
   - target_id: MB100-037
-    name: Philadelphia City School District
     jurisdiction_name: Philadelphia City School District
-    state: PA
-    jurisdiction_type: school district
+    state: pa
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:pa/county:philadelphia/school_district:philadelphia_city_sd
     expected_archetype: AR-003
     expected_classification: school_system
-    selector: ocd-division/country:us/state:pa/county:philadelphia/school_district:philadelphia_city_sd
-    geographic_identifier: GEOID 4218990 / state ID 126515001
-    note: City school-district abbreviation and county-equivalent ancestor
+    category: new_known_archetype
