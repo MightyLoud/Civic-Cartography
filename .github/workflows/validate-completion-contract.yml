@@ -5,8 +5,12 @@ on:
     paths:
       - ".github/workflows/validate-completion-contract.yml"
       - "civic_cartography/completion_manifest.py"
+      - "civic_cartography/completion_register.py"
       - "scripts/check_completion_manifest.py"
+      - "scripts/update_completion_register.py"
       - "tests/test_completion_manifest.py"
+      - "tests/test_completion_register.py"
+      - "evidence/measured-batch-100/completion-register.csv"
       - "civic_cartography/fixture_harness.py"
       - "civic_cartography/target_manifest.py"
   workflow_dispatch:
@@ -31,5 +35,5 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install -r requirements-dev.txt
 
-      - name: Validate completion contract
-        run: python -m pytest tests/test_completion_manifest.py --color=yes
+      - name: Validate completion contract and register
+        run: python -m pytest tests/test_completion_manifest.py tests/test_completion_register.py --color=yes
