@@ -5,6 +5,7 @@ on:
     paths:
       - ".github/workflows/validate-mb100-048-greenwich-town.yml"
       - "tests/fixtures/mb100_048.yml"
+      - "tests/test_authoritative_overrides.py"
       - "scripts/capture_upstream_batch.py"
       - "scripts/capture_upstream_batch_with_overrides.py"
       - "scripts/capture_upstream_fixtures.py"
@@ -64,8 +65,11 @@ jobs:
           cd upstream
           uv sync --frozen
 
-      - name: Validate canonical alias registry
-        run: python -m pytest tests/test_canonical_aliases.py
+      - name: Validate maintained override registries
+        run: >-
+          python -m pytest
+          tests/test_canonical_aliases.py
+          tests/test_authoritative_overrides.py
 
       - name: Apply validated upstream patches
         run: |
