@@ -121,3 +121,35 @@ overrides:
       The maintained special_district OCDID preserves the elected port
       government as a first-class reusable jurisdiction without introducing a
       target-only generator patch.
+  - override_id: ca-santa-clarita-valley-water-agency-successor
+    state: ca
+    canonical_name: Santa Clarita Valley Water Agency
+    aliases:
+      - Santa Clarita Valley Water Agency
+      - SCV Water
+      - Castaic Lake Water Agency
+      - CLWA
+    ocdid: ocd-division/country:us/state:ca/county:los_angeles/water:castaic_lake_water_agency
+    jurisdiction:
+      has_jurisdiction: true
+      classification: special_purpose_district
+      jurisdiction_name: Santa Clarita Valley Water Agency
+      jurisdiction_type_suffix: special_purpose_district
+      url: https://www.yourscvwater.com/
+    source:
+      source_name: Santa Clarita Valley Water Agency
+      source_url:
+        official_website: https://www.yourscvwater.com/
+        successor_identity: https://www.yourscvwater.com/sites/default/files/SCVWA/your-water/watershed-planning/water-supply-assessments/SCVWA-contract-with-SCVSD.pdf
+        board_of_directors: https://www.yourscvwater.com/governance/board-directors
+      source_description: >-
+        Official SCV Water materials state that Castaic Lake Water Agency merged
+        with Newhall County Water District on January 1, 2018, and became Santa
+        Clarita Valley Water Agency, the successor in interest now governed by a
+        directly elected board.
+    verified_asof: '2026-08-08'
+    evidence_notes: >-
+      The pinned OCD source retains the dissolved Castaic Lake Water Agency
+      division identifier. This override preserves that source identity while
+      generating the current Santa Clarita Valley Water Agency jurisdiction with
+      special_purpose_district classification and official successor provenance.
