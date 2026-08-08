@@ -1,0 +1,13 @@
+version: 1
+name: mb100_041
+description: Measured Batch 100 target MB100-041 Metropolitan Water Reclamation District, Illinois.
+targets:
+  - target_id: MB100-041
+    jurisdiction_name: Metropolitan Water Reclamation District
+    state: il
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:il/sewer:mwrd
+    expected_archetype: AR-D01
+    expected_classification: special_purpose_district
+    category: new_known_archetype
