@@ -90,3 +90,34 @@ aliases:
       matching the frozen AR-005 manifest. The county Division remains a first-class
       geographic record but suppresses duplicate Jurisdiction generation and points
       to the same City and County government.
+  - alias_id: co-broomfield-consolidated-city-county
+    state: co
+    canonical_name: City and County of Broomfield
+    members:
+      - ocd-division/country:us/state:co/place:broomfield
+      - ocd-division/country:us/state:co/county:broomfield
+    canonical_member: ocd-division/country:us/state:co/place:broomfield
+    classification: government
+    jurisdiction_name: City and County of Broomfield
+    url: https://www.broomfield.org/
+    source:
+      source_name: City and County of Broomfield
+      source_url:
+        official_website: https://www.broomfield.org/
+        constitutional_amendment: https://www.broomfield.org/1635/Constitutional-Amendment
+        census_place: https://www.census.gov/quickfacts/broomfieldcitycolorado
+        census_county: https://www.census.gov/quickfacts/broomfieldcountycolorado
+      source_description: >-
+        Official Broomfield materials and the Colorado constitutional amendment
+        identify one City and County government formed by consolidating the city
+        territory into a single county and municipal corporation. U.S. Census
+        products preserve Broomfield city and Broomfield County as distinct
+        geographic entities. The maintained alias therefore preserves both
+        Divisions while generating one shared governing Jurisdiction.
+    verified_asof: '2026-08-07'
+    evidence_notes: >-
+      The place Division is the maintained canonical representative so the shared
+      government resolves to ocd-jurisdiction/country:us/state:co/place:broomfield/government,
+      matching the frozen AR-005 manifest. The county Division remains a first-class
+      geographic record but suppresses duplicate Jurisdiction generation and points
+      to the same City and County government.
