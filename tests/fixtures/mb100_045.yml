@@ -1,0 +1,13 @@
+version: 1
+name: mb100_045
+description: Measured Batch 100 target MB100-045 Regional Transit Authority, Illinois.
+targets:
+  - target_id: MB100-045
+    jurisdiction_name: Regional Transit Authority
+    state: il
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:il/transit:rta
+    expected_archetype: DISCOVERY — TRANSIT SEGMENT
+    expected_classification: transit_authority
+    category: discovery
