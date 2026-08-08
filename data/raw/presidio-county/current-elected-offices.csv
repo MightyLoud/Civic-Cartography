@@ -1,0 +1,11 @@
+office_name,officeholder_name,district_type,district_id,selection_method,source_url,source_retrieved_at
+County Judge,Jose Portillo Jr.,countywide,COUNTYWIDE,election,https://www.co.presidio.tx.us/page/presidio.County.Judge,2026-08-04
+County Commissioner Precinct 1,Deirdre Hisler,commissioner_precinct,1,election,https://www.co.presidio.tx.us/page/presidio.CountyCommissioners,2026-08-04
+County Commissioner Precinct 2,Margarito Hernandez,commissioner_precinct,2,election,https://www.co.presidio.tx.us/page/presidio.CountyCommissioners,2026-08-04
+County Commissioner Precinct 3,Obed Escontrias,commissioner_precinct,3,election,https://www.co.presidio.tx.us/page/presidio.CountyCommissioners,2026-08-04
+County Commissioner Precinct 4,"Frank ""Buddy"" Knight",commissioner_precinct,4,election,https://www.co.presidio.tx.us/page/presidio.CountyCommissioners,2026-08-04
+Sheriff,Danny Dominguez,countywide,COUNTYWIDE,election,https://www.co.presidio.tx.us/page/presidio.Sheriff,2026-08-04
+Tax Assessor-Collector,Nancy Valdez Arevalo,countywide,COUNTYWIDE,election,https://www.co.presidio.tx.us/page/presidio.County.Assessor.Collector,2026-08-04
+District Clerk and County Clerk,Carolina Catano,countywide,COUNTYWIDE,election,https://www.co.presidio.tx.us/page/presidio.District.Clerk,2026-08-04
+County Treasurer,Florcita Zubia,countywide,COUNTYWIDE,election,https://www.co.presidio.tx.us/page/presidio.County.Treasurer,2026-08-04
+County Attorney,Blair Park,countywide,COUNTYWIDE,election,https://www.co.presidio.tx.us/page/presidio.County.Attorney,2026-08-04
