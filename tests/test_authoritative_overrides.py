@@ -136,6 +136,7 @@ overrides:
     with pytest.raises(AuthoritativeOverrideError, match="duplicate state/name"):
         load_authoritative_overrides(path)
 
+
 def test_castaic_lake_water_agency_resolves_to_current_successor() -> None:
     overrides = load_authoritative_overrides(REGISTRY)
 
