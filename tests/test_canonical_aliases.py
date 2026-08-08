@@ -21,6 +21,11 @@ DAVIDSON_COUNTY = "ocd-division/country:us/state:tn/county:davidson"
 NASHVILLE_JURISDICTION = (
     "ocd-jurisdiction/country:us/state:tn/county:davidson/government"
 )
+SAN_FRANCISCO_PLACE = "ocd-division/country:us/state:ca/place:san_francisco"
+SAN_FRANCISCO_COUNTY = "ocd-division/country:us/state:ca/county:san_francisco"
+SAN_FRANCISCO_JURISDICTION = (
+    "ocd-jurisdiction/country:us/state:ca/place:san_francisco/government"
+)
 
 
 def test_denver_alias_resolves_exact_member_set_order_independently() -> None:
@@ -81,6 +86,31 @@ def test_nashville_davidson_alias_prefers_county_government_root() -> None:
     assert alias.member_metadata(NASHVILLE_PLACE)[
         "_suppress_jurisdiction_generation"
     ] is True
+
+
+def test_san_francisco_alias_preserves_both_geographies_with_one_government() -> None:
+    aliases = load_canonical_aliases(REGISTRY)
+    alias = resolve_canonical_alias(
+        aliases,
+        state="CA",
+        members=[SAN_FRANCISCO_COUNTY, SAN_FRANCISCO_PLACE],
+    )
+
+    assert alias is not None
+    assert alias.alias_id == "ca-san-francisco-city-county-government"
+    assert alias.canonical_member == SAN_FRANCISCO_PLACE
+    assert alias.canonical_jurisdiction_ocdid == SAN_FRANCISCO_JURISDICTION
+    assert alias.jurisdiction_name == "City and County of San Francisco"
+    assert alias.generator_override["classification"] == "government"
+    assert alias.member_metadata(SAN_FRANCISCO_PLACE)[
+        "_suppress_jurisdiction_generation"
+    ] is False
+    assert alias.member_metadata(SAN_FRANCISCO_COUNTY)[
+        "_suppress_jurisdiction_generation"
+    ] is True
+    assert alias.member_metadata(SAN_FRANCISCO_COUNTY)[
+        "_canonical_jurisdiction_ocdid"
+    ] == SAN_FRANCISCO_JURISDICTION
 
 
 def test_alias_registry_rejects_display_name_for_nonmember(tmp_path: Path) -> None:
