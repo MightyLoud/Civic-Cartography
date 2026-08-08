@@ -1,0 +1,13 @@
+version: 1
+name: mb100_035
+description: Measured Batch 100 target MB100-035 Atlanta Public Schools, Georgia.
+targets:
+  - target_id: MB100-035
+    jurisdiction_name: Atlanta Public Schools
+    state: ga
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ga/county:fulton/school_district:atlanta_public_schools
+    expected_archetype: AR-003
+    expected_classification: school_system
+    category: new_known_archetype
