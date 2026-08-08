@@ -1,0 +1,16 @@
+version: 1
+name: mb100_046
+description: >-
+  Measured Batch 100 target MB100-046: retain the legacy Castaic Lake Water
+  Agency OCD division while generating its current Santa Clarita Valley Water
+  Agency successor jurisdiction.
+targets:
+  - target_id: MB100-046
+    jurisdiction_name: Santa Clarita Valley Water Agency
+    state: ca
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ca/county:los_angeles/water:castaic_lake_water_agency
+    expected_archetype: DISCOVERY — WATER SEGMENT
+    expected_classification: special_purpose_district
+    category: discovery
