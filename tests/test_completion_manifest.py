@@ -2,7 +2,13 @@ from __future__ import annotations
 
 import copy
 
-from civic_cartography.completion_manifest import evaluate_completion_manifest
+import pytest
+
+from civic_cartography.completion_manifest import (
+    CompletionManifestError,
+    evaluate_completion_manifest,
+)
+from civic_cartography.fixture_harness import _manifest_sha256
 from civic_cartography.target_manifest import Target, TargetManifest
 
 
@@ -32,6 +38,7 @@ def _manifest() -> TargetManifest:
 
 
 def _report() -> dict:
+    manifest = _manifest()
     row = {
         "target_id": "TEST-001",
         "jurisdiction_name": "Testville",
@@ -57,8 +64,8 @@ def _report() -> dict:
     }
     return {
         "schema_version": 1,
-        "manifest_name": "completion_test",
-        "manifest_sha256": "c" * 64,
+        "manifest_name": manifest.name,
+        "manifest_sha256": _manifest_sha256(manifest),
         "run_asof": "2026-08-08T03:30:00Z",
         "run_id": "run-1",
         "summary": {},
@@ -173,3 +180,14 @@ def test_missing_normalized_artifact_blocks_qa_and_completion() -> None:
     assert target["qa_ok"] is False
     assert target["complete_ok"] is False
     assert target["failed_gates"] == ["normalized_exists", "qa_ok"]
+
+
+def test_report_must_match_supplied_manifest_hash() -> None:
+    first = _report()
+    second = copy.deepcopy(first)
+    second["run_id"] = "run-2"
+    first["manifest_sha256"] = "f" * 64
+    second["manifest_sha256"] = "f" * 64
+
+    with pytest.raises(CompletionManifestError, match="manifest_sha256 does not match"):
+        _evaluate(first, second)
