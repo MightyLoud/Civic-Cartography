@@ -59,3 +59,34 @@ aliases:
       explicitly recommends county:davidson for government statistics. The
       Nashville place remains a first-class geographic Division that points to
       the same canonical government Jurisdiction.
+  - alias_id: ca-san-francisco-city-county-government
+    state: ca
+    canonical_name: City and County of San Francisco
+    members:
+      - ocd-division/country:us/state:ca/place:san_francisco
+      - ocd-division/country:us/state:ca/county:san_francisco
+    canonical_member: ocd-division/country:us/state:ca/place:san_francisco
+    classification: government
+    jurisdiction_name: City and County of San Francisco
+    url: https://www.sf.gov/
+    source:
+      source_name: City and County of San Francisco
+      source_url:
+        official_website: https://www.sf.gov/
+        board_of_supervisors: https://sfbos.org/about-board
+        census_place: https://www.census.gov/quickfacts/sanfranciscocitycalifornia
+        census_county: https://www.census.gov/quickfacts/sanfranciscocountycalifornia
+      source_description: >-
+        Official San Francisco materials identify one City and County government,
+        including one Board of Supervisors as its legislative branch and one Mayor
+        as chief executive of the city and county. U.S. Census products preserve
+        San Francisco city and San Francisco County as separate geographic entities.
+        The maintained alias therefore preserves both Divisions while generating
+        one shared governing Jurisdiction.
+    verified_asof: '2026-08-07'
+    evidence_notes: >-
+      The place Division is the maintained canonical representative so the shared
+      government resolves to ocd-jurisdiction/country:us/state:ca/place:san_francisco/government,
+      matching the frozen AR-005 manifest. The county Division remains a first-class
+      geographic record but suppresses duplicate Jurisdiction generation and points
+      to the same City and County government.
