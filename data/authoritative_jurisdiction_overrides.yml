@@ -160,6 +160,7 @@ overrides:
       - Greenwich Town
       - Town of Greenwich
     ocdid: ocd-division/country:us/state:ct/place:greenwich
+    validation_geoid: '0919033620'
     jurisdiction:
       has_jurisdiction: true
       classification: government

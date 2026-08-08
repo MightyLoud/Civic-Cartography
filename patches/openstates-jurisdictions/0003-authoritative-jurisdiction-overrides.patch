@@ -119,9 +119,58 @@ index beb0856..f333f1d 100644
                  ],
                  accurate_asof=self.req.asof_datetime,
 diff --git a/src/init_migration/generate_pipeline.py b/src/init_migration/generate_pipeline.py
-index b6c74a1..23a110b 100644
+index b6c74a1..ebf760a 100644
 --- a/src/init_migration/generate_pipeline.py
 +++ b/src/init_migration/generate_pipeline.py
+@@ -275,6 +275,47 @@ class GeneratePipeline:
+                 )
+                 return pl.DataFrame()
+-
++            data = getattr(self, "data", None)
++            raw_record = getattr(data, "raw_record", {})
++            exact_override = getattr(self.req, "jurisdiction_override", None) or (
++                raw_record.get("_jurisdiction_override")
++                if isinstance(raw_record, dict)
++                else None
++            )
++            validation_geoid = (
++                exact_override.get("validation_geoid")
++                if isinstance(exact_override, dict)
++                else None
++            )
++            if validation_geoid:
++                if "GEOID_Census" not in state_df.columns:
++                    logger.warning(
++                        "Authoritative validation GEOID cannot be resolved: "
++                        "validation data has no GEOID_Census column",
++                        extra={"validation_geoid": str(validation_geoid)},
++                    )
++                    return pl.DataFrame()
++                geoid_matches = state_df.filter(
++                    pl.col("GEOID_Census")
++                    .cast(pl.Utf8)
++                    .fill_null("")
++                    .str.strip_chars()
++                    == str(validation_geoid).strip()
++                )
++                if len(geoid_matches) == 1:
++                    logger.info(
++                        "Resolved validation record by authoritative GEOID",
++                        extra={"validation_geoid": str(validation_geoid)},
++                    )
++                    return geoid_matches
++                logger.warning(
++                    "Authoritative validation GEOID did not resolve uniquely",
++                    extra={
++                        "validation_geoid": str(validation_geoid),
++                        "match_count": len(geoid_matches),
++                    },
++                )
++                return pl.DataFrame()
++
+             # A `place:` OCDid segment denotes a Census place, so county
+             # subdivisions are not candidates. The LSAD code cannot make this
+             # distinction (code 25 "city" appears on both layers); a populated
 @@ -361,10 +361,20 @@ class GeneratePipeline:
          if not self.division:
              return
@@ -176,12 +225,14 @@ index 28ea6cf..be9d550 100644
  
 diff --git a/tests/src/init_migration/test_authoritative_jurisdiction_override.py b/tests/src/init_migration/test_authoritative_jurisdiction_override.py
 new file mode 100644
-index 0000000..773562b
+index 0000000..fd72ad4
 --- /dev/null
 +++ b/tests/src/init_migration/test_authoritative_jurisdiction_override.py
-@@ -0,0 +1,95 @@
+@@ -0,0 +1,139 @@
 +from types import SimpleNamespace
 +from uuid import UUID
++
++import polars as pl
 +
 +import src.init_migration.generate_pipeline as generate_pipeline
 +from src.init_migration.generate_pipeline import GeneratePipeline
@@ -192,6 +243,48 @@ index 0000000..773562b
 +    "special_district:regional_transportation_district"
 +)
 +TEST_UUID = UUID("ac8f7f0d-fdb4-59d2-9915-187f34b32a89")
++
++
++def test_authoritative_validation_geoid_selects_town_before_place_fallback() -> None:
++    town_geoid = "0919033620"
++    cdp_geoid = "0933690"
++    pipeline = GeneratePipeline.__new__(GeneratePipeline)
++    pipeline.req = SimpleNamespace(jurisdiction_override=None)
++    pipeline.data = SimpleNamespace(
++        raw_record={
++            "_jurisdiction_override": {"validation_geoid": town_geoid}
++        }
++    )
++    pipeline.validation_df = pl.DataFrame(
++        [
++            {
++                "STATEFP": "09",
++                "NAMELSAD": "Greenwich town",
++                "LSAD": "43",
++                "PLACEFP": "",
++                "COUSUBFP": "33620",
++                "GEOID_Census": town_geoid,
++                "normalized_place_name": "greenwich",
++            },
++            {
++                "STATEFP": "09",
++                "NAMELSAD": "Greenwich CDP",
++                "LSAD": "57",
++                "PLACEFP": "33690",
++                "COUSUBFP": "",
++                "GEOID_Census": cdp_geoid,
++                "normalized_place_name": "greenwich",
++            },
++        ]
++    )
++
++    matches = pipeline.find_matches(
++        "ocd-division/country:us/state:ct/place:greenwich"
++    )
++
++    assert len(matches) == 1
++    assert matches.row(0, named=True)["GEOID_Census"] == town_geoid
++    assert cdp_geoid not in matches["GEOID_Census"].to_list()
 +
 +
 +def test_pipeline_passes_embedded_override_and_updates_division_reference(

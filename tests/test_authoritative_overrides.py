@@ -179,6 +179,8 @@ def test_greenwich_town_override_preserves_town_cdp_distinction() -> None:
     assert canonical.ocdid == (
         "ocd-division/country:us/state:ct/place:greenwich"
     )
+    assert canonical.validation_geoid == "0919033620"
+    assert canonical.generator_override["validation_geoid"] == "0919033620"
     assert canonical.generator_override["jurisdiction_name"] == "Greenwich Town"
     assert canonical.generator_override["classification"] == "government"
     assert canonical.source_override["source_name"] == "Greenwich Town"

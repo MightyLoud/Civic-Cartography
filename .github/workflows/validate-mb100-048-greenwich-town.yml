@@ -199,6 +199,8 @@ jobs:
               'ocd-jurisdiction/country:us/state:ct/place:greenwich/government'
           )
           frozen_name = 'Greenwich Town'
+          legal_town_geoid = '0919033620'
+          statistical_cdp_geoid = '0933690'
           frozen_geographic_identifier = (
               'cousub-0919033620 / statistical place-0933690'
           )
@@ -241,6 +243,15 @@ jobs:
               jurisdiction_path = Path('build/run-1/artifacts') / row['jurisdiction_paths'][0]
               if jurisdiction_path.exists():
                   jurisdiction = yaml.safe_load(jurisdiction_path.read_text()) or {}
+
+          government_identifiers = division.get('government_identifiers', {})
+          generated_validation_geoid = str(
+              government_identifiers.get('geoid') or ''
+          )
+          legal_town_geoid_ok = generated_validation_geoid == legal_town_geoid
+          statistical_cdp_rejected = (
+              generated_validation_geoid != statistical_cdp_geoid
+          )
 
           jurisdiction_name = jurisdiction.get('name')
           jurisdiction_ocdid = jurisdiction.get('ocdid')
@@ -336,6 +347,8 @@ jobs:
               and connecticut_paths_ok
               and one_division_ok
               and one_jurisdiction_ok
+              and legal_town_geoid_ok
+              and statistical_cdp_rejected
               and jurisdiction_ocdid == jurisdiction_ocdid_expected
               and jurisdiction_name == frozen_name
               and jurisdiction_classification == 'government'
@@ -366,6 +379,11 @@ jobs:
               'connecticut_paths_ok': connecticut_paths_ok,
               'one_division_ok': one_division_ok,
               'one_jurisdiction_ok': one_jurisdiction_ok,
+              'legal_town_geoid': legal_town_geoid,
+              'statistical_cdp_geoid': statistical_cdp_geoid,
+              'generated_validation_geoid': generated_validation_geoid,
+              'legal_town_geoid_ok': legal_town_geoid_ok,
+              'statistical_cdp_rejected': statistical_cdp_rejected,
               'generated_division': division,
               'generated_jurisdiction_name': jurisdiction_name,
               'generated_jurisdiction_ocdid': jurisdiction_ocdid,
