@@ -1,0 +1,18 @@
+version: 1
+name: mb100_047
+description: >-
+  Measured Batch 100 target MB100-047 Louisville–Jefferson County Metro
+  Government, Kentucky.
+targets:
+  - target_id: MB100-047
+    jurisdiction_name: Louisville–Jefferson County Metro Government
+    state: ky
+    selector:
+      type: alias_group
+      members:
+        - ocd-division/country:us/state:ky/county:jefferson
+        - ocd-division/country:us/state:ky/place:louisville
+      canonical_rule: maintained_alias
+    expected_archetype: DISCOVERY — CONSOLIDATED IDENTITY
+    expected_classification: government
+    category: discovery
