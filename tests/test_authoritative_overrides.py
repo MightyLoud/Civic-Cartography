@@ -159,3 +159,29 @@ def test_castaic_lake_water_agency_resolves_to_current_successor() -> None:
     )
     assert legacy.generator_override["classification"] == "special_purpose_district"
 
+
+def test_greenwich_town_override_preserves_town_cdp_distinction() -> None:
+    overrides = load_authoritative_overrides(REGISTRY)
+
+    canonical = resolve_authoritative_override(
+        overrides, state="ct", name="Greenwich Town"
+    )
+    official = resolve_authoritative_override(
+        overrides, state="CT", name="Town of Greenwich"
+    )
+    cdp = resolve_authoritative_override(
+        overrides, state="ct", name="Greenwich CDP"
+    )
+
+    assert canonical is not None
+    assert canonical == official
+    assert canonical.override_id == "ct-greenwich-town-government"
+    assert canonical.ocdid == (
+        "ocd-division/country:us/state:ct/place:greenwich"
+    )
+    assert canonical.validation_geoid == "0919033620"
+    assert canonical.generator_override["validation_geoid"] == "0919033620"
+    assert canonical.generator_override["jurisdiction_name"] == "Greenwich Town"
+    assert canonical.generator_override["classification"] == "government"
+    assert canonical.source_override["source_name"] == "Greenwich Town"
+    assert cdp is None
