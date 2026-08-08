@@ -1,0 +1,13 @@
+version: 1
+name: mb100_038
+description: Measured Batch 100 target MB100-038 Bay Area Rapid Transit District, California.
+targets:
+  - target_id: MB100-038
+    jurisdiction_name: Bay Area Rapid Transit District
+    state: ca
+    selector:
+      type: lookup
+      value: Bay Area Rapid Transit District
+    expected_archetype: AR-004
+    expected_classification: transit_authority
+    category: new_known_archetype
