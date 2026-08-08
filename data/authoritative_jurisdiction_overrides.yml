@@ -153,3 +153,35 @@ overrides:
       division identifier. This override preserves that source identity while
       generating the current Santa Clarita Valley Water Agency jurisdiction with
       special_purpose_district classification and official successor provenance.
+  - override_id: ct-greenwich-town-government
+    state: ct
+    canonical_name: Greenwich Town
+    aliases:
+      - Greenwich Town
+      - Town of Greenwich
+    ocdid: ocd-division/country:us/state:ct/place:greenwich
+    validation_geoid: '0919033620'
+    jurisdiction:
+      has_jurisdiction: true
+      classification: government
+      jurisdiction_name: Greenwich Town
+      jurisdiction_type_suffix: government
+      url: https://www.greenwichct.gov/
+    source:
+      source_name: Greenwich Town
+      source_url:
+        official_website: https://www.greenwichct.gov/
+        government_and_administration: https://www.greenwichct.gov/27/Government
+        census_geography: https://www2.census.gov/library/publications/2003/dec/phc-3-8.pdf
+      source_description: >-
+        Official Town materials identify Greenwich as a functioning municipal
+        government. Census geography distinguishes the legal Greenwich town, a
+        functioning county-subdivision government, from the dependent Greenwich
+        CDP.
+    verified_asof: '2026-08-08'
+    evidence_notes: >-
+      The pinned OCD source exposes the maintained
+      ocd-division/country:us/state:ct/place:greenwich identifier as the
+      Greenwich CDP. This override preserves that maintained identifier while
+      generating the legal Greenwich Town government with explicit official and
+      Census provenance; it does not treat the CDP itself as a government.

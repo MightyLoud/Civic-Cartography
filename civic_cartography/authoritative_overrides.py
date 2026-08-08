@@ -21,6 +21,7 @@ class AuthoritativeOverride:
     canonical_name: str
     aliases: tuple[str, ...]
     ocdid: str
+    validation_geoid: str | None
     jurisdiction: dict[str, Any]
     source: dict[str, Any]
     verified_asof: str
@@ -28,7 +29,10 @@ class AuthoritativeOverride:
 
     @property
     def generator_override(self) -> dict[str, Any]:
-        return dict(self.jurisdiction)
+        override = dict(self.jurisdiction)
+        if self.validation_geoid is not None:
+            override["validation_geoid"] = self.validation_geoid
+        return override
 
     @property
     def source_override(self) -> dict[str, Any]:
@@ -65,9 +69,10 @@ def _parse_override(raw: Any, index: int) -> AuthoritativeOverride:
         "verified_asof",
         "evidence_notes",
     }
-    if set(item) != required:
+    optional = {"validation_geoid"}
+    if not required.issubset(item) or set(item) - required - optional:
         missing = sorted(required - set(item))
-        extra = sorted(set(item) - required)
+        extra = sorted(set(item) - required - optional)
         raise AuthoritativeOverrideError(
             f"{location} keys mismatch; missing={missing}, extra={extra}"
         )
@@ -99,6 +104,16 @@ def _parse_override(raw: Any, index: int) -> AuthoritativeOverride:
         raise AuthoritativeOverrideError(
             f"{location}.ocdid must begin with {expected_prefix}"
         )
+
+    validation_geoid = None
+    if "validation_geoid" in item:
+        validation_geoid = _require_string(
+            item["validation_geoid"], f"{location}.validation_geoid"
+        )
+        if not re.fullmatch(r"[0-9]+", validation_geoid):
+            raise AuthoritativeOverrideError(
+                f"{location}.validation_geoid must contain only digits"
+            )
 
     jurisdiction = _require_mapping(item["jurisdiction"], f"{location}.jurisdiction")
     jurisdiction_required = {
@@ -167,6 +182,7 @@ def _parse_override(raw: Any, index: int) -> AuthoritativeOverride:
         canonical_name=canonical_name,
         aliases=aliases,
         ocdid=ocdid,
+        validation_geoid=validation_geoid,
         jurisdiction=jurisdiction,
         source=source,
         verified_asof=_require_string(
@@ -236,7 +252,7 @@ def resolve_authoritative_override(
 def authoritative_override_to_dict(
     override: AuthoritativeOverride,
 ) -> Mapping[str, Any]:
-    return {
+    result = {
         "override_id": override.override_id,
         "state": override.state,
         "canonical_name": override.canonical_name,
@@ -247,3 +263,6 @@ def authoritative_override_to_dict(
         "verified_asof": override.verified_asof,
         "evidence_notes": override.evidence_notes,
     }
+    if override.validation_geoid is not None:
+        result["validation_geoid"] = override.validation_geoid
+    return result

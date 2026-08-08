@@ -1,0 +1,16 @@
+version: 1
+name: mb100_048
+description: >-
+  Measured Batch 100 target MB100-048 Greenwich Town, Connecticut. The
+  maintained place OCDID must resolve to the legal town government rather than
+  the separate statistical Greenwich CDP.
+targets:
+  - target_id: MB100-048
+    jurisdiction_name: Greenwich Town
+    state: ct
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ct/place:greenwich
+    expected_archetype: DISCOVERY — COUSUB-AS-PLACE
+    expected_classification: government
+    category: discovery
