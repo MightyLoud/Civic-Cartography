@@ -135,3 +135,26 @@ overrides:
 
     with pytest.raises(AuthoritativeOverrideError, match="duplicate state/name"):
         load_authoritative_overrides(path)
+
+def test_castaic_lake_water_agency_resolves_to_current_successor() -> None:
+    overrides = load_authoritative_overrides(REGISTRY)
+
+    legacy = resolve_authoritative_override(
+        overrides, state="ca", name="Castaic Lake Water Agency"
+    )
+    current = resolve_authoritative_override(
+        overrides, state="CA", name="Santa Clarita Valley Water Agency"
+    )
+
+    assert legacy is not None
+    assert legacy == current
+    assert legacy.override_id == "ca-santa-clarita-valley-water-agency-successor"
+    assert legacy.ocdid == (
+        "ocd-division/country:us/state:ca/county:los_angeles/"
+        "water:castaic_lake_water_agency"
+    )
+    assert legacy.generator_override["jurisdiction_name"] == (
+        "Santa Clarita Valley Water Agency"
+    )
+    assert legacy.generator_override["classification"] == "special_purpose_district"
+
