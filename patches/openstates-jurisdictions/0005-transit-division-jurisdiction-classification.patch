@@ -1,0 +1,82 @@
+diff --git a/src/init_migration/jurisdiction_seed.py b/src/init_migration/jurisdiction_seed.py
+index a63a69b..61bccd1 100644
+--- a/src/init_migration/jurisdiction_seed.py
++++ b/src/init_migration/jurisdiction_seed.py
+@@ -136,6 +136,10 @@ SCHOOL_CLASSES = {
+     "special_school_administrative_area",
+ }
+ 
++# Division types that correspond to public transit authorities.
++TRANSIT_CLASSES = {"transit"}
++
++
+ # Division types that create a general government jurisdiction.
+ # `anc` = DC Advisory Neighborhood Commission — an elected governing body.
+ # TODO: These are not in the Open Civic Data repo as segment identifiers. How do
+@@ -315,14 +319,23 @@ def infer_jurisdiction_seed(
+             reason="school district geography",
+         )
+ 
+-    # 5. Known non-governing types.
++    # 5. Transit authority.
++    if division_type in TRANSIT_CLASSES:
++        return JurisdictionSeed(
++            has_jurisdiction=True,
++            classification=ClassificationEnum.TRANSIT_AUTHORITY.value,
++            jurisdiction_type_suffix=ClassificationEnum.TRANSIT_AUTHORITY.value,
++            reason="transit authority geography",
++        )
++
++    # 6. Known non-governing types.
+     if division_type in NON_JURISDICTION_DIVISION_TYPES:
+         return JurisdictionSeed(
+             has_jurisdiction=False,
+             reason="non-governing geography",
+         )
+ 
+-    # 6: LSAD code "27" (sub-county district)
++    # 7: LSAD code "27" (sub-county district)
+     # because it is sometimes a legal entity (an incorporated place) and sometimes just a statistical or
+     # economic area. This needs a special AI lookup to determine what it is.
+     if normalized_lsad_code == "27":
+@@ -334,7 +347,7 @@ def infer_jurisdiction_seed(
+             ),
+         )
+ 
+-    # 7. General government fallback.
++    # 8. General government fallback.
+     if division_type in GOVERNMENT_TYPES:
+         return JurisdictionSeed(
+             has_jurisdiction=True,
+@@ -343,7 +356,7 @@ def infer_jurisdiction_seed(
+             reason="general government fallback",
+         )
+ 
+-    # 8. Unknown — safest default is no automatic jurisdiction.
++    # 9. Unknown — safest default is no automatic jurisdiction.
+     return JurisdictionSeed(
+         has_jurisdiction=False,
+         reason=f"unknown division type '{division_type}'; manual review required",
+diff --git a/tests/src/init_migration/test_jurisdiction_seed_transit.py b/tests/src/init_migration/test_jurisdiction_seed_transit.py
+new file mode 100644
+index 0000000..b75370f
+--- /dev/null
++++ b/tests/src/init_migration/test_jurisdiction_seed_transit.py
+@@ -0,0 +1,17 @@
++from src.init_migration.jurisdiction_seed import infer_jurisdiction_seed
++from src.models.jurisdiction import ClassificationEnum
++
++
++def test_transit_division_creates_transit_authority_jurisdiction() -> None:
++    seed = infer_jurisdiction_seed(
++        "ocd-division/country:us/state:il/transit:rta",
++        lsad_code=None,
++    )
++
++    assert seed.has_jurisdiction is True
++    assert seed.classification == ClassificationEnum.TRANSIT_AUTHORITY.value
++    assert (
++        seed.jurisdiction_type_suffix
++        == ClassificationEnum.TRANSIT_AUTHORITY.value
++    )
++    assert seed.reason == "transit authority geography"
