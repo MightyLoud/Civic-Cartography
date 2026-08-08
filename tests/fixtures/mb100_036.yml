@@ -1,0 +1,13 @@
+version: 1
+name: mb100_036
+description: Measured Batch 100 target MB100-036 Houston Independent School District, Texas.
+targets:
+  - target_id: MB100-036
+    jurisdiction_name: Houston Independent School District
+    state: tx
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:tx/county:harris/school_district:houston_isd
+    expected_archetype: AR-003
+    expected_classification: school_system
+    category: new_known_archetype
