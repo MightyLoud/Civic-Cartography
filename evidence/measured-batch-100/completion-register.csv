@@ -1,0 +1,1 @@
+target_id,jurisdiction_name,state,evaluation_id,raw_exists,normalized_exists,identifier_join_ok,qa_ok,parity_ok,source_provenance_ok,complete_ok,confidence,failed_gates,source_manifest_sha256,manifest_sha256,first_run_id,second_run_id,run_asof,evidence_ref
