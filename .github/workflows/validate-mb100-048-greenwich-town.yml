@@ -1,3 +1,4 @@
+# Post-merge rerun trigger for MB100-048; validation logic unchanged.
 name: Validate MB100-048 Greenwich Town
 
 on:
