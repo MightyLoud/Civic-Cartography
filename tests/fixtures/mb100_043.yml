@@ -1,0 +1,16 @@
+version: 1
+name: mb100_043
+description: Measured Batch 100 target MB100-043 Metropolitan Government of Nashville and Davidson County, Tennessee.
+targets:
+  - target_id: MB100-043
+    jurisdiction_name: Metropolitan Government of Nashville and Davidson County
+    state: tn
+    selector:
+      type: alias_group
+      members:
+        - ocd-division/country:us/state:tn/county:davidson
+        - ocd-division/country:us/state:tn/place:nashville
+      canonical_rule: maintained_alias
+    expected_archetype: AR-D02
+    expected_classification: government
+    category: new_known_archetype
