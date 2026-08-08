@@ -43,7 +43,10 @@ def test_documentation_keeps_the_key_out_of_cells_and_code() -> None:
     assert "Do not put the key in a sheet cell" in documentation
     assert "snapshot" in documentation
     assert "replace_staging" in documentation
-    assert "RAW → normalized → QA → parity → tracker" in documentation
+    assert "immutable RAW snapshot or controlled staging write" in documentation
+    assert "existing normalization" in documentation
+    assert "QA and parity" in documentation
+    assert "tracker completion" in documentation
 
 
 def test_apps_script_parses_and_pure_contracts_execute(tmp_path: Path) -> None:
