@@ -6,6 +6,7 @@
  * Properties.
  *
  * Snapshot contract:
+ * - bound workbook: Nested Divisions (fail closed by spreadsheet ID)
  * - dataset: 2024 ACS 5-year detailed tables
  * - geography: every Colorado place
  * - variables: official name and total-population estimate
@@ -17,6 +18,8 @@
  */
 
 var CENSUS_FIRST_SNAPSHOT_SPEC_ = Object.freeze({
+  expectedSpreadsheetId: '139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI',
+  expectedSpreadsheetTitle: 'Nested Divisions',
   year: 2024,
   dataset: 'acs/acs5',
   selectors: Object.freeze(['NAME', 'B01003_001E']),
@@ -32,6 +35,8 @@ var CENSUS_FIRST_SNAPSHOT_SPEC_ = Object.freeze({
  * @return {Object} Redacted fetch metadata and QA evidence.
  */
 function censusApiCreateFirstControlledSnapshot() {
+  var spreadsheet = censusApiRequireExpectedWorkbook_();
+
   if (typeof censusApiWriteToSheet !== 'function') {
     throw new Error(
       'CensusApi.gs is not installed in this Apps Script project. ' +
@@ -57,7 +62,6 @@ function censusApiCreateFirstControlledSnapshot() {
     }
   );
 
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var qa = censusApiVerifyFirstControlledSnapshot_(spreadsheet, metadata);
 
   censusApiLogFirstSnapshotQa_(spreadsheet, metadata, qa);
@@ -71,6 +75,8 @@ function censusApiCreateFirstControlledSnapshot() {
 
   return {
     ok: true,
+    spreadsheetId: spreadsheet.getId(),
+    spreadsheetTitle: spreadsheet.getName(),
     sheetName: metadata.sheetName,
     fetchedAtUtc: metadata.fetchedAtUtc,
     dataset: metadata.year + '/' + metadata.dataset,
@@ -91,7 +97,8 @@ function censusApiCreateFirstControlledSnapshotToUi() {
     var result = censusApiCreateFirstControlledSnapshot();
     ui.alert(
       'Census RAW snapshot — PASS',
-      'Sheet: ' + result.sheetName +
+      'Workbook: ' + result.spreadsheetTitle + ' (' + result.spreadsheetId + ')' +
+        '\nSheet: ' + result.sheetName +
         '\nRows: ' + result.rowCount +
         '\nUnique places: ' + result.uniquePlaceCount +
         '\nContent SHA-256: ' + result.contentSha256 +
@@ -106,6 +113,93 @@ function censusApiCreateFirstControlledSnapshotToUi() {
     );
     throw error;
   }
+}
+
+/**
+ * Reports the spreadsheet currently bound to this Apps Script project.
+ *
+ * @return {Object} Expected and observed workbook identity.
+ */
+function censusApiBindingCheck() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  if (!spreadsheet) {
+    return censusApiEvaluateBinding_('', '', '');
+  }
+  return censusApiEvaluateBinding_(
+    spreadsheet.getId(),
+    spreadsheet.getName(),
+    spreadsheet.getUrl()
+  );
+}
+
+/** Displays the binding result and fails when this is not Nested Divisions. */
+function censusApiBindingCheckToUi() {
+  var ui = SpreadsheetApp.getUi();
+  var status = censusApiBindingCheck();
+  var message = [
+    'Expected: ' + status.expectedSpreadsheetTitle + ' (' + status.expectedSpreadsheetId + ')',
+    'Observed: ' + (status.observedSpreadsheetTitle || '[none]') +
+      ' (' + (status.observedSpreadsheetId || '[none]') + ')',
+    'URL: ' + (status.observedSpreadsheetUrl || '[none]')
+  ].join('\n');
+
+  ui.alert(
+    status.ok ? 'Census binding — PASS' : 'Census binding — FAIL',
+    message,
+    ui.ButtonSet.OK
+  );
+
+  if (!status.ok) {
+    throw new Error(censusApiWrongWorkbookMessage_(status));
+  }
+  return status;
+}
+
+/**
+ * Pure workbook-identity evaluator used by Apps Script and repository tests.
+ *
+ * @param {string} spreadsheetId Observed spreadsheet ID.
+ * @param {string} spreadsheetTitle Observed spreadsheet title.
+ * @param {string} spreadsheetUrl Observed spreadsheet URL.
+ * @return {Object} Binding status.
+ */
+function censusApiEvaluateBinding_(spreadsheetId, spreadsheetTitle, spreadsheetUrl) {
+  var observedId = String(spreadsheetId || '').trim();
+  return {
+    ok: observedId === CENSUS_FIRST_SNAPSHOT_SPEC_.expectedSpreadsheetId,
+    expectedSpreadsheetId: CENSUS_FIRST_SNAPSHOT_SPEC_.expectedSpreadsheetId,
+    expectedSpreadsheetTitle: CENSUS_FIRST_SNAPSHOT_SPEC_.expectedSpreadsheetTitle,
+    observedSpreadsheetId: observedId,
+    observedSpreadsheetTitle: String(spreadsheetTitle || '').trim(),
+    observedSpreadsheetUrl: String(spreadsheetUrl || '').trim()
+  };
+}
+
+function censusApiRequireExpectedWorkbook_() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var status = spreadsheet
+    ? censusApiEvaluateBinding_(
+        spreadsheet.getId(),
+        spreadsheet.getName(),
+        spreadsheet.getUrl()
+      )
+    : censusApiEvaluateBinding_('', '', '');
+
+  if (!status.ok) {
+    throw new Error(censusApiWrongWorkbookMessage_(status));
+  }
+  return spreadsheet;
+}
+
+function censusApiWrongWorkbookMessage_(status) {
+  return [
+    'Wrong bound spreadsheet. No Census request or sheet write was attempted.',
+    'Expected ' + status.expectedSpreadsheetTitle +
+      ' (' + status.expectedSpreadsheetId + ').',
+    'Observed ' + (status.observedSpreadsheetTitle || '[none]') +
+      ' (' + (status.observedSpreadsheetId || '[none]') + ').',
+    'Open the exact Nested Divisions workbook and use Extensions → Apps Script.'
+  ].join(' ');
 }
 
 function censusApiVerifyFirstControlledSnapshot_(spreadsheet, metadata) {
