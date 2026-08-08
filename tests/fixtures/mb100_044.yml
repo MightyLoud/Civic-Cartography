@@ -1,0 +1,13 @@
+version: 1
+name: mb100_044
+description: Measured Batch 100 target MB100-044 Orleans Parish, Louisiana.
+targets:
+  - target_id: MB100-044
+    jurisdiction_name: Orleans Parish
+    state: la
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:la/parish:orleans
+    expected_archetype: DISCOVERY — PARISH
+    expected_classification: government
+    category: discovery
