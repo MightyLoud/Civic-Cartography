@@ -6,6 +6,7 @@ on:
       - ".github/workflows/validate-mb100-038-bay-area-rapid-transit-district.yml"
       - "tests/fixtures/mb100_038.yml"
       - "scripts/capture_upstream_batch.py"
+      - "scripts/capture_upstream_batch_with_overrides.py"
       - "scripts/capture_upstream_fixtures.py"
       - "scripts/normalize_capture_acceptance.py"
       - "scripts/normalize_canonical_alias_acceptance.py"
@@ -24,6 +25,7 @@ env:
   UPSTREAM_REVISION: 6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705
   RUN_ASOF: 2026-08-08T01:50:00Z
   TARGET_MANIFEST: tests/fixtures/mb100_038.yml
+  OVERRIDE_REGISTRY: data/authoritative_jurisdiction_overrides.yml
   ALIAS_REGISTRY: data/canonical_alias_groups.yml
 
 jobs:
@@ -77,7 +79,9 @@ jobs:
             success=0
             for attempt in 1 2 3; do
               rm -rf "build/run-$n"
-              if PYTHONPATH=. upstream/.venv/bin/python scripts/capture_upstream_batch.py \
+              if PYTHONPATH=. upstream/.venv/bin/python scripts/capture_upstream_batch_with_overrides.py \
+                --override-registry "$OVERRIDE_REGISTRY" \
+                --alias-registry "$ALIAS_REGISTRY" \
                 --upstream-root upstream \
                 --target-manifest "$TARGET_MANIFEST" \
                 --run-asof "$RUN_ASOF" \
