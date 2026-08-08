@@ -1,0 +1,16 @@
+version: 1
+name: mb100_040
+description: Measured Batch 100 target MB100-040 City and County of Broomfield, Colorado.
+targets:
+  - target_id: MB100-040
+    jurisdiction_name: City and County of Broomfield
+    state: co
+    selector:
+      type: alias_group
+      members:
+        - ocd-division/country:us/state:co/place:broomfield
+        - ocd-division/country:us/state:co/county:broomfield
+      canonical_rule: maintained_alias
+    expected_archetype: AR-005
+    expected_classification: government
+    category: new_known_archetype
