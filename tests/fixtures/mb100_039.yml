@@ -1,0 +1,16 @@
+version: 1
+name: mb100_039
+description: Measured Batch 100 target MB100-039 City and County of San Francisco, California.
+targets:
+  - target_id: MB100-039
+    jurisdiction_name: City and County of San Francisco
+    state: ca
+    selector:
+      type: alias_group
+      members:
+        - ocd-division/country:us/state:ca/place:san_francisco
+        - ocd-division/country:us/state:ca/county:san_francisco
+      canonical_rule: maintained_alias
+    expected_archetype: AR-005
+    expected_classification: government
+    category: new_known_archetype
