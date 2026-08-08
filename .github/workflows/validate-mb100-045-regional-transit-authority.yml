@@ -73,7 +73,12 @@ jobs:
           git -C upstream -c user.name="Civic Cartography" -c user.email="civic-cartography@example.invalid" commit -m "Apply validated upstream fixes 1-3"
           git -C upstream apply --check ../patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch
           git -C upstream apply ../patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch
+          git -C upstream apply --check ../patches/openstates-jurisdictions/0005-transit-division-jurisdiction-classification.patch
+          git -C upstream apply ../patches/openstates-jurisdictions/0005-transit-division-jurisdiction-classification.patch
           git -C upstream diff --check
+          cd upstream
+          uv run pytest tests/src/init_migration/test_jurisdiction_seed_transit.py
+          uv run ruff check src/init_migration/jurisdiction_seed.py tests/src/init_migration/test_jurisdiction_seed_transit.py
 
       - name: Capture two clean deterministic runs
         run: |
