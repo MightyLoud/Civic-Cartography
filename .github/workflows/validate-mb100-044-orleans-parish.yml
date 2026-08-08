@@ -1,4 +1,4 @@
-name: Validate MB100-044 Orleans Parish
+name: Validate MB100-044 Orleans / New Orleans
 
 on:
   pull_request:
@@ -171,7 +171,7 @@ jobs:
             --register-path build/completion-register.csv \
             --evidence-ref "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
-      - name: Evaluate strict Orleans Parish identity and parity
+      - name: Evaluate strict Orleans / New Orleans identity and parity
         run: |
           python - <<'PY'
           import csv
@@ -182,18 +182,22 @@ jobs:
           import yaml
 
           target_id = 'MB100-044'
-          division_ocdid = 'ocd-division/country:us/state:la/parish:orleans'
+          division_ocdids = [
+              'ocd-division/country:us/state:la/parish:orleans',
+              'ocd-division/country:us/state:la/place:new_orleans',
+          ]
+          canonical_member = division_ocdids[0]
           jurisdiction_ocdid_expected = (
               'ocd-jurisdiction/country:us/state:la/parish:orleans/government'
           )
-          frozen_name = 'Orleans Parish'
+          frozen_name = 'City of New Orleans'
+          expected_alias_id = 'la-new-orleans-orleans-city-parish'
           frozen_geographic_identifier = 'county-equivalent-22071'
 
           a = json.loads(Path('build/run-1/report.json').read_text())
           b = json.loads(Path('build/run-2/report.json').read_text())
           diagnostics = json.loads(Path('build/run-1/diagnostics.json').read_text())
           completion = json.loads(Path('build/mb100-044-completion.json').read_text())
-          source_manifest = json.loads(Path('build/source-manifest.json').read_text())
 
           fields = (
               'match_status', 'classification_status', 'generation_status',
@@ -210,21 +214,22 @@ jobs:
           n1, n2 = normalized(a), normalized(b)
           row = n1[target_id]
           parity_ok = row == n2[target_id]
-          exact_identity_ok = row['resolved_ocdids'] == [division_ocdid]
+          exact_identity_ok = row['resolved_ocdids'] == division_ocdids
           louisiana_paths_ok = (
               all(path.startswith('divisions/la/') for path in row['division_paths'])
               and all(path.startswith('jurisdictions/la/') for path in row['jurisdiction_paths'])
           )
-          one_division_ok = len(row['division_paths']) == 1
+          two_divisions_ok = len(row['division_paths']) == 2
           one_jurisdiction_ok = len(row['jurisdiction_paths']) == 1
 
           jurisdiction_name = None
           jurisdiction_ocdid = None
           jurisdiction_classification = None
           jurisdiction_path = None
-          artifact_source_count = 0
+          official_source_ok = False
+          manifest_name_source_ok = False
 
-          if one_jurisdiction_ok:
+          if len(row['jurisdiction_paths']) == 1:
               jurisdiction_path = row['jurisdiction_paths'][0]
               artifact_path = Path('build/run-1/artifacts') / jurisdiction_path
               if artifact_path.exists():
@@ -232,24 +237,51 @@ jobs:
                   jurisdiction_name = artifact.get('name')
                   jurisdiction_ocdid = artifact.get('ocdid')
                   jurisdiction_classification = artifact.get('classification')
-                  artifact_source_count = len([
-                      source for source in artifact.get('sourcing', [])
-                      if isinstance(source, dict)
-                  ])
+                  sources = [s for s in artifact.get('sourcing', []) if isinstance(s, dict)]
+                  official_source_ok = any(
+                      source.get('source_name') == frozen_name
+                      and source.get('source_type') == 'human_researched'
+                      for source in sources
+                  )
+                  manifest_name_source_ok = any(
+                      source.get('source_name') == 'Civic-Cartography target manifest'
+                      and source.get('field') == ['name']
+                      for source in sources
+                  )
 
           target_diagnostic = next(
               (item for item in diagnostics.get('targets', []) if item.get('target_id') == target_id),
               {},
           )
+          attempts = [
+              item for item in target_diagnostic.get('attempts', [])
+              if isinstance(item, dict)
+          ]
+          attempt_by_member = {
+              item.get('canonical_alias_member'): item
+              for item in attempts
+              if item.get('canonical_alias_member')
+          }
+          alias_metadata_ok = (
+              set(attempt_by_member) == set(division_ocdids)
+              and {item.get('canonical_alias_id') for item in attempts} == {expected_alias_id}
+              and all(
+                  item.get('canonical_division_ocdid') == canonical_member
+                  and item.get('canonical_jurisdiction_ocdid') == jurisdiction_ocdid_expected
+                  for item in attempts
+              )
+              and attempt_by_member[canonical_member].get('canonical_alias_is_canonical') is True
+              and attempt_by_member[canonical_member].get('suppress_jurisdiction_generation') is False
+              and attempt_by_member[division_ocdids[1]].get('canonical_alias_is_canonical') is False
+              and attempt_by_member[division_ocdids[1]].get('suppress_jurisdiction_generation') is True
+          )
+
           name_normalization = target_diagnostic.get('jurisdiction_name_normalization', {})
           normalization_ok = (
-              (
-                  name_normalization.get('expected_name') == frozen_name
-                  and name_normalization.get('changed_count') in (0, 1)
-              )
-              if name_normalization
-              else jurisdiction_name == frozen_name
+              name_normalization.get('expected_name') == frozen_name
+              and name_normalization.get('changed_count') in (0, 1)
           )
+          name_provenance_ok = official_source_ok or manifest_name_source_ok
 
           completion_target = next(
               (item for item in completion.get('targets', []) if item.get('target_id') == target_id),
@@ -269,7 +301,6 @@ jobs:
                   )
               )
           )
-          raw_source_manifest_ok = bool(source_manifest.get('files'))
 
           with Path('build/completion-register.csv').open(newline='') as handle:
               register_rows = list(csv.DictReader(handle))
@@ -308,13 +339,14 @@ jobs:
               parity_ok
               and exact_identity_ok
               and louisiana_paths_ok
-              and one_division_ok
+              and two_divisions_ok
               and one_jurisdiction_ok
               and jurisdiction_ocdid == jurisdiction_ocdid_expected
               and jurisdiction_name == frozen_name
               and jurisdiction_classification == 'government'
+              and alias_metadata_ok
+              and name_provenance_ok
               and normalization_ok
-              and raw_source_manifest_ok
               and completion_ok
               and register_projection_ok
               and row['match_status'] == 'matched'
@@ -334,20 +366,24 @@ jobs:
               'target_id': target_id,
               **row,
               'canonical_ids': canonical_ids,
-              'frozen_division_ocdid': division_ocdid,
+              'frozen_division_ocdids': division_ocdids,
+              'canonical_member': canonical_member,
               'expected_jurisdiction_ocdid': jurisdiction_ocdid_expected,
+              'expected_alias_id': expected_alias_id,
               'frozen_geographic_identifier': frozen_geographic_identifier,
               'exact_identity_ok': exact_identity_ok,
               'louisiana_paths_ok': louisiana_paths_ok,
-              'one_division_ok': one_division_ok,
+              'two_divisions_ok': two_divisions_ok,
               'one_jurisdiction_ok': one_jurisdiction_ok,
               'generated_jurisdiction_name': jurisdiction_name,
               'generated_jurisdiction_ocdid': jurisdiction_ocdid,
               'generated_jurisdiction_classification': jurisdiction_classification,
               'generated_jurisdiction_path': jurisdiction_path,
-              'artifact_source_count': artifact_source_count,
+              'official_source_ok': official_source_ok,
+              'manifest_name_source_ok': manifest_name_source_ok,
+              'name_provenance_ok': name_provenance_ok,
+              'alias_metadata_ok': alias_metadata_ok,
               'jurisdiction_name_normalization_ok': normalization_ok,
-              'raw_source_manifest_ok': raw_source_manifest_ok,
               'completion_contract_ok': completion_ok,
               'completion_register_projection_ok': register_projection_ok,
               'completion_gates': {
