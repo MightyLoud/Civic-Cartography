@@ -10,6 +10,7 @@ on:
       - "scripts/capture_upstream_fixtures.py"
       - "scripts/capture_upstream_with_authoritative_overrides.py"
       - "scripts/normalize_capture_acceptance.py"
+      - "scripts/normalize_canonical_alias_acceptance.py"
       - "scripts/run_target_manifest.py"
       - "scripts/check_completion_manifest.py"
       - "scripts/update_completion_register.py"
@@ -107,6 +108,11 @@ jobs:
               exit 2
             fi
             python scripts/normalize_capture_acceptance.py \
+              --target-manifest "$TARGET_MANIFEST" \
+              --execution-results "build/run-$n/execution-results.json" \
+              --diagnostics "build/run-$n/diagnostics.json"
+            PYTHONPATH=. python scripts/normalize_canonical_alias_acceptance.py \
+              --alias-registry "$ALIAS_REGISTRY" \
               --target-manifest "$TARGET_MANIFEST" \
               --execution-results "build/run-$n/execution-results.json" \
               --diagnostics "build/run-$n/diagnostics.json"
