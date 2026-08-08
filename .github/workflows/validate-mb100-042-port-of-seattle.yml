@@ -245,6 +245,16 @@ jobs:
               name_normalization.get('expected_name') == frozen_name
               and name_normalization.get('changed_count') == 0
           )
+          official_name_source_ok = (
+              override_source_ok
+              and jurisdiction_name == official_name
+              and official_name == frozen_name
+              and normalization_ok
+          )
+          name_provenance_ok = (
+              manifest_name_source_ok
+              or official_name_source_ok
+          )
 
           completion_target = next(
               (item for item in completion.get('targets', []) if item.get('target_id') == target_id),
@@ -308,7 +318,7 @@ jobs:
               and jurisdiction_name == frozen_name
               and jurisdiction_classification == 'special_purpose_district'
               and override_source_ok
-              and manifest_name_source_ok
+              and name_provenance_ok
               and normalization_ok
               and completion_ok
               and register_projection_ok
@@ -343,6 +353,8 @@ jobs:
               'generated_jurisdiction_path': jurisdiction_path,
               'override_source_ok': override_source_ok,
               'manifest_name_source_ok': manifest_name_source_ok,
+              'official_name_source_ok': official_name_source_ok,
+              'name_provenance_ok': name_provenance_ok,
               'jurisdiction_name_normalization_ok': normalization_ok,
               'completion_contract_ok': completion_ok,
               'completion_register_projection_ok': register_projection_ok,
