@@ -6,8 +6,9 @@ targets:
     jurisdiction_name: Bay Area Rapid Transit District
     state: ca
     selector:
-      type: lookup
+      type: explicit_lookup
       name: Bay Area Rapid Transit District
+      resolution_policy: override_or_exception
     expected_archetype: AR-004
     expected_classification: transit_authority
     category: new_known_archetype
