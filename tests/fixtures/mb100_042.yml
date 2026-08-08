@@ -1,0 +1,14 @@
+version: 1
+name: mb100_042
+description: Measured Batch 100 target MB100-042 Port of Seattle, Washington.
+targets:
+  - target_id: MB100-042
+    jurisdiction_name: Port of Seattle
+    state: wa
+    selector:
+      type: explicit_lookup
+      name: Port of Seattle
+      resolution_policy: override_or_exception
+    expected_archetype: AR-D01
+    expected_classification: special_purpose_district
+    category: new_known_archetype
