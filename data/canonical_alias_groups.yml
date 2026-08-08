@@ -121,3 +121,35 @@ aliases:
       matching the frozen AR-005 manifest. The county Division remains a first-class
       geographic record but suppresses duplicate Jurisdiction generation and points
       to the same City and County government.
+  - alias_id: la-new-orleans-orleans-city-parish
+    state: la
+    canonical_name: City of New Orleans
+    members:
+      - ocd-division/country:us/state:la/parish:orleans
+      - ocd-division/country:us/state:la/place:new_orleans
+    canonical_member: ocd-division/country:us/state:la/parish:orleans
+    member_display_names:
+      ocd-division/country:us/state:la/place:new_orleans: New Orleans
+    classification: government
+    jurisdiction_name: City of New Orleans
+    url: https://nola.gov/
+    source:
+      source_name: City of New Orleans
+      source_url:
+        official_website: https://nola.gov/
+        city_parish_government: https://nola.gov/next/government/
+        census_consolidation: https://www.census.gov/geographies/reference-files/2010/geo/state-local-geo-guides-2010/louisiana.html
+        maintained_ocd_alias: https://github.com/opencivicdata/ocd-division-ids/blob/a52719a15852fc8c8418194016c16657591930ad/identifiers/country-us/aliases.csv
+      source_description: >-
+        Official City materials present City and Parish Government Offices under
+        the City of New Orleans. The U.S. Census Bureau records Orleans Parish
+        and New Orleans city as governmentally consolidated at the city level,
+        and the maintained OCD source aliases the New Orleans place Division to
+        the Orleans Parish Division.
+    verified_asof: '2026-08-08'
+    evidence_notes: >-
+      Orleans Parish remains the canonical member because MB100-044 is frozen
+      to the parish geography and the maintained OCD alias points
+      place:new_orleans to parish:orleans. Both geographic Divisions remain
+      first-class records, while one City of New Orleans Jurisdiction is
+      generated at the parish-based canonical OCDID.
