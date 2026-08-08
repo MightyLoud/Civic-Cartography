@@ -130,9 +130,11 @@ jobs:
           place_ocdid = 'ocd-division/country:us/state:ca/place:san_francisco'
           county_ocdid = 'ocd-division/country:us/state:ca/county:san_francisco'
           expected_jurisdiction_ocdid = 'ocd-jurisdiction/country:us/state:ca/place:san_francisco/government'
+          expected_alias_id = 'ca-san-francisco-city-county-government'
           frozen_geographic_identifier = 'place-0667000 / county-06075'
           a = json.loads(Path('build/run-1/report.json').read_text())
           b = json.loads(Path('build/run-2/report.json').read_text())
+          diagnostics = json.loads(Path('build/run-1/diagnostics.json').read_text())
           fields = (
               'match_status', 'classification_status', 'generation_status',
               'resolved_ocdids', 'division_paths', 'jurisdiction_paths',
@@ -158,11 +160,24 @@ jobs:
           canonical_place_jurisdiction_ok = False
           county_duplicate_absent = False
           human_facing_name_ok = False
-          manifest_name_source_ok = False
+          canonical_alias_source_ok = False
+          canonical_alias_semantics_ok = False
           jurisdiction_name = None
           jurisdiction_ocdid = None
           jurisdiction_classification = None
           jurisdiction_path = None
+
+          target_diagnostic = next(
+              (item for item in diagnostics.get('targets', []) if item.get('target_id') == 'MB100-039'),
+              {},
+          )
+          canonical_alias = target_diagnostic.get('canonical_alias', {})
+          canonical_alias_semantics_ok = (
+              canonical_alias.get('alias_id') == expected_alias_id
+              and canonical_alias.get('canonical_member') == place_ocdid
+              and canonical_alias.get('canonical_jurisdiction_ocdid') == expected_jurisdiction_ocdid
+              and canonical_alias.get('invariant_errors') == []
+          )
 
           if len(row['jurisdiction_paths']) == 1:
               jurisdiction_path = row['jurisdiction_paths'][0]
@@ -175,9 +190,10 @@ jobs:
                   canonical_place_jurisdiction_ok = jurisdiction_ocdid == expected_jurisdiction_ocdid
                   county_duplicate_absent = '/county:san_francisco/' not in (jurisdiction_ocdid or '')
                   human_facing_name_ok = jurisdiction_name == 'City and County of San Francisco'
-                  manifest_name_source_ok = any(
-                      source.get('field') == ['name']
-                      and source.get('source_name') == 'Civic-Cartography target manifest'
+                  canonical_alias_source_ok = any(
+                      {'ocdid', 'name', 'classification'}.issubset(set(source.get('field', [])))
+                      and source.get('source_name') == 'City and County of San Francisco'
+                      and source.get('source_type') == 'human_researched'
                       for source in artifact.get('sourcing', [])
                       if isinstance(source, dict)
                   )
@@ -203,7 +219,8 @@ jobs:
               and canonical_place_jurisdiction_ok
               and county_duplicate_absent
               and human_facing_name_ok
-              and manifest_name_source_ok
+              and canonical_alias_source_ok
+              and canonical_alias_semantics_ok
               and jurisdiction_classification == 'government'
               and row['match_status'] == 'matched'
               and row['classification_status'] == 'matched'
@@ -225,6 +242,7 @@ jobs:
               'frozen_place_ocdid': place_ocdid,
               'frozen_county_ocdid': county_ocdid,
               'expected_jurisdiction_ocdid': expected_jurisdiction_ocdid,
+              'expected_alias_id': expected_alias_id,
               'frozen_geographic_identifier': frozen_geographic_identifier,
               'full_alias_identity_ok': full_alias_identity_ok,
               'california_paths_ok': california_paths_ok,
@@ -233,7 +251,8 @@ jobs:
               'canonical_place_jurisdiction_ok': canonical_place_jurisdiction_ok,
               'county_duplicate_absent': county_duplicate_absent,
               'human_facing_name_ok': human_facing_name_ok,
-              'manifest_name_source_ok': manifest_name_source_ok,
+              'canonical_alias_source_ok': canonical_alias_source_ok,
+              'canonical_alias_semantics_ok': canonical_alias_semantics_ok,
               'generated_jurisdiction_name': jurisdiction_name,
               'generated_jurisdiction_ocdid': jurisdiction_ocdid,
               'generated_jurisdiction_classification': jurisdiction_classification,
