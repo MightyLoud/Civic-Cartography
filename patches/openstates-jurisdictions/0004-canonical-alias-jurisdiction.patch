@@ -1,8 +1,8 @@
 diff --git a/src/init_migration/generate_pipeline.py b/src/init_migration/generate_pipeline.py
-index 23a110b..4afaa39 100644
+index 204aa97..a5facb3 100644
 --- a/src/init_migration/generate_pipeline.py
 +++ b/src/init_migration/generate_pipeline.py
-@@ -386,7 +386,22 @@ class GeneratePipeline:
+@@ -427,7 +427,22 @@ class GeneratePipeline:
              return
  
          classification = seed.classification or "government"
@@ -26,7 +26,7 @@ index 23a110b..4afaa39 100644
              self.division.ocdid, classification
          )
          self.division.jurisdiction_id = jurisdiction_ocdid
-@@ -397,6 +412,16 @@ class GeneratePipeline:
+@@ -438,6 +453,16 @@ class GeneratePipeline:
                  div_gen.dump_division(output_dir=self.division_output_dir)
              )
  
