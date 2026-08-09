@@ -7,6 +7,7 @@ import io
 import json
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import httpx
@@ -17,6 +18,9 @@ import capture_upstream_fixtures as base_capture
 
 class BatchCaptureError(ValueError):
     """Raised when a full target-manifest capture cannot be completed safely."""
+
+
+US_ADMIN1_TYPES = ("state", "district", "territory")
 
 
 def _load_manifest_targets(path: Path) -> list[dict[str, Any]]:
@@ -80,9 +84,104 @@ def _normalize_local_csv(csv_bytes: bytes) -> bytes:
     return output.getvalue().encode("utf-8")
 
 
-def _ensure_sources_for_states(
-    api: dict[str, Any], source_dir: Path, states: list[str]
+def _selector_ocdids(target: dict[str, Any]) -> list[str]:
+    selector = target.get("selector")
+    if not isinstance(selector, dict):
+        return []
+    if selector.get("type") == "ocdid":
+        value = selector.get("value")
+        return [value] if isinstance(value, str) and value else []
+    if selector.get("type") == "alias_group":
+        members = selector.get("members")
+        if isinstance(members, list):
+            return [member for member in members if isinstance(member, str) and member]
+    return []
+
+
+def _target_admin1_type(target: dict[str, Any]) -> str:
+    """Resolve the OCDID admin-1 segment represented by a manifest target."""
+    state = str(target["state"])
+    ocdids = _selector_ocdids(target)
+    if not ocdids:
+        # Maintained explicit-lookups currently resolve state-scoped overrides.
+        return "state"
+
+    kinds: set[str] = set()
+    for ocdid in ocdids:
+        padded = f"/{ocdid.rstrip('/')}/"
+        matches = {
+            kind
+            for kind in US_ADMIN1_TYPES
+            if f"/{kind}:{state}/" in padded
+        }
+        if len(matches) != 1:
+            raise BatchCaptureError(
+                f"{target['target_id']}: selector OCDID must contain exactly one "
+                f"supported admin-1 marker for {state}: {ocdid}"
+            )
+        kinds.update(matches)
+    if len(kinds) != 1:
+        raise BatchCaptureError(
+            f"{target['target_id']}: selector OCDIDs span multiple admin-1 types: "
+            f"{sorted(kinds)}"
+        )
+    return next(iter(kinds))
+
+
+def _master_candidates(
+    api: dict[str, Any], master_bytes: bytes, requested_ocdids: set[str]
 ) -> dict[str, Any]:
+    """Build exact candidates for non-state targets from the national master."""
+    if not requested_ocdids:
+        return {}
+    try:
+        text = master_bytes.decode("utf-8-sig")
+    except UnicodeDecodeError as exc:
+        raise BatchCaptureError("national master CSV must be UTF-8") from exc
+
+    reader = csv.DictReader(io.StringIO(text))
+    if not reader.fieldnames or not {"id", "name"}.issubset(reader.fieldnames):
+        raise BatchCaptureError("national master CSV must contain id and name columns")
+
+    candidates: dict[str, Any] = {}
+    for raw_row in reader:
+        row = {str(key): value or "" for key, value in raw_row.items() if key is not None}
+        ocdid = row.get("id", "").strip()
+        if ocdid not in requested_ocdids:
+            continue
+        if ocdid in candidates:
+            raise BatchCaptureError(f"national master contains duplicate OCDID: {ocdid}")
+        name = row.get("name", "").strip()
+        if not name:
+            raise BatchCaptureError(f"national master target has no name: {ocdid}")
+        ingest = base_capture._make_ingest(api, ocdid, name)
+        ingest.raw_record.clear()
+        ingest.raw_record.update(row)
+        candidates[ocdid] = base_capture.Candidate(
+            ocdid=ocdid,
+            name=name,
+            source="master",
+            ingest=ingest,
+        )
+
+    missing = sorted(requested_ocdids - set(candidates))
+    if missing:
+        raise BatchCaptureError(
+            f"non-state target OCDIDs missing from national master: {missing}"
+        )
+    return candidates
+
+
+def _ensure_sources_for_states(
+    api: dict[str, Any],
+    source_dir: Path,
+    states: list[str],
+    *,
+    districts: list[str] | None = None,
+    territories: list[str] | None = None,
+) -> dict[str, Any]:
+    districts = districts or []
+    territories = territories or []
     files: dict[str, Path] = {
         "master": source_dir / "country-us.csv",
         "validation": source_dir / "nested-divisions-validation.csv",
@@ -102,6 +201,12 @@ def _ensure_sources_for_states(
     manifest = {
         "version": 1,
         "states": states,
+        "districts": districts,
+        "territories": territories,
+        "non_state_strategy": (
+            "retain the national master as RAW and resolve exact district/territory "
+            "selectors from that master; do not invent nonexistent state-local URLs"
+        ),
         "local_csv_normalization": {
             "columns": ["id", "name"],
             "strategy": (
@@ -141,9 +246,38 @@ async def capture_batch(args: argparse.Namespace) -> None:
         raise BatchCaptureError(f"upstream checkout is invalid: {upstream_root}")
 
     targets = _load_manifest_targets(manifest_path)
-    states = sorted({str(target["state"]) for target in targets})
+    admin1_types = {
+        str(target["target_id"]): _target_admin1_type(target) for target in targets
+    }
+    states = sorted(
+        {
+            str(target["state"])
+            for target in targets
+            if admin1_types[str(target["target_id"])] == "state"
+        }
+    )
+    districts = sorted(
+        {
+            str(target["state"])
+            for target in targets
+            if admin1_types[str(target["target_id"])] == "district"
+        }
+    )
+    territories = sorted(
+        {
+            str(target["state"])
+            for target in targets
+            if admin1_types[str(target["target_id"])] == "territory"
+        }
+    )
     api = base_capture._configure_upstream(upstream_root, fixed_asof)
-    sources = _ensure_sources_for_states(api, source_dir, states)
+    sources = _ensure_sources_for_states(
+        api,
+        source_dir,
+        states,
+        districts=districts,
+        territories=territories,
+    )
 
     work_dir.mkdir(parents=True, exist_ok=True)
     artifact_root.mkdir(parents=True, exist_ok=True)
@@ -157,13 +291,30 @@ async def capture_batch(args: argparse.Namespace) -> None:
         raw_local = sources["files"][f"{state}_local"].read_bytes()
         manager.load_local_csv(_normalize_local_csv(raw_local), state)
 
-    matcher = api["OCDidMatcher"](
-        db_path=str(db_path),
-        states=states,
-        csv_backup_path=str(csv_backup),
-    )
-    match_results = matcher.run_matching(show_progress=False)
+    if states:
+        matcher = api["OCDidMatcher"](
+            db_path=str(db_path),
+            states=states,
+            csv_backup_path=str(csv_backup),
+        )
+        match_results = matcher.run_matching(show_progress=False)
+    else:
+        match_results = SimpleNamespace(
+            matched=[], local_orphans=[], master_orphans=[]
+        )
     candidates = base_capture._candidate_index(api, match_results)
+    requested_master_ocdids = {
+        ocdid
+        for target in targets
+        if admin1_types[str(target["target_id"])] != "state"
+        for ocdid in _selector_ocdids(target)
+    }
+    for ocdid, candidate in _master_candidates(
+        api,
+        sources["files"]["master"].read_bytes(),
+        requested_master_ocdids,
+    ).items():
+        candidates.setdefault(ocdid, candidate)
 
     overlays: dict[str, dict[str, Any]] = {}
     diagnostics: list[dict[str, Any]] = []
@@ -197,6 +348,8 @@ async def capture_batch(args: argparse.Namespace) -> None:
                 "source_manifest": sources["manifest"],
                 "matcher": {
                     "states": states,
+                    "districts": districts,
+                    "territories": territories,
                     "matched_count": len(match_results.matched),
                     "local_orphan_count": len(match_results.local_orphans),
                     "master_orphan_count": len(match_results.master_orphans),

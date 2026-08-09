@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import io
+import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -14,7 +15,14 @@ SCRIPTS_DIR = PROJECT_ROOT / "scripts"
 if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
-from capture_upstream_batch import BatchCaptureError, _normalize_local_csv
+import capture_upstream_batch as batch_capture
+from capture_upstream_batch import (
+    BatchCaptureError,
+    _ensure_sources_for_states,
+    _master_candidates,
+    _normalize_local_csv,
+    _target_admin1_type,
+)
 from capture_upstream_fixtures import _install_fixed_datetime
 
 
@@ -63,3 +71,96 @@ def test_fixed_capture_clock_covers_recursive_ancestor_stubs() -> None:
     for module in (leaf_division, leaf_jurisdiction, recursive_stubs):
         assert module.datetime.now(timezone.utc) == fixed_asof
         assert module.datetime.now() == fixed_asof.replace(tzinfo=None)
+
+
+def test_territory_selector_routes_to_national_master() -> None:
+    target = {
+        "target_id": "MB100-050",
+        "state": "pr",
+        "selector": {
+            "type": "ocdid",
+            "value": "ocd-division/country:us/territory:pr/municipio:san_juan",
+        },
+    }
+
+    assert _target_admin1_type(target) == "territory"
+
+
+def test_mixed_admin1_aliases_are_rejected() -> None:
+    target = {
+        "target_id": "MIXED",
+        "state": "pr",
+        "selector": {
+            "type": "alias_group",
+            "members": [
+                "ocd-division/country:us/territory:pr/municipio:san_juan",
+                "ocd-division/country:us/state:pr/place:san_juan",
+            ],
+        },
+    }
+
+    with pytest.raises(BatchCaptureError, match="multiple admin-1 types"):
+        _target_admin1_type(target)
+
+
+def test_territory_sources_skip_nonexistent_state_local_url(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    downloaded: list[str] = []
+
+    def fake_download(url: str, path: Path) -> None:
+        downloaded.append(url)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(f"source={url}\n".encode())
+
+    monkeypatch.setattr(batch_capture.base_capture, "_download_once", fake_download)
+    api = {
+        "master_url": "https://example.test/country-us.csv",
+        "validation_url": "https://example.test/validation.csv",
+        "local_url": lambda state: f"https://example.test/state-{state}-local.csv",
+    }
+
+    result = _ensure_sources_for_states(
+        api,
+        tmp_path,
+        [],
+        territories=["pr"],
+    )
+
+    assert downloaded == [api["master_url"], api["validation_url"]]
+    assert not any("state-pr" in url for url in downloaded)
+    assert result["manifest"]["states"] == []
+    assert result["manifest"]["territories"] == ["pr"]
+    stored = json.loads((tmp_path / "source-manifest.json").read_text())
+    assert stored["files"].keys() == {"master", "validation"}
+
+
+def test_exact_territory_candidate_is_loaded_from_national_master() -> None:
+    class FakeParsed:
+        @classmethod
+        def parse_ocdid(cls, value: str) -> SimpleNamespace:
+            return SimpleNamespace(raw_ocdid=value, territory="pr", municipio="san_juan")
+
+    class FakeIngest:
+        def __init__(self, *, uuid, ocdid, raw_record) -> None:
+            self.uuid = uuid
+            self.ocdid = ocdid
+            self.raw_record = raw_record
+
+    target_ocdid = "ocd-division/country:us/territory:pr/municipio:san_juan"
+    master = (
+        "id,name,census_geoid\n"
+        f"{target_ocdid},San Juan Municipio,place-72127\n"
+    ).encode()
+    api = {
+        "OCDIdParsed": FakeParsed,
+        "OCDidIngestResp": FakeIngest,
+    }
+
+    candidates = _master_candidates(api, master, {target_ocdid})
+
+    candidate = candidates[target_ocdid]
+    assert candidate.source == "master"
+    assert candidate.name == "San Juan Municipio"
+    assert candidate.ingest.ocdid.territory == "pr"
+    assert candidate.ingest.raw_record["census_geoid"] == "place-72127"

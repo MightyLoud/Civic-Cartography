@@ -51,6 +51,7 @@ SUPPORTED_GENERATION_STATUSES = frozenset(
 SUPPORTED_RESOLUTION_POLICIES = frozenset({"override_or_exception"})
 TARGET_ID_PATTERN = re.compile(r"^[A-Z0-9][A-Z0-9_-]*$")
 STATE_PATTERN = re.compile(r"^[a-z]{2}$")
+US_ADMIN1_TYPES = ("state", "district", "territory")
 CENSUS_GEOID_PATTERN = re.compile(r"^[0-9]{7}$")
 WAVE_PATTERN = re.compile(r"^[A-Z0-9]+(?:-[A-Z0-9]+)*$")
 
@@ -127,9 +128,13 @@ def _normalize_ocdid(value: Any, state: str, location: str) -> str:
     prefix = "ocd-division/country:us/"
     if not ocdid.startswith(prefix):
         raise ManifestError(f"{location} must be a U.S. ocd-division ID")
-    state_marker = f"/state:{state}/"
-    if state_marker not in f"/{ocdid}/":
-        raise ManifestError(f"{location} must contain state:{state}")
+    admin1_markers = tuple(f"/{kind}:{state}/" for kind in US_ADMIN1_TYPES)
+    if not any(marker in f"/{ocdid}/" for marker in admin1_markers):
+        supported = ", ".join(f"{kind}:{state}" for kind in US_ADMIN1_TYPES)
+        raise ManifestError(
+            f"{location} must contain one of the supported U.S. admin-1 "
+            f"markers: {supported}"
+        )
     return ocdid
 
 

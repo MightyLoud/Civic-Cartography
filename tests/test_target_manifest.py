@@ -193,6 +193,70 @@ def test_duplicate_target_ids_are_rejected(tmp_path: Path) -> None:
         load_manifest(path)
 
 
+def test_territory_ocdid_is_valid_for_matching_postal_code(tmp_path: Path) -> None:
+    raw = {
+        "version": 1,
+        "name": "territory-target",
+        "targets": [
+            {
+                "target_id": "MB100-050",
+                "jurisdiction_name": "San Juan Municipio",
+                "state": "pr",
+                "selector": {
+                    "type": "ocdid",
+                    "value": (
+                        "ocd-division/country:us/territory:pr/"
+                        "municipio:san_juan"
+                    ),
+                },
+                "expected_archetype": "DISCOVERY — TERRITORY MUNICIPIO",
+                "expected_classification": "government",
+                "category": "discovery",
+            }
+        ],
+    }
+    path = tmp_path / "territory.yml"
+    path.write_text(yaml.safe_dump(raw, sort_keys=False), encoding="utf-8")
+
+    manifest = load_manifest(path)
+    schema = json.loads(MANIFEST_SCHEMA.read_text(encoding="utf-8"))
+    Draft202012Validator(schema).validate(raw)
+
+    assert manifest.targets[0].state == "pr"
+    assert manifest.targets[0].selector["value"].endswith(
+        "/territory:pr/municipio:san_juan"
+    )
+
+
+def test_territory_ocdid_must_match_target_postal_code(tmp_path: Path) -> None:
+    raw = {
+        "version": 1,
+        "name": "mismatched-territory-target",
+        "targets": [
+            {
+                "target_id": "MISMATCH",
+                "jurisdiction_name": "San Juan Municipio",
+                "state": "gu",
+                "selector": {
+                    "type": "ocdid",
+                    "value": (
+                        "ocd-division/country:us/territory:pr/"
+                        "municipio:san_juan"
+                    ),
+                },
+                "expected_archetype": "DISCOVERY",
+                "expected_classification": "government",
+                "category": "discovery",
+            }
+        ],
+    }
+    path = tmp_path / "mismatch.yml"
+    path.write_text(yaml.safe_dump(raw, sort_keys=False), encoding="utf-8")
+
+    with pytest.raises(ManifestError, match="territory:gu"):
+        load_manifest(path)
+
+
 def test_cli_writes_report(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     output = tmp_path / "report.json"
 

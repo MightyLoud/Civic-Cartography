@@ -42,7 +42,7 @@
         "type": {"const": "ocdid"},
         "value": {
           "type": "string",
-          "pattern": "^ocd-division/country:us/state:[a-z]{2}/.+"
+          "pattern": "^ocd-division/country:us/(state|district|territory):[a-z]{2}/.+"
         }
       }
     },
@@ -68,7 +68,7 @@
           "uniqueItems": true,
           "items": {
             "type": "string",
-            "pattern": "^ocd-division/country:us/state:[a-z]{2}/.+"
+            "pattern": "^ocd-division/country:us/(state|district|territory):[a-z]{2}/.+"
           }
         },
         "canonical_rule": {"type": "string", "minLength": 1}
