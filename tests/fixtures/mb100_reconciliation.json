@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-064",
+  "frozen_name": "Buffalo",
+  "state": "ny",
+  "division_ocdid": "ocd-division/country:us/state:ny/place:buffalo",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:ny/place:buffalo/government",
+  "frozen_geographic_identifier": "place-3611000",
+  "run_asof": "2026-08-09T13:11:40Z",
+  "prior_workbook_checksum": ""
+}
