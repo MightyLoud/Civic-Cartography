@@ -325,7 +325,7 @@ jobs:
               '10a2e86b8b19611e92b534d5e187622a13f325e313ef8782a3e8f1bd238b2743'
           )
           expected_current_checksum = (
-              '10a2e86b8b19611e92b534d5e187622a13f325e313ef8782a3e8f1bd238b2743'
+              '7ba7362410037d0add8a560e7fc653d0a679877620c6d215d4e3191a87face63'
           )
           current_checksum_match_ok = target_checksum == expected_current_checksum
           checksum_migration_required = (
