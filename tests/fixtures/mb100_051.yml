@@ -12,4 +12,4 @@ targets:
       value: ocd-division/country:us/state:al/place:birmingham
     expected_archetype: AR-001
     expected_classification: government
-    category: known
+    category: new_known_archetype
