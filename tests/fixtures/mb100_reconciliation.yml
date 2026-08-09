@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-067 Portland, Oregon. This validates
+  the newly started pending row against durable exact-head evidence.
+targets:
+  - target_id: MB100-067
+    jurisdiction_name: Portland
+    state: or
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:or/place:portland
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
