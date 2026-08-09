@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-062",
+  "frozen_name": "Manchester",
+  "state": "nh",
+  "division_ocdid": "ocd-division/country:us/state:nh/place:manchester",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:nh/place:manchester/government",
+  "frozen_geographic_identifier": "place-3345140",
+  "run_asof": "2026-08-09T06:07:59Z",
+  "prior_workbook_checksum": ""
+}
