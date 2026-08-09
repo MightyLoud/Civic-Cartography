@@ -184,3 +184,34 @@ aliases:
       county-equivalent Division remains a first-class geographic record but
       suppresses duplicate Jurisdiction generation. Baltimore County
       (county:baltimore) is a separate government and is not an alias member.
+  - alias_id: va-richmond-independent-city
+    state: va
+    canonical_name: Richmond
+    members:
+      - ocd-division/country:us/state:va/county:richmond_city
+      - ocd-division/country:us/state:va/place:richmond
+    canonical_member: ocd-division/country:us/state:va/place:richmond
+    classification: government
+    jurisdiction_name: Richmond
+    url: https://www.rva.gov/
+    source:
+      source_name: City of Richmond
+      source_url:
+        official_website: https://www.rva.gov/
+        city_government: https://www.rva.gov/city-information
+        census_county_equivalent: https://www.census.gov/quickfacts/fact/table/richmondcitycountyvirginia/BZA110223
+        maintained_ocd_source: https://github.com/opencivicdata/ocd-division-ids/blob/a52719a15852fc8c8418194016c16657591930ad/identifiers/country-us.csv
+      source_description: >-
+        Official Richmond materials identify one City of Richmond government.
+        The U.S. Census Bureau reports Richmond city as a county-equivalent, and
+        the maintained OCD source maps county:richmond_city to place:richmond as
+        an independent city rather than a county. The alias preserves both
+        geographic Divisions while generating one governing Jurisdiction.
+    verified_asof: '2026-08-09'
+    evidence_notes: >-
+      The place Division is the maintained canonical representative so the
+      government resolves to
+      ocd-jurisdiction/country:us/state:va/place:richmond/government. The
+      county-equivalent Division remains a first-class geographic record but
+      suppresses duplicate Jurisdiction generation. Richmond County
+      (county:richmond) is a separate government and is not an alias member.
