@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-061",
+  "frozen_name": "Billings",
+  "state": "mt",
+  "division_ocdid": "ocd-division/country:us/state:mt/place:billings",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:mt/place:billings/government",
+  "frozen_geographic_identifier": "place-3006550",
+  "run_asof": "2026-08-09T05:58:02Z",
+  "prior_workbook_checksum": ""
+}
