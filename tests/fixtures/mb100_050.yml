@@ -1,0 +1,15 @@
+version: 1
+name: mb100_050
+description: >-
+  Measured Batch 100 target MB100-050 San Juan Municipio, Puerto Rico. This
+  exercises a U.S. territory/municipio OCDID outside the state/county path.
+targets:
+  - target_id: MB100-050
+    jurisdiction_name: San Juan Municipio
+    state: pr
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/territory:pr/municipio:san_juan
+    expected_archetype: DISCOVERY — TERRITORY MUNICIPIO
+    expected_classification: government
+    category: discovery
