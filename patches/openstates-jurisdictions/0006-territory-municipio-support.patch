@@ -1,0 +1,264 @@
+diff --git a/src/init_migration/generate_division.py b/src/init_migration/generate_division.py
+index a3ef94b..87c809a 100644
+--- a/src/init_migration/generate_division.py
++++ b/src/init_migration/generate_division.py
+@@ -196,7 +196,12 @@ class DivGenerator:
+                 )
+                 return self._load_existing_division(raw_ocdid)
+ 
+-            state_code = parsed.get("state", "")
++            state_code = (
++                parsed.get("state")
++                or parsed.get("district")
++                or parsed.get("territory")
++                or ""
++            )
+             state_fips = ""
+             if state_code:
+                 fips_list = [
+@@ -266,7 +271,12 @@ class DivGenerator:
+     def _division_exists(self, ocdid: str) -> bool:
+         try:
+             parsed = ocdid_parser(ocdid)
+-            state = parsed.get("state", "").lower() if parsed.get("state") else ""
++            state = (
++                parsed.get("state")
++                or parsed.get("district")
++                or parsed.get("territory")
++                or ""
++            ).lower()
+             div_dir = Path(f"divisions/{state}/local")
+             if not div_dir.exists():
+                 return False
+@@ -308,7 +318,12 @@ class DivGenerator:
+             )
+ 
+             parsed = ocdid_parser(self.division.ocdid)
+-            state = parsed.get("state", "").lower() if parsed.get("state") else ""
++            state = (
++                parsed.get("state")
++                or parsed.get("district")
++                or parsed.get("territory")
++                or ""
++            ).lower()
+ 
+             if output_dir is None:
+                 output_dir = Path(".")
+diff --git a/src/init_migration/generate_jurisdiction.py b/src/init_migration/generate_jurisdiction.py
+index f333f1d..9fa182c 100644
+--- a/src/init_migration/generate_jurisdiction.py
++++ b/src/init_migration/generate_jurisdiction.py
+@@ -220,7 +220,12 @@ class JurGenerator:
+     def _jurisdiction_exists(self, jurisdiction_ocdid: str) -> bool:
+         try:
+             parsed = ocdid_parser(jurisdiction_ocdid)
+-            state = parsed.get("state", "").lower() if parsed.get("state") else ""
++            state = (
++                parsed.get("state")
++                or parsed.get("district")
++                or parsed.get("territory")
++                or ""
++            ).lower()
+             jur_dir = Path(f"jurisdictions/{state}/local")
+             if not jur_dir.exists():
+                 return False
+@@ -255,7 +260,10 @@ class JurGenerator:
+             # that ocdid_parser cannot handle.
+             div_parsed = ocdid_parser(self.req.data.ocdid.raw_ocdid)
+             state = (
+-                div_parsed.get("state") or div_parsed.get("district") or ""
++                div_parsed.get("state")
++                or div_parsed.get("district")
++                or div_parsed.get("territory")
++                or ""
+             ).lower()
+ 
+             if output_dir is None:
+diff --git a/src/init_migration/generate_pipeline.py b/src/init_migration/generate_pipeline.py
+index a5facb3..914220f 100644
+--- a/src/init_migration/generate_pipeline.py
++++ b/src/init_migration/generate_pipeline.py
+@@ -224,11 +224,12 @@ class GeneratePipeline:
+         try:
+             # Parse OCDid to extract state and place
+             parsed = ocdid_parser(ocdid)  # Returns dict
+-            state = parsed.get("state")
+-            place = parsed.get("place")
+-
+-            if not state:
+-                state = parsed.get("district")
++            state = (
++                parsed.get("state")
++                or parsed.get("district")
++                or parsed.get("territory")
++            )
++            place = parsed.get("place") or parsed.get("municipio")
+             if not place:
+                 anc = parsed.get("anc")
+                 council_district = parsed.get("council_district")
+@@ -286,6 +287,13 @@ class GeneratePipeline:
+                 if isinstance(exact_override, dict)
+                 else None
+             )
++            master_census_geoid = (
++                raw_record.get("census_geoid")
++                if isinstance(raw_record, dict)
++                else None
++            )
++            if not validation_geoid and isinstance(master_census_geoid, str):
++                validation_geoid = master_census_geoid.rsplit("-", 1)[-1].strip()
+             if validation_geoid:
+                 if "GEOID_Census" not in state_df.columns:
+                     logger.warning(
+@@ -320,7 +328,8 @@ class GeneratePipeline:
+             # subdivisions are not candidates. The LSAD code cannot make this
+             # distinction (code 25 "city" appears on both layers); a populated
+             # PLACEFP can.
+-            state_df = self._filter_to_place_layer(state_df)
++            if parsed.get("place"):
++                state_df = self._filter_to_place_layer(state_df)
+             if state_df.is_empty():
+                 logger.debug(f"No place-layer records for state: {state_upper}")
+                 return pl.DataFrame()
+diff --git a/src/init_migration/generate_recursive.py b/src/init_migration/generate_recursive.py
+index fb73c9e..0486e59 100644
+--- a/src/init_migration/generate_recursive.py
++++ b/src/init_migration/generate_recursive.py
+@@ -240,7 +240,10 @@ def ensure_ancestor_stubs(
+             continue
+ 
+         state_code = (
+-            ancestor.state or getattr(ancestor, "district", None) or ""
++            ancestor.state
++            or getattr(ancestor, "district", None)
++            or getattr(ancestor, "territory", None)
++            or ""
+         ).lower()
+         if not state_code:
+             logger.debug("No state code in ancestor %s — skipping", ancestor.raw_ocdid)
+diff --git a/src/init_migration/jurisdiction_seed.py b/src/init_migration/jurisdiction_seed.py
+index 61bccd1..86b6e3b 100644
+--- a/src/init_migration/jurisdiction_seed.py
++++ b/src/init_migration/jurisdiction_seed.py
+@@ -160,6 +160,7 @@ GOVERNMENT_TYPES = {
+     "aiannh",
+     "aits",
+     "anc",
++    "municipio",
+ }
+ 
+ # Division segment keys that indicate a sub-division whose jurisdiction belongs
+diff --git a/tests/src/init_migration/test_territory_municipio.py b/tests/src/init_migration/test_territory_municipio.py
+new file mode 100644
+index 0000000..e42dbf2
+--- /dev/null
++++ b/tests/src/init_migration/test_territory_municipio.py
+@@ -0,0 +1,108 @@
++from types import SimpleNamespace
++from uuid import UUID
++
++import polars as pl
++
++from src.init_migration.generate_division import DivGenerator
++from src.init_migration.generate_jurisdiction import JurGenerator
++from src.init_migration.generate_pipeline import GeneratePipeline
++from src.init_migration.generate_recursive import ensure_ancestor_stubs
++from src.init_migration.jurisdiction_seed import infer_jurisdiction_seed
++from src.models.ocdid import OCDIdParsed
++
++
++SAN_JUAN_OCDID = (
++    "ocd-division/country:us/territory:pr/municipio:san_juan"
++)
++SAN_JUAN_JURISDICTION_OCDID = (
++    "ocd-jurisdiction/country:us/territory:pr/municipio:san_juan/government"
++)
++TEST_UUID = UUID("4ad24c3e-e2c2-58c4-a115-f0cdf719a8e6")
++
++
++def test_territory_municipio_resolves_validation_by_master_geoid() -> None:
++    pipeline = GeneratePipeline.__new__(GeneratePipeline)
++    pipeline.req = SimpleNamespace(jurisdiction_override=None)
++    pipeline.data = SimpleNamespace(
++        raw_record={"census_geoid": "place-72127"}
++    )
++    pipeline.validation_df = pl.DataFrame(
++        [
++            {
++                "STATEFP": "72",
++                "NAMELSAD": "San Juan Municipio",
++                "GEOID_Census": "72127",
++                "normalized_place_name": "san juan",
++            },
++            {
++                "STATEFP": "72",
++                "NAMELSAD": "San Juan zona urbana",
++                "GEOID_Census": "7276770",
++                "normalized_place_name": "san juan",
++            },
++        ]
++    )
++
++    matches = pipeline.find_matches(SAN_JUAN_OCDID)
++
++    assert len(matches) == 1
++    assert matches.row(0, named=True)["GEOID_Census"] == "72127"
++
++
++def test_municipio_classifies_as_general_government() -> None:
++    seed = infer_jurisdiction_seed(SAN_JUAN_OCDID, lsad_code=None)
++
++    assert seed.has_jurisdiction is True
++    assert seed.classification == "government"
++    assert seed.reason == "general government fallback"
++
++
++def test_territory_leaf_artifacts_route_to_postal_code_directory(tmp_path) -> None:
++    division = SimpleNamespace(
++        ocdid=SAN_JUAN_OCDID,
++        id=TEST_UUID,
++        display_name="San Juan Municipio",
++        government_identifiers=SimpleNamespace(geoid="72127"),
++        model_dump=lambda **_: {
++            "ocdid": SAN_JUAN_OCDID,
++            "display_name": "San Juan Municipio",
++            "government_identifiers": {"geoid": "72127"},
++        },
++    )
++    div_generator = DivGenerator.__new__(DivGenerator)
++    div_generator.division = division
++
++    division_path = div_generator.dump_division(output_dir=tmp_path)
++
++    jurisdiction = SimpleNamespace(
++        ocdid=SAN_JUAN_JURISDICTION_OCDID,
++        id=TEST_UUID,
++        model_dump=lambda **_: {
++            "ocdid": SAN_JUAN_JURISDICTION_OCDID,
++            "name": "San Juan Municipio",
++            "classification": "government",
++        },
++    )
++    jur_generator = JurGenerator.__new__(JurGenerator)
++    jur_generator.jurisdiction = jurisdiction
++    jur_generator.req = SimpleNamespace(
++        data=SimpleNamespace(
++            ocdid=SimpleNamespace(raw_ocdid=SAN_JUAN_OCDID)
++        )
++    )
++
++    jurisdiction_path = jur_generator.dump_jurisdiction(output_dir=tmp_path)
++
++    assert division_path.parent == tmp_path / "divisions" / "pr" / "local"
++    assert jurisdiction_path.parent == tmp_path / "jurisdictions" / "pr" / "local"
++
++
++def test_territory_ancestor_stubs_route_to_postal_code_directory(tmp_path) -> None:
++    parsed = OCDIdParsed.parse_ocdid(SAN_JUAN_OCDID)
++
++    results = ensure_ancestor_stubs(parsed, tmp_path, tmp_path)
++
++    assert len(results) == 1
++    assert results[0]["level"] == "territory"
++    assert "/divisions/pr/" in results[0]["division_path"]
++    assert "/jurisdictions/pr/" in results[0]["jurisdiction_path"]

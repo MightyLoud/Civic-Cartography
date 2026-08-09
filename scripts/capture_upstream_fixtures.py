@@ -198,15 +198,7 @@ def _load_manifest_fixtures(path: Path) -> list[dict[str, Any]]:
 
 
 def _make_ingest(api: dict[str, Any], ocdid: str, name: str) -> Any:
-    parsed_dict = api["ocdid_parser"](ocdid)
-    parsed = api["OCDIdParsed"](
-        base_ocdid=ocdid,
-        raw_ocdid=ocdid,
-        country=parsed_dict.get("country", "us"),
-        state=parsed_dict.get("state"),
-        county=parsed_dict.get("county"),
-        place=parsed_dict.get("place"),
-    )
+    parsed = api["OCDIdParsed"].parse_ocdid(ocdid)
     return api["OCDidIngestResp"](
         uuid=uuid5(NAMESPACE_URL, ocdid),
         ocdid=parsed,
