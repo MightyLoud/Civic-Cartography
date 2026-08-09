@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-068",
+  "frozen_name": "Providence",
+  "state": "ri",
+  "division_ocdid": "ocd-division/country:us/state:ri/place:providence",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:ri/place:providence/government",
+  "frozen_geographic_identifier": "place-4459000",
+  "run_asof": "2026-08-09T15:22:34Z",
+  "prior_workbook_checksum": ""
+}
