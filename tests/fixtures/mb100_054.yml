@@ -1,0 +1,15 @@
+version: 1
+name: mb100_054
+description: >-
+  Measured Batch 100 target MB100-054 Wilmington, Delaware. This reconciles the
+  retained out-of-sequence PASS row against a durable exact-head GitHub run.
+targets:
+  - target_id: MB100-054
+    jurisdiction_name: Wilmington
+    state: de
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:de/place:wilmington
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
