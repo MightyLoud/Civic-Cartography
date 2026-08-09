@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-074",
+  "frozen_name": "Cheyenne",
+  "state": "wy",
+  "division_ocdid": "ocd-division/country:us/state:wy/place:cheyenne",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:wy/place:cheyenne/government",
+  "frozen_geographic_identifier": "place-5613900",
+  "run_asof": "2026-08-09T21:50:39Z",
+  "prior_workbook_checksum": ""
+}
