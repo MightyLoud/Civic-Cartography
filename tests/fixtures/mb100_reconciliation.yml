@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-071 Burlington, Vermont. This validates
+  the pending row against durable exact-head evidence.
+targets:
+  - target_id: MB100-071
+    jurisdiction_name: Burlington
+    state: vt
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:vt/place:burlington
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
