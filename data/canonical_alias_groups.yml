@@ -154,3 +154,33 @@ aliases:
       explicitly recommends county:jefferson for government statistics. The
       Louisville place remains a first-class geographic Division that points to
       the same canonical government Jurisdiction.
+  - alias_id: md-baltimore-city-independent-city
+    state: md
+    canonical_name: Baltimore City
+    members:
+      - ocd-division/country:us/state:md/county:baltimore_city
+      - ocd-division/country:us/state:md/place:baltimore
+    canonical_member: ocd-division/country:us/state:md/place:baltimore
+    classification: government
+    jurisdiction_name: Baltimore City
+    url: https://www.baltimorecity.gov/
+    source:
+      source_name: Baltimore City
+      source_url:
+        official_website: https://www.baltimorecity.gov/
+        census_county_equivalent: https://www.census.gov/quickfacts/fact/table/baltimorecitymaryland/INC110224
+        maintained_ocd_source: https://github.com/opencivicdata/ocd-division-ids/blob/a52719a15852fc8c8418194016c16657591930ad/identifiers/country-us.csv
+      source_description: >-
+        Official Baltimore materials identify one Baltimore City government.
+        The U.S. Census Bureau treats Baltimore city as a county-equivalent, and
+        the maintained OCD source maps that county-equivalent identifier to the
+        Baltimore place identifier as an independent city. The alias preserves
+        both geographic Divisions while generating one governing Jurisdiction.
+    verified_asof: '2026-08-08'
+    evidence_notes: >-
+      The place Division is the maintained canonical representative so the
+      government resolves to
+      ocd-jurisdiction/country:us/state:md/place:baltimore/government. The
+      county-equivalent Division remains a first-class geographic record but
+      suppresses duplicate Jurisdiction generation. Baltimore County
+      (county:baltimore) is a separate government and is not an alias member.
