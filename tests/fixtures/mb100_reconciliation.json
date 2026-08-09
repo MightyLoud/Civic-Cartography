@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-069",
+  "frozen_name": "Charleston",
+  "state": "sc",
+  "division_ocdid": "ocd-division/country:us/state:sc/place:charleston",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:sc/place:charleston/government",
+  "frozen_geographic_identifier": "place-4513330",
+  "run_asof": "2026-08-09T15:45:58Z",
+  "prior_workbook_checksum": ""
+}
