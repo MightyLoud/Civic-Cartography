@@ -36,6 +36,14 @@ JEFFERSON_COUNTY = "ocd-division/country:us/state:ky/county:jefferson"
 LOUISVILLE_JURISDICTION = (
     "ocd-jurisdiction/country:us/state:ky/county:jefferson/government"
 )
+BALTIMORE_PLACE = "ocd-division/country:us/state:md/place:baltimore"
+BALTIMORE_CITY_COUNTY_EQUIVALENT = (
+    "ocd-division/country:us/state:md/county:baltimore_city"
+)
+BALTIMORE_COUNTY = "ocd-division/country:us/state:md/county:baltimore"
+BALTIMORE_JURISDICTION = (
+    "ocd-jurisdiction/country:us/state:md/place:baltimore/government"
+)
 
 
 def test_denver_alias_resolves_exact_member_set_order_independently() -> None:
@@ -172,6 +180,43 @@ def test_louisville_jefferson_alias_prefers_county_government_root() -> None:
     assert alias.member_metadata(LOUISVILLE_PLACE)[
         "_suppress_jurisdiction_generation"
     ] is True
+
+
+def test_baltimore_independent_city_alias_prefers_place_government_root() -> None:
+    aliases = load_canonical_aliases(REGISTRY)
+    alias = resolve_canonical_alias(
+        aliases,
+        state="MD",
+        members=[BALTIMORE_PLACE, BALTIMORE_CITY_COUNTY_EQUIVALENT],
+    )
+    incomplete = resolve_canonical_alias(
+        aliases,
+        state="md",
+        members=[BALTIMORE_PLACE],
+    )
+    baltimore_county_pair = resolve_canonical_alias(
+        aliases,
+        state="md",
+        members=[BALTIMORE_PLACE, BALTIMORE_COUNTY],
+    )
+
+    assert alias is not None
+    assert alias.alias_id == "md-baltimore-city-independent-city"
+    assert alias.canonical_member == BALTIMORE_PLACE
+    assert alias.canonical_jurisdiction_ocdid == BALTIMORE_JURISDICTION
+    assert alias.jurisdiction_name == "Baltimore City"
+    assert alias.generator_override["classification"] == "government"
+    assert alias.member_metadata(BALTIMORE_PLACE)[
+        "_suppress_jurisdiction_generation"
+    ] is False
+    assert alias.member_metadata(BALTIMORE_CITY_COUNTY_EQUIVALENT)[
+        "_suppress_jurisdiction_generation"
+    ] is True
+    assert alias.member_metadata(BALTIMORE_CITY_COUNTY_EQUIVALENT)[
+        "_canonical_jurisdiction_ocdid"
+    ] == BALTIMORE_JURISDICTION
+    assert incomplete is None
+    assert baltimore_county_pair is None
 
 
 def test_alias_registry_rejects_display_name_for_nonmember(tmp_path: Path) -> None:
