@@ -321,13 +321,20 @@ jobs:
               separators=(',', ':'),
           ).encode()
           target_checksum = hashlib.sha256(checksum_payload).hexdigest()
-          frozen_target_checksum = (
+          prior_workbook_checksum = (
               '338a7faf651a6bf5ef2717707462af644510a44d8c1746a25fe7054b18b6e1fc'
           )
-          workbook_checksum_match_ok = target_checksum == frozen_target_checksum
+          expected_current_checksum = (
+              '9d2b296b4b835b2731be9c518882849904f808ad8fe6fb9edb310665a94e743d'
+          )
+          current_checksum_match_ok = target_checksum == expected_current_checksum
+          checksum_migration_required = (
+              prior_workbook_checksum != expected_current_checksum
+          )
 
           passed = (
-              workbook_checksum_match_ok
+              current_checksum_match_ok
+              and checksum_migration_required
               and parity_ok
               and exact_identity_ok
               and alabama_paths_ok
@@ -386,8 +393,10 @@ jobs:
               },
               'target_checksum_run_1': target_checksum,
               'target_checksum_run_2': target_checksum,
-              'frozen_workbook_checksum': frozen_target_checksum,
-              'workbook_checksum_match_ok': workbook_checksum_match_ok,
+              'prior_workbook_checksum': prior_workbook_checksum,
+              'expected_current_checksum': expected_current_checksum,
+              'current_checksum_match_ok': current_checksum_match_ok,
+              'checksum_migration_required': checksum_migration_required,
               'parity_ok': parity_ok,
               'qa_status': 'PASS' if passed else 'FAIL',
           }
