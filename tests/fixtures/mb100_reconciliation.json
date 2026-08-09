@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-071",
+  "frozen_name": "Burlington",
+  "state": "vt",
+  "division_ocdid": "ocd-division/country:us/state:vt/place:burlington",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:vt/place:burlington/government",
+  "frozen_geographic_identifier": "place-5010675",
+  "run_asof": "2026-08-09T16:20:00Z",
+  "prior_workbook_checksum": ""
+}
