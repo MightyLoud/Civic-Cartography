@@ -17,6 +17,10 @@ validation, generator matching, classification, and artifact output routing.
   national master instead of inventing a state-local URL.
 - National-master metadata is preserved on the ingest record so its Census
   GEOID can select the normalized validation row deterministically.
+- Territory county-equivalents such as Puerto Rico municipios retain the
+  Territory_Counties export alongside Municipalities; compatible exports are
+  combined only in the derived generator work area. Raw source files remain
+  individually hashed in the source manifest.
 - The pinned upstream generator recognizes `territory` + `municipio`, classifies
   municipios as general government, and writes leaf and ancestor artifacts
   under the postal-code directory (`pr/`).
@@ -34,4 +38,5 @@ reported `matched`, `generated`, classification `matched`, and no exception.
 
 The production MB100-050 workflow remains the authority for completion. Its two
 clean captures, full source inputs, completion contract, register projection,
-and strict San Juan identity checks must all pass before tracker movement.
+and strict San Juan identity checks—including successful enrichment and Census
+GEOID 72127—must all pass before tracker movement.

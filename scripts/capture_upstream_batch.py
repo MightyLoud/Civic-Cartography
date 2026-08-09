@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import httpx
 import yaml
@@ -21,6 +22,8 @@ class BatchCaptureError(ValueError):
 
 
 US_ADMIN1_TYPES = ("state", "district", "territory")
+TERRITORY_COUNTY_SEGMENTS = ("county", "municipio")
+TERRITORY_COUNTIES_GID = "691893868"
 
 
 def _load_manifest_targets(path: Path) -> list[dict[str, Any]]:
@@ -128,6 +131,61 @@ def _target_admin1_type(target: dict[str, Any]) -> str:
     return next(iter(kinds))
 
 
+def _target_uses_territory_counties_validation(
+    target: dict[str, Any], admin1_type: str
+) -> bool:
+    """Return whether a territory target represents a county-equivalent."""
+    if admin1_type != "territory":
+        return False
+    return any(
+        f"/{segment}:" in f"/{ocdid.rstrip('/')}/"
+        for ocdid in _selector_ocdids(target)
+        for segment in TERRITORY_COUNTY_SEGMENTS
+    )
+
+
+def _validation_url_with_gid(url: str, gid: str) -> str:
+    """Retarget one Google Sheets CSV export URL to a stable sheet ID."""
+    parts = urlsplit(url)
+    query = dict(parse_qsl(parts.query, keep_blank_values=True))
+    query["gid"] = gid
+    return urlunsplit(
+        (parts.scheme, parts.netloc, parts.path, urlencode(query), parts.fragment)
+    )
+
+
+def _combine_validation_csvs(paths: list[Path], output_path: Path) -> Path:
+    """Combine compatible retained validation exports for one generator run."""
+    if not paths:
+        raise BatchCaptureError("at least one validation CSV is required")
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    expected_header: list[str] | None = None
+    with output_path.open("w", encoding="utf-8", newline="") as output:
+        writer = csv.writer(output, lineterminator="\n")
+        for path in paths:
+            try:
+                source = path.open("r", encoding="utf-8-sig", newline="")
+            except FileNotFoundError as exc:
+                raise BatchCaptureError(f"validation CSV not found: {path}") from exc
+            with source:
+                reader = csv.reader(source)
+                header = next(reader, None)
+                if not header:
+                    raise BatchCaptureError(f"validation CSV has no header: {path}")
+                if expected_header is None:
+                    expected_header = header
+                    writer.writerow(header)
+                elif header != expected_header:
+                    raise BatchCaptureError(
+                        f"validation CSV header does not match retained sources: {path}"
+                    )
+                for row in reader:
+                    if row and any(value.strip() for value in row):
+                        writer.writerow(row)
+    return output_path
+
+
 def _master_candidates(
     api: dict[str, Any], master_bytes: bytes, requested_ocdids: set[str]
 ) -> dict[str, Any]:
@@ -179,6 +237,7 @@ def _ensure_sources_for_states(
     *,
     districts: list[str] | None = None,
     territories: list[str] | None = None,
+    include_territory_counties: bool = False,
 ) -> dict[str, Any]:
     districts = districts or []
     territories = territories or []
@@ -190,6 +249,12 @@ def _ensure_sources_for_states(
         "master": api["master_url"],
         "validation": api["validation_url"],
     }
+    if include_territory_counties:
+        key = "territory_counties_validation"
+        files[key] = source_dir / "nested-divisions-territory-counties-validation.csv"
+        urls[key] = _validation_url_with_gid(
+            api["validation_url"], TERRITORY_COUNTIES_GID
+        )
     for state in states:
         key = f"{state}_local"
         files[key] = source_dir / f"state-{state}-local_gov.csv"
@@ -207,6 +272,14 @@ def _ensure_sources_for_states(
             "retain the national master as RAW and resolve exact district/territory "
             "selectors from that master; do not invent nonexistent state-local URLs"
         ),
+        "validation_strategy": {
+            "municipalities_retained": True,
+            "territory_counties_retained": include_territory_counties,
+            "strategy": (
+                "combine compatible retained validation exports for the generator "
+                "when a territory county-equivalent target is present"
+            ),
+        },
         "local_csv_normalization": {
             "columns": ["id", "name"],
             "strategy": (
@@ -270,6 +343,12 @@ async def capture_batch(args: argparse.Namespace) -> None:
             if admin1_types[str(target["target_id"])] == "territory"
         }
     )
+    include_territory_counties = any(
+        _target_uses_territory_counties_validation(
+            target, admin1_types[str(target["target_id"])]
+        )
+        for target in targets
+    )
     api = base_capture._configure_upstream(upstream_root, fixed_asof)
     sources = _ensure_sources_for_states(
         api,
@@ -277,6 +356,7 @@ async def capture_batch(args: argparse.Namespace) -> None:
         states,
         districts=districts,
         territories=territories,
+        include_territory_counties=include_territory_counties,
     )
 
     work_dir.mkdir(parents=True, exist_ok=True)
@@ -284,6 +364,17 @@ async def capture_batch(args: argparse.Namespace) -> None:
     db_path = work_dir / "data" / "ocdid_pipeline.duckdb"
     db_path.parent.mkdir(parents=True, exist_ok=True)
     csv_backup = work_dir / "data" / "ocdid_uuid_lookup.csv"
+    validation_paths = [sources["files"]["validation"]]
+    if include_territory_counties:
+        validation_paths.append(sources["files"]["territory_counties_validation"])
+    effective_validation_path = (
+        validation_paths[0]
+        if len(validation_paths) == 1
+        else _combine_validation_csvs(
+            validation_paths,
+            work_dir / "data" / "nested-divisions-effective-validation.csv",
+        )
+    )
 
     manager = api["DownloadManager"](states=states, db_path=str(db_path))
     manager.load_master_csv(sources["files"]["master"].read_bytes())
@@ -327,7 +418,7 @@ async def capture_batch(args: argparse.Namespace) -> None:
             match_status,
             reason,
             fixed_asof,
-            sources["files"]["validation"],
+            effective_validation_path,
             artifact_root,
         )
         overlays[str(target["target_id"])] = overlay
@@ -346,6 +437,18 @@ async def capture_batch(args: argparse.Namespace) -> None:
                 "version": 1,
                 "run_asof": fixed_asof.isoformat().replace("+00:00", "Z"),
                 "source_manifest": sources["manifest"],
+                "validation": {
+                    "territory_counties_required": include_territory_counties,
+                    "retained_source_keys": [
+                        "validation",
+                        *(
+                            ["territory_counties_validation"]
+                            if include_territory_counties
+                            else []
+                        ),
+                    ],
+                    "effective_path": effective_validation_path.name,
+                },
                 "matcher": {
                     "states": states,
                     "districts": districts,
