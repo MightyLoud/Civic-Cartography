@@ -3,7 +3,7 @@ name: Validate MB100-053 Little Rock
 on:
   pull_request:
     paths:
-      - ".github/workflows/validate-mb100-053-little_rock.yml"
+      - ".github/workflows/validate-mb100-053-little-rock.yml"
       - "tests/fixtures/mb100_053.yml"
       - "scripts/capture_upstream_batch.py"
       - "scripts/capture_upstream_batch_with_overrides.py"
