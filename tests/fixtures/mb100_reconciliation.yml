@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-063 Newark, New Jersey. This validates the
+  newly started pending row against durable exact-head evidence.
+targets:
+  - target_id: MB100-063
+    jurisdiction_name: Newark
+    state: nj
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:nj/place:newark
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
