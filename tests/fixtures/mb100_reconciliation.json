@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-070",
+  "frozen_name": "Sioux Falls",
+  "state": "sd",
+  "division_ocdid": "ocd-division/country:us/state:sd/place:sioux_falls",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:sd/place:sioux_falls/government",
+  "frozen_geographic_identifier": "place-4659020",
+  "run_asof": "2026-08-09T16:04:05Z",
+  "prior_workbook_checksum": ""
+}
