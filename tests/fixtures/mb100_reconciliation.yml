@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-064 Buffalo, New York. This validates the
+  newly started pending row against durable exact-head evidence.
+targets:
+  - target_id: MB100-064
+    jurisdiction_name: Buffalo
+    state: ny
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ny/place:buffalo
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
