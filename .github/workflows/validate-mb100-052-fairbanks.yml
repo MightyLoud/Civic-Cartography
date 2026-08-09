@@ -3,7 +3,7 @@ name: Validate MB100-052 Fairbanks
 on:
   pull_request:
     paths:
-      - ".github/workflows/validate-mb100-051-fairbanks.yml"
+      - ".github/workflows/validate-mb100-052-fairbanks.yml"
       - "tests/fixtures/mb100_052.yml"
       - "scripts/capture_upstream_batch.py"
       - "scripts/capture_upstream_batch_with_overrides.py"
@@ -154,14 +154,14 @@ jobs:
             --first-report build/run-1/report.json \
             --second-report build/run-2/report.json \
             --source-manifest build/source-manifest.json \
-            --result-path build/mb100-051-completion.json \
+            --result-path build/mb100-052-completion.json \
             --require-all-complete
 
       - name: Project completion evidence register
         run: |
           cp evidence/measured-batch-100/completion-register.csv build/completion-register.csv
           python scripts/update_completion_register.py \
-            --completion-manifest build/mb100-051-completion.json \
+            --completion-manifest build/mb100-052-completion.json \
             --register-path build/completion-register.csv \
             --evidence-ref "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
@@ -188,7 +188,7 @@ jobs:
           a = json.loads(Path('build/run-1/report.json').read_text())
           b = json.loads(Path('build/run-2/report.json').read_text())
           diagnostics = json.loads(Path('build/run-1/diagnostics.json').read_text())
-          completion = json.loads(Path('build/mb100-051-completion.json').read_text())
+          completion = json.loads(Path('build/mb100-052-completion.json').read_text())
 
           fields = (
               'match_status', 'classification_status', 'generation_status',
@@ -325,7 +325,7 @@ jobs:
               '32303bc08273d2ecb432554257a74bea060c659116e203fa225e4c7684ee5a83'
           )
           expected_current_checksum = (
-              '32303bc08273d2ecb432554257a74bea060c659116e203fa225e4c7684ee5a83'
+              'b19cfd34454f6ed447e0ead2c3ad223ef2cadcaecc6dc68b9b57bb38c41ad4f6'
           )
           current_checksum_match_ok = target_checksum == expected_current_checksum
           checksum_migration_required = (
@@ -334,7 +334,7 @@ jobs:
 
           passed = (
               current_checksum_match_ok
-              and not checksum_migration_required
+              and checksum_migration_required
               and parity_ok
               and exact_identity_ok
               and alaska_paths_ok
@@ -400,7 +400,7 @@ jobs:
               'parity_ok': parity_ok,
               'qa_status': 'PASS' if passed else 'FAIL',
           }
-          Path('build/mb100-051-summary.json').write_text(
+          Path('build/mb100-052-summary.json').write_text(
               json.dumps(summary, indent=2, sort_keys=True) + '\n'
           )
           if not passed:
@@ -411,10 +411,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mb100-051-fairbanks-evidence
+          name: mb100-052-fairbanks-evidence
           path: |
-            build/mb100-051-summary.json
-            build/mb100-051-completion.json
+            build/mb100-052-summary.json
+            build/mb100-052-completion.json
             build/source-manifest.json
             build/completion-register.csv
             build/run-1/report.json
