@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-059 Jackson, Mississippi. This reconciles the
+  retained out-of-sequence PASS row against durable exact-head evidence.
+targets:
+  - target_id: MB100-059
+    jurisdiction_name: Jackson
+    state: ms
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ms/place:jackson
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype

@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-059",
+  "frozen_name": "Jackson",
+  "state": "ms",
+  "division_ocdid": "ocd-division/country:us/state:ms/place:jackson",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:ms/place:jackson/government",
+  "frozen_geographic_identifier": "place-2836000",
+  "run_asof": "2026-08-08T04:50:17Z",
+  "prior_workbook_checksum": "28e56c4a1c5d0c884d216ac689c96fa45d2b201aa4d86e8ea59003e7911a02bf"
+}
