@@ -1,0 +1,430 @@
+name: Validate MB100-056 Fort Wayne
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-mb100-056-fort_wayne.yml"
+      - "tests/fixtures/mb100_056.yml"
+      - "scripts/capture_upstream_batch.py"
+      - "scripts/capture_upstream_batch_with_overrides.py"
+      - "scripts/capture_upstream_fixtures.py"
+      - "scripts/capture_upstream_with_authoritative_overrides.py"
+      - "scripts/normalize_capture_acceptance.py"
+      - "scripts/run_target_manifest.py"
+      - "scripts/check_completion_manifest.py"
+      - "scripts/update_completion_register.py"
+      - "civic_cartography/completion_manifest.py"
+      - "civic_cartography/completion_register.py"
+      - "civic_cartography/target_manifest.py"
+      - "data/authoritative_jurisdiction_overrides.yml"
+      - "evidence/measured-batch-100/completion-register.csv"
+      - "patches/openstates-jurisdictions/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  UPSTREAM_REPOSITORY: openstates/jurisdictions
+  UPSTREAM_REVISION: 6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705
+  RUN_ASOF: 2026-08-08T04:33:45Z
+  TARGET_MANIFEST: tests/fixtures/mb100_056.yml
+  OVERRIDE_REGISTRY: data/authoritative_jurisdiction_overrides.yml
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+
+      - name: Check out pinned upstream generator
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM_REPOSITORY }}
+          ref: ${{ env.UPSTREAM_REVISION }}
+          path: upstream
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install uv
+          cd upstream
+          uv sync --frozen
+
+      - name: Apply validated upstream patches
+        run: |
+          for patch in \
+            patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch \
+            patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch \
+            patches/openstates-jurisdictions/0003-authoritative-jurisdiction-overrides.patch; do
+            git -C upstream apply --check "../$patch"
+            git -C upstream apply "../$patch"
+          done
+          git -C upstream add -A
+          git -C upstream -c user.name="Civic Cartography" -c user.email="civic-cartography@example.invalid" commit -m "Apply validated upstream fixes 1-3"
+          git -C upstream apply --check ../patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch
+          git -C upstream apply ../patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch
+          git -C upstream apply --check ../patches/openstates-jurisdictions/0005-transit-division-jurisdiction-classification.patch
+          git -C upstream apply ../patches/openstates-jurisdictions/0005-transit-division-jurisdiction-classification.patch
+          git -C upstream apply --check ../patches/openstates-jurisdictions/0006-territory-municipio-support.patch
+          git -C upstream apply ../patches/openstates-jurisdictions/0006-territory-municipio-support.patch
+          git -C upstream diff --check
+
+      - name: Capture two clean deterministic runs
+        run: |
+          mkdir -p build
+          for n in 1 2; do
+            success=0
+            for attempt in 1 2 3; do
+              rm -rf "build/run-$n"
+              if PYTHONPATH=. upstream/.venv/bin/python scripts/capture_upstream_batch_with_overrides.py \
+                --override-registry "$OVERRIDE_REGISTRY" \
+                --upstream-root upstream \
+                --target-manifest "$TARGET_MANIFEST" \
+                --run-asof "$RUN_ASOF" \
+                --source-dir build/upstream-source \
+                --work-dir "build/run-$n" \
+                --execution-results "build/run-$n/execution-results.json" \
+                --diagnostics "build/run-$n/diagnostics.json"; then
+                success=1
+                break
+              fi
+              if [ "$attempt" -lt 3 ]; then
+                rm -rf build/upstream-source
+                sleep 2
+              fi
+            done
+            if [ "$success" -ne 1 ]; then
+              exit 2
+            fi
+            python scripts/normalize_capture_acceptance.py \
+              --target-manifest "$TARGET_MANIFEST" \
+              --execution-results "build/run-$n/execution-results.json" \
+              --diagnostics "build/run-$n/diagnostics.json"
+            python scripts/run_target_manifest.py \
+              --target-manifest "$TARGET_MANIFEST" \
+              --run-asof "$RUN_ASOF" \
+              --execution-results "build/run-$n/execution-results.json" \
+              --artifact-root "build/run-$n/artifacts" \
+              --result-path "build/run-$n/report.json"
+          done
+
+      - name: Build raw-source manifest
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path('build/upstream-source')
+          files = {}
+          for path in sorted(p for p in root.rglob('*') if p.is_file()):
+              rel = path.relative_to(root).as_posix()
+              files[rel] = {
+                  'path': rel,
+                  'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                  'size_bytes': path.stat().st_size,
+              }
+          if not files:
+              raise SystemExit('No raw source files were retained under build/upstream-source')
+          payload = {
+              'version': 1,
+              'generator_repository': 'openstates/jurisdictions',
+              'generator_revision': '6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705',
+              'files': files,
+          }
+          Path('build/source-manifest.json').write_text(
+              json.dumps(payload, indent=2, sort_keys=True) + '\n'
+          )
+          PY
+
+      - name: Require explicit completion contract
+        run: |
+          python scripts/check_completion_manifest.py \
+            --target-manifest "$TARGET_MANIFEST" \
+            --first-report build/run-1/report.json \
+            --second-report build/run-2/report.json \
+            --source-manifest build/source-manifest.json \
+            --result-path build/mb100-056-completion.json \
+            --require-all-complete
+
+      - name: Project completion evidence register
+        run: |
+          cp evidence/measured-batch-100/completion-register.csv build/completion-register.csv
+          python scripts/update_completion_register.py \
+            --completion-manifest build/mb100-056-completion.json \
+            --register-path build/completion-register.csv \
+            --evidence-ref "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+      - name: Evaluate strict Fort Wayne identity and parity
+        run: |
+          python - <<'PY'
+          import csv
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import yaml
+
+          target_id = 'MB100-056'
+          division_ocdid = 'ocd-division/country:us/state:in/place:fort_wayne'
+          jurisdiction_ocdid_expected = (
+              'ocd-jurisdiction/country:us/state:in/place:fort_wayne/government'
+          )
+          frozen_name = 'Fort Wayne'
+          official_name = 'Fort Wayne'
+          expected_geography_kind = 'state_place'
+          frozen_geographic_identifier = 'place-1825000'
+
+          a = json.loads(Path('build/run-1/report.json').read_text())
+          b = json.loads(Path('build/run-2/report.json').read_text())
+          diagnostics = json.loads(Path('build/run-1/diagnostics.json').read_text())
+          completion = json.loads(Path('build/mb100-056-completion.json').read_text())
+
+          fields = (
+              'match_status', 'classification_status', 'generation_status',
+              'resolved_ocdids', 'division_paths', 'jurisdiction_paths',
+              'output_hashes', 'exception_class', 'review_reason'
+          )
+
+          def normalized(report):
+              return {
+                  row['target_id']: {key: row[key] for key in fields}
+                  for row in report['results']
+              }
+
+          n1, n2 = normalized(a), normalized(b)
+          row = n1[target_id]
+          parity_ok = row == n2[target_id]
+          exact_identity_ok = row['resolved_ocdids'] == [division_ocdid]
+          indiana_paths_ok = (
+              all(path.startswith('divisions/in/') for path in row['division_paths'])
+              and all(path.startswith('jurisdictions/in/') for path in row['jurisdiction_paths'])
+          )
+          one_division_ok = len(row['division_paths']) == 1
+          one_jurisdiction_ok = len(row['jurisdiction_paths']) == 1
+
+          jurisdiction_name = None
+          jurisdiction_ocdid = None
+          jurisdiction_classification = None
+          jurisdiction_path = None
+          raw_source_ok = False
+          manifest_name_source_ok = False
+
+          if len(row['jurisdiction_paths']) == 1:
+              jurisdiction_path = row['jurisdiction_paths'][0]
+              artifact_path = Path('build/run-1/artifacts') / jurisdiction_path
+              if artifact_path.exists():
+                  artifact = yaml.safe_load(artifact_path.read_text())
+                  jurisdiction_name = artifact.get('name')
+                  jurisdiction_ocdid = artifact.get('ocdid')
+                  jurisdiction_classification = artifact.get('classification')
+                  sources = [s for s in artifact.get('sourcing', []) if isinstance(s, dict)]
+                  raw_source_ok = bool(sources)
+                  manifest_name_source_ok = any(
+                      source.get('source_name') == 'Civic-Cartography target manifest'
+                      and source.get('field') == ['name']
+                      for source in sources
+                  )
+
+          target_diagnostic = next(
+              (item for item in diagnostics.get('targets', []) if item.get('target_id') == target_id),
+              {},
+          )
+          name_normalization = target_diagnostic.get('jurisdiction_name_normalization', {})
+          normalization_paths = name_normalization.get('paths', [])
+          expected_normalization = (
+              name_normalization.get('expected_name') == frozen_name
+              and name_normalization.get('changed_count') == 1
+              and len(normalization_paths) == 1
+              and normalization_paths[0].get('changed') is True
+              and normalization_paths[0].get('previous_name') == (
+                  f'{frozen_name} Government'
+              )
+              and normalization_paths[0].get('normalized_name') == frozen_name
+          )
+          normalization_ok = (
+              name_normalization.get('expected_name') == frozen_name
+              and (
+                  name_normalization.get('changed_count') == 0
+                  or expected_normalization
+              )
+          )
+          canonical_name_source_ok = (
+              raw_source_ok
+              and jurisdiction_name == official_name
+              and official_name == frozen_name
+              and normalization_ok
+          )
+          name_provenance_ok = (
+              manifest_name_source_ok
+              or canonical_name_source_ok
+          )
+
+          completion_target = next(
+              (item for item in completion.get('targets', []) if item.get('target_id') == target_id),
+              {},
+          )
+          completion_ok = (
+              completion.get('summary', {}).get('all_complete') is True
+              and completion_target.get('complete_ok') is True
+              and completion_target.get('status') == 'COMPLETE'
+              and completion_target.get('confidence') == 'HIGH'
+              and completion_target.get('failed_gates') == []
+              and all(
+                  completion_target.get(gate) is True
+                  for gate in (
+                      'raw_exists', 'normalized_exists', 'identifier_join_ok',
+                      'qa_ok', 'parity_ok', 'source_provenance_ok'
+                  )
+              )
+          )
+
+          with Path('build/completion-register.csv').open(newline='') as handle:
+              register_rows = list(csv.DictReader(handle))
+          register_row = next((item for item in register_rows if item['target_id'] == target_id), {})
+          expected_evidence_ref = (
+              f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/"
+              f"{os.environ['GITHUB_RUN_ID']}"
+          )
+          register_projection_ok = (
+              register_row.get('complete_ok') == 'TRUE'
+              and register_row.get('confidence') == 'HIGH'
+              and register_row.get('failed_gates') == ''
+              and register_row.get('evidence_ref') == expected_evidence_ref
+              and all(
+                  register_row.get(gate) == 'TRUE'
+                  for gate in (
+                      'raw_exists', 'normalized_exists', 'identifier_join_ok',
+                      'qa_ok', 'parity_ok', 'source_provenance_ok'
+                  )
+              )
+          )
+
+          canonical_ids = sorted(Path(path).stem for path in row['jurisdiction_paths'])
+          checksum_payload = json.dumps(
+              {
+                  'canonical_ids': canonical_ids,
+                  'output_hashes': row['output_hashes'],
+                  'resolved_ocdids': row['resolved_ocdids'],
+              },
+              sort_keys=True,
+              separators=(',', ':'),
+          ).encode()
+          target_checksum = hashlib.sha256(checksum_payload).hexdigest()
+          prior_workbook_checksum = (
+              '05b7bf78a5cb313489295b0e762e2ce11a7d0339f03a841df9f63600c5aefc84'
+          )
+          expected_current_checksum = (
+              '05b7bf78a5cb313489295b0e762e2ce11a7d0339f03a841df9f63600c5aefc84'
+          )
+          current_checksum_match_ok = target_checksum == expected_current_checksum
+          checksum_migration_required = (
+              prior_workbook_checksum != expected_current_checksum
+          )
+
+          passed = (
+              current_checksum_match_ok
+              and not checksum_migration_required
+              and parity_ok
+              and exact_identity_ok
+              and indiana_paths_ok
+              and one_division_ok
+              and one_jurisdiction_ok
+              and jurisdiction_ocdid == jurisdiction_ocdid_expected
+              and jurisdiction_name == frozen_name
+              and jurisdiction_classification == 'government'
+              and raw_source_ok
+              and name_provenance_ok
+              and normalization_ok
+              and completion_ok
+              and register_projection_ok
+              and row['match_status'] == 'matched'
+              and row['classification_status'] == 'matched'
+              and row['generation_status'] == 'generated'
+              and row['exception_class'] is None
+          )
+
+          summary = {
+              'schema_version': 1,
+              'run_asof': a['run_asof'],
+              'upstream_repository': 'openstates/jurisdictions',
+              'upstream_revision': '6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705',
+              'repository_commit': '${{ github.sha }}',
+              'run_1_id': a['run_id'],
+              'run_2_id': b['run_id'],
+              'target_id': target_id,
+              **row,
+              'canonical_ids': canonical_ids,
+              'frozen_division_ocdid': division_ocdid,
+              'expected_jurisdiction_ocdid': jurisdiction_ocdid_expected,
+              'expected_geography_kind': expected_geography_kind,
+              'frozen_geographic_identifier': frozen_geographic_identifier,
+              'exact_identity_ok': exact_identity_ok,
+              'indiana_paths_ok': indiana_paths_ok,
+              'one_division_ok': one_division_ok,
+              'one_jurisdiction_ok': one_jurisdiction_ok,
+              'generated_jurisdiction_name': jurisdiction_name,
+              'generated_jurisdiction_ocdid': jurisdiction_ocdid,
+              'generated_jurisdiction_classification': jurisdiction_classification,
+              'generated_jurisdiction_path': jurisdiction_path,
+              'raw_source_ok': raw_source_ok,
+              'manifest_name_source_ok': manifest_name_source_ok,
+              'canonical_name_source_ok': canonical_name_source_ok,
+              'name_provenance_ok': name_provenance_ok,
+              'jurisdiction_name_normalization_ok': normalization_ok,
+              'completion_contract_ok': completion_ok,
+              'completion_register_projection_ok': register_projection_ok,
+              'completion_gates': {
+                  key: completion_target.get(key)
+                  for key in (
+                      'raw_exists', 'normalized_exists', 'identifier_join_ok',
+                      'qa_ok', 'parity_ok', 'source_provenance_ok'
+                  )
+              },
+              'target_checksum_run_1': target_checksum,
+              'target_checksum_run_2': target_checksum,
+              'prior_workbook_checksum': prior_workbook_checksum,
+              'expected_current_checksum': expected_current_checksum,
+              'current_checksum_match_ok': current_checksum_match_ok,
+              'checksum_migration_required': checksum_migration_required,
+              'parity_ok': parity_ok,
+              'qa_status': 'PASS' if passed else 'FAIL',
+          }
+          Path('build/mb100-056-summary.json').write_text(
+              json.dumps(summary, indent=2, sort_keys=True) + '\n'
+          )
+          if not passed:
+              raise SystemExit(json.dumps(summary, indent=2))
+          PY
+
+      - name: Upload auditable evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mb100-056-fort_wayne-evidence
+          path: |
+            build/mb100-056-summary.json
+            build/mb100-056-completion.json
+            build/source-manifest.json
+            build/completion-register.csv
+            build/run-1/report.json
+            build/run-1/execution-results.json
+            build/run-1/diagnostics.json
+            build/run-1/artifacts/divisions/in/local/*.yaml
+            build/run-1/artifacts/jurisdictions/in/local/*.yaml
+            build/run-2/report.json
+            build/run-2/execution-results.json
+            build/run-2/diagnostics.json
+            build/run-2/artifacts/divisions/in/local/*.yaml
+            build/run-2/artifacts/jurisdictions/in/local/*.yaml
+          if-no-files-found: error
