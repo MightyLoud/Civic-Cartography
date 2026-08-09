@@ -1,15 +1,18 @@
 version: 1
 name: mb100_reconciliation
 description: >-
-  Measured Batch 100 target MB100-072 Richmond, Virginia. This validates
-  the pending row against durable exact-head evidence.
+  Measured Batch 100 target MB100-072 Richmond, Virginia. The incorporated-place
+  and county-equivalent Divisions represent one independent city government.
 targets:
   - target_id: MB100-072
     jurisdiction_name: Richmond
     state: va
     selector:
-      type: ocdid
-      value: ocd-division/country:us/state:va/place:richmond
+      type: alias_group
+      members:
+        - ocd-division/country:us/state:va/county:richmond_city
+        - ocd-division/country:us/state:va/place:richmond
+      canonical_rule: maintained_alias
     expected_archetype: AR-001
     expected_classification: government
     category: new_known_archetype
