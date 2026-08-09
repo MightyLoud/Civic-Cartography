@@ -334,7 +334,7 @@ jobs:
 
           passed = (
               current_checksum_match_ok
-              and not checksum_migration_required
+              and checksum_migration_required
               and parity_ok
               and exact_identity_ok
               and delaware_paths_ok
