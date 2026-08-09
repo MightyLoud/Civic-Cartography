@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-061 Billings, Montana. This validates the
+  newly started pending row against durable exact-head evidence.
+targets:
+  - target_id: MB100-061
+    jurisdiction_name: Billings
+    state: mt
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:mt/place:billings
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
