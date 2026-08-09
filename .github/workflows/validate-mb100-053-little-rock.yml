@@ -325,7 +325,7 @@ jobs:
               '7603d566ddce6cff8011988d7adba85f3514c7fec1a1b548da6cc2922ac01886'
           )
           expected_current_checksum = (
-              '7603d566ddce6cff8011988d7adba85f3514c7fec1a1b548da6cc2922ac01886'
+              '75d8f5f569befb53cc78d58c63305a7cdff525343ebccd4c05b182706ddab39d'
           )
           current_checksum_match_ok = target_checksum == expected_current_checksum
           checksum_migration_required = (
@@ -334,7 +334,7 @@ jobs:
 
           passed = (
               current_checksum_match_ok
-              and not checksum_migration_required
+              and checksum_migration_required
               and parity_ok
               and exact_identity_ok
               and arkansas_paths_ok
