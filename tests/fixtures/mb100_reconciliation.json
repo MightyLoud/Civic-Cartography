@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-060",
+  "frozen_name": "Kansas City",
+  "state": "mo",
+  "division_ocdid": "ocd-division/country:us/state:mo/place:kansas_city",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:mo/place:kansas_city/government",
+  "frozen_geographic_identifier": "place-2938000",
+  "run_asof": "2026-08-09T05:46:52Z",
+  "prior_workbook_checksum": ""
+}
