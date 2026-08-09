@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-058",
+  "frozen_name": "Portland",
+  "state": "me",
+  "division_ocdid": "ocd-division/country:us/state:me/place:portland",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:me/place:portland/government",
+  "frozen_geographic_identifier": "place-2360545",
+  "run_asof": "2026-08-08T04:48:44Z",
+  "prior_workbook_checksum": "c733420cb624f11f619da45aa8fc4197303992060364b6db3a690ce93e440592"
+}
