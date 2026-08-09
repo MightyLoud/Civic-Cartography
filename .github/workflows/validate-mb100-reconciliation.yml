@@ -200,7 +200,7 @@ jobs:
               'ocd-jurisdiction/country:us/state:va/place:richmond/government'
           )
           frozen_name = 'Richmond'
-          expected_alias_id = 'md-richmond-city-independent-city'
+          expected_alias_id = 'va-richmond-independent-city'
           frozen_geographic_identifier = 'place-5167000 / county-equivalent-51760'
 
           a = json.loads(Path('build/run-1/report.json').read_text())
