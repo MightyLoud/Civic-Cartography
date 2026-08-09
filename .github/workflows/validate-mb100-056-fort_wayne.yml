@@ -325,7 +325,7 @@ jobs:
               '05b7bf78a5cb313489295b0e762e2ce11a7d0339f03a841df9f63600c5aefc84'
           )
           expected_current_checksum = (
-              '05b7bf78a5cb313489295b0e762e2ce11a7d0339f03a841df9f63600c5aefc84'
+              '1654111df5758e43eafbe6c940773b12c373a2f40b5dd8f2ec925329bb44a2e5'
           )
           current_checksum_match_ok = target_checksum == expected_current_checksum
           checksum_migration_required = (
@@ -334,7 +334,7 @@ jobs:
 
           passed = (
               current_checksum_match_ok
-              and not checksum_migration_required
+              and checksum_migration_required
               and parity_ok
               and exact_identity_ok
               and indiana_paths_ok
