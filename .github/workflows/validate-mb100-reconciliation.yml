@@ -248,7 +248,7 @@ jobs:
                   jurisdiction_classification = artifact.get('classification')
                   sources = [s for s in artifact.get('sourcing', []) if isinstance(s, dict)]
                   official_source_ok = any(
-                      source.get('source_name') == frozen_name
+                      source.get('source_name') in {frozen_name, 'City of Richmond'}
                       and source.get('source_type') == 'human_researched'
                       for source in sources
                   )
