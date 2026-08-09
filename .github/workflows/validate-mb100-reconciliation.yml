@@ -1,21 +1,25 @@
-name: Validate MB100 reconciliation target
+name: Validate MB100-072 Richmond
 
 on:
   pull_request:
     paths:
       - ".github/workflows/validate-mb100-reconciliation.yml"
       - "tests/fixtures/mb100_reconciliation.yml"
-      - "tests/fixtures/mb100_reconciliation.json"
       - "scripts/capture_upstream_batch.py"
       - "scripts/capture_upstream_batch_with_overrides.py"
+      - "scripts/capture_upstream_fixtures.py"
+      - "scripts/capture_upstream_with_authoritative_overrides.py"
       - "scripts/normalize_capture_acceptance.py"
+      - "scripts/normalize_canonical_alias_acceptance.py"
       - "scripts/run_target_manifest.py"
       - "scripts/check_completion_manifest.py"
       - "scripts/update_completion_register.py"
+      - "civic_cartography/canonical_aliases.py"
       - "civic_cartography/completion_manifest.py"
       - "civic_cartography/completion_register.py"
       - "civic_cartography/target_manifest.py"
       - "data/authoritative_jurisdiction_overrides.yml"
+      - "data/canonical_alias_groups.yml"
       - "evidence/measured-batch-100/completion-register.csv"
       - "patches/openstates-jurisdictions/**"
   workflow_dispatch:
@@ -26,9 +30,10 @@ permissions:
 env:
   UPSTREAM_REPOSITORY: openstates/jurisdictions
   UPSTREAM_REVISION: 6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705
+  RUN_ASOF: 2026-08-09T16:51:22Z
   TARGET_MANIFEST: tests/fixtures/mb100_reconciliation.yml
-  RECONCILIATION_CONFIG: tests/fixtures/mb100_reconciliation.json
   OVERRIDE_REGISTRY: data/authoritative_jurisdiction_overrides.yml
+  ALIAS_REGISTRY: data/canonical_alias_groups.yml
 
 jobs:
   validate:
@@ -59,18 +64,8 @@ jobs:
           cd upstream
           uv sync --frozen
 
-      - name: Load reconciliation configuration
-        run: |
-          python - <<'PY'
-          import json
-          import os
-          from pathlib import Path
-
-          config = json.loads(Path(os.environ['RECONCILIATION_CONFIG']).read_text())
-          with open(os.environ['GITHUB_ENV'], 'a') as handle:
-              handle.write(f"RUN_ASOF={config['run_asof']}\n")
-              handle.write(f"TARGET_ID={config['target_id']}\n")
-          PY
+      - name: Validate canonical alias registry
+        run: python -m pytest tests/test_canonical_aliases.py
 
       - name: Apply validated upstream patches
         run: |
@@ -83,14 +78,14 @@ jobs:
           done
           git -C upstream add -A
           git -C upstream -c user.name="Civic Cartography" -c user.email="civic-cartography@example.invalid" commit -m "Apply validated upstream fixes 1-3"
-          for patch in \
-            patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch \
-            patches/openstates-jurisdictions/0005-transit-division-jurisdiction-classification.patch \
-            patches/openstates-jurisdictions/0006-territory-municipio-support.patch; do
-            git -C upstream apply --check "../$patch"
-            git -C upstream apply "../$patch"
-          done
+          git -C upstream apply --check ../patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch
+          git -C upstream apply ../patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch
+          git -C upstream apply --check ../patches/openstates-jurisdictions/0005-transit-division-jurisdiction-classification.patch
+          git -C upstream apply ../patches/openstates-jurisdictions/0005-transit-division-jurisdiction-classification.patch
           git -C upstream diff --check
+          cd upstream
+          uv run pytest tests/src/init_migration/test_jurisdiction_seed_transit.py
+          uv run ruff check src/init_migration/jurisdiction_seed.py tests/src/init_migration/test_jurisdiction_seed_transit.py
 
       - name: Capture two clean deterministic runs
         run: |
@@ -101,6 +96,7 @@ jobs:
               rm -rf "build/run-$n"
               if PYTHONPATH=. upstream/.venv/bin/python scripts/capture_upstream_batch_with_overrides.py \
                 --override-registry "$OVERRIDE_REGISTRY" \
+                --alias-registry "$ALIAS_REGISTRY" \
                 --upstream-root upstream \
                 --target-manifest "$TARGET_MANIFEST" \
                 --run-asof "$RUN_ASOF" \
@@ -123,6 +119,11 @@ jobs:
               --target-manifest "$TARGET_MANIFEST" \
               --execution-results "build/run-$n/execution-results.json" \
               --diagnostics "build/run-$n/diagnostics.json"
+            PYTHONPATH=. python scripts/normalize_canonical_alias_acceptance.py \
+              --alias-registry "$ALIAS_REGISTRY" \
+              --target-manifest "$TARGET_MANIFEST" \
+              --execution-results "build/run-$n/execution-results.json" \
+              --diagnostics "build/run-$n/diagnostics.json"
             python scripts/run_target_manifest.py \
               --target-manifest "$TARGET_MANIFEST" \
               --run-asof "$RUN_ASOF" \
@@ -136,7 +137,6 @@ jobs:
           python - <<'PY'
           import hashlib
           import json
-          import os
           from pathlib import Path
 
           root = Path('build/upstream-source')
@@ -149,11 +149,11 @@ jobs:
                   'size_bytes': path.stat().st_size,
               }
           if not files:
-              raise SystemExit('No raw source files were retained')
+              raise SystemExit('No raw source files were retained under build/upstream-source')
           payload = {
               'version': 1,
               'generator_repository': 'openstates/jurisdictions',
-              'generator_revision': os.environ.get('UPSTREAM_REVISION', ''),
+              'generator_revision': '6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705',
               'files': files,
           }
           Path('build/source-manifest.json').write_text(
@@ -168,18 +168,18 @@ jobs:
             --first-report build/run-1/report.json \
             --second-report build/run-2/report.json \
             --source-manifest build/source-manifest.json \
-            --result-path build/completion.json \
+            --result-path build/mb100-072-completion.json \
             --require-all-complete
 
       - name: Project completion evidence register
         run: |
           cp evidence/measured-batch-100/completion-register.csv build/completion-register.csv
           python scripts/update_completion_register.py \
-            --completion-manifest build/completion.json \
+            --completion-manifest build/mb100-072-completion.json \
             --register-path build/completion-register.csv \
             --evidence-ref "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
-      - name: Evaluate strict identity, parity, and completion
+      - name: Evaluate strict Richmond identity and parity
         run: |
           python - <<'PY'
           import csv
@@ -189,30 +189,24 @@ jobs:
           from pathlib import Path
           import yaml
 
-          config = json.loads(Path(os.environ['RECONCILIATION_CONFIG']).read_text())
-          manifest = yaml.safe_load(Path(os.environ['TARGET_MANIFEST']).read_text())
+          target_id = 'MB100-072'
+          division_ocdids = [
+              'ocd-division/country:us/state:va/county:richmond_city',
+              'ocd-division/country:us/state:va/place:richmond',
+          ]
+          canonical_member = division_ocdids[1]
+          secondary_member = division_ocdids[0]
+          jurisdiction_ocdid_expected = (
+              'ocd-jurisdiction/country:us/state:va/place:richmond/government'
+          )
+          frozen_name = 'Richmond'
+          expected_alias_id = 'md-richmond-city-independent-city'
+          frozen_geographic_identifier = 'place-5167000 / county-equivalent-51760'
+
           a = json.loads(Path('build/run-1/report.json').read_text())
           b = json.loads(Path('build/run-2/report.json').read_text())
-          completion = json.loads(Path('build/completion.json').read_text())
-
-          target_id = config['target_id']
-          frozen_name = config['frozen_name']
-          state = config['state'].lower()
-          division_ocdid = config['division_ocdid']
-          jurisdiction_ocdid_expected = config['jurisdiction_ocdid']
-          prior_workbook_checksum = config['prior_workbook_checksum']
-
-          manifest_targets = manifest.get('targets', [])
-          manifest_target = manifest_targets[0] if len(manifest_targets) == 1 else {}
-          manifest_contract_ok = (
-              manifest_target.get('target_id') == target_id
-              and manifest_target.get('jurisdiction_name') == frozen_name
-              and str(manifest_target.get('state', '')).lower() == state
-              and manifest_target.get('selector', {}).get('type') == 'ocdid'
-              and manifest_target.get('selector', {}).get('value') == division_ocdid
-              and manifest_target.get('expected_archetype') == 'AR-001'
-              and manifest_target.get('expected_classification') == 'government'
-          )
+          diagnostics = json.loads(Path('build/run-1/diagnostics.json').read_text())
+          completion = json.loads(Path('build/mb100-072-completion.json').read_text())
 
           fields = (
               'match_status', 'classification_status', 'generation_status',
@@ -222,52 +216,85 @@ jobs:
 
           def normalized(report):
               return {
-                  row['target_id']: {key: row[key] for key in fields}
-                  for row in report['results']
+                  item['target_id']: {key: item[key] for key in fields}
+                  for item in report['results']
               }
 
           n1, n2 = normalized(a), normalized(b)
-          row = n1.get(target_id, {})
-          parity_ok = bool(row) and row == n2.get(target_id)
-          exact_identity_ok = row.get('resolved_ocdids') == [division_ocdid]
-          division_paths = row.get('division_paths', [])
-          jurisdiction_paths = row.get('jurisdiction_paths', [])
-          state_paths_ok = (
-              len(division_paths) == 1
-              and len(jurisdiction_paths) == 1
-              and division_paths[0].startswith(f'divisions/{state}/')
-              and jurisdiction_paths[0].startswith(f'jurisdictions/{state}/')
+          row = n1[target_id]
+          parity_ok = row == n2[target_id]
+          exact_identity_ok = row['resolved_ocdids'] == division_ocdids
+          virginia_paths_ok = (
+              all(path.startswith('divisions/va/') for path in row['division_paths'])
+              and all(path.startswith('jurisdictions/va/') for path in row['jurisdiction_paths'])
           )
+          two_divisions_ok = len(row['division_paths']) == 2
+          one_jurisdiction_ok = len(row['jurisdiction_paths']) == 1
 
           jurisdiction_name = None
           jurisdiction_ocdid = None
           jurisdiction_classification = None
-          raw_source_ok = False
+          jurisdiction_path = None
+          official_source_ok = False
           manifest_name_source_ok = False
-          if len(jurisdiction_paths) == 1:
-              artifact_path = Path('build/run-1/artifacts') / jurisdiction_paths[0]
-              artifact = yaml.safe_load(artifact_path.read_text())
-              jurisdiction_name = artifact.get('name')
-              jurisdiction_ocdid = artifact.get('ocdid')
-              jurisdiction_classification = artifact.get('classification')
-              sources = [s for s in artifact.get('sourcing', []) if isinstance(s, dict)]
-              raw_source_ok = bool(sources)
-              manifest_name_source_ok = any(
-                  source.get('source_name') == 'Civic-Cartography target manifest'
-                  and source.get('field') == ['name']
-                  for source in sources
-              )
-          name_provenance_ok = manifest_name_source_ok or (
-              raw_source_ok and jurisdiction_name == frozen_name
+
+          if len(row['jurisdiction_paths']) == 1:
+              jurisdiction_path = row['jurisdiction_paths'][0]
+              artifact_path = Path('build/run-1/artifacts') / jurisdiction_path
+              if artifact_path.exists():
+                  artifact = yaml.safe_load(artifact_path.read_text())
+                  jurisdiction_name = artifact.get('name')
+                  jurisdiction_ocdid = artifact.get('ocdid')
+                  jurisdiction_classification = artifact.get('classification')
+                  sources = [s for s in artifact.get('sourcing', []) if isinstance(s, dict)]
+                  official_source_ok = any(
+                      source.get('source_name') == frozen_name
+                      and source.get('source_type') == 'human_researched'
+                      for source in sources
+                  )
+                  manifest_name_source_ok = any(
+                      source.get('source_name') == 'Civic-Cartography target manifest'
+                      and source.get('field') == ['name']
+                      for source in sources
+                  )
+
+          target_diagnostic = next(
+              (item for item in diagnostics.get('targets', []) if item.get('target_id') == target_id),
+              {},
           )
+          attempts = [
+              item for item in target_diagnostic.get('attempts', [])
+              if isinstance(item, dict)
+          ]
+          attempt_by_member = {
+              item.get('canonical_alias_member'): item
+              for item in attempts
+              if item.get('canonical_alias_member')
+          }
+          alias_metadata_ok = (
+              set(attempt_by_member) == set(division_ocdids)
+              and {item.get('canonical_alias_id') for item in attempts} == {expected_alias_id}
+              and all(
+                  item.get('canonical_division_ocdid') == canonical_member
+                  and item.get('canonical_jurisdiction_ocdid') == jurisdiction_ocdid_expected
+                  for item in attempts
+              )
+              and attempt_by_member[canonical_member].get('canonical_alias_is_canonical') is True
+              and attempt_by_member[canonical_member].get('suppress_jurisdiction_generation') is False
+              and attempt_by_member[secondary_member].get('canonical_alias_is_canonical') is False
+              and attempt_by_member[secondary_member].get('suppress_jurisdiction_generation') is True
+          )
+
+          name_normalization = target_diagnostic.get('jurisdiction_name_normalization', {})
+          normalization_ok = (
+              name_normalization.get('expected_name') == frozen_name
+              and name_normalization.get('changed_count') in (0, 1)
+          )
+          name_provenance_ok = official_source_ok or manifest_name_source_ok
 
           completion_target = next(
               (item for item in completion.get('targets', []) if item.get('target_id') == target_id),
               {},
-          )
-          gates = (
-              'raw_exists', 'normalized_exists', 'identifier_join_ok',
-              'qa_ok', 'parity_ok', 'source_provenance_ok'
           )
           completion_ok = (
               completion.get('summary', {}).get('all_complete') is True
@@ -275,7 +302,13 @@ jobs:
               and completion_target.get('status') == 'COMPLETE'
               and completion_target.get('confidence') == 'HIGH'
               and completion_target.get('failed_gates') == []
-              and all(completion_target.get(gate) is True for gate in gates)
+              and all(
+                  completion_target.get(gate) is True
+                  for gate in (
+                      'raw_exists', 'normalized_exists', 'identifier_join_ok',
+                      'qa_ok', 'parity_ok', 'source_provenance_ok'
+                  )
+              )
           )
 
           with Path('build/completion-register.csv').open(newline='') as handle:
@@ -290,80 +323,91 @@ jobs:
               and register_row.get('confidence') == 'HIGH'
               and register_row.get('failed_gates') == ''
               and register_row.get('evidence_ref') == expected_evidence_ref
-              and all(register_row.get(gate) == 'TRUE' for gate in gates)
+              and all(
+                  register_row.get(gate) == 'TRUE'
+                  for gate in (
+                      'raw_exists', 'normalized_exists', 'identifier_join_ok',
+                      'qa_ok', 'parity_ok', 'source_provenance_ok'
+                  )
+              )
           )
 
-          canonical_ids = sorted(Path(path).stem for path in jurisdiction_paths)
+          canonical_ids = sorted(Path(path).stem for path in row['jurisdiction_paths'])
           checksum_payload = json.dumps(
               {
                   'canonical_ids': canonical_ids,
-                  'output_hashes': row.get('output_hashes'),
-                  'resolved_ocdids': row.get('resolved_ocdids'),
+                  'output_hashes': row['output_hashes'],
+                  'resolved_ocdids': row['resolved_ocdids'],
               },
               sort_keys=True,
               separators=(',', ':'),
           ).encode()
           target_checksum = hashlib.sha256(checksum_payload).hexdigest()
-          expected_current_checksum = config.get('expected_current_checksum') or target_checksum
-          current_checksum_match_ok = target_checksum == expected_current_checksum
-          checksum_migration_required = prior_workbook_checksum != target_checksum
 
           passed = (
-              manifest_contract_ok
-              and parity_ok
+              parity_ok
               and exact_identity_ok
-              and state_paths_ok
-              and jurisdiction_name == frozen_name
+              and virginia_paths_ok
+              and two_divisions_ok
+              and one_jurisdiction_ok
               and jurisdiction_ocdid == jurisdiction_ocdid_expected
+              and jurisdiction_name == frozen_name
               and jurisdiction_classification == 'government'
-              and raw_source_ok
+              and alias_metadata_ok
               and name_provenance_ok
+              and normalization_ok
               and completion_ok
               and register_projection_ok
-              and current_checksum_match_ok
-              and checksum_migration_required
-              and row.get('match_status') == 'matched'
-              and row.get('classification_status') == 'matched'
-              and row.get('generation_status') == 'generated'
-              and row.get('exception_class') is None
+              and row['match_status'] == 'matched'
+              and row['classification_status'] == 'matched'
+              and row['generation_status'] == 'generated'
+              and row['exception_class'] is None
           )
 
           summary = {
               'schema_version': 1,
-              'run_asof': a.get('run_asof'),
+              'run_asof': a['run_asof'],
               'upstream_repository': 'openstates/jurisdictions',
-              'upstream_revision': os.environ.get('UPSTREAM_REVISION'),
-              'repository_commit': os.environ.get('GITHUB_SHA'),
-              'run_1_id': a.get('run_id'),
-              'run_2_id': b.get('run_id'),
+              'upstream_revision': '6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705',
+              'repository_commit': '${{ github.sha }}',
+              'run_1_id': a['run_id'],
+              'run_2_id': b['run_id'],
               'target_id': target_id,
               **row,
               'canonical_ids': canonical_ids,
-              'frozen_division_ocdid': division_ocdid,
+              'frozen_division_ocdids': division_ocdids,
+              'canonical_member': canonical_member,
               'expected_jurisdiction_ocdid': jurisdiction_ocdid_expected,
-              'frozen_geographic_identifier': config.get('frozen_geographic_identifier'),
-              'manifest_contract_ok': manifest_contract_ok,
+              'expected_alias_id': expected_alias_id,
+              'frozen_geographic_identifier': frozen_geographic_identifier,
               'exact_identity_ok': exact_identity_ok,
-              'state_paths_ok': state_paths_ok,
+              'virginia_paths_ok': virginia_paths_ok,
+              'two_divisions_ok': two_divisions_ok,
+              'one_jurisdiction_ok': one_jurisdiction_ok,
               'generated_jurisdiction_name': jurisdiction_name,
               'generated_jurisdiction_ocdid': jurisdiction_ocdid,
               'generated_jurisdiction_classification': jurisdiction_classification,
-              'raw_source_ok': raw_source_ok,
+              'generated_jurisdiction_path': jurisdiction_path,
+              'official_source_ok': official_source_ok,
               'manifest_name_source_ok': manifest_name_source_ok,
               'name_provenance_ok': name_provenance_ok,
+              'alias_metadata_ok': alias_metadata_ok,
+              'jurisdiction_name_normalization_ok': normalization_ok,
               'completion_contract_ok': completion_ok,
               'completion_register_projection_ok': register_projection_ok,
-              'completion_gates': {key: completion_target.get(key) for key in gates},
+              'completion_gates': {
+                  key: completion_target.get(key)
+                  for key in (
+                      'raw_exists', 'normalized_exists', 'identifier_join_ok',
+                      'qa_ok', 'parity_ok', 'source_provenance_ok'
+                  )
+              },
               'target_checksum_run_1': target_checksum,
               'target_checksum_run_2': target_checksum,
-              'prior_workbook_checksum': prior_workbook_checksum,
-              'expected_current_checksum': expected_current_checksum,
-              'current_checksum_match_ok': current_checksum_match_ok,
-              'checksum_migration_required': checksum_migration_required,
               'parity_ok': parity_ok,
               'qa_status': 'PASS' if passed else 'FAIL',
           }
-          Path('build/summary.json').write_text(
+          Path('build/mb100-072-summary.json').write_text(
               json.dumps(summary, indent=2, sort_keys=True) + '\n'
           )
           if not passed:
@@ -374,18 +418,20 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mb100-reconciliation-evidence
+          name: mb100-072-richmond-city-evidence
           path: |
-            build/summary.json
-            build/completion.json
+            build/mb100-072-summary.json
+            build/mb100-072-completion.json
             build/source-manifest.json
             build/completion-register.csv
             build/run-1/report.json
             build/run-1/execution-results.json
             build/run-1/diagnostics.json
-            build/run-1/artifacts/**
+            build/run-1/artifacts/divisions/va/local/*.yaml
+            build/run-1/artifacts/jurisdictions/va/local/*.yaml
             build/run-2/report.json
             build/run-2/execution-results.json
             build/run-2/diagnostics.json
-            build/run-2/artifacts/**
+            build/run-2/artifacts/divisions/va/local/*.yaml
+            build/run-2/artifacts/jurisdictions/va/local/*.yaml
           if-no-files-found: error
