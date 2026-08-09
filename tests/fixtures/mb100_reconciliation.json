@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-066",
+  "frozen_name": "Oklahoma City",
+  "state": "ok",
+  "division_ocdid": "ocd-division/country:us/state:ok/place:oklahoma_city",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:ok/place:oklahoma_city/government",
+  "frozen_geographic_identifier": "place-4055000",
+  "run_asof": "2026-08-09T13:50:55Z",
+  "prior_workbook_checksum": ""
+}
