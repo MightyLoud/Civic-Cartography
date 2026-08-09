@@ -1,0 +1,20 @@
+version: 1
+name: mb100_049
+description: >-
+  Measured Batch 100 target MB100-049 Baltimore City, Maryland. The
+  incorporated-place and county-equivalent Divisions represent one independent
+  city government; Baltimore County remains a separate government and is out of
+  scope.
+targets:
+  - target_id: MB100-049
+    jurisdiction_name: Baltimore City
+    state: md
+    selector:
+      type: alias_group
+      members:
+        - ocd-division/country:us/state:md/county:baltimore_city
+        - ocd-division/country:us/state:md/place:baltimore
+      canonical_rule: maintained_alias
+    expected_archetype: DISCOVERY — INDEPENDENT CITY REVERSE ALIAS
+    expected_classification: government
+    category: discovery
