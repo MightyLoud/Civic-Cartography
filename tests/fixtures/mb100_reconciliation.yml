@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-068 Providence, Rhode Island. This validates
+  the pending row against durable exact-head evidence.
+targets:
+  - target_id: MB100-068
+    jurisdiction_name: Providence
+    state: ri
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ri/place:providence
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
