@@ -1,0 +1,15 @@
+version: 1
+name: mb100_056
+description: >-
+  Measured Batch 100 target MB100-056 Fort Wayne, Indiana. This reconciles the
+  retained out-of-sequence PASS row against a durable exact-head GitHub run.
+targets:
+  - target_id: MB100-056
+    jurisdiction_name: Fort Wayne
+    state: in
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:in/place:fort_wayne
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
