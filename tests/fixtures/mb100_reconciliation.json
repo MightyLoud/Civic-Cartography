@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-075",
+  "frozen_name": "Washington, District of Columbia",
+  "state": "dc",
+  "division_ocdid": "ocd-division/country:us/district:dc",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/district:dc/government",
+  "frozen_geographic_identifier": "place-1150000 / county-equivalent-11001",
+  "run_asof": "2026-08-10T01:20:43Z",
+  "prior_workbook_checksum": ""
+}

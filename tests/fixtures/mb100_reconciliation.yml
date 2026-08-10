@@ -1,0 +1,16 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 discovery probe for MB100-075 Washington, District of
+  Columbia. This tests the frozen federal-district selector without changing
+  canonical rules or workbook evidence.
+targets:
+  - target_id: MB100-075
+    jurisdiction_name: Washington, District of Columbia
+    state: dc
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/district:dc
+    expected_archetype: AR-001
+    expected_classification: government
+    category: discovery
