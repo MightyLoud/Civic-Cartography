@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-076",
+  "frozen_name": "Las Vegas",
+  "state": "nv",
+  "division_ocdid": "ocd-division/country:us/state:nv/place:las_vegas",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:nv/place:las_vegas/government",
+  "frozen_geographic_identifier": "place-3240000",
+  "run_asof": "2026-08-10T16:43:04Z",
+  "prior_workbook_checksum": ""
+}
