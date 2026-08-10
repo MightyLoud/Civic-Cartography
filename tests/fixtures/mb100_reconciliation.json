@@ -1,0 +1,14 @@
+{
+  "target_id": "MB100-075",
+  "frozen_name": "Washington, District of Columbia",
+  "state": "dc",
+  "division_ocdid": "ocd-division/country:us/district:dc",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/district:dc/government",
+  "frozen_geographic_identifier": "place-1150000 / county-equivalent-11001",
+  "expected_validation_geoid": "1150000",
+  "expected_county_equivalent_geoid": "11001",
+  "census_geography_source": "https://www.census.gov/geographies/reference-files/2010/geo/state-local-geo-guides-2010/districtofcolumbia.html",
+  "expected_archetype": "DISCOVERY — FEDERAL DISTRICT IDENTITY",
+  "run_asof": "2026-08-10T01:55:00Z",
+  "prior_workbook_checksum": ""
+}
