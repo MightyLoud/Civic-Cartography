@@ -99,10 +99,18 @@ def _parse_override(raw: Any, index: int) -> AuthoritativeOverride:
         )
 
     ocdid = _require_string(item["ocdid"], f"{location}.ocdid").rstrip("/")
-    expected_prefix = f"ocd-division/country:us/state:{state}/"
-    if not ocdid.startswith(expected_prefix):
+    admin1_prefixes = tuple(
+        f"ocd-division/country:us/{kind}:{state}"
+        for kind in ("state", "district", "territory")
+    )
+    if not any(
+        ocdid == prefix or ocdid.startswith(f"{prefix}/")
+        for prefix in admin1_prefixes
+    ):
+        supported = ", ".join(admin1_prefixes)
         raise AuthoritativeOverrideError(
-            f"{location}.ocdid must begin with {expected_prefix}"
+            f"{location}.ocdid must begin with a supported U.S. admin-1 "
+            f"prefix: {supported}"
         )
 
     validation_geoid = None
