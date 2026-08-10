@@ -204,8 +204,8 @@ def test_district_of_columbia_override_preserves_coextensive_identity() -> None:
     assert district == frozen_name
     assert district.override_id == "dc-district-of-columbia-government"
     assert district.ocdid == "ocd-division/country:us/district:dc"
-    assert district.validation_geoid == "11001"
-    assert district.generator_override["validation_geoid"] == "11001"
+    assert district.validation_geoid == "1150000"
+    assert district.generator_override["validation_geoid"] == "1150000"
     assert district.generator_override["classification"] == "government"
     assert district.generator_override["jurisdiction_name"] == (
         "Washington, District of Columbia"

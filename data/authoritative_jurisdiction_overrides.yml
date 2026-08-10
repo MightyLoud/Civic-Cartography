@@ -194,7 +194,7 @@ overrides:
       - Washington, District of Columbia
       - Washington, DC
     ocdid: ocd-division/country:us/district:dc
-    validation_geoid: '11001'
+    validation_geoid: '1150000'
     jurisdiction:
       has_jurisdiction: true
       classification: government
@@ -218,5 +218,6 @@ overrides:
     evidence_notes: >-
       The maintained district:dc identifier is the canonical government root.
       Census presents the same geography as incorporated place 1150000 and
-      county-equivalent 11001; validation joins through 11001 while the retained
-      national-master RAW record preserves the composite geographic identity.
+      county-equivalent 11001; generator validation joins through the coextensive
+      incorporated-place GEOID 1150000 while the maintained district OCDID remains
+      the canonical government root.
