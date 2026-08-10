@@ -1,0 +1,115 @@
+diff --git a/src/init_migration/jurisdiction_seed.py b/src/init_migration/jurisdiction_seed.py
+--- a/src/init_migration/jurisdiction_seed.py
++++ b/src/init_migration/jurisdiction_seed.py
+@@ -241,6 +241,17 @@ def _extract_primary_division_type(parsed_ocdid: dict) -> str:
+ 
+     return div_keys[-1] if div_keys else "unknown"
+ 
+ 
++def _is_federal_district_root(parsed_ocdid: dict) -> bool:
++    """Return True only for the U.S. federal-district admin-1 root."""
++    admin1_keys = {"base", "country", "state", "district", "territory"}
++    return bool(parsed_ocdid.get("district")) and set(parsed_ocdid).issubset(
++        admin1_keys
++    )
++
++
+ def infer_jurisdiction_seed(
+     ocdid: str,
+     lsad_code: str | None = None,
+@@ -289,6 +300,15 @@ def infer_jurisdiction_seed(
+     # Returns a deconstructed id.
+     parsed = ocdid_parser(ocdid)
+ 
++    # The District of Columbia is an admin-1 governing jurisdiction whose OCDID
++    # has no leaf segment below ``district:dc``. Keep ordinary district children
++    # such as ANCs on the existing leaf-type decision path.
++    if _is_federal_district_root(parsed):
++        return JurisdictionSeed(
++            has_jurisdiction=True,
++            classification=ClassificationEnum.GOVERNMENT.value,
++            jurisdiction_type_suffix=ClassificationEnum.GOVERNMENT.value,
++            reason="federal district root",
++        )
++
+     # Returns the primary division (last segment) for any division
+     # Ignores parent divisions: {"base", "country", "state", "district",
+     # "territory"}
+diff --git a/tests/src/init_migration/test_federal_district.py b/tests/src/init_migration/test_federal_district.py
+new file mode 100644
+--- /dev/null
++++ b/tests/src/init_migration/test_federal_district.py
+@@ -0,0 +1,79 @@
++from types import SimpleNamespace
++from uuid import UUID
++
++import src.init_migration.generate_pipeline as generate_pipeline
++from src.init_migration.generate_pipeline import GeneratePipeline
++from src.init_migration.jurisdiction_seed import infer_jurisdiction_seed
++from src.models.jurisdiction import ClassificationEnum
++
++
++DC_OCDID = "ocd-division/country:us/district:dc"
++DC_JURISDICTION_OCDID = (
++    "ocd-jurisdiction/country:us/district:dc/government"
++)
++DC_ANC_OCDID = "ocd-division/country:us/district:dc/anc:1a"
++TEST_UUID = UUID("6cd1ebf4-57c3-5814-bb6e-2fcf9577c250")
++
++
++def test_federal_district_root_classifies_as_government() -> None:
++    seed = infer_jurisdiction_seed(DC_OCDID, lsad_code=None)
++
++    assert seed.has_jurisdiction is True
++    assert seed.classification == ClassificationEnum.GOVERNMENT.value
++    assert seed.jurisdiction_type_suffix == ClassificationEnum.GOVERNMENT.value
++    assert seed.reason == "federal district root"
++
++
++def test_federal_district_child_remains_on_leaf_type_path() -> None:
++    seed = infer_jurisdiction_seed(DC_ANC_OCDID, lsad_code=None)
++
++    assert seed.has_jurisdiction is True
++    assert seed.classification == ClassificationEnum.GOVERNMENT.value
++    assert seed.reason == "general government fallback"
++
++
++def test_federal_district_stub_generates_expected_jurisdiction(
++    monkeypatch,
++    tmp_path,
++) -> None:
++    pipeline = GeneratePipeline.__new__(GeneratePipeline)
++    pipeline.req = SimpleNamespace()
++    pipeline.uuid = TEST_UUID
++    pipeline.division = SimpleNamespace(
++        ocdid=DC_OCDID,
++        jurisdiction_id=None,
++    )
++    pipeline.jurisdiction = None
++    pipeline.created_jurisdictions = set()
++    pipeline.jurisdiction_output_dir = tmp_path
++    response = SimpleNamespace(jurisdiction_path=None)
++    jurisdiction_path = tmp_path / "jurisdictions/dc/local/district_of_columbia.yaml"
++
++    class FakeJurGenerator:
++        def __init__(self, req, division) -> None:
++            assert req is pipeline.req
++            assert division is pipeline.division
++
++        def generate_jurisdiction(self, *, division, uuid, classification):
++            assert division is pipeline.division
++            assert uuid == TEST_UUID
++            assert classification == ClassificationEnum.GOVERNMENT.value
++            return SimpleNamespace()
++
++        def dump_jurisdiction(self, output_dir):
++            assert output_dir == tmp_path
++            return jurisdiction_path
++
++    monkeypatch.setattr(generate_pipeline, "JurGenerator", FakeJurGenerator)
++
++    pipeline._generate_jurisdiction_for_division(response, lsad_code=None)
++
++    assert pipeline.division.jurisdiction_id == DC_JURISDICTION_OCDID
++    assert response.jurisdiction_path == str(jurisdiction_path)
++    assert pipeline.created_jurisdictions == {DC_JURISDICTION_OCDID}
