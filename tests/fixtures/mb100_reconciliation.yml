@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-076 Las Vegas, Nevada. This reproduces the
+  merged completion result from the exact canonical main branch.
+targets:
+  - target_id: MB100-076
+    jurisdiction_name: Las Vegas
+    state: nv
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:nv/place:las_vegas
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
