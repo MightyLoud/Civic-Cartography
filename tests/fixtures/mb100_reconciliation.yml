@@ -1,0 +1,16 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-075 Washington, District of Columbia. This
+  validates the frozen federal-district and coextensive-city identity against
+  durable exact-head evidence.
+targets:
+  - target_id: MB100-075
+    jurisdiction_name: Washington, District of Columbia
+    state: dc
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/district:dc
+    expected_archetype: DISCOVERY — FEDERAL DISTRICT IDENTITY
+    expected_classification: government
+    category: discovery
