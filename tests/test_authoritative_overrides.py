@@ -185,3 +185,32 @@ def test_greenwich_town_override_preserves_town_cdp_distinction() -> None:
     assert canonical.generator_override["classification"] == "government"
     assert canonical.source_override["source_name"] == "Greenwich Town"
     assert cdp is None
+
+
+def test_district_of_columbia_override_preserves_coextensive_identity() -> None:
+    overrides = load_authoritative_overrides(REGISTRY)
+
+    district = resolve_authoritative_override(
+        overrides, state="dc", name="District of Columbia"
+    )
+    frozen_name = resolve_authoritative_override(
+        overrides, state="DC", name="Washington, District of Columbia"
+    )
+    near_miss = resolve_authoritative_override(
+        overrides, state="dc", name="Washington State"
+    )
+
+    assert district is not None
+    assert district == frozen_name
+    assert district.override_id == "dc-district-of-columbia-government"
+    assert district.ocdid == "ocd-division/country:us/district:dc"
+    assert district.validation_geoid == "11001"
+    assert district.generator_override["validation_geoid"] == "11001"
+    assert district.generator_override["classification"] == "government"
+    assert district.generator_override["jurisdiction_name"] == (
+        "Washington, District of Columbia"
+    )
+    assert district.source_override["source_name"] == (
+        "Government of the District of Columbia"
+    )
+    assert near_miss is None

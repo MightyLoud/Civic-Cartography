@@ -185,3 +185,38 @@ overrides:
       Greenwich CDP. This override preserves that maintained identifier while
       generating the legal Greenwich Town government with explicit official and
       Census provenance; it does not treat the CDP itself as a government.
+
+  - override_id: dc-district-of-columbia-government
+    state: dc
+    canonical_name: District of Columbia
+    aliases:
+      - District of Columbia
+      - Washington, District of Columbia
+      - Washington, DC
+    ocdid: ocd-division/country:us/district:dc
+    validation_geoid: '11001'
+    jurisdiction:
+      has_jurisdiction: true
+      classification: government
+      jurisdiction_name: Washington, District of Columbia
+      jurisdiction_type_suffix: government
+      url: https://dc.gov/
+    source:
+      source_name: Government of the District of Columbia
+      source_url:
+        official_website: https://dc.gov/
+        government_organization: https://oca.dc.gov/page/dc-government-organization
+        statutory_identity: https://code.dccouncil.gov/us/dc/council/code/sections/1-102
+        census_geography: https://www.census.gov/geographies/reference-files/2010/geo/state-local-geo-guides-2010/districtofcolumbia.html
+      source_description: >-
+        District law constitutes the District of Columbia as a government and
+        municipal body corporate. Official District materials identify executive,
+        legislative, and judicial branches, while Census geography identifies
+        Washington city as coextensive with the District and the functioning
+        government at the state-equivalent level.
+    verified_asof: '2026-08-09'
+    evidence_notes: >-
+      The maintained district:dc identifier is the canonical government root.
+      Census presents the same geography as incorporated place 1150000 and
+      county-equivalent 11001; validation joins through 11001 while the retained
+      national-master RAW record preserves the composite geographic identity.
