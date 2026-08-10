@@ -23,6 +23,7 @@ class BatchCaptureError(ValueError):
 
 US_ADMIN1_TYPES = ("state", "district", "territory")
 TERRITORY_COUNTY_SEGMENTS = ("county", "municipio")
+COUNTIES_GID = "1652436767"
 TERRITORY_COUNTIES_GID = "691893868"
 
 
@@ -131,6 +132,19 @@ def _target_admin1_type(target: dict[str, Any]) -> str:
     return next(iter(kinds))
 
 
+def _target_uses_counties_validation(
+    target: dict[str, Any], admin1_type: str
+) -> bool:
+    """Return whether a federal-district root needs county-equivalent validation."""
+    if admin1_type != "district":
+        return False
+    state = str(target["state"])
+    root_ocdid = f"ocd-division/country:us/district:{state}"
+    return any(
+        ocdid.rstrip("/") == root_ocdid for ocdid in _selector_ocdids(target)
+    )
+
+
 def _target_uses_territory_counties_validation(
     target: dict[str, Any], admin1_type: str
 ) -> bool:
@@ -237,6 +251,7 @@ def _ensure_sources_for_states(
     *,
     districts: list[str] | None = None,
     territories: list[str] | None = None,
+    include_counties: bool = False,
     include_territory_counties: bool = False,
 ) -> dict[str, Any]:
     districts = districts or []
@@ -249,6 +264,10 @@ def _ensure_sources_for_states(
         "master": api["master_url"],
         "validation": api["validation_url"],
     }
+    if include_counties:
+        key = "counties_validation"
+        files[key] = source_dir / "nested-divisions-counties-validation.csv"
+        urls[key] = _validation_url_with_gid(api["validation_url"], COUNTIES_GID)
     if include_territory_counties:
         key = "territory_counties_validation"
         files[key] = source_dir / "nested-divisions-territory-counties-validation.csv"
@@ -274,10 +293,15 @@ def _ensure_sources_for_states(
         ),
         "validation_strategy": {
             "municipalities_retained": True,
+            **({"counties_retained": True} if include_counties else {}),
             "territory_counties_retained": include_territory_counties,
             "strategy": (
                 "combine compatible retained validation exports for the generator "
-                "when a territory county-equivalent target is present"
+                + (
+                    "when a district root or territory county-equivalent target is present"
+                    if include_counties
+                    else "when a territory county-equivalent target is present"
+                )
             ),
         },
         "local_csv_normalization": {
@@ -343,6 +367,12 @@ async def capture_batch(args: argparse.Namespace) -> None:
             if admin1_types[str(target["target_id"])] == "territory"
         }
     )
+    include_counties = any(
+        _target_uses_counties_validation(
+            target, admin1_types[str(target["target_id"])]
+        )
+        for target in targets
+    )
     include_territory_counties = any(
         _target_uses_territory_counties_validation(
             target, admin1_types[str(target["target_id"])]
@@ -356,6 +386,7 @@ async def capture_batch(args: argparse.Namespace) -> None:
         states,
         districts=districts,
         territories=territories,
+        include_counties=include_counties,
         include_territory_counties=include_territory_counties,
     )
 
@@ -365,6 +396,8 @@ async def capture_batch(args: argparse.Namespace) -> None:
     db_path.parent.mkdir(parents=True, exist_ok=True)
     csv_backup = work_dir / "data" / "ocdid_uuid_lookup.csv"
     validation_paths = [sources["files"]["validation"]]
+    if include_counties:
+        validation_paths.append(sources["files"]["counties_validation"])
     if include_territory_counties:
         validation_paths.append(sources["files"]["territory_counties_validation"])
     effective_validation_path = (
@@ -438,9 +471,11 @@ async def capture_batch(args: argparse.Namespace) -> None:
                 "run_asof": fixed_asof.isoformat().replace("+00:00", "Z"),
                 "source_manifest": sources["manifest"],
                 "validation": {
+                    "counties_required": include_counties,
                     "territory_counties_required": include_territory_counties,
                     "retained_source_keys": [
                         "validation",
+                        *(["counties_validation"] if include_counties else []),
                         *(
                             ["territory_counties_validation"]
                             if include_territory_counties
