@@ -1,0 +1,11 @@
+{
+  "target_id": "MB100-089",
+  "frozen_name": "Springfield",
+  "state": "il",
+  "division_ocdid": "ocd-division/country:us/state:il/place:springfield",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:il/place:springfield/government",
+  "frozen_geographic_identifier": "place-1772000",
+  "run_asof": "2026-08-12T04:53:21Z",
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "526932d63280e01989d4ca34141f1491cbce35c9b4d48251f205769435a025a2"
+}
