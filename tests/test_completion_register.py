@@ -82,3 +82,5 @@ def test_register_upsert_is_idempotent_and_target_keyed(tmp_path) -> None:
     assert rows[0]["confidence"] == "UNVERIFIED"
     assert rows[0]["evidence_ref"] == "second.json"
     assert "raw_exists" in rows[0]["failed_gates"]
+
+# Temporary unmerged trigger for MB100-082 Appleton post-merge validation.
