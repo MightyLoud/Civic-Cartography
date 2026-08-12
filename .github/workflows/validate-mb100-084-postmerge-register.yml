@@ -1,0 +1,89 @@
+name: Validate MB100-084 merged register integrity
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-mb100-084-postmerge-register.yml"
+      - "evidence/measured-batch-100/completion-register.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Re-run completion contract tests
+        run: python -m pytest tests/test_completion_manifest.py tests/test_completion_register.py --color=yes
+
+      - name: Verify merged Topeka and concurrent Hawaii rows
+        run: |
+          python - <<'PY'
+          import csv
+          import hashlib
+          from pathlib import Path
+
+          path = Path('evidence/measured-batch-100/completion-register.csv')
+          data = path.read_bytes()
+          blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
+          expected_blob = '6fbd3ebd08935f3247ed08a08a3e2abe0d353edb'
+          if blob != expected_blob:
+              raise SystemExit(f'Unexpected merged register blob: {blob}; expected {expected_blob}')
+
+          with path.open(newline='', encoding='utf-8') as handle:
+              rows = list(csv.DictReader(handle))
+
+          ids = [row['target_id'] for row in rows]
+          if ids != sorted(ids):
+              raise SystemExit('Completion register target order is not deterministic')
+
+          def exactly_one(target_id):
+              matches = [row for row in rows if row['target_id'] == target_id]
+              if len(matches) != 1:
+                  raise SystemExit(f'{target_id} occurs {len(matches)} times; expected exactly once')
+              return matches[0]
+
+          topeka = exactly_one('MB100-084')
+          expected_topeka = {
+              'jurisdiction_name': 'Topeka',
+              'state': 'ks',
+              'evaluation_id': '65df648288cdd61405dd',
+              'source_manifest_sha256': '2d4774d146927d2a4ec00d35e7715687cfa2208fa78e4c0e8a8c6e3276c584c8',
+              'manifest_sha256': '2f0d9ddb94115719bf6cd19a55352322a77bae8da715ebde36f17ca8d497956c',
+              'first_run_id': '38d3911cf0ef091c9611',
+              'second_run_id': '38d3911cf0ef091c9611',
+              'run_asof': '2026-08-12T05:30:03Z',
+              'evidence_ref': 'https://github.com/MightyLoud/Civic-Cartography/actions/runs/31566859555',
+          }
+          for key, value in expected_topeka.items():
+              if topeka.get(key) != value:
+                  raise SystemExit(f'Topeka {key} mismatch: {topeka.get(key)!r} != {value!r}')
+          gates = (
+              'raw_exists', 'normalized_exists', 'identifier_join_ok',
+              'qa_ok', 'parity_ok', 'source_provenance_ok', 'complete_ok',
+          )
+          if any(topeka.get(gate) != 'TRUE' for gate in gates):
+              raise SystemExit(f'Topeka completion gates are not all TRUE: {topeka}')
+          if topeka.get('confidence') != 'HIGH' or topeka.get('failed_gates') != '':
+              raise SystemExit(f'Topeka confidence/failed-gates mismatch: {topeka}')
+
+          hawaii = exactly_one('MB100-091')
+          if hawaii.get('jurisdiction_name') != 'Hawaii County' or hawaii.get('complete_ok') != 'TRUE':
+              raise SystemExit(f'Concurrent Hawaii County row was not preserved: {hawaii}')
+
+          print('Merged completion register preserves exactly one governed Topeka row and one Hawaii County row.')
+          PY
