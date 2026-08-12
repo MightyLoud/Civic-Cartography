@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-098 Hillsborough County, New Hampshire. This validates
+  the pending row against durable exact-head evidence.
+targets:
+  - target_id: MB100-098
+    jurisdiction_name: Hillsborough County
+    state: nh
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:nh/county:hillsborough
+    expected_archetype: AR-002
+    expected_classification: government
+    category: new_known_archetype
