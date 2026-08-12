@@ -1,0 +1,11 @@
+{
+  "target_id": "MB100-085",
+  "frozen_name": "Knoxville",
+  "state": "tn",
+  "division_ocdid": "ocd-division/country:us/state:tn/place:knoxville",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:tn/place:knoxville/government",
+  "frozen_geographic_identifier": "place-4740000",
+  "run_asof": "2026-08-12T03:54:39Z",
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "2a49342b6ab76a42558d44ae42b77d438f9d109db97c858ef28ae006daf9a9f1"
+}
