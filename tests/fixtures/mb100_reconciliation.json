@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-082",
+  "frozen_name": "Appleton",
+  "state": "wi",
+  "division_ocdid": "ocd-division/country:us/state:wi/place:appleton",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:wi/place:appleton/government",
+  "frozen_geographic_identifier": "place-5502375",
+  "run_asof": "2026-08-12T04:22:00Z",
+  "prior_workbook_checksum": ""
+}
