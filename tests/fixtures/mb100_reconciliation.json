@@ -1,0 +1,11 @@
+{
+  "target_id": "MB100-084",
+  "frozen_name": "Topeka",
+  "state": "ks",
+  "division_ocdid": "ocd-division/country:us/state:ks/place:topeka",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:ks/place:topeka/government",
+  "frozen_geographic_identifier": "place-2071000",
+  "run_asof": "2026-08-12T05:30:03Z",
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "6fad8428600fcfb14b93214ba72ba111f99739d8deb1e327f76bc566568421ad"
+}
