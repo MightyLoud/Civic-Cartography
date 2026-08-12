@@ -1,0 +1,57 @@
+name: Build MB100-092 Ada County independent projection
+
+on:
+  push:
+    branches:
+      - agent/mb100-092-ada-county-completion-repro
+
+permissions:
+  contents: write
+
+jobs:
+  project:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out reproduction branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/mb100-092-ada-county-completion-repro
+          fetch-depth: 0
+
+      - name: Independently insert exact Ada County completion row
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('evidence/measured-batch-100/completion-register.csv')
+          row = 'MB100-092,Ada County,id,dcafc14b0f2a399f5a05,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,HIGH,,ad72cd251e3dda57f520ab4e86ebbb6d0a227aeef2812a6f269a093d3421804e,c2e32760e60c4869ef7c11dc799950a16fc9d445bf2fd0fd77c7bfad2e4d74f7,b5b808e60b5a37d53839,b5b808e60b5a37d53839,2026-08-12T14:53:00Z,https://github.com/MightyLoud/Civic-Cartography/actions/runs/31609478377'
+          lines = path.read_text(encoding='utf-8').splitlines()
+          if not lines or not lines[0].startswith('target_id,'):
+              raise SystemExit('Completion-register header is missing')
+          if any(line.startswith('MB100-092,') for line in lines[1:]):
+              raise SystemExit('MB100-092 already exists')
+
+          insert_at = len(lines)
+          for index, line in enumerate(lines[1:], start=1):
+              current = int(line.split(',', 1)[0].split('-', 1)[1])
+              if current > 92:
+                  insert_at = index
+                  break
+          lines.insert(insert_at, row)
+          path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          PY
+          test "$(git hash-object evidence/measured-batch-100/completion-register.csv)" = "e06cfc732d836b18735a5115656d3fc412048f16"
+
+      - name: Commit independently reproduced projection
+        shell: bash
+        run: |
+          rm .github/workflows/build-mb100-092-ada-completion.yml
+          git config user.name "Civic Cartography"
+          git config user.email "civic-cartography@example.invalid"
+          git add evidence/measured-batch-100/completion-register.csv .github/workflows/build-mb100-092-ada-completion.yml
+          git diff --cached --check
+          test "$(git diff --cached --numstat | awk 'BEGIN{a=0;d=0}{a+=$1;d+=$2}END{print a":"d}')" = "1:0"
+          git commit -m "Reproduce MB100-092 Ada County completion evidence"
+          git push origin HEAD:"${GITHUB_REF_NAME}"
