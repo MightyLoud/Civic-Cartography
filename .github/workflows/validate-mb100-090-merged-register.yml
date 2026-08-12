@@ -1,0 +1,69 @@
+name: Validate MB100-090 merged register integrity
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-mb100-090-merged-register.yml"
+      - "evidence/measured-batch-100/completion-register.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+
+      - name: Verify merged Jefferson County register row
+        run: |
+          python - <<'PY'
+          import csv
+          import subprocess
+          from pathlib import Path
+
+          path = Path('evidence/measured-batch-100/completion-register.csv')
+          with path.open(newline='') as handle:
+              rows = list(csv.DictReader(handle))
+
+          jefferson = [row for row in rows if row['target_id'] == 'MB100-090']
+          if len(jefferson) != 1:
+              raise SystemExit(f'Expected exactly one MB100-090 row, found {len(jefferson)}')
+          row = jefferson[0]
+          expected = {
+              'jurisdiction_name': 'Jefferson County',
+              'state': 'al',
+              'evaluation_id': '9567d34670289efcd89b',
+              'raw_exists': 'TRUE',
+              'normalized_exists': 'TRUE',
+              'identifier_join_ok': 'TRUE',
+              'qa_ok': 'TRUE',
+              'parity_ok': 'TRUE',
+              'source_provenance_ok': 'TRUE',
+              'complete_ok': 'TRUE',
+              'confidence': 'HIGH',
+              'failed_gates': '',
+              'source_manifest_sha256': '64f3ade3afb1bab54ee821e650781f2ebaf58c7cea2a56ab9fc45dd0147fd101',
+              'manifest_sha256': '4bf6a87de62e5933ce0b7cc3a5e30fa636540e61fa37b80599ca904d28c8874d',
+              'first_run_id': '8868ec9fd4ed6db51741',
+              'second_run_id': '8868ec9fd4ed6db51741',
+              'run_asof': '2026-08-12T13:10:00Z',
+              'evidence_ref': 'https://github.com/MightyLoud/Civic-Cartography/actions/runs/31600102631',
+          }
+          mismatches = {key: (row.get(key), value) for key, value in expected.items() if row.get(key) != value}
+          if mismatches:
+              raise SystemExit(f'Jefferson County row mismatches: {mismatches}')
+
+          for target_id in ('MB100-095', 'MB100-097'):
+              retained = [item for item in rows if item['target_id'] == target_id]
+              if len(retained) != 1 or retained[0].get('complete_ok') != 'TRUE':
+                  raise SystemExit(f'Concurrent {target_id} row was not preserved exactly once and complete')
+
+          blob = subprocess.check_output(['git', 'hash-object', str(path)], text=True).strip()
+          expected_blob = '9a5477063810a2bb15469d4862053f6fb464b368'
+          if blob != expected_blob:
+              raise SystemExit(f'Register blob mismatch: {blob} != {expected_blob}')
+          print('Merged Jefferson County register integrity PASS')
+          PY
