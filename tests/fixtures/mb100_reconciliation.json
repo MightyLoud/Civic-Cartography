@@ -1,0 +1,11 @@
+{
+  "target_id": "MB100-083",
+  "frozen_name": "Lincoln",
+  "state": "ne",
+  "division_ocdid": "ocd-division/country:us/state:ne/place:lincoln",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:ne/place:lincoln/government",
+  "frozen_geographic_identifier": "place-3128000",
+  "run_asof": "2026-08-12T03:30:06Z",
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "639290455c14c451d7fbaeca8432c67be45c27aedb40520f55d22306f3d71aa2"
+}
