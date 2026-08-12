@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-095",
+  "frozen_name": "Cumberland County",
+  "state": "me",
+  "division_ocdid": "ocd-division/country:us/state:me/county:cumberland",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:me/county:cumberland/government",
+  "frozen_geographic_identifier": "county-23005",
+  "run_asof": "2026-08-12T06:39:32Z",
+  "prior_workbook_checksum": ""
+}
