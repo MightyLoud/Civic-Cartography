@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-096",
+  "frozen_name": "Jackson County",
+  "state": "mo",
+  "division_ocdid": "ocd-division/country:us/state:mo/county:jackson",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:mo/county:jackson/government",
+  "frozen_geographic_identifier": "county-29095",
+  "run_asof": "2026-08-12T20:45:13Z",
+  "prior_workbook_checksum": ""
+}
