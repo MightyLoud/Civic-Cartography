@@ -1,0 +1,66 @@
+name: Validate MB100-094 merged register integrity
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-mb100-094-merged-register.yml"
+      - "evidence/measured-batch-100/completion-register.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out exact post-merge validation head
+        uses: actions/checkout@v4
+
+      - name: Require exact merged Polk County register state
+        shell: bash
+        run: |
+          test "$(git hash-object evidence/measured-batch-100/completion-register.csv)" = "69d97edae23b44a5a873c2f7de9676e1b0b377d9"
+          test "$(sha256sum evidence/measured-batch-100/completion-register.csv | cut -d' ' -f1)" = "779cab7710a5488678d1f44b51c00bc5edbb96edc0412768dc7edc7bc4d1f69d"
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          path = Path('evidence/measured-batch-100/completion-register.csv')
+          with path.open(newline='', encoding='utf-8') as handle:
+              rows = list(csv.DictReader(handle))
+
+          expected = {
+              'target_id': 'MB100-094',
+              'jurisdiction_name': 'Polk County',
+              'state': 'ia',
+              'evaluation_id': '3cefb2bb86f07cc9f42e',
+              'raw_exists': 'TRUE',
+              'normalized_exists': 'TRUE',
+              'identifier_join_ok': 'TRUE',
+              'qa_ok': 'TRUE',
+              'parity_ok': 'TRUE',
+              'source_provenance_ok': 'TRUE',
+              'complete_ok': 'TRUE',
+              'confidence': 'HIGH',
+              'failed_gates': '',
+              'source_manifest_sha256': 'e8302704a8b79500f323936fb579e6252c84035d2460d32ef395a428db74ad7e',
+              'manifest_sha256': 'a7da512a5bdc03818505bc9aff506133dd008f3db308c734634952a54eddd696',
+              'first_run_id': '643ede05deb7d005630a',
+              'second_run_id': '643ede05deb7d005630a',
+              'run_asof': '2026-08-12T19:20:00Z',
+              'evidence_ref': 'https://github.com/MightyLoud/Civic-Cartography/actions/runs/31632291841',
+          }
+          target_rows = [row for row in rows if row.get('target_id') == 'MB100-094']
+          if target_rows != [expected]:
+              raise SystemExit(f'Unexpected MB100-094 register state: {target_rows!r}')
+
+          ids = [int(row['target_id'].split('-', 1)[1]) for row in rows]
+          if ids != sorted(ids) or len(ids) != len(set(ids)):
+              raise SystemExit('Completion register target IDs are not unique and sorted')
+
+          for target in ('MB100-090', 'MB100-091', 'MB100-092', 'MB100-093', 'MB100-095', 'MB100-097'):
+              retained = [row for row in rows if row.get('target_id') == target]
+              if len(retained) != 1 or retained[0].get('complete_ok') != 'TRUE':
+                  raise SystemExit(f'Concurrent retained row invalid: {target}')
+          PY
