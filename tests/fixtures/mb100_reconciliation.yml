@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-091 Hawaii County, Hawaii. This validates
+  the merged row against durable exact-head evidence.
+targets:
+  - target_id: MB100-091
+    jurisdiction_name: Hawaii County
+    state: hi
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:hi/county:hawaii
+    expected_archetype: AR-002
+    expected_classification: government
+    category: new_known_archetype
