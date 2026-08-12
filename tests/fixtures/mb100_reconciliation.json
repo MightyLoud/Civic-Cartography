@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-093",
+  "frozen_name": "Marion County",
+  "state": "in",
+  "division_ocdid": "ocd-division/country:us/state:in/county:marion",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:in/county:marion/government",
+  "frozen_geographic_identifier": "county-18097",
+  "run_asof": "2026-08-12T06:06:11Z",
+  "prior_workbook_checksum": ""
+}
