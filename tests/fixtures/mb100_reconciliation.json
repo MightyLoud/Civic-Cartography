@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-094",
+  "frozen_name": "Polk County",
+  "state": "ia",
+  "division_ocdid": "ocd-division/country:us/state:ia/county:polk",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:ia/county:polk/government",
+  "frozen_geographic_identifier": "county-19153",
+  "run_asof": "2026-08-12T19:20:00Z",
+  "prior_workbook_checksum": ""
+}
