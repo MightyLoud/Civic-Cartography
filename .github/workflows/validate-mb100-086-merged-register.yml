@@ -1,0 +1,68 @@
+name: Validate MB100-086 merged register integrity
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-mb100-086-merged-register.yml"
+      - "evidence/measured-batch-100/completion-register.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+
+      - name: Verify merged Savannah register row
+        run: |
+          python - <<'PY'
+          import csv
+          import subprocess
+          from pathlib import Path
+
+          path = Path('evidence/measured-batch-100/completion-register.csv')
+          with path.open(newline='') as handle:
+              rows = list(csv.DictReader(handle))
+
+          savannah = [row for row in rows if row['target_id'] == 'MB100-086']
+          if len(savannah) != 1:
+              raise SystemExit(f'Expected exactly one MB100-086 row, found {len(savannah)}')
+          row = savannah[0]
+          expected = {
+              'jurisdiction_name': 'Savannah',
+              'state': 'ga',
+              'evaluation_id': '188d06afe4fc60e5de56',
+              'raw_exists': 'TRUE',
+              'normalized_exists': 'TRUE',
+              'identifier_join_ok': 'TRUE',
+              'qa_ok': 'TRUE',
+              'parity_ok': 'TRUE',
+              'source_provenance_ok': 'TRUE',
+              'complete_ok': 'TRUE',
+              'confidence': 'HIGH',
+              'failed_gates': '',
+              'source_manifest_sha256': '46bc4570a6f71f0e6ec54a8ffc56453117b777543f63351cbb96b5d7eeb9835b',
+              'manifest_sha256': 'e3418885d044695c1f592d474e504858288b88faa6e17d59285d544cd3f519d4',
+              'first_run_id': 'ff15132f6f9e524db5a5',
+              'second_run_id': 'ff15132f6f9e524db5a5',
+              'run_asof': '2026-08-12T06:00:32Z',
+              'evidence_ref': 'https://github.com/MightyLoud/Civic-Cartography/actions/runs/31568521287',
+          }
+          mismatches = {key: (row.get(key), value) for key, value in expected.items() if row.get(key) != value}
+          if mismatches:
+              raise SystemExit(f'Savannah row mismatches: {mismatches}')
+
+          hawaii = [item for item in rows if item['target_id'] == 'MB100-091']
+          if len(hawaii) != 1 or hawaii[0].get('complete_ok') != 'TRUE':
+              raise SystemExit('Concurrent MB100-091 Hawaii County row was not preserved exactly once and complete')
+
+          blob = subprocess.check_output(['git', 'hash-object', str(path)], text=True).strip()
+          expected_blob = '7cb6f67d50245320c77caa865d33a5705c296428'
+          if blob != expected_blob:
+              raise SystemExit(f'Register blob mismatch: {blob} != {expected_blob}')
+          print('Merged Savannah register integrity PASS')
+          PY

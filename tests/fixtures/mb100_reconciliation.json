@@ -1,0 +1,11 @@
+{
+  "target_id": "MB100-086",
+  "frozen_name": "Savannah",
+  "state": "ga",
+  "division_ocdid": "ocd-division/country:us/state:ga/place:savannah",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:ga/place:savannah/government",
+  "frozen_geographic_identifier": "place-1369000",
+  "run_asof": "2026-08-12T06:00:32Z",
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "f929ffb20ca7edb63187ea3668a8a9d19acfac882b7ecc28ffcf414e39c24a89"
+}
