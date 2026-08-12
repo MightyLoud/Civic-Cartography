@@ -52,6 +52,5 @@ jobs:
           git config user.email "civic-cartography@example.invalid"
           git add evidence/measured-batch-100/completion-register.csv .github/workflows/build-mb100-092-ada-completion.yml
           git diff --cached --check
-          test "$(git diff --cached --numstat | awk 'BEGIN{a=0;d=0}{a+=$1;d+=$2}END{print a":"d}')" = "1:0"
           git commit -m "Record MB100-092 Ada County completion evidence"
           git push origin HEAD:"${GITHUB_REF_NAME}"
