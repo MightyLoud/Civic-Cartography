@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-097",
+  "frozen_name": "Yellowstone County",
+  "state": "mt",
+  "division_ocdid": "ocd-division/country:us/state:mt/county:yellowstone",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:mt/county:yellowstone/government",
+  "frozen_geographic_identifier": "county-30111",
+  "run_asof": "2026-08-12T13:06:44Z",
+  "prior_workbook_checksum": ""
+}
