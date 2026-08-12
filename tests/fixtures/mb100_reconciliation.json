@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-077",
+  "frozen_name": "Sacramento",
+  "state": "ca",
+  "division_ocdid": "ocd-division/country:us/state:ca/place:sacramento",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:ca/place:sacramento/government",
+  "frozen_geographic_identifier": "place-0664000",
+  "run_asof": "2026-08-12T02:15:04Z",
+  "prior_workbook_checksum": ""
+}
