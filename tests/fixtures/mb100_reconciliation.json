@@ -1,0 +1,11 @@
+{
+  "target_id": "MB100-078",
+  "frozen_name": "El Paso",
+  "state": "tx",
+  "division_ocdid": "ocd-division/country:us/state:tx/place:el_paso",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:tx/place:el_paso/government",
+  "frozen_geographic_identifier": "place-4824000",
+  "run_asof": "2026-08-12T02:38:53Z",
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "f22b43037460c2b96c2d8e6a82c10f212e62b1cdcdca63225f5ff50a416be3e4"
+}

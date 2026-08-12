@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-078 El Paso, Texas. This validates the
+  pending row against durable exact-head evidence.
+targets:
+  - target_id: MB100-078
+    jurisdiction_name: El Paso
+    state: tx
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:tx/place:el_paso
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
