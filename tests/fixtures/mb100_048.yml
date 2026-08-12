@@ -14,3 +14,5 @@ targets:
     expected_archetype: DISCOVERY — COUSUB-AS-PLACE
     expected_classification: government
     category: discovery
+
+# Temporary unmerged trigger for MB100-082 Appleton post-merge validation.
