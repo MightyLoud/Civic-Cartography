@@ -1,0 +1,11 @@
+{
+  "target_id": "MB100-099",
+  "frozen_name": "Essex County",
+  "state": "nj",
+  "division_ocdid": "ocd-division/country:us/state:nj/county:essex",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:nj/county:essex/government",
+  "frozen_geographic_identifier": "county-34013",
+  "run_asof": "2026-08-12T19:22:27Z",
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "4de211a256d0818d0435dfe857a6a5b48b51bab254da0ccb5d04db8953db6455"
+}
