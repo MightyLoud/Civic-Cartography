@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-095 Cumberland County, Maine. This validates
+  the pending row against durable exact-head evidence.
+targets:
+  - target_id: MB100-095
+    jurisdiction_name: Cumberland County
+    state: me
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:me/county:cumberland
+    expected_archetype: AR-002
+    expected_classification: government
+    category: new_known_archetype
