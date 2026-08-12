@@ -1,0 +1,11 @@
+{
+  "target_id": "MB100-087",
+  "frozen_name": "Provo",
+  "state": "ut",
+  "division_ocdid": "ocd-division/country:us/state:ut/place:provo",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:ut/place:provo/government",
+  "frozen_geographic_identifier": "place-4962470",
+  "run_asof": "2026-08-12T04:27:41Z",
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "e5d183ec983ccfc5957b977a76d9beabd8d9ce7c5fd0a5ba439287bb8cf1972c"
+}
