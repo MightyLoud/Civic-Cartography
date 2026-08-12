@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-090",
+  "frozen_name": "Jefferson County",
+  "state": "al",
+  "division_ocdid": "ocd-division/country:us/state:al/county:jefferson",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:al/county:jefferson/government",
+  "frozen_geographic_identifier": "county-01073",
+  "run_asof": "2026-08-12T13:10:00Z",
+  "prior_workbook_checksum": ""
+}
