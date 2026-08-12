@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-080 Toledo, Ohio. This validates the
+  pending even-lane row against durable exact-head evidence.
+targets:
+  - target_id: MB100-080
+    jurisdiction_name: Toledo
+    state: oh
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:oh/place:toledo
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype

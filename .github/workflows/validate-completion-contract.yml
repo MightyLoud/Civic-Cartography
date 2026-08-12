@@ -37,3 +37,5 @@ jobs:
 
       - name: Validate completion contract and register
         run: python -m pytest tests/test_completion_manifest.py tests/test_completion_register.py --color=yes
+
+# Temporary MB100-080 post-merge validation trigger; never merge.
