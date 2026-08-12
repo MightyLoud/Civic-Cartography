@@ -1,0 +1,74 @@
+name: Validate MB100-088 merged register integrity
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-mb100-088-merged-register.yml"
+      - "evidence/measured-batch-100/completion-register.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+
+      - name: Verify merged Miami register row
+        run: |
+          python - <<'PY'
+          import csv
+          import subprocess
+          from pathlib import Path
+
+          path = Path('evidence/measured-batch-100/completion-register.csv')
+          with path.open(newline='') as handle:
+              rows = list(csv.DictReader(handle))
+
+          miami = [row for row in rows if row['target_id'] == 'MB100-088']
+          if len(miami) != 1:
+              raise SystemExit(f'Expected exactly one MB100-088 row, found {len(miami)}')
+          row = miami[0]
+          expected = {
+              'jurisdiction_name': 'Miami',
+              'state': 'fl',
+              'evaluation_id': '967a0aa8bf219aa472d9',
+              'raw_exists': 'TRUE',
+              'normalized_exists': 'TRUE',
+              'identifier_join_ok': 'TRUE',
+              'qa_ok': 'TRUE',
+              'parity_ok': 'TRUE',
+              'source_provenance_ok': 'TRUE',
+              'complete_ok': 'TRUE',
+              'confidence': 'HIGH',
+              'failed_gates': '',
+              'source_manifest_sha256': '319588cfbe9945008e19de98b64945d8dc8695a861f902cd4acb356f044992de',
+              'manifest_sha256': 'e0ef3f2aa5ef953ccd4178c1e570f3e48945cb685d54cffd12dcec1513d23256',
+              'first_run_id': 'f505f9ac61805b931bd0',
+              'second_run_id': 'f505f9ac61805b931bd0',
+              'run_asof': '2026-08-12T06:34:10Z',
+              'evidence_ref': 'https://github.com/MightyLoud/Civic-Cartography/actions/runs/31570602885',
+          }
+          mismatches = {
+              key: (row.get(key), value)
+              for key, value in expected.items()
+              if row.get(key) != value
+          }
+          if mismatches:
+              raise SystemExit(f'Miami row mismatches: {mismatches}')
+
+          marion = [item for item in rows if item['target_id'] == 'MB100-093']
+          if len(marion) != 1 or marion[0].get('complete_ok') != 'TRUE':
+              raise SystemExit('Concurrent MB100-093 Marion County row was not preserved exactly once and complete')
+
+          blob = subprocess.check_output(
+              ['git', 'hash-object', str(path)], text=True
+          ).strip()
+          expected_blob = 'fb99dff105b41dbeb7d6ce4a8ab731f35a21f864'
+          if blob != expected_blob:
+              raise SystemExit(f'Register blob mismatch: {blob} != {expected_blob}')
+          print('Merged Miami register integrity PASS')
+          PY

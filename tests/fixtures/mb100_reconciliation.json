@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-088",
+  "frozen_name": "Miami",
+  "state": "fl",
+  "division_ocdid": "ocd-division/country:us/state:fl/place:miami",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:fl/place:miami/government",
+  "frozen_geographic_identifier": "place-1245000",
+  "run_asof": "2026-08-12T06:34:10Z",
+  "prior_workbook_checksum": ""
+}
