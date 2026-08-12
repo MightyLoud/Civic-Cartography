@@ -1,0 +1,11 @@
+{
+  "target_id": "MB100-079",
+  "frozen_name": "Pittsburgh",
+  "state": "pa",
+  "division_ocdid": "ocd-division/country:us/state:pa/place:pittsburgh",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:pa/place:pittsburgh/government",
+  "frozen_geographic_identifier": "place-4261000",
+  "run_asof": "2026-08-12T02:40:25Z",
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "82d04f70b5d3ba47f4e385ccc06caff9af442502db4faf67f8e054b9c512fb5e"
+}
