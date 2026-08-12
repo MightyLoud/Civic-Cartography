@@ -1,0 +1,11 @@
+{
+  "target_id": "MB100-098",
+  "frozen_name": "Hillsborough County",
+  "state": "nh",
+  "division_ocdid": "ocd-division/country:us/state:nh/county:hillsborough",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:nh/county:hillsborough/government",
+  "frozen_geographic_identifier": "county-33011",
+  "run_asof": "2026-08-12T21:32:31Z",
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "39a4bc255a18770f04b623983733f6d43928dbfb016831c3d54bc37d88f83dc8"
+}
