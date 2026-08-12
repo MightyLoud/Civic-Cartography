@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-085 Knoxville, Tennessee. This validates
+  the merged row against durable exact-head evidence.
+targets:
+  - target_id: MB100-085
+    jurisdiction_name: Knoxville
+    state: tn
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:tn/place:knoxville
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
