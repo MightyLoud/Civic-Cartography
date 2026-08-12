@@ -14,3 +14,5 @@ targets:
     expected_archetype: DISCOVERY — COUSUB-AS-PLACE
     expected_classification: government
     category: discovery
+
+# Temporary MB100-078 post-merge trigger; this branch must never merge.
