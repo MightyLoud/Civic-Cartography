@@ -1,0 +1,11 @@
+{
+  "target_id": "MB100-081",
+  "frozen_name": "Minneapolis",
+  "state": "mn",
+  "division_ocdid": "ocd-division/country:us/state:mn/place:minneapolis",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:mn/place:minneapolis/government",
+  "frozen_geographic_identifier": "place-2743000",
+  "run_asof": "2026-08-12T03:10:19Z",
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "1683ba1a8fe5eb7847e19d288ed84154aa233efe7037336b5e0e788c4f954fb8"
+}
