@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Full post-merge validation for Measured Batch 100 target MB100-096 Jackson
+  County, Missouri, against the exact merged completion-register head.
+targets:
+  - target_id: MB100-096
+    jurisdiction_name: Jackson County
+    state: mo
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:mo/county:jackson
+    expected_archetype: AR-002
+    expected_classification: government
+    category: new_known_archetype
