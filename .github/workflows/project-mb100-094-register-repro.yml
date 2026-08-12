@@ -1,0 +1,83 @@
+name: Project MB100-094 completion register reproduction
+
+on:
+  push:
+    branches:
+      - agent/mb100-094-polk-county-completion-repro
+    paths:
+      - ".github/workflows/project-mb100-094-register-repro.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  project:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out exact branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Independently insert exactly one governed Polk County row
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          path = Path('evidence/measured-batch-100/completion-register.csv')
+          with path.open(newline='') as handle:
+              reader = csv.DictReader(handle)
+              fieldnames = reader.fieldnames
+              rows = list(reader)
+
+          if not fieldnames:
+              raise SystemExit('completion register has no header')
+          if any(row['target_id'] == 'MB100-094' for row in rows):
+              raise SystemExit('MB100-094 already exists')
+          if [row['target_id'] for row in rows].count('MB100-092') != 1:
+              raise SystemExit('Ada County preservation precondition failed')
+
+          polk = dict.fromkeys(fieldnames, '')
+          polk.update({
+              'target_id': 'MB100-094',
+              'jurisdiction_name': 'Polk County',
+              'state': 'ia',
+              'evaluation_id': '3cefb2bb86f07cc9f42e',
+              'raw_exists': 'TRUE',
+              'normalized_exists': 'TRUE',
+              'identifier_join_ok': 'TRUE',
+              'qa_ok': 'TRUE',
+              'parity_ok': 'TRUE',
+              'source_provenance_ok': 'TRUE',
+              'complete_ok': 'TRUE',
+              'confidence': 'HIGH',
+              'source_manifest_sha256': 'e8302704a8b79500f323936fb579e6252c84035d2460d32ef395a428db74ad7e',
+              'manifest_sha256': 'a7da512a5bdc03818505bc9aff506133dd008f3db308c734634952a54eddd696',
+              'first_run_id': '643ede05deb7d005630a',
+              'second_run_id': '643ede05deb7d005630a',
+              'run_asof': '2026-08-12T19:20:00Z',
+              'evidence_ref': 'https://github.com/MightyLoud/Civic-Cartography/actions/runs/31632291841',
+          })
+          rows = sorted([*rows, polk], key=lambda row: int(row['target_id'].removeprefix('MB100-')))
+
+          with path.open('w', newline='') as handle:
+              writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator='\n')
+              writer.writeheader()
+              writer.writerows(rows)
+
+          if [row['target_id'] for row in rows].count('MB100-094') != 1:
+              raise SystemExit('Polk reproduction failed')
+          PY
+
+          test "$(git hash-object evidence/measured-batch-100/completion-register.csv)" = "69d97edae23b44a5a873c2f7de9676e1b0b377d9"
+          test "$(sha256sum evidence/measured-batch-100/completion-register.csv | cut -d' ' -f1)" = "779cab7710a5488678d1f44b51c00bc5edbb96edc0412768dc7edc7bc4d1f69d"
+          git diff --check
+
+      - name: Commit exact independent projection
+        run: |
+          git config user.name "Civic Cartography"
+          git config user.email "civic-cartography@example.invalid"
+          git add evidence/measured-batch-100/completion-register.csv
+          git commit -m "Reproduce MB100-094 Polk County completion evidence"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
