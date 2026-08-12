@@ -1,0 +1,10 @@
+{
+  "target_id": "MB100-092",
+  "frozen_name": "Ada County",
+  "state": "id",
+  "division_ocdid": "ocd-division/country:us/state:id/county:ada",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:id/county:ada/government",
+  "frozen_geographic_identifier": "county-16001",
+  "run_asof": "2026-08-12T14:53:00Z",
+  "prior_workbook_checksum": ""
+}

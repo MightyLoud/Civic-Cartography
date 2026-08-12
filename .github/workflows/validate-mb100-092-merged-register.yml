@@ -1,0 +1,65 @@
+name: Validate MB100-092 merged register integrity
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/validate-mb100-092-merged-register.yml"
+      - "evidence/measured-batch-100/completion-register.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out exact post-merge validation head
+        uses: actions/checkout@v4
+
+      - name: Require exact merged Ada County register state
+        shell: bash
+        run: |
+          test "$(git hash-object evidence/measured-batch-100/completion-register.csv)" = "e06cfc732d836b18735a5115656d3fc412048f16"
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          path = Path('evidence/measured-batch-100/completion-register.csv')
+          with path.open(newline='', encoding='utf-8') as handle:
+              rows = list(csv.DictReader(handle))
+
+          expected = {
+              'target_id': 'MB100-092',
+              'jurisdiction_name': 'Ada County',
+              'state': 'id',
+              'evaluation_id': 'dcafc14b0f2a399f5a05',
+              'raw_exists': 'TRUE',
+              'normalized_exists': 'TRUE',
+              'identifier_join_ok': 'TRUE',
+              'qa_ok': 'TRUE',
+              'parity_ok': 'TRUE',
+              'source_provenance_ok': 'TRUE',
+              'complete_ok': 'TRUE',
+              'confidence': 'HIGH',
+              'failed_gates': '',
+              'source_manifest_sha256': 'ad72cd251e3dda57f520ab4e86ebbb6d0a227aeef2812a6f269a093d3421804e',
+              'manifest_sha256': 'c2e32760e60c4869ef7c11dc799950a16fc9d445bf2fd0fd77c7bfad2e4d74f7',
+              'first_run_id': 'b5b808e60b5a37d53839',
+              'second_run_id': 'b5b808e60b5a37d53839',
+              'run_asof': '2026-08-12T14:53:00Z',
+              'evidence_ref': 'https://github.com/MightyLoud/Civic-Cartography/actions/runs/31609478377',
+          }
+          target_rows = [row for row in rows if row.get('target_id') == 'MB100-092']
+          if target_rows != [expected]:
+              raise SystemExit(f'Unexpected MB100-092 register state: {target_rows!r}')
+
+          ids = [int(row['target_id'].split('-', 1)[1]) for row in rows]
+          if ids != sorted(ids) or len(ids) != len(set(ids)):
+              raise SystemExit('Completion register target IDs are not unique and sorted')
+
+          for target in ('MB100-090', 'MB100-091', 'MB100-093', 'MB100-095', 'MB100-097'):
+              retained = [row for row in rows if row.get('target_id') == target]
+              if len(retained) != 1 or retained[0].get('complete_ok') != 'TRUE':
+                  raise SystemExit(f'Concurrent retained row invalid: {target}')
+          PY
