@@ -1,0 +1,11 @@
+{
+  "target_id": "MB100-091",
+  "frozen_name": "Hawaii County",
+  "state": "hi",
+  "division_ocdid": "ocd-division/country:us/state:hi/county:hawaii",
+  "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:hi/county:hawaii/government",
+  "frozen_geographic_identifier": "county-15001",
+  "run_asof": "2026-08-12T05:31:06Z",
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "cfb6c5921b1f9ac504bdd93fe3b1dfaf11bedce8d9d3741534e9fe17824f4322"
+}
