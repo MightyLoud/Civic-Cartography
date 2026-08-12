@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-086 Savannah, Georgia. This validates
+  the pending row against durable exact-head evidence.
+targets:
+  - target_id: MB100-086
+    jurisdiction_name: Savannah
+    state: ga
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ga/place:savannah
+    expected_archetype: AR-001
+    expected_classification: government
+    category: new_known_archetype
