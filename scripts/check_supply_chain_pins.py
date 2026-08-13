@@ -32,7 +32,12 @@ for path in sorted(WORKFLOWS.glob("*.yml")):
             if ref not in ALLOWED_ACTIONS:
                 errors.append(f"{path}:{number}: unapproved or mutable action ref: {ref}")
         if re.search(r"\b(?:python -m )?pip install\b", stripped):
-            if " -r requirements-ci.txt" not in stripped:
+            direct_install = " -r requirements-ci.txt" in stripped
+            locked_install = bool(re.fullmatch(
+                r"run:\s+python -m pip install --require-hashes -r /tmp/requirements-ci\.generated\.lock",
+                stripped,
+            ))
+            if not (direct_install or locked_install):
                 errors.append(f"{path}:{number}: ad-hoc pip install: {stripped}")
         if "python-version:" in stripped and not re.search(r"python-version:\s*['\"]3\.12\.11['\"]", stripped):
             errors.append(f"{path}:{number}: Python runtime is not exactly 3.12.11")
