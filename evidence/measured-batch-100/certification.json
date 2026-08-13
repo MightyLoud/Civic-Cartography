@@ -63,7 +63,7 @@
     "repository": "MightyLoud/Civic-Cartography",
     "main_commit": "9440188ed766da8d9ec20f39ef781efad970a59c",
     "completion_register_blob": "97514a9789545a3757e8908dec192becea1f99ec",
-    "completion_register_target_count": 100,
+    "completion_register_explicit_record_count": 60,
     "completion_register_mb100_100_count": 1,
     "completion_pr": 411,
     "deterministic_reproduction_pr": 410,
