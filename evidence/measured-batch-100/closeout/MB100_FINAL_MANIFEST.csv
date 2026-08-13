@@ -1,0 +1,101 @@
+target_id,jurisdiction_name,state,target_type,expected_archetype,expected_classification,row_role,target_key,source_identity,selection_reason
+MB100-001,Seattle,WA,place,AR-001,government,REGRESSION CONTROL,ocd-division/country:us/state:wa/place:seattle,place-5363000,Unchanged municipal fixture
+MB100-002,Tacoma,WA,place,AR-001,government,REGRESSION CONTROL,ocd-division/country:us/state:wa/place:tacoma,place-5370000,Second unchanged municipal fixture
+MB100-003,Pierce County,WA,county,AR-002,government,REGRESSION CONTROL,ocd-division/country:us/state:wa/county:pierce,county-53053,Unchanged county fixture
+MB100-004,Colorado Springs School District 11,CO,school district,AR-003,school_system,REGRESSION CONTROL,ocd-division/country:us/state:co/county:el_paso/school_district:colorado_springs_school_district_no._11,GEOID 0803060,Unchanged school-system fixture
+MB100-005,Regional Transportation District,CO,transit authority,AR-004,transit_authority,REGRESSION CONTROL,lookup:Regional Transportation District,PID6 143592 / GIDID 06401680300000,Unchanged transit override fixture
+MB100-006,City and County of Denver,CO,coextensive place/county,AR-005,government,REGRESSION CONTROL,ocd-division/country:us/state:co/place:denver,place-0820000 / county-08031,Unchanged coextensive fixture
+MB100-007,Spokane,WA,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:wa/place:spokane,place-5367000,Previously successful municipality; first timed non-control reuse
+MB100-008,Albuquerque,NM,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:nm/place:albuquerque,place-3502000,Southwest municipality with exact place GEOID
+MB100-009,Boston,MA,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ma/place:boston,place-2507000,New England city and official-name normalization
+MB100-010,Phoenix,AZ,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:az/place:phoenix,place-0455000,Large municipal place in a previously measured state
+MB100-011,San Antonio,TX,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:tx/place:san_antonio,place-4865000,"One governing place spanning Bexar, Comal, and Medina counties"
+MB100-012,Charlotte,NC,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:nc/place:charlotte,place-3712000,Southeastern municipality with exact state/name disambiguation
+MB100-013,Columbus,OH,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:oh/place:columbus,place-3918000,Three-county place and same-name cross-state collision
+MB100-014,Detroit,MI,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:mi/place:detroit,place-2622000,Large Michigan city and city-label normalization
+MB100-015,Milwaukee,WI,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:wi/place:milwaukee,place-5553000,Three-county place and ward-rich city
+MB100-016,Omaha,NE,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ne/place:omaha,place-3137000,New Plains state and exact municipal identity
+MB100-017,Wichita,KS,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ks/place:wichita,place-2079000,Place/cousub duplicate geography; governing place must win
+MB100-018,Memphis,TN,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:tn/place:memphis,place-4748000,Same-name cross-state collision
+MB100-019,Raleigh,NC,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:nc/place:raleigh,place-3755000,One governing place spanning Durham and Wake counties
+MB100-020,Atlanta,GA,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ga/place:atlanta,place-1304000,One governing place spanning DeKalb and Fulton counties
+MB100-021,Salt Lake City,UT,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ut/place:salt_lake_city,place-4967000,Official name includes City suffix
+MB100-022,King County,WA,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:wa/county:king,county-53033,Large county in the fixture state
+MB100-023,Cuyahoga County,OH,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:oh/county:cuyahoga,county-39035,Charter-county variation
+MB100-024,Miami-Dade County,FL,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:fl/county:miami-dade,county-12086,Hyphenated canonical county identity
+MB100-025,Allegheny County,PA,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:pa/county:allegheny,county-42003,County executive/council variation
+MB100-026,Cook County,IL,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:il/county:cook,county-17031,Large Midwestern county and deep nested geography
+MB100-027,Dallas County,TX,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:tx/county:dallas,county-48113,Same-name cross-state county collision
+MB100-028,Fulton County,GA,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:ga/county:fulton,county-13121,Same-name cross-state county collision
+MB100-029,Hennepin County,MN,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:mn/county:hennepin,county-27053,Large county linked to a prior municipal proof
+MB100-030,Denver Public Schools,CO,school district,AR-003,school_system,MEASURED — KNOWN,ocd-division/country:us/state:co/county:denver/school_district:denver_1,GEOID 0800245 / state ID 16010,Exact master name Denver 1 and human-facing naming variant
+MB100-031,Seattle Public Schools,WA,school district,AR-003,school_system,MEASURED — KNOWN,ocd-division/country:us/state:wa/county:king/school_district:seattle_public_schools,GEOID 5307710 / state ID 17001,School system in the municipal fixture state
+MB100-032,Clark County School District,NV,school district,AR-003,school_system,MEASURED — KNOWN,ocd-division/country:us/state:nv/county:clark/school_district:clark_county_school_district,GEOID 3200060 / state ID 02,Large unified district and leading-zero state ID
+MB100-033,Albuquerque Public Schools,NM,school district,AR-003,school_system,MEASURED — KNOWN,ocd-division/country:us/state:nm/county:bernalillo/school_district:albuquerque_public_schools,GEOID 3500060 / state ID 001,Leading-zero state ID and city/district pairing
+MB100-034,Boston Public Schools,MA,school district,AR-003,school_system,MEASURED — KNOWN,ocd-division/country:us/state:ma/county:suffolk/school_district:boston,GEOID 2502790 / state ID 0035,Short exact master label and leading-zero state ID
+MB100-035,Atlanta Public Schools,GA,school district,AR-003,school_system,MEASURED — KNOWN,ocd-division/country:us/state:ga/county:fulton/school_district:atlanta_public_schools,GEOID 1300120 / state ID 761,District inside a two-county municipal context
+MB100-036,Houston Independent School District,TX,school district,AR-003,school_system,MEASURED — KNOWN,ocd-division/country:us/state:tx/county:harris/school_district:houston_isd,GEOID 4823640 / state ID 101912,Large independent school district and ISD abbreviation
+MB100-037,Philadelphia City School District,PA,school district,AR-003,school_system,MEASURED — KNOWN,ocd-division/country:us/state:pa/county:philadelphia/school_district:philadelphia_city_sd,GEOID 4218990 / state ID 126515001,City school-district abbreviation and county-equivalent ancestor
+MB100-038,Bay Area Rapid Transit District,CA,transit authority,AR-004,transit_authority,MEASURED — KNOWN,lookup:Bay Area Rapid Transit District,PID6 100767 / GIDID 05400190500000,Validated Census-backed override; second timed transit pathway
+MB100-039,City and County of San Francisco,CA,coextensive place/county,AR-005,government,MEASURED — KNOWN,ocd-division/country:us/state:ca/place:san_francisco,place-0667000 / county-06075,Maintained coextensive alias and one-government deduplication
+MB100-040,City and County of Broomfield,CO,coextensive place/county,AR-005,government,MEASURED — KNOWN,ocd-division/country:us/state:co/place:broomfield,place-0809280 / county-08014,Second maintained coextensive alias
+MB100-041,Metropolitan Water Reclamation District,IL,special-purpose district,AR-D01,special_purpose_district,MEASURED — KNOWN,ocd-division/country:us/state:il/sewer:mwrd,UPSTREAM OCD sewer:mwrd,Exact upstream special-district segment already proven
+MB100-042,Port of Seattle,WA,special-purpose district,AR-D01,special_purpose_district,MEASURED — KNOWN,lookup:Port of Seattle,PID6 158973 / GIDID 48401711400000,Validated Census-backed special-district override
+MB100-043,Metropolitan Government of Nashville and Davidson County,TN,consolidated metro government,AR-D02,government,MEASURED — KNOWN,ocd-division/country:us/state:tn/county:davidson,county-47037,Validated consolidated-government rule
+MB100-044,Orleans Parish,LA,county-equivalent,DISCOVERY — PARISH,government,MEASURED — DISCOVERY,ocd-division/country:us/state:la/parish:orleans,county-equivalent-22071,Carry the unresolved parish segment into the bounded discovery slice
+MB100-045,Regional Transit Authority,IL,transit authority,DISCOVERY — TRANSIT SEGMENT,transit_authority,MEASURED — DISCOVERY,ocd-division/country:us/state:il/transit:rta,UPSTREAM OCD transit:rta,Carry the remaining native transit-routing gap
+MB100-046,Castaic Lake Water Agency,CA,special-purpose district,DISCOVERY — WATER SEGMENT,special_purpose_district,MEASURED — DISCOVERY,ocd-division/country:us/state:ca/county:los_angeles/water:castaic_lake_water_agency,UPSTREAM OCD water:castaic_lake_water_agency / successor SCV Water (2018),Legacy native water route requires successor-identity mapping
+MB100-047,Louisville–Jefferson County Metro Government,KY,consolidated metro government,DISCOVERY — CONSOLIDATED IDENTITY,government,MEASURED — DISCOVERY,ocd-division/country:us/state:ky/county:jefferson,county-21111 / place-2148006,Carry the remaining consolidated legal-identity gap
+MB100-048,Greenwich Town,CT,county subdivision / town,DISCOVERY — COUSUB-AS-PLACE,government,MEASURED — DISCOVERY,ocd-division/country:us/state:ct/place:greenwich,cousub-0919033620 / statistical place-0933690,Active Connecticut town paired with a separate statistical Greenwich CDP
+MB100-049,Baltimore City,MD,independent city,DISCOVERY — INDEPENDENT CITY ALIAS,government,MEASURED — DISCOVERY,ocd-division/country:us/state:md/place:baltimore,place-2404000 / county-equivalent-24510,Independent-city reverse alias without conflating Baltimore County
+MB100-050,San Juan Municipio,PR,territory municipio,DISCOVERY — TERRITORY MUNICIPIO,government,MEASURED — DISCOVERY,ocd-division/country:us/territory:pr/municipio:san_juan,county-equivalent-72127,Territory and municipio segments outside the state/county path
+MB100-051,Birmingham,AL,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:al/place:birmingham,place-0107000,Adds first MB100 municipal coverage for Alabama; multi-county place.
+MB100-052,Fairbanks,AK,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ak/place:fairbanks,place-0224230,Adds first MB100 municipal coverage for Alaska.
+MB100-053,Little Rock,AR,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ar/place:little_rock,place-0541000,Adds first MB100 municipal coverage for Arkansas.
+MB100-054,Wilmington,DE,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:de/place:wilmington,place-1077580,Adds first MB100 municipal coverage for Delaware.
+MB100-055,Boise City,ID,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:id/place:boise_city,place-1608830,Tests the official Census name Boise City against the common government name Boise.
+MB100-056,Fort Wayne,IN,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:in/place:fort_wayne,place-1825000,Adds first MB100 municipal coverage for Indiana.
+MB100-057,Des Moines,IA,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ia/place:des_moines,place-1921000,Adds first MB100 municipal coverage for Iowa; multi-county place.
+MB100-058,Portland,ME,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:me/place:portland,place-2360545,Adds first MB100 municipal coverage for Maine.
+MB100-059,Jackson,MS,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ms/place:jackson,place-2836000,Adds first MB100 municipal coverage for Mississippi; multi-county place.
+MB100-060,Kansas City,MO,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:mo/place:kansas_city,place-2938000,Adds first MB100 municipal coverage for Missouri; four-county place.
+MB100-061,Billings,MT,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:mt/place:billings,place-3006550,Adds first MB100 municipal coverage for Montana.
+MB100-062,Manchester,NH,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:nh/place:manchester,place-3345140,Adds first MB100 municipal coverage for New Hampshire.
+MB100-063,Newark,NJ,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:nj/place:newark,place-3451000,Adds first MB100 municipal coverage for New Jersey.
+MB100-064,Buffalo,NY,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ny/place:buffalo,place-3611000,Adds first MB100 municipal coverage for New York without New York City complexity.
+MB100-065,Fargo,ND,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:nd/place:fargo,place-3825700,Adds first MB100 municipal coverage for North Dakota.
+MB100-066,Oklahoma City,OK,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ok/place:oklahoma_city,place-4055000,Adds first MB100 municipal coverage for Oklahoma; four-county place.
+MB100-067,Portland,OR,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:or/place:portland,place-4159000,Adds first MB100 municipal coverage for Oregon; three-county place.
+MB100-068,Providence,RI,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ri/place:providence,place-4459000,Adds first MB100 municipal coverage for Rhode Island.
+MB100-069,Charleston,SC,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:sc/place:charleston,place-4513330,Adds first MB100 municipal coverage for South Carolina; multi-county place.
+MB100-070,Sioux Falls,SD,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:sd/place:sioux_falls,place-4659020,Adds first MB100 municipal coverage for South Dakota; multi-county place.
+MB100-071,Burlington,VT,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:vt/place:burlington,place-5010675,Adds first MB100 municipal coverage for Vermont.
+MB100-072,Richmond,VA,independent city,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:va/place:richmond,place-5167000 / county-equivalent-51760,Retests the independent-city alias rule generalized from Baltimore.
+MB100-073,Charleston,WV,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:wv/place:charleston,place-5414600,Adds first MB100 municipal coverage for West Virginia.
+MB100-074,Cheyenne,WY,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:wy/place:cheyenne,place-5613900,Adds first MB100 municipal coverage for Wyoming.
+MB100-075,"Washington, District of Columbia",DC,federal district / coextensive city,DISCOVERY — FEDERAL DISTRICT IDENTITY,government,MEASURED — DISCOVERY,ocd-division/country:us/district:dc,place-1150000 / county-equivalent-11001,Tests federal-district and coextensive-city identity outside the state path.
+MB100-076,Las Vegas,NV,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:nv/place:las_vegas,place-3240000,Adds a municipal counterpart to the Nevada school-district sample.
+MB100-077,Sacramento,CA,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ca/place:sacramento,place-0664000,Extends California coverage with an ordinary incorporated place.
+MB100-078,El Paso,TX,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:tx/place:el_paso,place-4824000,Adds a second Texas municipal scale sample.
+MB100-079,Pittsburgh,PA,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:pa/place:pittsburgh,place-4261000,Adds a Pennsylvania municipal counterpart to Allegheny County.
+MB100-080,Toledo,OH,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:oh/place:toledo,place-3977000,Adds a second Ohio municipal scale sample.
+MB100-081,Minneapolis,MN,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:mn/place:minneapolis,place-2743000,Adds a Minnesota municipal counterpart to Hennepin County.
+MB100-082,Appleton,WI,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:wi/place:appleton,place-5502375,Tests an ordinary Wisconsin place spanning three counties.
+MB100-083,Lincoln,NE,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ne/place:lincoln,place-3128000,Adds a second Nebraska municipal scale sample.
+MB100-084,Topeka,KS,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ks/place:topeka,place-2071000,Adds a second Kansas municipal scale sample.
+MB100-085,Knoxville,TN,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:tn/place:knoxville,place-4740000,Adds an ordinary Tennessee place beside the Nashville metro edge case.
+MB100-086,Savannah,GA,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ga/place:savannah,place-1369000,Adds a second Georgia municipal scale sample.
+MB100-087,Provo,UT,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:ut/place:provo,place-4962470,Adds a second Utah municipal scale sample.
+MB100-088,Miami,FL,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:fl/place:miami,place-1245000,Adds a Florida municipal counterpart to Miami-Dade County.
+MB100-089,Springfield,IL,place,AR-001,government,MEASURED — KNOWN,ocd-division/country:us/state:il/place:springfield,place-1772000,Extends Illinois coverage with an ordinary incorporated place.
+MB100-090,Jefferson County,AL,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:al/county:jefferson,county-01073,Adds AR-002 county coverage in Alabama.
+MB100-091,Hawaii County,HI,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:hi/county:hawaii,county-15001,"Adds first MB100 coverage for Hawaii, where county government is the relevant local layer."
+MB100-092,Ada County,ID,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:id/county:ada,county-16001,Adds AR-002 county coverage in Idaho.
+MB100-093,Marion County,IN,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:in/county:marion,county-18097,Tests a county participating in Indianapolis consolidated-government geography.
+MB100-094,Polk County,IA,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:ia/county:polk,county-19153,Adds AR-002 county coverage in Iowa.
+MB100-095,Cumberland County,ME,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:me/county:cumberland,county-23005,Adds AR-002 county coverage in Maine.
+MB100-096,Jackson County,MO,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:mo/county:jackson,county-29095,Pairs Kansas City with one of its principal counties.
+MB100-097,Yellowstone County,MT,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:mt/county:yellowstone,county-30111,Adds AR-002 county coverage in Montana.
+MB100-098,Hillsborough County,NH,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:nh/county:hillsborough,county-33011,Adds AR-002 county coverage in New Hampshire.
+MB100-099,Essex County,NJ,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:nj/county:essex,county-34013,Pairs Newark with its county and extends New Jersey coverage.
+MB100-100,Multnomah County,OR,county,AR-002,government,MEASURED — KNOWN,ocd-division/country:us/state:or/county:multnomah,county-41051,Pairs Portland with its principal county and extends Oregon coverage.
