@@ -1,6 +1,10 @@
 # Direct CI inputs. Exact versions are enforced by scripts/check_supply_chain_pins.py.
-# D-137 remains open until a transitive, hash-verified lock is generated and clean-CI verified.
+# A generated transitive lock must be committed as requirements-ci.lock before LIC-G5 can pass.
 -r requirements-dev.txt
+pip==25.2
+pip-tools==7.5.1
+pip-audit==2.9.0
+pip-licenses==5.5.5
 uv==0.8.11
 shapely==2.1.1
 pyshp==2.3.1
