@@ -38,11 +38,11 @@ jobs:
         shell: bash
         run: |
           set +e
-          export CUSTOM_COMPILE_COMMAND='python -m piptools compile --generate-hashes --resolver=backtracking --strip-extras --no-allow-unsafe --output-file=requirements-ci.lock requirements-ci.txt'
+          export CUSTOM_COMPILE_COMMAND='python -m piptools compile --generate-hashes --resolver=backtracking --strip-extras --allow-unsafe --output-file=requirements-ci.lock requirements-ci.txt'
           rm -f /tmp/requirements-ci.generated.lock /tmp/requirements-ci.generated.second.lock
-          python -m piptools compile --generate-hashes --resolver=backtracking --strip-extras --no-allow-unsafe --output-file=/tmp/requirements-ci.generated.lock requirements-ci.txt
+          python -m piptools compile --generate-hashes --resolver=backtracking --strip-extras --allow-unsafe --output-file=/tmp/requirements-ci.generated.lock requirements-ci.txt
           first=$?
-          python -m piptools compile --generate-hashes --resolver=backtracking --strip-extras --no-allow-unsafe --output-file=/tmp/requirements-ci.generated.second.lock requirements-ci.txt
+          python -m piptools compile --generate-hashes --resolver=backtracking --strip-extras --allow-unsafe --output-file=/tmp/requirements-ci.generated.second.lock requirements-ci.txt
           second=$?
           cmp -s /tmp/requirements-ci.generated.lock /tmp/requirements-ci.generated.second.lock
           same=$?
@@ -58,8 +58,29 @@ jobs:
         shell: bash
         run: |
           python -m pip inspect --local > evidence/licensing/lic-g5/pip-inspect.json
-          pip-licenses --format=json --with-license-file > evidence/licensing/lic-g5/python-licenses.json
-          pip-licenses --format=markdown --with-license-file > evidence/licensing/lic-g5/THIRD_PARTY_NOTICES.md
+          pip-licenses --format=json --with-license-file --with-system > evidence/licensing/lic-g5/python-licenses.json
+          pip-licenses --format=markdown --with-license-file --with-system > evidence/licensing/lic-g5/THIRD_PARTY_NOTICES.md
+          python - <<'PY'
+          import json
+          from importlib import metadata
+          from pathlib import Path
+          path = Path('evidence/licensing/lic-g5/python-licenses.json')
+          rows = json.loads(path.read_text())
+          known = {row['Name'].lower().replace('_', '-').replace('.', '-') for row in rows}
+          for dist in metadata.distributions():
+              name = dist.metadata.get('Name', '')
+              normalized = name.lower().replace('_', '-').replace('.', '-')
+              if name and normalized not in known:
+                  rows.append({
+                      'Name': name,
+                      'Version': dist.version,
+                      'License': dist.metadata.get('License') or 'NOASSERTION',
+                      'LicenseFile': '',
+                      'LicenseText': '',
+                  })
+                  known.add(normalized)
+          path.write_text(json.dumps(sorted(rows, key=lambda row: row['Name'].lower()), indent=2) + '\n')
+          PY
 
       - name: Validate every workflow YAML file
         id: yaml
