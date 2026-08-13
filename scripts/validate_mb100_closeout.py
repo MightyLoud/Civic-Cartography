@@ -273,6 +273,10 @@ def validate_static() -> dict[str, Any]:
 
     yaml_manifest = yaml.safe_load((CLOSEOUT / "MB100_FINAL_MANIFEST.yml").read_text())
     require(yaml_manifest["version"] == 1 and len(yaml_manifest["targets"]) == 100, "YAML manifest invalid")
+    require(
+        yaml_manifest.get("run_asof") == "2026-08-13T01:42:43Z",
+        "YAML manifest run_asof must remain the frozen ISO-8601 string",
+    )
     yaml_by_id = {r["target_id"]: r for r in yaml_manifest["targets"]}
     require(list(yaml_by_id) == EXPECTED_IDS, "YAML manifest order/IDs differ")
     for row in manifest:

@@ -3,7 +3,7 @@ name: mb100_final_100
 description: >-
   Frozen MB100 closeout manifest generated from Measured Batch 100!A:J at the
   certified main state 9440188ed766da8d9ec20f39ef781efad970a59c.
-run_asof: 2026-08-13T01:42:43Z
+run_asof: "2026-08-13T01:42:43Z"
 targets:
   - target_id: "MB100-001"
     jurisdiction_name: "Seattle"
