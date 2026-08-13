@@ -1,0 +1,15 @@
+version: 1
+name: mb100_reconciliation
+description: >-
+  Measured Batch 100 target MB100-100 Multnomah County, Oregon. This validates
+  the pending row against durable exact-head evidence.
+targets:
+  - target_id: MB100-100
+    jurisdiction_name: Multnomah County
+    state: or
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:or/county:multnomah
+    expected_archetype: AR-002
+    expected_classification: government
+    category: new_known_archetype
