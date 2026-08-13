@@ -396,11 +396,14 @@ targets:
     expected_classification: "government"
     category: new_known_archetype
   - target_id: "MB100-044"
-    jurisdiction_name: "Orleans Parish"
+    jurisdiction_name: "City of New Orleans"
     state: "la"
     selector:
-      type: ocdid
-      value: "ocd-division/country:us/state:la/parish:orleans"
+      type: alias_group
+      members:
+        - "ocd-division/country:us/state:la/parish:orleans"
+        - "ocd-division/country:us/state:la/place:new_orleans"
+      canonical_rule: maintained_alias
     expected_archetype: "DISCOVERY — PARISH"
     expected_classification: "government"
     category: discovery

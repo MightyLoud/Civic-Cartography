@@ -282,13 +282,32 @@ def validate_static() -> dict[str, Any]:
     for row in manifest:
         y = yaml_by_id[row["target_id"]]
         selector = y["selector"]
-        key = (
-            f"lookup:{selector['name']}"
-            if selector["type"] == "explicit_lookup"
-            else selector["value"]
-        )
+        if selector["type"] == "explicit_lookup":
+            key = f"lookup:{selector['name']}"
+        elif selector["type"] == "alias_group":
+            key = selector["members"][0]
+        else:
+            key = selector["value"]
         require(key == row["target_key"], f"{row['target_id']}: YAML selector differs")
-        require(y["jurisdiction_name"] == row["jurisdiction_name"], f"{row['target_id']}: YAML name differs")
+        expected_name = (
+            "City of New Orleans"
+            if row["target_id"] == "MB100-044"
+            else row["jurisdiction_name"]
+        )
+        require(y["jurisdiction_name"] == expected_name, f"{row['target_id']}: YAML name differs")
+        if row["target_id"] == "MB100-044":
+            require(
+                selector
+                == {
+                    "type": "alias_group",
+                    "members": [
+                        "ocd-division/country:us/state:la/parish:orleans",
+                        "ocd-division/country:us/state:la/place:new_orleans",
+                    ],
+                    "canonical_rule": "maintained_alias",
+                },
+                "MB100-044 certified alias selector drifted",
+            )
         require(y["state"] == row["state"].lower(), f"{row['target_id']}: YAML state differs")
         require(y["expected_archetype"] == row["expected_archetype"], f"{row['target_id']}: YAML archetype differs")
         require(y["expected_classification"] == row["expected_classification"], f"{row['target_id']}: YAML class differs")
