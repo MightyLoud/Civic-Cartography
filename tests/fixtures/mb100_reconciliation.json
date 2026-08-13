@@ -6,5 +6,6 @@
   "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:or/county:multnomah/government",
   "frozen_geographic_identifier": "county-41051",
   "run_asof": "2026-08-13T01:42:43Z",
-  "prior_workbook_checksum": ""
+  "prior_workbook_checksum": "",
+  "expected_current_checksum": "3360855bb78889145eea8a8c4545d088c89124ee31711541d75683d7feab3e76"
 }
