@@ -1,0 +1,81 @@
+name: Materialize MB100-100 completion register
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/materialize-mb100-100-register.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Append canonical MB100-100 row
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          path = Path('evidence/measured-batch-100/completion-register.csv')
+          with path.open(newline='') as handle:
+              reader = csv.DictReader(handle)
+              fieldnames = reader.fieldnames
+              rows = list(reader)
+
+          assert fieldnames is not None
+          assert sum(row['target_id'] == 'MB100-100' for row in rows) == 0
+
+          rows.append({
+              'target_id': 'MB100-100',
+              'jurisdiction_name': 'Multnomah County',
+              'state': 'or',
+              'evaluation_id': '89928cda6ad41ce333e3',
+              'raw_exists': 'TRUE',
+              'normalized_exists': 'TRUE',
+              'identifier_join_ok': 'TRUE',
+              'qa_ok': 'TRUE',
+              'parity_ok': 'TRUE',
+              'source_provenance_ok': 'TRUE',
+              'complete_ok': 'TRUE',
+              'confidence': 'HIGH',
+              'failed_gates': '',
+              'source_manifest_sha256': '3d6d2221a64216f29199b1ed7b925d897ad2c87a1e8ac567f665518c111790d8',
+              'manifest_sha256': 'b79f7ae5945b4a87d27e61a61e27ed9a19c2369bf35ecce2130b19fc6e28b399',
+              'first_run_id': '7c2231c0bd35adfa5188',
+              'second_run_id': '7c2231c0bd35adfa5188',
+              'run_asof': '2026-08-13T01:42:43Z',
+              'evidence_ref': 'https://github.com/MightyLoud/Civic-Cartography/actions/runs/31658600741',
+          })
+          rows.sort(key=lambda row: int(row['target_id'].split('-')[1]))
+
+          with path.open('w', newline='') as handle:
+              writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator='\n')
+              writer.writeheader()
+              writer.writerows(rows)
+
+          assert sum(row['target_id'] == 'MB100-100' for row in rows) == 1
+          PY
+
+      - name: Verify one-row scope
+        run: |
+          git diff --check
+          test "$(git diff --numstat -- evidence/measured-batch-100/completion-register.csv | awk '{print $1}')" = "1"
+          test "$(git diff --numstat -- evidence/measured-batch-100/completion-register.csv | awk '{print $2}')" = "0"
+          test "$(grep -c '^MB100-100,' evidence/measured-batch-100/completion-register.csv)" = "1"
+          git hash-object evidence/measured-batch-100/completion-register.csv
+
+      - name: Commit materialized register
+        run: |
+          git config user.name "Civic Cartography"
+          git config user.email "civic-cartography@example.invalid"
+          git add evidence/measured-batch-100/completion-register.csv
+          git commit -m "Materialize MB100-100 completion register"
+          git push origin HEAD:${{ github.head_ref }}
