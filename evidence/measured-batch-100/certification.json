@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "certification_decision_id": "D-094",
+  "certified_on": "2026-08-12",
+  "batch_id": "MB100",
+  "status": "CERTIFIED_COMPLETE_HOLD_AT_100",
+  "workbook": {
+    "spreadsheet_id": "1YtpyYfLIWmo0zzv1urmET9HNZKlgzaWtRwJnxzGh350",
+    "title": "CivicData.tech Program Command Center",
+    "target_count": 100,
+    "strict_complete_count": 100,
+    "pass_count": 100,
+    "pending_count": 0,
+    "fail_count": 0,
+    "completion_gap_count": 0,
+    "regression_control_count": 6,
+    "regression_control_pass_count": 6,
+    "explicit_complete_count": 60,
+    "legacy_proxy_complete_count": 40,
+    "checksum_complete_count": 100,
+    "portfolio_tracked_pass_count": 100,
+    "measured_target_count": 94,
+    "timestamp_complete_count": 94,
+    "formula_error_sweep": {
+      "measured_batch_100": 0,
+      "system_state": 0,
+      "error_types_checked": [
+        "#REF!",
+        "#VALUE!",
+        "#N/A",
+        "#DIV/0!"
+      ]
+    }
+  },
+  "promotion": {
+    "gate_count": 8,
+    "gate_pass_count": 7,
+    "decision": "HOLD_AT_100",
+    "expansion_authorized": false,
+    "timer_integrity_exception": {
+      "status": "ACCEPTED_FOR_INTERNAL_CERTIFICATION_ONLY",
+      "strict_pass_count": 77,
+      "measured_target_count": 94,
+      "exception_count": 17,
+      "timestamp_sets_complete": 94,
+      "timestamps_modified": false,
+      "expansion_gate_waived": false,
+      "reason": "Historical parallel-lane execution windows remain false under the strict non-overlap formula and are preserved as immutable audit evidence."
+    }
+  },
+  "release_readiness": {
+    "external_acceptance": "PARKED",
+    "licensing_and_attribution": "PARTIAL"
+  },
+  "execution_lock": {
+    "status": "RELEASED_MB100_CERTIFIED",
+    "owner": null,
+    "active_target": null,
+    "historical_token": "MB100-LOCK-20260807-2357-MT-R4",
+    "writes_authorized": false
+  },
+  "frozen_evidence": {
+    "repository": "MightyLoud/Civic-Cartography",
+    "main_commit": "9440188ed766da8d9ec20f39ef781efad970a59c",
+    "completion_register_blob": "97514a9789545a3757e8908dec192becea1f99ec",
+    "completion_register_target_count": 100,
+    "completion_register_mb100_100_count": 1,
+    "completion_pr": 411,
+    "deterministic_reproduction_pr": 410,
+    "register_reproduction_pr": 412,
+    "postmerge_validation_pr": 414,
+    "postmerge_repository_check_count": 23,
+    "postmerge_repository_checks_passed": 23,
+    "postmerge_run_id": 31659635647,
+    "postmerge_artifact_id": 9165707029,
+    "postmerge_artifact_digest": "sha256:7f14751063165b895cbf899a545ccb3932597ad93ae8f2da77287bfd71fc4dfb"
+  },
+  "final_target": {
+    "target_id": "MB100-100",
+    "name": "Multnomah County",
+    "state": "or",
+    "division_ocdid": "ocd-division/country:us/state:or/county:multnomah",
+    "jurisdiction_ocdid": "ocd-jurisdiction/country:us/state:or/county:multnomah/government",
+    "geographic_identifier": "county-41051",
+    "canonical_jurisdiction_id": "jur-us-or-multnomah-county",
+    "evaluation_id": "89928cda6ad41ce333e3",
+    "deterministic_run_id": "7c2231c0bd35adfa5188",
+    "checksum": "3360855bb78889145eea8a8c4545d088c89124ee31711541d75683d7feab3e76",
+    "canonical_evidence_run_id": 31658600741
+  },
+  "next_authorized_action": "Resolve licensing and attribution and external acceptance. Any expansion requires a new decision, frozen manifest, and execution lock."
+}
