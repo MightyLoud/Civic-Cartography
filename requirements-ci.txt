@@ -1,0 +1,9 @@
+# Direct CI inputs. Exact versions are enforced by scripts/check_supply_chain_pins.py.
+# D-137 remains open until a transitive, hash-verified lock is generated and clean-CI verified.
+-r requirements-dev.txt
+uv==0.8.11
+shapely==2.1.1
+pyshp==2.3.1
+pyproj==3.7.2
+pillow==11.3.0
+PyMuPDF==1.26.3
