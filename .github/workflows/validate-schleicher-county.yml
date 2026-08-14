@@ -8,10 +8,12 @@ on:
       - "data/normalized/schleicher_county_elected_offices.csv"
       - "data/geojson/schleicher_county_*.geojson"
       - "docs/jurisdictions/schleicher-county-tx.md"
+      - "scripts/compare_schleicher_derivation.py"
       - "scripts/derive_schleicher_commissioner_precincts.py"
       - "scripts/validate_schleicher_live_pages.py"
       - "scripts/validate_schleicher_sources.py"
       - "tests/test_schleicher_county_roster.py"
+      - "tests/test_schleicher_derivation_compare.py"
       - "tests/test_schleicher_live_pages.py"
   workflow_dispatch:
 
@@ -49,11 +51,13 @@ jobs:
             --output build/schleicher-county/commissioners/geojson/schleicher_county_commissioner_precincts.geojson \
             --contract-output build/schleicher-county/commissioners/gis-source-contract.json \
             --evidence-output build/schleicher-county/commissioners/derivation-evidence.json
-      - name: Verify committed Commissioner snapshots and contract
+      - name: Verify committed Commissioner snapshots and renderer-stable contract
         run: |
           cmp data/raw/schleicher-county/commissioner-precincts-1-4.geojson build/schleicher-county/commissioners/raw/commissioner-precincts-1-4.geojson
           cmp data/geojson/schleicher_county_commissioner_precincts.geojson build/schleicher-county/commissioners/geojson/schleicher_county_commissioner_precincts.geojson
-          cmp data/raw/schleicher-county/gis-source-contract.json build/schleicher-county/commissioners/gis-source-contract.json
+          python scripts/compare_schleicher_derivation.py \
+            --committed-contract data/raw/schleicher-county/gis-source-contract.json \
+            --fresh-contract build/schleicher-county/commissioners/gis-source-contract.json
       - name: Fetch current county boundary
         run: |
           python scripts/fetch_tigerweb_county.py \
