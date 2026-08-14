@@ -1,0 +1,129 @@
+name: Validate LIC-G5 Supply Chain
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lic-g5:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Prepare evidence directory
+        run: mkdir -p evidence/licensing/lic-g5
+
+      - name: Install pinned evidence tooling
+        run: |
+          python -m pip install --upgrade "pip==25.2"
+          python -m pip install "pip-tools==7.5.1" "pip-audit==2.9.0" "pip-licenses==5.5.5"
+
+      - name: Generate deterministic hashed lock
+        id: lock
+        shell: bash
+        run: |
+          set +e
+          export CUSTOM_COMPILE_COMMAND='python -m piptools compile --generate-hashes --resolver=backtracking --strip-extras --no-allow-unsafe --output-file=requirements-dev.lock requirements-dev.txt'
+          rm -f /tmp/requirements-dev.generated.lock /tmp/requirements-dev.generated.second.lock
+          python -m piptools compile --generate-hashes --resolver=backtracking --strip-extras --no-allow-unsafe --output-file=/tmp/requirements-dev.generated.lock requirements-dev.txt
+          first=$?
+          python -m piptools compile --generate-hashes --resolver=backtracking --strip-extras --no-allow-unsafe --output-file=/tmp/requirements-dev.generated.second.lock requirements-dev.txt
+          second=$?
+          cmp -s /tmp/requirements-dev.generated.lock /tmp/requirements-dev.generated.second.lock
+          same=$?
+          if [[ $first -eq 0 && $second -eq 0 && $same -eq 0 ]]; then code=0; else code=1; fi
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          cp /tmp/requirements-dev.generated.lock evidence/licensing/lic-g5/requirements-dev.generated.lock 2>/dev/null || true
+          exit 0
+
+      - name: Install exact locked dependencies
+        run: python -m pip install --require-hashes -r /tmp/requirements-dev.generated.lock
+
+      - name: Retain dependency graph and license evidence
+        shell: bash
+        run: |
+          python -m pip inspect --local > evidence/licensing/lic-g5/pip-inspect.json
+          pip-licenses --format=json --with-license-file > evidence/licensing/lic-g5/python-licenses.json
+          pip-licenses --format=markdown --with-license-file > evidence/licensing/lic-g5/THIRD_PARTY_NOTICES.md
+
+      - name: Validate every workflow YAML file
+        id: yaml
+        shell: bash
+        run: |
+          set +e
+          python - <<'PY' > evidence/licensing/lic-g5/workflow-yaml-validation.log 2>&1
+          from pathlib import Path
+          import yaml
+          paths=sorted(Path('.github/workflows').glob('*.y*ml'))
+          for path in paths:
+              with path.open(encoding='utf-8') as handle: yaml.safe_load(handle)
+          print(f'validated={len(paths)}')
+          PY
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Audit the exact lock
+        id: audit
+        shell: bash
+        run: |
+          set +e
+          python -m pip_audit -r /tmp/requirements-dev.generated.lock --format=json --output=evidence/licensing/lic-g5/pip-audit.json --progress-spinner off
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Run full repository regression suite
+        id: pytest
+        shell: bash
+        run: |
+          set +e
+          set -o pipefail
+          python -m pytest --color=yes 2>&1 | tee evidence/licensing/lic-g5/pytest.log
+          code=${PIPESTATUS[0]}
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build fail-closed LIC-G5 evidence
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          LOCK_EXIT: ${{ steps.lock.outputs.exit_code }}
+          YAML_EXIT: ${{ steps.yaml.outputs.exit_code }}
+          PYTEST_EXIT: ${{ steps.pytest.outputs.exit_code }}
+        run: python scripts/lic_g5_evidence.py
+
+      - name: Upload LIC-G5 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lic-g5-supply-chain-evidence
+          path: evidence/licensing/lic-g5
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Enforce LIC-G5 gate
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          evidence=json.loads(Path('evidence/licensing/lic-g5/lic-g5-evidence.json').read_text())
+          failed=[k for k,v in evidence['checks'].items() if not v]
+          if failed: raise SystemExit('LIC-G5 remains OPEN: '+', '.join(failed))
+          print('LIC-G5 PASS')
+          PY
