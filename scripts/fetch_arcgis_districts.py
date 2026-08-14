@@ -12,10 +12,7 @@ from typing import Any
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-USER_AGENT = (
-    "Civic-Cartography/0.1 "
-    "(+https://github.com/MightyLoud/Civic-Cartography)"
-)
+USER_AGENT = "Mozilla/5.0 Civic-Cartography-validator/1.0"
 VOLATILE_FIELD_NAMES = {
     "OBJECTID",
     "OID",
@@ -150,8 +147,51 @@ def normalize_polygon_geometry(geometry: dict[str, Any]) -> dict[str, Any]:
     return {"type": "MultiPolygon", "coordinates": polygons}
 
 
+def _read_json_response(response: Any, *, method: str, url: str) -> dict[str, Any]:
+    body = response.read()
+    try:
+        decoded = body.decode("utf-8-sig")
+        payload = json.loads(decoded)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        preview = " ".join(body[:240].decode("utf-8", errors="replace").split())
+        content_type = ""
+        headers = getattr(response, "headers", None)
+        if headers is not None:
+            content_type = str(headers.get("Content-Type", ""))
+        raise ValueError(
+            f"ArcGIS {method} returned non-JSON content from {url}; "
+            f"content_type={content_type!r}; preview={preview!r}"
+        ) from exc
+    if not isinstance(payload, dict):
+        raise ValueError(
+            f"ArcGIS {method} response from {url} must be a JSON object"
+        )
+    return payload
+
+
+def _validate_feature_collection(
+    payload: dict[str, Any], *, method: str, url: str
+) -> None:
+    features = payload.get("features")
+    if payload.get("type") != "FeatureCollection" or not isinstance(features, list):
+        error = payload.get("error")
+        suffix = f"; error={error!r}" if error is not None else ""
+        raise ValueError(
+            f"ArcGIS {method} response from {url} must be a GeoJSON "
+            f"FeatureCollection{suffix}"
+        )
+    if not features:
+        raise ValueError(f"ArcGIS {method} response from {url} contained no features")
+
+
 def fetch_layer(layer_url: str) -> tuple[dict[str, Any], str]:
-    """Fetch all layer features as WGS84 GeoJSON."""
+    """Fetch all layer features as WGS84 GeoJSON.
+
+    ArcGIS installations occasionally return an HTML or truncated body to a
+    long GET query while the same query succeeds as form-encoded POST. Both
+    transports request the identical parameters. The function still fails
+    closed unless one returns a valid, non-empty GeoJSON FeatureCollection.
+    """
     query_url = f"{layer_url.rstrip('/')}/query"
     params = {
         "where": "1=1",
@@ -160,17 +200,50 @@ def fetch_layer(layer_url: str) -> tuple[dict[str, Any], str]:
         "outSR": "4326",
         "f": "geojson",
     }
-    request_url = f"{query_url}?{urlencode(params)}"
-    request = Request(request_url, headers={"User-Agent": USER_AGENT})
-    with urlopen(request, timeout=60) as response:
-        payload = json.load(response)
+    encoded = urlencode(params)
+    request_url = f"{query_url}?{encoded}"
+    common_headers = {
+        "User-Agent": USER_AGENT,
+        "Accept": "application/geo+json, application/json",
+        "Accept-Encoding": "identity",
+    }
+    requests = [
+        (
+            "GET",
+            Request(request_url, headers=common_headers, method="GET"),
+        ),
+        (
+            "POST",
+            Request(
+                query_url,
+                data=encoded.encode("ascii"),
+                headers={
+                    **common_headers,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                method="POST",
+            ),
+        ),
+    ]
 
-    features = payload.get("features")
-    if payload.get("type") != "FeatureCollection" or not isinstance(features, list):
-        raise ValueError("ArcGIS response must be a GeoJSON FeatureCollection")
-    if not features:
-        raise ValueError("ArcGIS response contained no features")
-    return payload, request_url
+    errors: list[str] = []
+    for method, request in requests:
+        try:
+            with urlopen(request, timeout=60) as response:
+                payload = _read_json_response(
+                    response, method=method, url=request.full_url
+                )
+            _validate_feature_collection(
+                payload, method=method, url=request.full_url
+            )
+            return payload, request_url
+        except Exception as exc:
+            errors.append(f"{method}: {exc}")
+
+    raise ValueError(
+        "ArcGIS query failed through both equivalent transports: "
+        + " | ".join(errors)
+    )
 
 
 def infer_district_field(
