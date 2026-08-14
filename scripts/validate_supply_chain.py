@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 """Fail closed when LIC-G5 supply-chain controls regress."""
-
 from __future__ import annotations
 
 import json
 import re
 from pathlib import Path
-
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW_DIR = ROOT / ".github" / "workflows"
@@ -14,11 +12,17 @@ LOCK = ROOT / "requirements-dev.lock"
 DIRECT = ROOT / "requirements-dev.txt"
 NOTICE = ROOT / "THIRD_PARTY_NOTICES.md"
 SBOM = ROOT / "sbom.cdx.json"
+BUILDER = ROOT / "scripts" / "build_supply_chain_artifacts.py"
+SHIMS = (ROOT / "fitz.py", ROOT / "scripts" / "fitz.py")
 
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 ACTION = re.compile(r"\buses:\s*([^@\s]+)@([^\s#]+)")
 PINNED_OPENSTATES = "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
 ALLOWED_INSTALL = "python -m pip install --require-hashes -r requirements-dev.lock"
+
+
+def normalize(value: str) -> str:
+    return re.sub(r"[-_.]+", "-", value).lower()
 
 
 def package_blocks(text: str) -> list[str]:
@@ -38,7 +42,7 @@ def package_blocks(text: str) -> list[str]:
 
 def main() -> int:
     errors: list[str] = []
-    required = [WORKFLOW_DIR, LOCK, DIRECT, NOTICE, SBOM]
+    required = [WORKFLOW_DIR, LOCK, DIRECT, NOTICE, SBOM, BUILDER, *SHIMS]
     for path in required:
         if not path.exists():
             errors.append(f"missing required control: {path.relative_to(ROOT)}")
@@ -59,32 +63,51 @@ def main() -> int:
             if "cache-dependency-path: requirements-dev.txt" in stripped:
                 errors.append(f"{path}:{number}: cache still points to ranged manifest")
         if re.search(r"\b(?:pymupdf|fitz)\b", text, re.IGNORECASE):
-            errors.append(f"{path}: PyMuPDF install/reference remains")
+            errors.append(f"{path}: PyMuPDF/fitz workflow reference remains")
 
     direct_lines = [
         line.strip()
         for line in DIRECT.read_text(encoding="utf-8").splitlines()
         if line.strip() and not line.lstrip().startswith("#")
     ]
+    direct_names: set[str] = set()
     for line in direct_lines:
-        if not re.fullmatch(r"[A-Za-z0-9_.-]+==[^\s;]+", line):
+        match = re.fullmatch(r"([A-Za-z0-9_.-]+)==([^\s;]+)", line)
+        if not match:
             errors.append(f"requirements-dev.txt is not exact: {line}")
+        else:
+            direct_names.add(normalize(match.group(1)))
 
     lock_text = LOCK.read_text(encoding="utf-8")
     blocks = package_blocks(lock_text)
+    lock_names: set[str] = set()
     if not blocks:
         errors.append("requirements-dev.lock has no exact package records")
     for block in blocks:
         first = block.splitlines()[0]
-        if not re.fullmatch(r"[A-Za-z0-9_.-]+==[^\s\\]+\s*\\?", first):
+        match = re.fullmatch(r"([A-Za-z0-9_.-]+)==([^\s\\]+)\s*\\?", first)
+        if not match:
             errors.append(f"non-exact lock record: {first}")
+        else:
+            lock_names.add(normalize(match.group(1)))
         if "--hash=sha256:" not in block:
             errors.append(f"lock record has no integrity hash: {first}")
-    if re.search(r"\b(?:pymupdf|fitz)\b", lock_text, re.IGNORECASE):
+    if not direct_names <= lock_names:
+        errors.append(f"direct requirements missing from lock: {sorted(direct_names-lock_names)}")
+    if "pytest" in lock_names:
+        pytest_match = re.search(r"^pytest==([0-9.]+)", lock_text, re.MULTILINE)
+        version = tuple(int(item) for item in (pytest_match.group(1) if pytest_match else "0").split("."))
+        if not ((9, 0, 3) <= version < (10, 0, 0)):
+            errors.append(f"pytest is outside the fixed line: {version}")
+    else:
+        errors.append("pytest missing from lock")
+    if "pypdfium2" not in lock_names:
+        errors.append("pypdfium2 compatibility dependency missing from lock")
+    if "pymupdf" in lock_names:
         errors.append("PyMuPDF remains in the exact lock")
 
     notice_text = NOTICE.read_text(encoding="utf-8")
-    for marker in ("OpenStates", "AGPL", PINNED_OPENSTATES, "PyMuPDF"):
+    for marker in ("OpenStates", "AGPL", PINNED_OPENSTATES, "PyMuPDF", "pypdfium2", "PDFium"):
         if marker not in notice_text:
             errors.append(f"third-party notice missing marker: {marker}")
 
@@ -92,15 +115,24 @@ def main() -> int:
         sbom = json.loads(SBOM.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         errors.append(f"invalid CycloneDX SBOM: {exc}")
-    else:
-        components = sbom.get("components", [])
-        if len(components) != len(blocks):
-            errors.append(
-                f"SBOM/lock mismatch: {len(components)} components, {len(blocks)} lock records"
-            )
-        names = {str(item.get("name", "")).lower() for item in components}
-        if "pymupdf" in names:
-            errors.append("PyMuPDF remains in the SBOM")
+        sbom = {"components": []}
+    components = sbom.get("components", [])
+    if len(components) != len(blocks):
+        errors.append(f"SBOM/lock mismatch: {len(components)} components, {len(blocks)} lock records")
+    sbom_names = {normalize(str(item.get("name", ""))) for item in components}
+    if sbom_names != lock_names:
+        errors.append(
+            f"SBOM package set mismatch: missing={sorted(lock_names-sbom_names)} extra={sorted(sbom_names-lock_names)}"
+        )
+    if "pypdfium2" not in sbom_names:
+        errors.append("pypdfium2 missing from SBOM")
+    if "pymupdf" in sbom_names:
+        errors.append("PyMuPDF remains in the SBOM")
+
+    for shim in SHIMS:
+        text = shim.read_text(encoding="utf-8")
+        if "pypdfium2" not in text or "PyMuPDF" not in text:
+            errors.append(f"compatibility shim is not explicit: {shim.relative_to(ROOT)}")
 
     if PINNED_OPENSTATES not in workflow_text:
         errors.append("pinned OpenStates revision is no longer retained")
@@ -116,8 +148,7 @@ def main() -> int:
     print(
         "LIC-G5 supply-chain controls: PASS "
         f"({len(list(WORKFLOW_DIR.glob('*.y*ml')))} workflows; "
-        f"{len(blocks)} hash-locked packages; "
-        f"{len(sbom['components'])} SBOM components)"
+        f"{len(blocks)} hash-locked packages; {len(components)} SBOM components)"
     )
     return 0
 
