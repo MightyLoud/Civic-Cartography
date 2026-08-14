@@ -47,6 +47,24 @@ def require(page:str|None,url:str,markers:tuple[str,...])->None:
     missing=[marker for marker in markers if searchable(marker) not in text]
     if missing: raise SystemExit(f"{url} lost markers: {missing}")
 
+def fetch_contract_page(url:str,markers:tuple[str,...])->str|None:
+    """Retry HTTP 200 pages that are incomplete before failing the marker contract."""
+    last_error:SystemExit|None=None
+    for attempt in range(1,4):
+        page=fetch(url)
+        if page is None:
+            return None
+        try:
+            require(page,url,markers)
+            return page
+        except SystemExit as exc:
+            last_error=exc
+            if attempt<3:
+                time.sleep(attempt*3)
+    if last_error is not None:
+        raise last_error
+    raise AssertionError("Schleicher page contract retry ended unexpectedly")
+
 def committed()->None:
     with ROSTER.open(newline="",encoding="utf-8") as handle:
         rows=list(csv.DictReader(handle))
@@ -148,9 +166,8 @@ def live()->None:
     ]
     accessible=0
     for url,markers in contracts:
-        page=fetch(url)
+        page=fetch_contract_page(url,markers)
         accessible+=page is not None
-        require(page,url,markers)
     print(f"Validated {accessible} live Schleicher County page contract(s).")
 
 def main()->None:
