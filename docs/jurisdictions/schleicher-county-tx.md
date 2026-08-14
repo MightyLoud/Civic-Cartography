@@ -12,9 +12,11 @@ Schleicher County is modeled as a bounded nine-office county release:
 - Sheriff — Jason Chatham
 - County and District Clerk — Marsha L. Maskill
 - Tax Assessor-Collector — Vanessa Covarrubiaz
-- County Treasurer — Jennifer L. Henderson
+- County Treasurer — Cassandra Buitron
 
 County Attorney, District Attorney, district judge, justice of the peace, constable, and other court or appointed offices remain explicit non-scope evidence.
+
+The County Treasurer page was refreshed on August 13, 2026. It identifies Cassandra Buitron, replacing the previously retained Jennifer L. Henderson record. The page does not establish a succession date, election event, or reason for the change, so none is inferred.
 
 ## Combined-clerk structure
 
