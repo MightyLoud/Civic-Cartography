@@ -26,50 +26,7 @@ jobs:
         run: python -m pip install --require-hashes -r requirements-dev.lock
 
       - name: Validate Tarrant County ArcGIS metadata hierarchy
-        run: |
-          python - <<'PY'
-          import json
-          import time
-          import urllib.request
-
-          urls = {
-              'controlling': 'https://mapit.tarrantcounty.com/arcgis/rest/services/BondProject/BondProjects/MapServer/3?f=json',
-              'general': 'https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/CommissionerPrecinct/MapServer/0?f=json',
-              'stale_2010': 'https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/CommPct_Outline/MapServer?f=json',
-          }
-
-          def fetch(url):
-              request = urllib.request.Request(url, headers={'User-Agent': 'Civic-Cartography-validator/1.0'})
-              last_error = None
-              for attempt in range(1, 6):
-                  try:
-                      with urllib.request.urlopen(request, timeout=45) as response:
-                          return json.load(response)
-                  except Exception as exc:
-                      last_error = exc
-                      if attempt == 5:
-                          raise
-                      time.sleep(attempt * 5)
-              raise last_error
-
-          controlling = fetch(urls['controlling'])
-          general = fetch(urls['general'])
-          stale = fetch(urls['stale_2010'])
-
-          description = str(controlling.get('description') or '')
-          if 'June 3rd 2025' not in description and 'June 3, 2025' not in description:
-              raise SystemExit(f'Controlling layer lost effective-date description: {description!r}')
-          if controlling.get('geometryType') != 'esriGeometryPolygon':
-              raise SystemExit(f'Unexpected controlling geometry type: {controlling.get("geometryType")!r}')
-          controlling_fields = {field.get('name') for field in controlling.get('fields', [])}
-          general_fields = {field.get('name') for field in general.get('fields', [])}
-          if 'District_N' not in controlling_fields or 'District_N' not in general_fields:
-              raise SystemExit('Tarrant County District_N field is missing from an official layer.')
-          stale_text = ' '.join(str(stale.get(key) or '') for key in ('serviceDescription', 'description', 'mapName'))
-          if '2010' not in stale_text:
-              raise SystemExit(f'Explicit 2010 stale-service marker is missing: {stale_text!r}')
-          print('Tarrant County ArcGIS metadata hierarchy matches the release contract.')
-          PY
+        run: python scripts/validate_tarrant_arcgis_metadata.py
 
       - name: Fetch controlling June 3 2025 Tarrant County precinct layer
         run: |

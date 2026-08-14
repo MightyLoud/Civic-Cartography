@@ -8,9 +8,11 @@ on:
       - "data/normalized/gillespie_county_elected_offices.csv"
       - "data/geojson/gillespie_county_*.geojson"
       - "docs/jurisdictions/gillespie-county-tx.md"
+      - "scripts/compare_gillespie_derivation.py"
       - "scripts/derive_gillespie_commissioner_precincts.py"
       - "scripts/validate_gillespie_sources.py"
       - "tests/test_gillespie_county_roster.py"
+      - "tests/test_gillespie_derivation_compare.py"
   workflow_dispatch:
 
 permissions:
@@ -40,11 +42,15 @@ jobs:
             --output build/gillespie-county/derived/geojson/gillespie_county_commissioner_precincts.geojson \
             --contract-output build/gillespie-county/derived/gis-source-contract.json \
             --evidence-output build/gillespie-county/derived/derivation-evidence.json
-      - name: Verify committed Commissioner snapshots and contract
+      - name: Verify renderer-stable Commissioner snapshots and contract
         run: |
-          cmp data/raw/gillespie-county/commissioner-precincts-1-4.geojson build/gillespie-county/derived/raw/commissioner-precincts-1-4.geojson
-          cmp data/geojson/gillespie_county_commissioner_precincts.geojson build/gillespie-county/derived/geojson/gillespie_county_commissioner_precincts.geojson
-          cmp data/raw/gillespie-county/gis-source-contract.json build/gillespie-county/derived/gis-source-contract.json
+          python scripts/compare_gillespie_derivation.py \
+            --committed-raw data/raw/gillespie-county/commissioner-precincts-1-4.geojson \
+            --fresh-raw build/gillespie-county/derived/raw/commissioner-precincts-1-4.geojson \
+            --committed-canonical data/geojson/gillespie_county_commissioner_precincts.geojson \
+            --fresh-canonical build/gillespie-county/derived/geojson/gillespie_county_commissioner_precincts.geojson \
+            --committed-contract data/raw/gillespie-county/gis-source-contract.json \
+            --fresh-contract build/gillespie-county/derived/gis-source-contract.json
       - name: Fetch current county boundary
         run: |
           python scripts/fetch_tigerweb_county.py \
