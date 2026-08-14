@@ -81,6 +81,12 @@ def canonical_target_checksum(result: dict[str, Any]) -> str:
 
 
 def validate_static() -> dict[str, Any]:
+    fixture_launcher = (ROOT / "scripts" / "check_regression_fixtures.py").read_text()
+    require(
+        "REPO_ROOT = Path(__file__).resolve().parents[1]" in fixture_launcher
+        and "sys.path.insert(0, str(REPO_ROOT))" in fixture_launcher,
+        "regression fixture launcher must bootstrap the repository root",
+    )
     freeze = json.loads((CLOSEOUT / "MB100_CLOSEOUT_FREEZE.json").read_text())
     require(freeze["frozen_main_commit"] == FROZEN_MAIN, "frozen main changed")
     require(
