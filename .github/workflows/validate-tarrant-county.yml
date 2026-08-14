@@ -3,6 +3,7 @@ name: Validate Tarrant County Commissioners Court
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -26,13 +27,13 @@ jobs:
         run: python -m pip install -r requirements-dev.txt
 
       - name: Validate Tarrant County ArcGIS metadata hierarchy
-        run: python scripts/validate_tarrant_arcgis_metadata.py
+        run: python scripts/validate_tarrant_arcgis_metadata_resilient.py
 
       - name: Fetch controlling June 3 2025 Tarrant County precinct layer
         run: |
           for attempt in 1 2 3 4 5; do
             rm -rf build/tarrant-county/effective-2025
-            if python scripts/fetch_arcgis_districts.py \
+            if python scripts/fetch_tarrant_arcgis_districts_resilient.py \
               --layer-url https://mapit.tarrantcounty.com/arcgis/rest/services/BondProject/BondProjects/MapServer/3 \
               --district-ids 1,2,3,4 \
               --district-field District_N \
@@ -57,7 +58,7 @@ jobs:
         run: |
           for attempt in 1 2 3 4 5; do
             rm -rf build/tarrant-county/general-layer
-            if python scripts/fetch_arcgis_districts.py \
+            if python scripts/fetch_tarrant_arcgis_districts_resilient.py \
               --layer-url https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/CommissionerPrecinct/MapServer/0 \
               --district-ids 1,2,3,4 \
               --district-field District_N \
@@ -178,6 +179,7 @@ jobs:
 
       - name: Upload Tarrant County validation check
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: tarrant-county-validation
           path: build/tarrant-county/
