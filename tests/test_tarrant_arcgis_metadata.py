@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import copy
 import json
 
 import pytest
@@ -64,7 +63,7 @@ def test_controlling_nonblank_contradictory_description_fails() -> None:
     payload = controlling_payload()
     payload["description"] = "Boundaries effective January 1, 2024."
 
-    with pytest.raises(ValueError, match="contradictory"):
+    with pytest.raises(metadata.MetadataContradiction, match="contradictory"):
         metadata.validate_controlling(payload)
 
 
@@ -73,7 +72,7 @@ def test_controlling_blank_description_does_not_hide_fingerprint_change() -> Non
     payload["description"] = ""
     payload["copyrightText"] = "Planning"
 
-    with pytest.raises(ValueError, match="copyrightText"):
+    with pytest.raises(metadata.MetadataContradiction, match="copyrightText"):
         metadata.validate_controlling(payload)
 
 
@@ -166,4 +165,45 @@ def test_metadata_contract_fails_closed_after_bounded_attempts(monkeypatch) -> N
             "https://example.test/MapServer/3",
             metadata.validate_controlling,
             attempts=2,
+        )
+
+
+def test_metadata_contract_can_defer_unavailable_response_to_geometry(monkeypatch) -> None:
+    monkeypatch.setattr(
+        metadata.urllib.request,
+        "urlopen",
+        lambda _request, timeout: FakeResponse({}),
+    )
+    monkeypatch.setattr(metadata.time, "sleep", lambda _seconds: None)
+
+    result = metadata.fetch_contract(
+        "controlling",
+        "https://example.test/MapServer/3",
+        metadata.validate_controlling,
+        attempts=2,
+        allow_unavailable=True,
+    )
+
+    assert result["validated_via"] == "unavailable"
+    assert result["status"] == "DEFERRED_TO_EXACT_GEOMETRY_CHECKS"
+    assert result["attempts"] == 2
+
+
+def test_metadata_contract_never_defers_contradictory_metadata(monkeypatch) -> None:
+    payload = controlling_payload()
+    payload["id"] = 99
+    monkeypatch.setattr(
+        metadata.urllib.request,
+        "urlopen",
+        lambda _request, timeout: FakeResponse(payload),
+    )
+    monkeypatch.setattr(metadata.time, "sleep", lambda _seconds: None)
+
+    with pytest.raises(SystemExit, match="contradicted"):
+        metadata.fetch_contract(
+            "controlling",
+            "https://example.test/MapServer/3",
+            metadata.validate_controlling,
+            attempts=1,
+            allow_unavailable=True,
         )
