@@ -21,7 +21,7 @@ EXPECTED={
 "Sheriff":"Jason Chatham",
 "County and District Clerk":"Marsha L. Maskill",
 "Tax Assessor-Collector":"Vanessa Covarrubiaz",
-"County Treasurer":"Jennifer L. Henderson",
+"County Treasurer":"Cassandra Buitron",
 }
 HEADERS={"User-Agent":"Mozilla/5.0 Civic-Cartography-validator/1.0","Accept-Encoding":"identity"}
 
@@ -161,7 +161,7 @@ def live()->None:
         ("https://www.schleichercounty.gov/page/District.Clerk",("Marsha L. Maskill","County and District Clerk")),
         ("https://www.schleichercounty.gov/page/Elections",("Marsha L. Maskill","Precincts 1, 2, 3, 4")),
         ("https://www.schleichercounty.gov/page/Tax.Assessor",("Vanessa Covarrubiaz",)),
-        ("https://www.schleichercounty.gov/page/Treasurer",("Jennifer L. Henderson",)),
+        ("https://www.schleichercounty.gov/page/Treasurer",("Cassandra Buitron",)),
         ("https://www.schleichercounty.gov/page/countyattorney",("Clint T. Griffin",)),
     ]
     accessible=0
