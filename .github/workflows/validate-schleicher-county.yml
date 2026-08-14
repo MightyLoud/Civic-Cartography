@@ -10,9 +10,11 @@ on:
       - "docs/jurisdictions/schleicher-county-tx.md"
       - "scripts/derive_schleicher_commissioner_precincts.py"
       - "scripts/validate_schleicher_live_pages.py"
+      - "scripts/validate_schleicher_live_pages_resilient.py"
       - "scripts/validate_schleicher_sources.py"
       - "tests/test_schleicher_county_roster.py"
       - "tests/test_schleicher_live_pages.py"
+      - "tests/test_schleicher_live_pages_resilient.py"
   workflow_dispatch:
 
 permissions:
@@ -40,7 +42,7 @@ jobs:
           print("Schleicher County committed roster, combined clerk, scope, and source contracts are valid.")
           PY
       - name: Validate current official county pages
-        run: python scripts/validate_schleicher_live_pages.py
+        run: python scripts/validate_schleicher_live_pages_resilient.py
       - name: Regenerate current Commissioner geometry
         run: |
           python scripts/derive_schleicher_commissioner_precincts.py \
@@ -101,9 +103,8 @@ jobs:
           output.write_text(value+"\n")
           print(f"Schleicher County combined canonical SHA-256: {value}")
           PY
-      - name: Upload Schleicher County validation evidence
+      - uses: actions/upload-artifact@v4
         if: always()
-        uses: actions/upload-artifact@v4
         with:
           name: schleicher-county-validation
           path: build/schleicher-county/
