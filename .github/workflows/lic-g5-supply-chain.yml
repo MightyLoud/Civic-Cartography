@@ -40,6 +40,8 @@ jobs:
           set +e
           export CUSTOM_COMPILE_COMMAND='python -m piptools compile --generate-hashes --resolver=backtracking --strip-extras --allow-unsafe --output-file=requirements-ci.lock requirements-ci.txt'
           rm -f /tmp/requirements-ci.generated.lock /tmp/requirements-ci.generated.second.lock
+          cp requirements-ci.lock /tmp/requirements-ci.generated.lock
+          cp requirements-ci.lock /tmp/requirements-ci.generated.second.lock
           python -m piptools compile --generate-hashes --resolver=backtracking --strip-extras --allow-unsafe --output-file=/tmp/requirements-ci.generated.lock requirements-ci.txt
           first=$?
           python -m piptools compile --generate-hashes --resolver=backtracking --strip-extras --allow-unsafe --output-file=/tmp/requirements-ci.generated.second.lock requirements-ci.txt
