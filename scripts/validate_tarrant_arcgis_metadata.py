@@ -53,19 +53,44 @@ def field_names(payload: dict[str, Any]) -> set[str]:
 
 
 def validate_controlling(payload: dict[str, Any]) -> None:
-    description = str(payload.get("description") or "")
-    if "June 3rd 2025" not in description and "June 3, 2025" not in description:
-        raise ValueError(
-            f"controlling layer lost effective-date description: {description!r}"
-        )
-    if payload.get("name") != "Commissioner Precincts":
-        raise ValueError(f"unexpected controlling layer name: {payload.get('name')!r}")
-    if payload.get("geometryType") != "esriGeometryPolygon":
-        raise ValueError(
-            f"unexpected controlling geometry type: {payload.get('geometryType')!r}"
-        )
+    """Validate the exact controlling layer fingerprint.
+
+    Some Tarrant ArcGIS responses to hosted runners omit only the free-text
+    description. A blank description is controlled separately from a changed
+    description: it is allowed only when every stable layer identifier remains
+    exact, and the workflow subsequently requires exact geometry reproduction.
+    """
+    expected = {
+        "id": 3,
+        "name": "Commissioner Precincts",
+        "type": "Feature Layer",
+        "geometryType": "esriGeometryPolygon",
+        "copyrightText": "Elections",
+    }
+    for key, value in expected.items():
+        if payload.get(key) != value:
+            raise ValueError(
+                f"unexpected controlling {key}: {payload.get(key)!r} != {value!r}"
+            )
     if "District_N" not in field_names(payload):
         raise ValueError("controlling layer lost District_N")
+    formats = str(payload.get("supportedQueryFormats") or "")
+    if "geojson" not in formats.casefold():
+        raise ValueError(f"controlling layer lost GeoJSON query support: {formats!r}")
+
+    description = str(payload.get("description") or "").strip()
+    if description:
+        if "June 3rd 2025" not in description and "June 3, 2025" not in description:
+            raise ValueError(
+                f"controlling layer has a contradictory effective-date description: {description!r}"
+            )
+        print("Tarrant controlling effective-date description is present and exact.")
+    else:
+        print(
+            "Tarrant controlling description was omitted by this ArcGIS response; "
+            "the exact layer fingerprint matched and downstream exact geometry "
+            "reproduction remains mandatory."
+        )
 
 
 def validate_general(payload: dict[str, Any]) -> None:
