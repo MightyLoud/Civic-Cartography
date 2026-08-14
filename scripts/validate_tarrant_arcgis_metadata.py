@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import time
 import urllib.request
@@ -34,7 +35,13 @@ HEADERS = {
     "Cache-Control": "no-cache",
     "Pragma": "no-cache",
 }
+HTML_HEADERS = {
+    **HEADERS,
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
 Validator = Callable[[dict[str, Any]], None]
+HtmlValidator = Callable[[str], None]
 
 
 def field_names(payload: dict[str, Any]) -> set[str]:
@@ -51,6 +58,8 @@ def validate_controlling(payload: dict[str, Any]) -> None:
         raise ValueError(
             f"controlling layer lost effective-date description: {description!r}"
         )
+    if payload.get("name") != "Commissioner Precincts":
+        raise ValueError(f"unexpected controlling layer name: {payload.get('name')!r}")
     if payload.get("geometryType") != "esriGeometryPolygon":
         raise ValueError(
             f"unexpected controlling geometry type: {payload.get('geometryType')!r}"
@@ -60,6 +69,10 @@ def validate_controlling(payload: dict[str, Any]) -> None:
 
 
 def validate_general(payload: dict[str, Any]) -> None:
+    if payload.get("geometryType") != "esriGeometryPolygon":
+        raise ValueError(
+            f"unexpected general geometry type: {payload.get('geometryType')!r}"
+        )
     if "District_N" not in field_names(payload):
         raise ValueError("general layer lost District_N")
 
@@ -71,6 +84,37 @@ def validate_stale(payload: dict[str, Any]) -> None:
     )
     if "2010" not in text:
         raise ValueError(f"explicit 2010 stale-service marker is missing: {text!r}")
+
+
+def require_html_markers(text: str, markers: tuple[str, ...]) -> None:
+    missing = [marker for marker in markers if marker.casefold() not in text.casefold()]
+    if missing:
+        raise ValueError(f"HTML metadata lost markers: {missing!r}")
+
+
+def validate_controlling_html(text: str) -> None:
+    require_html_markers(
+        text,
+        (
+            "Layer: Commissioner Precincts",
+            "Geometry Type: esriGeometryPolygon",
+            "County Commissioner Precinct boundaries, effective beginning June 3rd 2025.",
+            "District_N",
+            "Supported Query Formats",
+            "geoJSON",
+        ),
+    )
+
+
+def validate_general_html(text: str) -> None:
+    require_html_markers(
+        text,
+        ("Geometry Type: esriGeometryPolygon", "District_N", "Supported Query Formats"),
+    )
+
+
+def validate_stale_html(text: str) -> None:
+    require_html_markers(text, ("2010", "Commissioner"))
 
 
 def read_json(response: Any, *, request_url: str) -> dict[str, Any]:
@@ -91,11 +135,29 @@ def read_json(response: Any, *, request_url: str) -> dict[str, Any]:
     return payload
 
 
+def read_html(response: Any, *, request_url: str) -> str:
+    body = response.read()
+    text = body.decode("utf-8", errors="replace")
+    if not text.strip():
+        raise ValueError(f"empty HTML metadata response from {request_url}")
+    return text
+
+
+def html_diagnostic(text: str) -> str:
+    body = text.encode("utf-8")
+    preview = " ".join(text[:500].split())[:200]
+    return (
+        f"bytes={len(body)} sha256={hashlib.sha256(body).hexdigest()} "
+        f"preview={preview!r}"
+    )
+
+
 def fetch_contract(
     label: str,
     base_url: str,
     validator: Validator,
     *,
+    html_validator: HtmlValidator | None = None,
     attempts: int = 5,
 ) -> dict[str, Any]:
     errors: list[str] = []
@@ -107,23 +169,58 @@ def fetch_contract(
                 with urllib.request.urlopen(request, timeout=45) as response:
                     payload = read_json(response, request_url=request_url)
                 validator(payload)
+                print(f"Validated Tarrant {label} metadata through ArcGIS {response_format}.")
                 return payload
             except Exception as exc:
                 errors.append(
                     f"attempt={attempt} format={response_format}: {exc}"
                 )
+
+        if html_validator is not None:
+            request_url = f"{base_url}?{urlencode({'_cc_html_attempt': attempt})}"
+            request = urllib.request.Request(request_url, headers=HTML_HEADERS)
+            try:
+                with urllib.request.urlopen(request, timeout=45) as response:
+                    text = read_html(response, request_url=request_url)
+                html_validator(text)
+                print(f"Validated Tarrant {label} metadata through ArcGIS HTML directory.")
+                return {"validated_via": "html", "request_url": request_url}
+            except Exception as exc:
+                diagnostic = html_diagnostic(text) if "text" in locals() else "no_body"
+                errors.append(
+                    f"attempt={attempt} format=html: {exc}; {diagnostic}"
+                )
+            finally:
+                if "text" in locals():
+                    del text
+
         if attempt < attempts:
             time.sleep(attempt * 5)
     raise SystemExit(
         f"Tarrant {label} metadata contract failed after {attempts} attempts: "
-        + " | ".join(errors[-4:])
+        + " | ".join(errors[-6:])
     )
 
 
 def main() -> int:
-    fetch_contract("controlling", URLS["controlling"], validate_controlling)
-    fetch_contract("general", URLS["general"], validate_general)
-    fetch_contract("stale_2010", URLS["stale_2010"], validate_stale)
+    fetch_contract(
+        "controlling",
+        URLS["controlling"],
+        validate_controlling,
+        html_validator=validate_controlling_html,
+    )
+    fetch_contract(
+        "general",
+        URLS["general"],
+        validate_general,
+        html_validator=validate_general_html,
+    )
+    fetch_contract(
+        "stale_2010",
+        URLS["stale_2010"],
+        validate_stale,
+        html_validator=validate_stale_html,
+    )
     print("Tarrant County ArcGIS metadata hierarchy matches the release contract.")
     return 0
 
