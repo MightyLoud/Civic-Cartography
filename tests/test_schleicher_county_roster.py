@@ -33,7 +33,7 @@ def test_schleicher_combined_clerk_release_contract():
         "Sheriff":"Jason Chatham",
         "County and District Clerk":"Marsha L. Maskill",
         "Tax Assessor-Collector":"Vanessa Covarrubiaz",
-        "County Treasurer":"Jennifer L. Henderson",
+        "County Treasurer":"Cassandra Buitron",
     }
     assert len(roster)==9
     assert {row["office_name"]:row["officeholder"] for row in roster}==expected
