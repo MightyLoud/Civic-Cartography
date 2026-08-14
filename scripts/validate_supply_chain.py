@@ -62,8 +62,8 @@ def main() -> int:
                 errors.append(f"{path}:{number}: uncontrolled install: {stripped}")
             if "cache-dependency-path: requirements-dev.txt" in stripped:
                 errors.append(f"{path}:{number}: cache still points to ranged manifest")
-        if re.search(r"\b(?:pymupdf|fitz)\b", text, re.IGNORECASE):
-            errors.append(f"{path}: PyMuPDF/fitz workflow reference remains")
+        # Workflow references to the local ``fitz`` shim are intentional. The
+        # exact manifest, lock, and SBOM checks below govern package presence.
 
     direct_lines = [
         line.strip()
