@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import json
 
 import pytest
@@ -26,12 +27,16 @@ class FakeResponse:
 
 def controlling_payload() -> dict:
     return {
+        "id": 3,
         "name": "Commissioner Precincts",
+        "type": "Feature Layer",
         "description": (
             "County Commissioner Precinct boundaries, effective beginning "
             "June 3rd 2025."
         ),
         "geometryType": "esriGeometryPolygon",
+        "copyrightText": "Elections",
+        "supportedQueryFormats": "JSON, geoJSON, PBF",
         "fields": [{"name": "District_N"}],
     }
 
@@ -46,6 +51,30 @@ def controlling_html() -> str:
     Supported Query Formats: JSON, geoJSON, PBF
     </body></html>
     """
+
+
+def test_controlling_blank_description_requires_exact_fingerprint() -> None:
+    payload = controlling_payload()
+    payload["description"] = ""
+
+    metadata.validate_controlling(payload)
+
+
+def test_controlling_nonblank_contradictory_description_fails() -> None:
+    payload = controlling_payload()
+    payload["description"] = "Boundaries effective January 1, 2024."
+
+    with pytest.raises(ValueError, match="contradictory"):
+        metadata.validate_controlling(payload)
+
+
+def test_controlling_blank_description_does_not_hide_fingerprint_change() -> None:
+    payload = controlling_payload()
+    payload["description"] = ""
+    payload["copyrightText"] = "Planning"
+
+    with pytest.raises(ValueError, match="copyrightText"):
+        metadata.validate_controlling(payload)
 
 
 def test_metadata_contract_accepts_second_equivalent_format(monkeypatch) -> None:
