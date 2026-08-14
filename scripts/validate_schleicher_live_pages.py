@@ -11,6 +11,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
+from pathlib import Path
 
 USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
@@ -28,6 +29,7 @@ HEADERS = {
     "Pragma": "no-cache",
     "Upgrade-Insecure-Requests": "1",
 }
+EVIDENCE_DIR = Path("build/schleicher-county/live-pages")
 CONTRACTS = [
     (
         "https://www.schleichercounty.gov/page/homepage",
@@ -134,6 +136,26 @@ def diagnostic(result: PageResult, missing: list[str]) -> str:
     )
 
 
+def evidence_slug(url: str) -> str:
+    path = urllib.parse.urlsplit(url).path.strip("/") or "homepage"
+    return re.sub(r"[^a-z0-9]+", "-", path.casefold()).strip("-")
+
+
+def retain_incomplete_page(
+    url: str,
+    attempt: int,
+    result: PageResult,
+    missing: list[str],
+) -> None:
+    EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
+    stem = f"{evidence_slug(url)}-attempt-{attempt}"
+    (EVIDENCE_DIR / f"{stem}.html").write_text(result.text, encoding="utf-8")
+    (EVIDENCE_DIR / f"{stem}.txt").write_text(
+        f"request_url={result.request_url}\n{diagnostic(result, missing)}\n",
+        encoding="utf-8",
+    )
+
+
 def fetch_contract_page(
     url: str,
     markers: tuple[str, ...],
@@ -143,8 +165,8 @@ def fetch_contract_page(
     """Return a page only after its marker contract passes.
 
     Unavailable pages retain the existing fail-soft behavior. Any HTTP-success
-    body that is incomplete is retried with cache bypass and then fails closed
-    with bounded diagnostics.
+    body that is incomplete is retried with cache bypass, retained as evidence,
+    and then fails closed with bounded diagnostics.
     """
     diagnostics: list[str] = []
     for attempt in range(1, attempts + 1):
@@ -158,6 +180,7 @@ def fetch_contract_page(
             missing = missing_markers(result.text, markers)
             if not missing:
                 return result
+            retain_incomplete_page(url, attempt, result, missing)
             diagnostics.append(
                 f"attempt={attempt}; request_url={result.request_url!r}; "
                 + diagnostic(result, missing)
