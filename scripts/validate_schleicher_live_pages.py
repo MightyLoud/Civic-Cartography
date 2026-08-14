@@ -59,7 +59,7 @@ CONTRACTS = [
     ),
     (
         "https://www.schleichercounty.gov/page/Treasurer",
-        ("Jennifer L. Henderson",),
+        ("Cassandra Buitron",),
     ),
     (
         "https://www.schleichercounty.gov/page/countyattorney",
