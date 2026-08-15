@@ -1,0 +1,20 @@
+name: Validate ORCH-FAC-004 Retry Recovery Idempotency
+
+on:
+  pull_request:
+    paths:
+      - 'tests/fixtures/orch_fac_004_recovery.json'
+      - 'scripts/validate_orch_fac_004.py'
+      - '.github/workflows/validate-orch-fac-004.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate retry recovery and idempotency
+        run: python scripts/validate_orch_fac_004.py
