@@ -1,0 +1,23 @@
+name: Validate CAN-FAC-002 California Candidate Smoke
+
+on:
+  pull_request:
+    paths:
+      - "evidence/candidate-factory-ca-smoke/**"
+      - "scripts/check_can_fac_002_ca_smoke.py"
+      - ".github/workflows/validate-can-fac-002-ca-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate CAN-FAC-002 evidence and joins
+        run: python scripts/check_can_fac_002_ca_smoke.py
