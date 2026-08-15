@@ -1,0 +1,62 @@
+version: 1
+name: production_batch_ca_pilot
+description: NAT-FAC-001 five-target California portability smoke manifest.
+state: ca
+source_manifest: evidence/production-batch-ca-pilot/source-selection-manifest.json
+selection_crosswalk: evidence/production-batch-ca-pilot/selection-crosswalk.json
+targets:
+  - target_id: CA-PB00-001
+    jurisdiction_name: Los Angeles
+    state: ca
+    census_geoid: "0644000"
+    wave: CA-PB00-A
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ca/place:los_angeles
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB00-002
+    jurisdiction_name: San Diego
+    state: ca
+    census_geoid: "0666000"
+    wave: CA-PB00-A
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ca/place:san_diego
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB00-003
+    jurisdiction_name: Sacramento
+    state: ca
+    census_geoid: "0664000"
+    wave: CA-PB00-A
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ca/place:sacramento
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB00-004
+    jurisdiction_name: Fresno
+    state: ca
+    census_geoid: "0627000"
+    wave: CA-PB00-A
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ca/place:fresno
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB00-005
+    jurisdiction_name: Berkeley
+    state: ca
+    census_geoid: "0606000"
+    wave: CA-PB00-A
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:ca/place:berkeley
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
