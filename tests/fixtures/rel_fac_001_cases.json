@@ -1,0 +1,106 @@
+[
+  {
+    "name": "pass_with_nonblocking_provenance",
+    "input": {
+      "gate_id": "NAT-FAC-002",
+      "factory": "NAT-FAC",
+      "qa_status": "PASS",
+      "exceptions": [
+        {
+          "exception_id": "ex-nat-001",
+          "factory": "NAT-FAC",
+          "gate_id": "NAT-FAC-002",
+          "entity_type": "Jurisdiction",
+          "entity_id": "jurisdiction-ca-example",
+          "exception_type": "PROVENANCE_LIMIT",
+          "severity": "INFO",
+          "blocking": false,
+          "status": "OPEN",
+          "owner": null,
+          "source_id": "src-example",
+          "description": "Exact historical start date not published; nonblocking provenance limitation.",
+          "resolution": null
+        }
+      ]
+    },
+    "expected": {"promotion_status": "READY", "promotion_eligible": true, "release_status": "HOLD", "release_eligible": false}
+  },
+  {
+    "name": "review_routes_to_queue",
+    "input": {
+      "gate_id": "GEO-FAC-001",
+      "factory": "GEO-FAC",
+      "qa_status": "REVIEW",
+      "exceptions": [
+        {
+          "exception_id": "ex-geo-001",
+          "factory": "GEO-FAC",
+          "gate_id": "GEO-FAC-001",
+          "entity_type": "Division",
+          "entity_id": "division-ca-example",
+          "exception_type": "LOCAL_LAYER_UNRESOLVED",
+          "severity": "REVIEW",
+          "blocking": false,
+          "status": "QUEUED",
+          "owner": null,
+          "source_id": "src-boundary-example",
+          "description": "City council district boundary is not yet available in the governed local-boundary adapter layer.",
+          "resolution": null
+        }
+      ]
+    },
+    "expected": {"promotion_status": "QUEUED", "promotion_eligible": false, "release_status": "HOLD", "release_eligible": false}
+  },
+  {
+    "name": "fail_routes_to_blocked",
+    "input": {
+      "gate_id": "CAN-FAC-003",
+      "factory": "CAN-FAC",
+      "qa_status": "FAIL",
+      "exceptions": [
+        {
+          "exception_id": "ex-can-001",
+          "factory": "CAN-FAC",
+          "gate_id": "CAN-FAC-003",
+          "entity_type": "Contest",
+          "entity_id": "contest-example",
+          "exception_type": "ORPHAN_REFERENCE",
+          "severity": "ERROR",
+          "blocking": true,
+          "status": "OPEN",
+          "owner": null,
+          "source_id": null,
+          "description": "Contest references an office relationship that does not resolve.",
+          "resolution": null
+        }
+      ]
+    },
+    "expected": {"promotion_status": "BLOCKED", "promotion_eligible": false, "release_status": "HOLD", "release_eligible": false}
+  },
+  {
+    "name": "angels_false_clean_regression",
+    "input": {
+      "gate_id": "NAT-FAC-002-ANGELS-REGRESSION",
+      "factory": "NAT-FAC",
+      "qa_status": "FAIL",
+      "exceptions": [
+        {
+          "exception_id": "ex-angels-stub",
+          "factory": "NAT-FAC",
+          "gate_id": "NAT-FAC-002-ANGELS-REGRESSION",
+          "entity_type": "Jurisdiction",
+          "entity_id": "jurisdiction-ca-angels",
+          "exception_type": "NO_VALIDATION_MATCH",
+          "severity": "BLOCKING",
+          "blocking": true,
+          "status": "OPEN",
+          "owner": null,
+          "source_id": null,
+          "description": "Capture produced a deterministic stub after no validation match; deterministic output is not evidence of correctness.",
+          "resolution": null
+        }
+      ]
+    },
+    "expected": {"promotion_status": "BLOCKED", "promotion_eligible": false, "release_status": "HOLD", "release_eligible": false}
+  }
+]
