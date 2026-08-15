@@ -1,0 +1,18 @@
+name: Validate SRC-FAC-001 Source Discovery
+on:
+  pull_request:
+    paths:
+      - 'schemas/source-discovery.schema.json'
+      - 'tests/fixtures/src_fac_001_known_good_sources.json'
+      - 'scripts/check_src_fac_001.py'
+      - '.github/workflows/validate-src-fac-001.yml'
+jobs:
+  src-fac-001:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate official discovery contract
+        run: python scripts/check_src_fac_001.py
