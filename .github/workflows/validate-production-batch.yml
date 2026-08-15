@@ -62,7 +62,7 @@ jobs:
           if [[ -n "${{ inputs.expected_target_count }}" ]]; then
             args+=(--expected-target-count "${{ inputs.expected_target_count }}")
           fi
-          python scripts/run_production_batch.py "${args[@]}"
+          PYTHONPATH=. python scripts/run_production_batch.py "${args[@]}"
 
   ca-smoke:
     if: github.event_name == 'pull_request'
