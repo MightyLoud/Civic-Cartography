@@ -1,0 +1,40 @@
+version: 1
+name: production_batch_or_county_smoke
+description: NAT-FAC-003 three-target Oregon county portability smoke manifest.
+state: or
+source_manifest: evidence/production-batch-or-county-smoke/source-selection-manifest.json
+selection_crosswalk: evidence/production-batch-or-county-smoke/selection-crosswalk.json
+targets:
+  - target_id: OR-PB03-001
+    jurisdiction_name: Baker County
+    state: or
+    census_geoid: "41001"
+    wave: OR-PB03-A
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:or/county:baker
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: OR-PB03-002
+    jurisdiction_name: Benton County
+    state: or
+    census_geoid: "41003"
+    wave: OR-PB03-A
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:or/county:benton
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: OR-PB03-003
+    jurisdiction_name: Clackamas County
+    state: or
+    census_geoid: "41005"
+    wave: OR-PB03-A
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:or/county:clackamas
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
