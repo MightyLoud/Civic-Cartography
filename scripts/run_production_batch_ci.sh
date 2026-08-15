@@ -24,6 +24,7 @@ mkdir -p "$BUILD_ROOT"
 
 python -m pytest \
   tests/test_target_manifest.py \
+  tests/test_production_geography_identity.py \
   tests/test_production_wave.py \
   tests/test_batch_capture.py \
   tests/test_authoritative_overrides.py \
