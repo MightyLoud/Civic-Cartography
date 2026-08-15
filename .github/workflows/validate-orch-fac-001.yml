@@ -1,0 +1,21 @@
+name: Validate ORCH-FAC-001 Worker Dispatch
+
+on:
+  pull_request:
+    paths:
+      - 'schemas/orch-fac-worker-dispatch.schema.json'
+      - 'tests/fixtures/orch_fac_001_dispatch.json'
+      - 'scripts/validate_orch_fac_001.py'
+      - '.github/workflows/validate-orch-fac-001.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate dispatcher contract
+        run: python scripts/validate_orch_fac_001.py
