@@ -1,0 +1,39 @@
+{
+  "gate_id": "ORCH-FAC-008",
+  "mode": "READ_ONLY_EVIDENCE_REPLAY",
+  "target": {
+    "target_id": "MB100-100",
+    "jurisdiction_name": "Multnomah County",
+    "state": "or",
+    "evaluation_id": "89928cda6ad41ce333e3",
+    "raw_exists": true,
+    "normalized_exists": true,
+    "identifier_join_ok": true,
+    "qa_ok": true,
+    "parity_ok": true,
+    "source_provenance_ok": true,
+    "complete_ok": true,
+    "confidence": "HIGH",
+    "source_manifest_sha256": "3d6d2221a64216f29199b1ed7b925d897ad2c87a1e8ac567f665518c111790d8",
+    "manifest_sha256": "b79f7ae5945b4a87d27e61a61e27ed9a19c2369bf35ecce2130b19fc6e28b399",
+    "first_run_id": "7c2231c0bd35adfa5188",
+    "second_run_id": "7c2231c0bd35adfa5188",
+    "run_asof": "2026-08-13T01:42:43Z",
+    "evidence_run_id": 31658600741,
+    "evidence_run_conclusion": "success",
+    "completion_register_blob": "97514a9789545a3757e8908dec192becea1f99ec"
+  },
+  "expected": {
+    "qa_status": "PASS",
+    "promotion_ready": true,
+    "held_locks": 0,
+    "handoffs": 1,
+    "deterministic": true
+  },
+  "tamper_cases": [
+    {"name": "qa_gate_false", "field": "qa_ok", "value": false},
+    {"name": "manifest_hash_changed", "field": "manifest_sha256", "value": "0000000000000000000000000000000000000000000000000000000000000000"},
+    {"name": "run_identity_changed", "field": "second_run_id", "value": "tampered-run"},
+    {"name": "evidence_run_not_success", "field": "evidence_run_conclusion", "value": "failure"}
+  ]
+}
