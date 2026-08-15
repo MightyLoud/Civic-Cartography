@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SRC-FAC-001 Official Source Discovery",
+  "type": "object",
+  "required": ["case_id","state","jurisdiction","record_type","administering_authority","candidate_sources","disposition"],
+  "properties": {
+    "case_id": {"type":"string"},
+    "state": {"type":"string","pattern":"^[A-Z]{2}$"},
+    "jurisdiction": {"type":"string"},
+    "record_type": {"type":"string"},
+    "administering_authority": {
+      "type":"object",
+      "required":["name","level"],
+      "properties":{"name":{"type":"string"},"level":{"enum":["STATE","COUNTY","LOCAL"]}}
+    },
+    "candidate_sources": {
+      "type":"array","minItems":1,
+      "items":{"type":"object","required":["url","source_type","authority_level","status","schema_fingerprint","adapter_id","adapter_match"],
+        "properties":{
+          "url":{"type":"string","format":"uri"},
+          "source_type":{"type":"string"},
+          "authority_level":{"const":"OFFICIAL"},
+          "status":{"enum":["ACTIVE","STALE","BROKEN"]},
+          "schema_fingerprint":{"type":"string"},
+          "adapter_id":{"type":"string"},
+          "adapter_match":{"enum":["EXACT","LIKELY","NONE"]}
+        }}
+    },
+    "disposition":{"enum":["READY","REVIEW","BLOCKED"]}
+  }
+}
