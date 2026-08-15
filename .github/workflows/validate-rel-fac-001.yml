@@ -1,0 +1,21 @@
+name: Validate REL-FAC-001 Promotion Contract
+
+on:
+  pull_request:
+    paths:
+      - 'schemas/rel-fac-report.schema.json'
+      - 'tests/fixtures/rel_fac_001_cases.json'
+      - 'scripts/validate_rel_fac_001.py'
+      - '.github/workflows/validate-rel-fac-001.yml'
+  workflow_dispatch:
+
+jobs:
+  rel-fac-001:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate REL-FAC transitions
+        run: python scripts/validate_rel_fac_001.py
