@@ -1,0 +1,21 @@
+name: Validate ORCH-FAC-002 Factory Orchestration
+
+on:
+  pull_request:
+    paths:
+      - 'schemas/orch-fac-002-orchestration.schema.json'
+      - 'tests/fixtures/orch_fac_002_orchestration.json'
+      - 'scripts/validate_orch_fac_002.py'
+      - '.github/workflows/validate-orch-fac-002.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate end-to-end factory orchestration
+        run: python scripts/validate_orch_fac_002.py
