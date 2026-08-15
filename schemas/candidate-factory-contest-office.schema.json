@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://civicdata.tech/schemas/candidate-factory-contest-office.schema.json",
+  "title": "Candidate Factory Contest Office Relationship",
+  "type": "object",
+  "required": ["contest_office_id", "contest_id", "office_id", "seat_ordinal", "relationship_status"],
+  "properties": {
+    "contest_office_id": {"type": "string", "minLength": 1},
+    "contest_id": {"type": "string", "minLength": 1},
+    "office_id": {"type": "string", "minLength": 1},
+    "seat_ordinal": {"type": "integer", "minimum": 1},
+    "relationship_status": {"type": "string", "enum": ["ACTIVE", "WITHHELD"]},
+    "source_record_id": {"type": ["string", "null"]},
+    "notes": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}
