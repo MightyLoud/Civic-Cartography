@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "case_id": "clean-pass-trace",
+      "events": [
+        {"event_id":"e1","idempotency_key":"k1","seq":1,"task_id":"T1","event_type":"READY","actor":"ORCH","previous_state":"BLOCKED","next_state":"READY"},
+        {"event_id":"e2","idempotency_key":"k2","seq":2,"task_id":"T1","event_type":"DISPATCH","actor":"ORCH","previous_state":"READY","next_state":"DISPATCHED"},
+        {"event_id":"e3","idempotency_key":"k3","seq":3,"task_id":"T1","event_type":"LOCK_ACQUIRED","actor":"WORKER-A","previous_state":"DISPATCHED","next_state":"ACTIVE","write_surface":["CA:A"]},
+        {"event_id":"e4","idempotency_key":"k4","seq":4,"task_id":"T1","event_type":"STAGE_COMPLETE","actor":"WORKER-A","gate_id":"SRC-FAC","result":"PASS"},
+        {"event_id":"e5","idempotency_key":"k5","seq":5,"task_id":"T1","event_type":"PROMOTION_READY","actor":"REL-FAC","previous_state":"ACTIVE","next_state":"READY_FOR_HANDOFF"},
+        {"event_id":"e6","idempotency_key":"k6","seq":6,"task_id":"T1","event_type":"LOCK_RELEASED","actor":"WORKER-A","previous_state":"READY_FOR_HANDOFF","next_state":"READY_FOR_HANDOFF"},
+        {"event_id":"e7","idempotency_key":"k7","seq":7,"task_id":"T1","event_type":"HANDOFF","actor":"ORCH","previous_state":"READY_FOR_HANDOFF","next_state":"COMPLETED"}
+      ],
+      "expected":{"state":"COMPLETED","lock":"RELEASED","promotion_ready":true,"reconciliation":"PASS"}
+    },
+    {
+      "case_id": "review-trace",
+      "events": [
+        {"event_id":"r1","idempotency_key":"rk1","seq":1,"task_id":"T2","event_type":"READY","actor":"ORCH","previous_state":"BLOCKED","next_state":"READY"},
+        {"event_id":"r2","idempotency_key":"rk2","seq":2,"task_id":"T2","event_type":"DISPATCH","actor":"ORCH","previous_state":"READY","next_state":"DISPATCHED"},
+        {"event_id":"r3","idempotency_key":"rk3","seq":3,"task_id":"T2","event_type":"LOCK_ACQUIRED","actor":"WORKER-B","previous_state":"DISPATCHED","next_state":"ACTIVE","write_surface":["OR:A"]},
+        {"event_id":"r4","idempotency_key":"rk4","seq":4,"task_id":"T2","event_type":"REVIEW","actor":"QA-FAC","previous_state":"ACTIVE","next_state":"REVIEW"},
+        {"event_id":"r5","idempotency_key":"rk5","seq":5,"task_id":"T2","event_type":"LOCK_RELEASED","actor":"WORKER-B","previous_state":"REVIEW","next_state":"REVIEW"}
+      ],
+      "expected":{"state":"REVIEW","lock":"RELEASED","promotion_ready":false,"reconciliation":"PASS"}
+    },
+    {
+      "case_id": "fail-retry-trace",
+      "events": [
+        {"event_id":"f1","idempotency_key":"fk1","seq":1,"task_id":"T3","event_type":"READY","actor":"ORCH","previous_state":"BLOCKED","next_state":"READY"},
+        {"event_id":"f2","idempotency_key":"fk2","seq":2,"task_id":"T3","event_type":"DISPATCH","actor":"ORCH","previous_state":"READY","next_state":"DISPATCHED"},
+        {"event_id":"f3","idempotency_key":"fk3","seq":3,"task_id":"T3","event_type":"LOCK_ACQUIRED","actor":"WORKER-C","previous_state":"DISPATCHED","next_state":"ACTIVE","write_surface":["WA:A"]},
+        {"event_id":"f4","idempotency_key":"fk4","seq":4,"task_id":"T3","event_type":"FAIL","actor":"QA-FAC","previous_state":"ACTIVE","next_state":"FAIL"},
+        {"event_id":"f5","idempotency_key":"fk5","seq":5,"task_id":"T3","event_type":"LOCK_RELEASED","actor":"WORKER-C","previous_state":"FAIL","next_state":"FAIL"},
+        {"event_id":"f6","idempotency_key":"fk6","seq":6,"task_id":"T3","event_type":"RETRY","actor":"ORCH","previous_state":"FAIL","next_state":"READY"},
+        {"event_id":"f7","idempotency_key":"fk7","seq":7,"task_id":"T3","event_type":"DISPATCH","actor":"ORCH","previous_state":"READY","next_state":"DISPATCHED"},
+        {"event_id":"f8","idempotency_key":"fk8","seq":8,"task_id":"T3","event_type":"LOCK_ACQUIRED","actor":"WORKER-C","previous_state":"DISPATCHED","next_state":"ACTIVE","write_surface":["WA:A"]},
+        {"event_id":"f9","idempotency_key":"fk9","seq":9,"task_id":"T3","event_type":"PROMOTION_READY","actor":"REL-FAC","previous_state":"ACTIVE","next_state":"READY_FOR_HANDOFF"},
+        {"event_id":"f10","idempotency_key":"fk10","seq":10,"task_id":"T3","event_type":"LOCK_RELEASED","actor":"WORKER-C","previous_state":"READY_FOR_HANDOFF","next_state":"READY_FOR_HANDOFF"},
+        {"event_id":"f11","idempotency_key":"fk11","seq":11,"task_id":"T3","event_type":"HANDOFF","actor":"ORCH","previous_state":"READY_FOR_HANDOFF","next_state":"COMPLETED"}
+      ],
+      "expected":{"state":"COMPLETED","lock":"RELEASED","promotion_ready":true,"reconciliation":"PASS"}
+    },
+    {
+      "case_id": "duplicate-suppressed",
+      "events": [
+        {"event_id":"d1","idempotency_key":"dk1","seq":1,"task_id":"T4","event_type":"READY","actor":"ORCH","previous_state":"BLOCKED","next_state":"READY"},
+        {"event_id":"d1","idempotency_key":"dk1","seq":1,"task_id":"T4","event_type":"READY","actor":"ORCH","previous_state":"BLOCKED","next_state":"READY"}
+      ],
+      "expected":{"state":"READY","lock":"RELEASED","promotion_ready":false,"reconciliation":"PASS"}
+    },
+    {
+      "case_id": "tampered-missing-release",
+      "events": [
+        {"event_id":"t1","idempotency_key":"tk1","seq":1,"task_id":"T5","event_type":"READY","actor":"ORCH","previous_state":"BLOCKED","next_state":"READY"},
+        {"event_id":"t2","idempotency_key":"tk2","seq":2,"task_id":"T5","event_type":"DISPATCH","actor":"ORCH","previous_state":"READY","next_state":"DISPATCHED"},
+        {"event_id":"t3","idempotency_key":"tk3","seq":3,"task_id":"T5","event_type":"LOCK_ACQUIRED","actor":"WORKER-D","previous_state":"DISPATCHED","next_state":"ACTIVE","write_surface":["TX:A"]},
+        {"event_id":"t4","idempotency_key":"tk4","seq":4,"task_id":"T5","event_type":"HANDOFF","actor":"ORCH","previous_state":"ACTIVE","next_state":"COMPLETED"}
+      ],
+      "expected":{"reconciliation":"FAIL"}
+    }
+  ]
+}
