@@ -1,0 +1,21 @@
+name: Validate ORCH-FAC-008 Real Batch Integration
+
+on:
+  pull_request:
+    paths:
+      - 'tests/fixtures/orch_fac_008_multnomah.json'
+      - 'scripts/validate_orch_fac_008.py'
+      - '.github/workflows/validate-orch-fac-008.yml'
+      - 'evidence/measured-batch-100/completion-register.csv'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Replay frozen MB100-100 evidence through ORCH-FAC
+        run: python scripts/validate_orch_fac_008.py
