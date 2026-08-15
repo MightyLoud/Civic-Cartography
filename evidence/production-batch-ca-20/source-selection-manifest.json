@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "batch_id": "CA-PB02",
+  "selection_extracted_at": "2026-08-15T19:55:00Z",
+  "sources": {
+    "jurisdiction_factory": {
+      "title": "CA Jurisdiction Factory v0.1",
+      "spreadsheet_id": "1VzY1NRuZ4Fr_3kmQ44eLlD8yZMV9a6oPxbHuklv_nho",
+      "sheet": "00_Batch_Status",
+      "role": "current governed release-readiness and production-lane source"
+    },
+    "nested_divisions": {
+      "title": "Nested Divisions",
+      "spreadsheet_id": "139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI",
+      "sheet": "Municipalities",
+      "role": "canonical Census place identity and county/state-legislative nesting source"
+    },
+    "maintained_ocdids": {
+      "repository": "opencivicdata/ocd-division-ids",
+      "path": "identifiers/country-us/state-ca-local_gov.csv",
+      "revision": "a52719a15852fc8c8418194016c16657591930ad",
+      "role": "maintained local-government OCDID namespace evidence"
+    },
+    "canonical_aliases": {
+      "repository": "opencivicdata/ocd-division-ids",
+      "path": "identifiers/country-us/aliases.csv",
+      "revision": "a52719a15852fc8c8418194016c16657591930ad",
+      "role": "maintained alias evidence, including Angels Camp to Census Angels"
+    }
+  },
+  "selection_rules": [
+    "Use only CA Factory jurisdictions with workflow_status 9.00 Complete, release_ready TRUE, parity_ok TRUE, and geography_gate_ok TRUE.",
+    "Exclude control rows so the wave measures ordinary production portability.",
+    "Bind each target to the exact seven-digit Census place GEOID in Nested Divisions.",
+    "Preserve all county, state-senate, and state-assembly nesting relationships as lists.",
+    "Use exact maintained OCD division selectors; canonical aliases are permitted only when explicitly recorded upstream.",
+    "Select 20 targets spanning multiple counties and office templates without changing generic engine behavior."
+  ],
+  "counts": {
+    "selected_targets": 20,
+    "release_ready_targets": 20,
+    "expected_wave_count": 1
+  },
+  "notes": "NAT-FAC-002 California scale evidence. The wave expands the NAT-FAC-001 five-target portability smoke to 20 governed release-ready places while preserving the same two-run acceptance contract."
+}
