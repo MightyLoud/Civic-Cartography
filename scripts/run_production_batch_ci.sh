@@ -31,7 +31,7 @@ python -m pytest \
   tests/test_canonical_alias_acceptance.py \
   --color=yes
 
-python scripts/run_production_batch.py \
+PYTHONPATH=. python scripts/run_production_batch.py \
   --manifest "$FULL_MANIFEST" \
   --wave "$WAVE" \
   --expected-target-count "$EXPECTED_TARGET_COUNT" \
@@ -74,7 +74,7 @@ capture_run() {
     --execution-results "$run_dir/execution-results.json" \
     --diagnostics "$run_dir/diagnostics.json"
 
-  python scripts/normalize_capture_acceptance.py \
+  PYTHONPATH=. python scripts/normalize_capture_acceptance.py \
     --target-manifest "$WAVE_MANIFEST" \
     --execution-results "$run_dir/execution-results.json" \
     --diagnostics "$run_dir/diagnostics.json"
@@ -85,14 +85,14 @@ capture_run() {
     --execution-results "$run_dir/execution-results.json" \
     --diagnostics "$run_dir/diagnostics.json"
 
-  python scripts/run_target_manifest.py \
+  PYTHONPATH=. python scripts/run_target_manifest.py \
     --target-manifest "$WAVE_MANIFEST" \
     --run-asof "$RUN_ASOF" \
     --execution-results "$run_dir/execution-results.json" \
     --artifact-root "$run_dir/artifacts" \
     --result-path "$run_dir/report.json"
 
-  python scripts/inventory_production_artifacts.py \
+  PYTHONPATH=. python scripts/inventory_production_artifacts.py \
     --artifact-root "$run_dir/artifacts" \
     --report "$run_dir/report.json" \
     --result-path "$run_dir/artifact-inventory.json"
@@ -101,7 +101,7 @@ capture_run() {
 capture_run run-1
 capture_run run-2
 
-python scripts/check_production_wave.py \
+PYTHONPATH=. python scripts/check_production_wave.py \
   --target-manifest "$WAVE_MANIFEST" \
   --first-report "$BUILD_ROOT/run-1/report.json" \
   --second-report "$BUILD_ROOT/run-2/report.json" \
