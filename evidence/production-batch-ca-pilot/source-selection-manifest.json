@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "batch_id": "CA-PB00",
+  "selection_extracted_at": "2026-08-15T19:40:00Z",
+  "sources": {
+    "jurisdiction_factory": {
+      "title": "CA Jurisdiction Factory v0.1",
+      "spreadsheet_id": "1VzY1NRuZ4Fr_3kmQ44eLlD8yZMV9a6oPxbHuklv_nho",
+      "sheet": "01_Jurisdiction",
+      "role": "current governed jurisdiction identity and release-readiness source"
+    },
+    "nested_divisions": {
+      "title": "Nested Divisions",
+      "spreadsheet_id": "139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI",
+      "sheet": "Municipalities",
+      "role": "canonical Census place identity and county/state-legislative nesting source"
+    },
+    "maintained_ocdids": {
+      "repository": "opencivicdata/ocd-division-ids",
+      "path": "identifiers/country-us/state-ca-local_gov.csv",
+      "revision": "a52719a15852fc8c8418194016c16657591930ad",
+      "role": "maintained local-government OCDID namespace evidence"
+    }
+  },
+  "selection_rules": [
+    "Use only CA Factory jurisdictions marked release_ready TRUE.",
+    "Bind each target to the exact seven-digit Census place GEOID in Nested Divisions.",
+    "Preserve all county, state-senate, and state-assembly nesting relationships as lists.",
+    "Use exact OCD division selectors; do not infer a replacement selector at run time.",
+    "This is a five-target portability smoke, not a statewide production selection."
+  ],
+  "counts": {
+    "selected_targets": 5,
+    "release_ready_targets": 5,
+    "expected_wave_count": 1
+  },
+  "notes": "NAT-FAC-001 bounded California portability evidence. This manifest records source authority and selection provenance only; generated artifacts and acceptance evidence are produced by CI."
+}
