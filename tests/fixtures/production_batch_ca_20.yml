@@ -100,7 +100,7 @@ targets:
     state: ca
     census_geoid: "0602112"
     wave: CA-PB02-A
-    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:angels_camp"}
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:angels"}
     expected_archetype: AR-001
     expected_classification: government
     category: production
