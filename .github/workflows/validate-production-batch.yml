@@ -26,7 +26,9 @@ on:
       - "tests/test_target_manifest.py"
       - "tests/test_production_wave.py"
       - "tests/fixtures/production_batch_ca_pilot.yml"
+      - "tests/fixtures/production_batch_ca_20.yml"
       - "evidence/production-batch-ca-pilot/**"
+      - "evidence/production-batch-ca-20/**"
 
 permissions:
   contents: read
@@ -97,18 +99,41 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ca-pb00-a-acceptance
-          path: |
-            build/ca-pb00-a/wave-manifest.yml
-            build/ca-pb00-a/upstream-source/source-manifest.json
-            build/ca-pb00-a/run-1/execution-results.json
-            build/ca-pb00-a/run-1/diagnostics.json
-            build/ca-pb00-a/run-1/report.json
-            build/ca-pb00-a/run-1/artifact-inventory.json
-            build/ca-pb00-a/run-1/artifacts
-            build/ca-pb00-a/run-2/execution-results.json
-            build/ca-pb00-a/run-2/diagnostics.json
-            build/ca-pb00-a/run-2/report.json
-            build/ca-pb00-a/run-2/artifact-inventory.json
-            build/ca-pb00-a/run-2/artifacts
-            build/ca-pb00-a/acceptance.json
+          path: build/ca-pb00-a
+          if-no-files-found: warn
+
+  ca-scale-20:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      RUN_ASOF: 2026-08-15T19:55:00Z
+      FULL_MANIFEST: tests/fixtures/production_batch_ca_20.yml
+      WAVE: CA-PB02-A
+      EXPECTED_TARGET_COUNT: "20"
+      CROSSWALK: evidence/production-batch-ca-20/selection-crosswalk.json
+      BUILD_ROOT: build/ca-pb02-a
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+      - name: Check out pinned upstream generator
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM_REPOSITORY }}
+          ref: ${{ env.UPSTREAM_REVISION }}
+          path: upstream
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Run CA-PB02-A through generic two-run acceptance
+        run: bash scripts/run_production_batch_ci.sh
+      - name: Upload CA 20-target evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ca-pb02-a-acceptance
+          path: build/ca-pb02-a
           if-no-files-found: warn
