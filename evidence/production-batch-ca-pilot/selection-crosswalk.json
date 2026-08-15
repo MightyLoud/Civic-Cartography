@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "batch_id": "CA-PB00",
+  "selection_extracted_at": "2026-08-15T19:40:00Z",
+  "ordering": "manifest sequence",
+  "target_count": 5,
+  "replacement_count": 0,
+  "record_count": 5,
+  "candidates": [
+    {
+      "census_geoid": "0644000",
+      "state_fips": "06",
+      "place_fips": "44000",
+      "display_name": "Los Angeles",
+      "maintained_ocdid": "ocd-division/country:us/state:ca/place:los_angeles",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": ["037"],
+        "county_names": ["Los Angeles"],
+        "sldu_fips": ["020", "024", "025", "026", "027", "028", "035"],
+        "sldl_fips": ["040", "041", "042", "043", "044", "046", "051", "052", "054", "055", "057", "061", "065", "066"]
+      },
+      "disposition": "target",
+      "target_id": "CA-PB00-001",
+      "wave": "CA-PB00-A",
+      "sequence": 1
+    },
+    {
+      "census_geoid": "0666000",
+      "state_fips": "06",
+      "place_fips": "66000",
+      "display_name": "San Diego",
+      "maintained_ocdid": "ocd-division/country:us/state:ca/place:san_diego",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": ["073"],
+        "county_names": ["San Diego"],
+        "sldu_fips": ["018", "038", "039", "040"],
+        "sldl_fips": ["075", "076", "077", "078", "079", "080"]
+      },
+      "disposition": "target",
+      "target_id": "CA-PB00-002",
+      "wave": "CA-PB00-A",
+      "sequence": 2
+    },
+    {
+      "census_geoid": "0664000",
+      "state_fips": "06",
+      "place_fips": "64000",
+      "display_name": "Sacramento",
+      "maintained_ocdid": "ocd-division/country:us/state:ca/place:sacramento",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": ["067"],
+        "county_names": ["Sacramento"],
+        "sldu_fips": ["006", "008"],
+        "sldl_fips": ["006", "007", "009", "010"]
+      },
+      "disposition": "target",
+      "target_id": "CA-PB00-003",
+      "wave": "CA-PB00-A",
+      "sequence": 3
+    },
+    {
+      "census_geoid": "0627000",
+      "state_fips": "06",
+      "place_fips": "27000",
+      "display_name": "Fresno",
+      "maintained_ocdid": "ocd-division/country:us/state:ca/place:fresno",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": ["019"],
+        "county_names": ["Fresno"],
+        "sldu_fips": ["012", "014"],
+        "sldl_fips": ["008", "027", "031"]
+      },
+      "disposition": "target",
+      "target_id": "CA-PB00-004",
+      "wave": "CA-PB00-A",
+      "sequence": 4
+    },
+    {
+      "census_geoid": "0606000",
+      "state_fips": "06",
+      "place_fips": "06000",
+      "display_name": "Berkeley",
+      "maintained_ocdid": "ocd-division/country:us/state:ca/place:berkeley",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": ["001"],
+        "county_names": ["Alameda"],
+        "sldu_fips": ["007"],
+        "sldl_fips": ["014"]
+      },
+      "disposition": "target",
+      "target_id": "CA-PB00-005",
+      "wave": "CA-PB00-A",
+      "sequence": 5
+    }
+  ]
+}
