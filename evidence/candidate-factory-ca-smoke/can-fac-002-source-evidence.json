@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "gate": "CAN-FAC-002",
+  "source_evidence": [
+    {
+      "source_evidence_id": "ev-ca-403ab2ec8c7e5c05e66706f2c417f637757156bd1b8287121fa6e2c6f4c74c18",
+      "source_record_id": "sr-ca-2774ce1a8a7ed2eece806d44f877899675f323abc33cd34a8d82c9538201f345",
+      "source_field": "candidacy_status",
+      "source_url": "https://www.rpcity.ca.gov/594/City-Elections",
+      "source_url_normalized": "https://www.rpcity.ca.gov/594/City-Elections",
+      "source_type": "OFFICIAL_WEB",
+      "source_notes": "Official City of Rohnert Park candidate table lists Michael DeSimone for District 2; nomination papers filed 2026-07-20; qualified for ballot 2026-07-20.",
+      "authority_level": "OFFICIAL_PRIMARY",
+      "observed_at": "2026-08-15",
+      "retrieved_at": "2026-08-15",
+      "confidence": "HIGH",
+      "evidence_status": "ACTIVE"
+    },
+    {
+      "source_evidence_id": "ev-ca-17656ff1f3bbc11e5762b8328158c6333c1cbd20f3de8ff24dbcf9e6ef58f34b",
+      "source_record_id": "sr-ca-6bbb81a90e34c3618af0fe06b4c3ff172ec228044a9bec6a1c5ca7291ab8e9fa",
+      "source_field": "candidacy_status",
+      "source_url": "https://www.rpcity.ca.gov/594/City-Elections",
+      "source_url_normalized": "https://www.rpcity.ca.gov/594/City-Elections",
+      "source_type": "OFFICIAL_WEB",
+      "source_notes": "Official City of Rohnert Park candidate table lists Linda (Khoury) Tams for District 2; nomination papers filed 2026-07-15; qualified for ballot 2026-07-15.",
+      "authority_level": "OFFICIAL_PRIMARY",
+      "observed_at": "2026-08-15",
+      "retrieved_at": "2026-08-15",
+      "confidence": "HIGH",
+      "evidence_status": "ACTIVE"
+    },
+    {
+      "source_evidence_id": "ev-ca-821768f0c49337323e18c0eff268f41d29fb58539b25e82a7185e46c9e720172",
+      "source_record_id": "sr-ca-2ed0bf6a82c821e6eceb568945bf3be8cb7723604192d916891eac49b5a568ad",
+      "source_field": "candidacy_status",
+      "source_url": "https://www.rpcity.ca.gov/594/City-Elections",
+      "source_url_normalized": "https://www.rpcity.ca.gov/594/City-Elections",
+      "source_type": "OFFICIAL_WEB",
+      "source_notes": "Official City of Rohnert Park candidate table lists Susan Hollingsworth Adams for District 5; nomination papers filed 2026-07-14; qualified for ballot 2026-07-15.",
+      "authority_level": "OFFICIAL_PRIMARY",
+      "observed_at": "2026-08-15",
+      "retrieved_at": "2026-08-15",
+      "confidence": "HIGH",
+      "evidence_status": "ACTIVE"
+    },
+    {
+      "source_evidence_id": "ev-ca-d05caa95fdf6dcaa054a6d241ff8eb7de1ea22b4c32a831544193952a26eebce",
+      "source_record_id": "sr-ca-23641cc227efd283df34a774618fab6eb919504c36c643e95ce74f0fca196f1c",
+      "source_field": "candidacy_status",
+      "source_url": "https://www.rpcity.ca.gov/594/City-Elections",
+      "source_url_normalized": "https://www.rpcity.ca.gov/594/City-Elections",
+      "source_type": "OFFICIAL_WEB",
+      "source_notes": "Official City of Rohnert Park candidate table lists Mauricio Barreto for District 5; nomination papers filed 2026-07-28; qualified for ballot 2026-07-28.",
+      "authority_level": "OFFICIAL_PRIMARY",
+      "observed_at": "2026-08-15",
+      "retrieved_at": "2026-08-15",
+      "confidence": "HIGH",
+      "evidence_status": "ACTIVE"
+    }
+  ],
+  "evidence_links": [
+    {
+      "evidence_link_id": "el-ca-0032b1be1f73e2c14d9c27aa7ac614f9549ea8f2eeb79064620a5b2f82b778f0",
+      "source_evidence_id": "ev-ca-403ab2ec8c7e5c05e66706f2c417f637757156bd1b8287121fa6e2c6f4c74c18",
+      "target_entity": "Candidacy",
+      "target_id": "cand-ca-8b1c4680343eb8a61061c78273b39bb63461c997c43f6a0a2e97a9ecad03806f",
+      "assertion_kind": "STATUS",
+      "assertion_name": "qualified_for_ballot",
+      "asserted_value_hash": "bfa4c0f795f8538fb26d9ea422670c225adde9799b0a54503b18ff6fb7c30faf"
+    },
+    {
+      "evidence_link_id": "el-ca-5edce72f4d6b0238a4ae535b619b633a1a11b9e8dc181cbd09a99fce0e39dcd0",
+      "source_evidence_id": "ev-ca-17656ff1f3bbc11e5762b8328158c6333c1cbd20f3de8ff24dbcf9e6ef58f34b",
+      "target_entity": "Candidacy",
+      "target_id": "cand-ca-4934ccb2cbeb796b2956d2d731d95e7da401d39157419793fca6bfc5bdb85cc5",
+      "assertion_kind": "STATUS",
+      "assertion_name": "qualified_for_ballot",
+      "asserted_value_hash": "bfa4c0f795f8538fb26d9ea422670c225adde9799b0a54503b18ff6fb7c30faf"
+    },
+    {
+      "evidence_link_id": "el-ca-c03041d728cdbf0ab7f93e39b0b36dc4a894b5080929232ebd7b21a6800a3777",
+      "source_evidence_id": "ev-ca-821768f0c49337323e18c0eff268f41d29fb58539b25e82a7185e46c9e720172",
+      "target_entity": "Candidacy",
+      "target_id": "cand-ca-d2e97e71c0100c767d1619b9b802b8de957c5998acae702b0c2584d770eb6ef1",
+      "assertion_kind": "STATUS",
+      "assertion_name": "qualified_for_ballot",
+      "asserted_value_hash": "bfa4c0f795f8538fb26d9ea422670c225adde9799b0a54503b18ff6fb7c30faf"
+    },
+    {
+      "evidence_link_id": "el-ca-715803094fd067e32fb79a5d59e369f35337d2e071fee234212beaca9836c4f4",
+      "source_evidence_id": "ev-ca-d05caa95fdf6dcaa054a6d241ff8eb7de1ea22b4c32a831544193952a26eebce",
+      "target_entity": "Candidacy",
+      "target_id": "cand-ca-e1ea30970ad6f8cafafe737af7deced6c22db593ad612ee7b064f6ca7aa40743",
+      "assertion_kind": "STATUS",
+      "assertion_name": "qualified_for_ballot",
+      "asserted_value_hash": "bfa4c0f795f8538fb26d9ea422670c225adde9799b0a54503b18ff6fb7c30faf"
+    }
+  ]
+}
