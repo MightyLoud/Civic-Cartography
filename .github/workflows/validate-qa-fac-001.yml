@@ -1,0 +1,21 @@
+name: Validate QA-FAC-001 Shared Core
+
+on:
+  pull_request:
+    paths:
+      - 'schemas/qa-fac-core-v1.schema.json'
+      - 'tests/fixtures/qa_fac_001_outcome_matrix.json'
+      - 'scripts/validate_qa_fac_001.py'
+      - '.github/workflows/validate-qa-fac-001.yml'
+  workflow_dispatch:
+
+jobs:
+  qa-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate shared QA outcome matrix
+        run: python scripts/validate_qa_fac_001.py
