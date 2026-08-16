@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "case_id": "parallel-clean-pass",
+      "children": [
+        {"task_id": "CA-001", "write_surface": ["CA:A"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}},
+        {"task_id": "OR-001", "write_surface": ["OR:A"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}},
+        {"task_id": "WA-001", "write_surface": ["WA:A"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}}
+      ],
+      "expected": {"batch_status":"PASS","promotion_ready":3,"review":0,"fail":0,"overlap_waits":0}
+    },
+    {
+      "case_id": "overlap-serializes",
+      "children": [
+        {"task_id": "TX-001", "write_surface": ["TX:Ops_Tracker"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}},
+        {"task_id": "TX-002", "write_surface": ["TX:Ops_Tracker","TX:Office_QA"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}}
+      ],
+      "expected": {"batch_status":"PASS","promotion_ready":2,"review":0,"fail":0,"overlap_waits":1}
+    },
+    {
+      "case_id": "mixed-review",
+      "children": [
+        {"task_id": "CA-002", "write_surface": ["CA:B"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}},
+        {"task_id": "OR-002", "write_surface": ["OR:B"], "stages": {"SRC-FAC":"REVIEW"}}
+      ],
+      "expected": {"batch_status":"REVIEW","promotion_ready":1,"review":1,"fail":0,"overlap_waits":0}
+    },
+    {
+      "case_id": "mixed-fail",
+      "children": [
+        {"task_id": "WA-002", "write_surface": ["WA:B"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}},
+        {"task_id": "TX-003", "write_surface": ["TX:C"], "stages": {"SRC-FAC":"PASS","DOMAIN":"FAIL"}},
+        {"task_id": "CA-003", "write_surface": ["CA:C"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"REVIEW"}}
+      ],
+      "expected": {"batch_status":"FAIL","promotion_ready":1,"review":1,"fail":1,"overlap_waits":0}
+    }
+  ]
+}
