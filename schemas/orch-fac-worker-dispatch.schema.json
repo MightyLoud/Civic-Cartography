@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://civicdata.tech/schemas/orch-fac-worker-dispatch.schema.json",
+  "title": "ORCH-FAC Worker Dispatch Contract",
+  "type": "object",
+  "required": ["version", "cases"],
+  "properties": {
+    "version": {"const": 1},
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["case_id", "initial_registry", "actions", "expected"],
+        "properties": {
+          "case_id": {"type": "string", "minLength": 1},
+          "initial_registry": {
+            "type": "array",
+            "items": {"$ref": "#/$defs/registryRow"}
+          },
+          "actions": {
+            "type": "array",
+            "items": {"$ref": "#/$defs/action"}
+          },
+          "expected": {
+            "type": "object",
+            "required": ["final_status", "held_locks", "rejected_claims"],
+            "properties": {
+              "final_status": {"enum": ["PASS", "REVIEW", "FAIL"]},
+              "held_locks": {"type": "integer", "minimum": 0},
+              "rejected_claims": {"type": "integer", "minimum": 0}
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "registryRow": {
+      "type": "object",
+      "required": ["conversation_id", "task_id", "write_surface", "status", "lock_state", "lock_owner"],
+      "properties": {
+        "conversation_id": {"type": "string"},
+        "task_id": {"type": "string"},
+        "write_surface": {"type": "array", "items": {"type": "string"}},
+        "status": {"type": "string"},
+        "lock_state": {"enum": ["HELD", "READ_ONLY", "HOLD", "BLOCKED", "NOT_HELD", "RELEASED"]},
+        "lock_owner": {"type": "string"},
+        "handoff_to": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "action": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {"enum": ["claim", "complete"]},
+        "conversation_id": {"type": "string"},
+        "task_id": {"type": "string"},
+        "write_surface": {"type": "array", "items": {"type": "string"}},
+        "qa_status": {"enum": ["PASS", "REVIEW", "FAIL"]},
+        "handoff_to": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
