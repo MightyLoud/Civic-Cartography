@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "read_only_workers": ["MON-015"],
+  "cases": [
+    {
+      "case_id": "happy-path-release-handoff",
+      "domain_factory": "CAN-FAC",
+      "outcomes": {"source": "PASS", "domain": "PASS", "qa": "PASS", "release": "PASS"},
+      "final_handoff": "PROGRAM-CONTROL",
+      "expected": {"terminal_status": "PASS", "terminal_route": "PROGRAM-CONTROL", "stages_executed": 4, "held_locks": 0}
+    },
+    {
+      "case_id": "source-review-exception",
+      "domain_factory": "CAN-FAC",
+      "outcomes": {"source": "REVIEW", "domain": "PASS", "qa": "PASS", "release": "PASS"},
+      "final_handoff": "PROGRAM-CONTROL",
+      "expected": {"terminal_status": "REVIEW", "terminal_route": "EXCEPTION-QUEUE", "stages_executed": 1, "held_locks": 0}
+    },
+    {
+      "case_id": "domain-fail-remediation",
+      "domain_factory": "NAT-FAC",
+      "outcomes": {"source": "PASS", "domain": "FAIL", "qa": "PASS", "release": "PASS"},
+      "final_handoff": "PROGRAM-CONTROL",
+      "expected": {"terminal_status": "FAIL", "terminal_route": "REMEDIATION", "stages_executed": 2, "held_locks": 0}
+    },
+    {
+      "case_id": "qa-review-exception",
+      "domain_factory": "INT-FAC",
+      "outcomes": {"source": "PASS", "domain": "PASS", "qa": "REVIEW", "release": "PASS"},
+      "final_handoff": "PROGRAM-CONTROL",
+      "expected": {"terminal_status": "REVIEW", "terminal_route": "EXCEPTION-QUEUE", "stages_executed": 3, "held_locks": 0}
+    },
+    {
+      "case_id": "release-fail-remediation",
+      "domain_factory": "GEO-FAC",
+      "outcomes": {"source": "PASS", "domain": "PASS", "qa": "PASS", "release": "FAIL"},
+      "final_handoff": "PROGRAM-CONTROL",
+      "expected": {"terminal_status": "FAIL", "terminal_route": "REMEDIATION", "stages_executed": 4, "held_locks": 0}
+    },
+    {
+      "case_id": "read-only-monitor-rejected",
+      "domain_factory": "MON-015",
+      "outcomes": {"source": "PASS", "domain": "PASS", "qa": "PASS", "release": "PASS"},
+      "final_handoff": "PROGRAM-CONTROL",
+      "expected": {"terminal_status": "REVIEW", "terminal_route": "EXCEPTION-QUEUE", "stages_executed": 1, "held_locks": 0}
+    }
+  ]
+}
