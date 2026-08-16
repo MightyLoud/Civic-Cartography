@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "case_id": "interrupted-resume-pass",
+      "task_id": "TASK-A",
+      "idempotency_key": "TASK-A:v1",
+      "initial": {"lock_state":"HELD","lock_owner":"WORKER-A","completed_stages":["SRC-FAC","DOMAIN"],"terminal":null,"writes":["src:sha-a","domain:sha-b"],"retry_count":0},
+      "recovery": {"reason":"worker_interrupted","new_owner":"WORKER-B","remaining_stages":{"QA-FAC":"PASS","REL-FAC":"PASS"}},
+      "expected": {"terminal":"PASS","retry_count":1,"writes":4,"handoffs":1,"exceptions":0,"held_locks":0}
+    },
+    {
+      "case_id": "terminal-retry-noop",
+      "task_id": "TASK-B",
+      "idempotency_key": "TASK-B:v1",
+      "initial": {"lock_state":"RELEASED","lock_owner":"NONE","completed_stages":["SRC-FAC","DOMAIN","QA-FAC","REL-FAC"],"terminal":"PASS","writes":["src:x","domain:y","qa:z","rel:q"],"retry_count":1,"handoffs":1},
+      "recovery": {"reason":"duplicate_delivery","new_owner":"WORKER-C","remaining_stages":{"REL-FAC":"PASS"}},
+      "expected": {"terminal":"PASS","retry_count":1,"writes":4,"handoffs":1,"exceptions":0,"held_locks":0}
+    },
+    {
+      "case_id": "stale-lock-reclaim",
+      "task_id": "TASK-C",
+      "idempotency_key": "TASK-C:v1",
+      "initial": {"lock_state":"HELD","lock_owner":"DEAD-WORKER","completed_stages":["SRC-FAC"],"terminal":null,"writes":["src:c"],"retry_count":2},
+      "recovery": {"reason":"stale_lock","new_owner":"WORKER-D","remaining_stages":{"DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}},
+      "expected": {"terminal":"PASS","retry_count":3,"writes":4,"handoffs":1,"exceptions":0,"held_locks":0}
+    },
+    {
+      "case_id": "recovery-review",
+      "task_id": "TASK-D",
+      "idempotency_key": "TASK-D:v1",
+      "initial": {"lock_state":"HOLD","lock_owner":"NONE","completed_stages":["SRC-FAC"],"terminal":null,"writes":["src:d"],"retry_count":0},
+      "recovery": {"reason":"manual_review_retry","new_owner":"WORKER-E","remaining_stages":{"DOMAIN":"PASS","QA-FAC":"REVIEW"}},
+      "expected": {"terminal":"REVIEW","retry_count":1,"writes":3,"handoffs":0,"exceptions":1,"held_locks":0}
+    },
+    {
+      "case_id": "recovery-fail",
+      "task_id": "TASK-E",
+      "idempotency_key": "TASK-E:v1",
+      "initial": {"lock_state":"BLOCKED","lock_owner":"NONE","completed_stages":["SRC-FAC"],"terminal":null,"writes":["src:e"],"retry_count":1},
+      "recovery": {"reason":"remediation_retry","new_owner":"WORKER-F","remaining_stages":{"DOMAIN":"FAIL"}},
+      "expected": {"terminal":"FAIL","retry_count":2,"writes":2,"handoffs":0,"exceptions":1,"held_locks":0}
+    }
+  ]
+}
