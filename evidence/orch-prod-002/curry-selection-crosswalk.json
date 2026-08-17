@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "batch_id": "OR-PB04",
+  "target_count": 1,
+  "record_count": 1,
+  "candidates": [{
+    "census_geoid": "41015",
+    "state_fips": "41",
+    "county_fips": "015",
+    "display_name": "Curry County",
+    "maintained_ocdid": "ocd-division/country:us/state:or/county:curry",
+    "expected_classification": "government",
+    "nesting": {"county_fips": ["015"], "county_names": ["Curry"], "sldu_fips": ["001"], "sldl_fips": ["001"]},
+    "disposition": "target",
+    "target_id": "OR-PB04-005",
+    "wave": "OR-PB04-C",
+    "sequence": 5
+  }]
+}
