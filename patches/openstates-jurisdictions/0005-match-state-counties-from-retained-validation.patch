@@ -1,0 +1,65 @@
+diff --git a/src/init_migration/generate_pipeline.py b/src/init_migration/generate_pipeline.py
+index ebf760a..county01 100644
+--- a/src/init_migration/generate_pipeline.py
++++ b/src/init_migration/generate_pipeline.py
+@@ -218,6 +218,7 @@ class GeneratePipeline:
+             parsed = ocdid_parser(ocdid)  # Returns dict
+             state = parsed.get("state")
+             place = parsed.get("place")
++            county = parsed.get("county")
+ 
+             if not state:
+                 state = parsed.get("district")
+@@ -230,14 +231,12 @@ class GeneratePipeline:
+                 elif anc:
+                     place = f"anc {anc}"
+ 
+-            if not state or not place:
+-                # County-level OCDids land here. The validation CSV carries only
+-                # Census "place" and "cousub" layers, so there is nothing to match
+-                # them against; they are quarantined as stubs by run().
+-                logger.debug(f"Missing state or place in OCDid: {ocdid}")
++            if not state or (not place and not county):
++                logger.debug(f"Missing state and local geography in OCDid: {ocdid}")
+                 return pl.DataFrame()
+ 
+             state_upper = state.upper()
+-            place_lower = _ocdid_slug_to_name(place)
++            place_lower = _ocdid_slug_to_name(place or county)
+ 
+             # Look up state FIPS code
+             from src.utils.state_lookup import load_state_code_lookup
+@@ -316,6 +315,33 @@ class GeneratePipeline:
+                 )
+                 return pl.DataFrame()
+ 
++            # State county targets use the retained Census Counties validation
++            # export. Match exact normalized county name within the already
++            # state-scoped data and never fuzzy-match county identity.
++            if county:
++                if "COUNTYFP_list" not in state_df.columns:
++                    logger.debug(
++                        f"No county validation layer available for state: {state_upper}"
++                    )
++                    return pl.DataFrame()
++                county_df = state_df.filter(
++                    pl.col("COUNTYFP_list")
++                    .cast(pl.Utf8)
++                    .fill_null("")
++                    .str.strip_chars()
++                    != ""
++                )
++                county_matches = county_df.filter(
++                    pl.col("normalized_place_name") == place_lower
++                )
++                if len(county_matches) != 1:
++                    logger.debug(
++                        f"County validation match count for {ocdid}: {len(county_matches)}"
++                    )
++                    return pl.DataFrame()
++                logger.info(f"Found 1 exact county match for {ocdid}")
++                return county_matches
++
+             # A `place:` OCDid segment denotes a Census place, so county
+             # subdivisions are not candidates. The LSAD code cannot make this
+             # distinction (code 25 "city" appears on both layers); a populated
