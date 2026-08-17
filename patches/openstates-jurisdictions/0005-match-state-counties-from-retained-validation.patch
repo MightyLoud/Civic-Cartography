@@ -1,5 +1,4 @@
 diff --git a/src/init_migration/generate_pipeline.py b/src/init_migration/generate_pipeline.py
-index ebf760a..county01 100644
 --- a/src/init_migration/generate_pipeline.py
 +++ b/src/init_migration/generate_pipeline.py
 @@ -218,6 +218,7 @@ class GeneratePipeline:
@@ -10,7 +9,7 @@ index ebf760a..county01 100644
  
              if not state:
                  state = parsed.get("district")
-@@ -230,14 +231,12 @@ class GeneratePipeline:
+@@ -230,15 +231,13 @@ class GeneratePipeline:
                  elif anc:
                      place = f"anc {anc}"
  
