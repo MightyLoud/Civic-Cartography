@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "batch_id": "OR-PB04",
+  "target_count": 1,
+  "record_count": 1,
+  "candidates": [{
+    "census_geoid": "41013",
+    "state_fips": "41",
+    "county_fips": "013",
+    "display_name": "Crook County",
+    "maintained_ocdid": "ocd-division/country:us/state:or/county:crook",
+    "expected_classification": "government",
+    "nesting": {"county_fips": ["013"], "county_names": ["Crook"], "sldu_fips": ["030"], "sldl_fips": ["059"]},
+    "disposition": "target",
+    "target_id": "OR-PB04-004",
+    "wave": "OR-PB04-B",
+    "sequence": 4
+  }]
+}

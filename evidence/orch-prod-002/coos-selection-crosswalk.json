@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "batch_id": "OR-PB04",
+  "target_count": 1,
+  "record_count": 1,
+  "candidates": [{
+    "census_geoid": "41011",
+    "state_fips": "41",
+    "county_fips": "011",
+    "display_name": "Coos County",
+    "maintained_ocdid": "ocd-division/country:us/state:or/county:coos",
+    "expected_classification": "government",
+    "nesting": {"county_fips": ["011"], "county_names": ["Coos"], "sldu_fips": ["001", "005"], "sldl_fips": ["001", "009"]},
+    "disposition": "target",
+    "target_id": "OR-PB04-003",
+    "wave": "OR-PB04-B",
+    "sequence": 3
+  }]
+}

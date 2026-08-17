@@ -1,0 +1,18 @@
+version: 1
+name: orch_prod_002_coos
+description: ORCH-PROD-002 Wave B bounded Coos County production manifest.
+state: or
+source_manifest: evidence/production-batch-or-county-smoke/source-selection-manifest.json
+selection_crosswalk: evidence/orch-prod-002/coos-selection-crosswalk.json
+targets:
+  - target_id: OR-PB04-003
+    jurisdiction_name: Coos County
+    state: or
+    census_geoid: "41011"
+    wave: OR-PB04-B
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:or/county:coos
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production

@@ -1,0 +1,18 @@
+version: 1
+name: orch_prod_002_crook
+description: ORCH-PROD-002 Wave B bounded Crook County production manifest.
+state: or
+source_manifest: evidence/production-batch-or-county-smoke/source-selection-manifest.json
+selection_crosswalk: evidence/orch-prod-002/crook-selection-crosswalk.json
+targets:
+  - target_id: OR-PB04-004
+    jurisdiction_name: Crook County
+    state: or
+    census_geoid: "41013"
+    wave: OR-PB04-B
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:or/county:crook
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
