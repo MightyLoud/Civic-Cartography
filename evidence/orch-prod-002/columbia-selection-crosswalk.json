@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "batch_id": "OR-PB04",
+  "selection_extracted_at": "2026-08-17T04:12:00Z",
+  "ordering": "governed OR-PB04 sequence",
+  "target_count": 1,
+  "replacement_count": 0,
+  "record_count": 1,
+  "candidates": [
+    {
+      "census_geoid": "41009",
+      "state_fips": "41",
+      "county_fips": "009",
+      "display_name": "Columbia County",
+      "maintained_ocdid": "ocd-division/country:us/state:or/county:columbia",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": ["009"],
+        "county_names": ["Columbia"],
+        "sldu_fips": ["016"],
+        "sldl_fips": ["031", "032"]
+      },
+      "disposition": "target",
+      "target_id": "OR-PB04-002",
+      "wave": "OR-PB04-A",
+      "sequence": 2
+    }
+  ]
+}
