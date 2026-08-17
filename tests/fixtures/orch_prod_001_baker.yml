@@ -9,7 +9,7 @@ targets:
     jurisdiction_name: Baker County
     state: or
     census_geoid: "41001"
-    wave: ORCH-PROD-001-BAKER
+    wave: OR-PB03-A
     selector:
       type: ocdid
       value: ocd-division/country:us/state:or/county:baker
