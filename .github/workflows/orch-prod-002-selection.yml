@@ -1,0 +1,22 @@
+name: Validate ORCH-PROD-002 Selection
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/orch-prod-002-selection.yml'
+      - 'scripts/validate_orch_prod_002_selection.py'
+      - 'evidence/orch-prod-002/selection-crosswalk.json'
+
+permissions:
+  contents: read
+
+jobs:
+  selection:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate governed five-county capacity-2 selection
+        run: python scripts/validate_orch_prod_002_selection.py evidence/orch-prod-002/selection-crosswalk.json
