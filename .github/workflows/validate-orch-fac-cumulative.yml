@@ -1,0 +1,32 @@
+name: Validate ORCH-FAC Cumulative Main
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/validate-orch-fac-cumulative.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: ORCH-FAC-001
+        run: python scripts/validate_orch_fac_001.py
+      - name: ORCH-FAC-002
+        run: python scripts/validate_orch_fac_002.py
+      - name: ORCH-FAC-003
+        run: python scripts/validate_orch_fac_003.py
+      - name: ORCH-FAC-004
+        run: python scripts/validate_orch_fac_004.py
+      - name: ORCH-FAC-005
+        run: python scripts/validate_orch_fac_005.py
+      - name: ORCH-FAC-006
+        run: python scripts/validate_orch_fac_006.py
+      - name: ORCH-FAC-007
+        run: python scripts/validate_orch_fac_007.py
+      - name: ORCH-FAC-008
+        run: python scripts/validate_orch_fac_008.py
