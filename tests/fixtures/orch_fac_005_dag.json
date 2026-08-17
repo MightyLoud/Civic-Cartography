@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "case_id": "linear-chain",
+      "tasks": [
+        {"task_id":"SRC","depends_on":[],"status":"PASS"},
+        {"task_id":"DOMAIN","depends_on":["SRC"],"status":"PASS"},
+        {"task_id":"QA","depends_on":["DOMAIN"],"status":"PASS"},
+        {"task_id":"REL","depends_on":["QA"],"status":"PASS"}
+      ],
+      "expected":{"cycle":false,"ready_order":[["SRC"],["DOMAIN"],["QA"],["REL"]],"blocked":[]}
+    },
+    {
+      "case_id": "diamond",
+      "tasks": [
+        {"task_id":"ROOT","depends_on":[],"status":"PASS"},
+        {"task_id":"LEFT","depends_on":["ROOT"],"status":"PASS"},
+        {"task_id":"RIGHT","depends_on":["ROOT"],"status":"PASS"},
+        {"task_id":"JOIN","depends_on":["LEFT","RIGHT"],"status":"PASS"}
+      ],
+      "expected":{"cycle":false,"ready_order":[["ROOT"],["LEFT","RIGHT"],["JOIN"]],"blocked":[]}
+    },
+    {
+      "case_id": "review-blocks-child",
+      "tasks": [
+        {"task_id":"SRC","depends_on":[],"status":"REVIEW"},
+        {"task_id":"DOMAIN","depends_on":["SRC"],"status":"PENDING"}
+      ],
+      "expected":{"cycle":false,"ready_order":[["SRC"]],"blocked":["DOMAIN"]}
+    },
+    {
+      "case_id": "fail-blocks-descendants",
+      "tasks": [
+        {"task_id":"SRC","depends_on":[],"status":"PASS"},
+        {"task_id":"DOMAIN","depends_on":["SRC"],"status":"FAIL"},
+        {"task_id":"QA","depends_on":["DOMAIN"],"status":"PENDING"},
+        {"task_id":"REL","depends_on":["QA"],"status":"PENDING"}
+      ],
+      "expected":{"cycle":false,"ready_order":[["SRC"],["DOMAIN"]],"blocked":["QA","REL"]}
+    },
+    {
+      "case_id": "parallel-roots",
+      "tasks": [
+        {"task_id":"A","depends_on":[],"status":"PASS"},
+        {"task_id":"B","depends_on":[],"status":"PASS"},
+        {"task_id":"C","depends_on":["A"],"status":"PASS"},
+        {"task_id":"D","depends_on":["B"],"status":"PASS"}
+      ],
+      "expected":{"cycle":false,"ready_order":[["A","B"],["C","D"]],"blocked":[]}
+    },
+    {
+      "case_id": "cycle-rejected",
+      "tasks": [
+        {"task_id":"A","depends_on":["B"],"status":"PENDING"},
+        {"task_id":"B","depends_on":["A"],"status":"PENDING"}
+      ],
+      "expected":{"cycle":true,"ready_order":[],"blocked":["A","B"]}
+    }
+  ]
+}
