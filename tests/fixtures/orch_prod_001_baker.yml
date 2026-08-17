@@ -1,0 +1,18 @@
+version: 1
+name: orch_prod_001_baker
+description: ORCH-PROD-001 task 1/3 bounded Baker County production manifest.
+state: or
+source_manifest: evidence/production-batch-or-county-smoke/source-selection-manifest.json
+selection_crosswalk: evidence/orch-prod-001/baker-selection-crosswalk.json
+targets:
+  - target_id: OR-PB03-001
+    jurisdiction_name: Baker County
+    state: or
+    census_geoid: "41001"
+    wave: ORCH-PROD-001-BAKER
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:or/county:baker
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
