@@ -15,7 +15,7 @@ env:
   UPSTREAM_REVISION: 6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705
   RUN_ASOF: 2026-08-17T02:09:00Z
   FULL_MANIFEST: tests/fixtures/orch_prod_001_baker.yml
-  WAVE: ORCH-PROD-001-BAKER
+  WAVE: OR-PB03-A
   EXPECTED_TARGET_COUNT: '1'
   CROSSWALK: evidence/orch-prod-001/baker-selection-crosswalk.json
   BUILD_ROOT: build/orch-prod-001/baker
