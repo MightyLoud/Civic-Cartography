@@ -12,7 +12,6 @@ set -euo pipefail
 : "${PATCH_2:?PATCH_2 is required}"
 : "${PATCH_3:?PATCH_3 is required}"
 : "${PATCH_4:?PATCH_4 is required}"
-: "${PATCH_5:?PATCH_5 is required}"
 : "${OVERRIDE_REGISTRY:?OVERRIDE_REGISTRY is required}"
 : "${ALIAS_REGISTRY:?ALIAS_REGISTRY is required}"
 
@@ -59,8 +58,7 @@ git -C upstream \
 
 git -C upstream apply --check "../$PATCH_4"
 git -C upstream apply "../$PATCH_4"
-git -C upstream apply --check "../$PATCH_5"
-git -C upstream apply "../$PATCH_5"
+python scripts/apply_state_county_validation.py --upstream-root upstream
 
 capture_run() {
   local run_name="$1"
