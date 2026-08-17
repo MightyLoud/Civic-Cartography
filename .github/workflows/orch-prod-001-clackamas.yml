@@ -1,0 +1,65 @@
+name: ORCH-PROD-001 Clackamas County
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/orch-prod-001-clackamas.yml'
+      - 'scripts/check_production_enrichment.py'
+      - 'scripts/apply_state_county_validation.py'
+      - 'scripts/capture_upstream_batch_with_county_validation.py'
+      - 'scripts/run_orch_prod_001_clackamas_ci.sh'
+      - 'tests/fixtures/orch_prod_001_clackamas.yml'
+      - 'evidence/orch-prod-001/clackamas-selection-crosswalk.json'
+
+permissions:
+  contents: read
+
+env:
+  UPSTREAM_REPOSITORY: openstates/jurisdictions
+  UPSTREAM_REVISION: 6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705
+  RUN_ASOF: 2026-08-17T02:55:00Z
+  FULL_MANIFEST: tests/fixtures/orch_prod_001_clackamas.yml
+  WAVE: OR-PB03-A
+  EXPECTED_TARGET_COUNT: '1'
+  CROSSWALK: evidence/orch-prod-001/clackamas-selection-crosswalk.json
+  BUILD_ROOT: build/orch-prod-001/clackamas
+  PATCH_1: patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch
+  PATCH_2: patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch
+  PATCH_3: patches/openstates-jurisdictions/0003-authoritative-jurisdiction-overrides.patch
+  PATCH_4: patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch
+  OVERRIDE_REGISTRY: data/authoritative_jurisdiction_overrides.yml
+  ALIAS_REGISTRY: data/canonical_alias_groups.yml
+
+jobs:
+  clackamas:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+      - name: Check out pinned upstream generator
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM_REPOSITORY }}
+          ref: ${{ env.UPSTREAM_REVISION }}
+          path: upstream
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Run Clackamas through county-capable two-run production acceptance
+        run: bash scripts/run_orch_prod_001_clackamas_ci.sh
+      - name: Reject partial enrichment or zero-match stub generation
+        run: |
+          python scripts/check_production_enrichment.py \
+            build/orch-prod-001/clackamas/run-1/diagnostics.json \
+            build/orch-prod-001/clackamas/run-2/diagnostics.json
+      - name: Upload Clackamas production evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orch-prod-001-clackamas-acceptance
+          path: build/orch-prod-001/clackamas
+          if-no-files-found: warn
