@@ -1,0 +1,20 @@
+name: Validate ORCH-FAC-007 Observability Audit Log
+
+on:
+  pull_request:
+    paths:
+      - 'tests/fixtures/orch_fac_007_events.json'
+      - 'scripts/validate_orch_fac_007.py'
+      - '.github/workflows/validate-orch-fac-007.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate event replay and reconciliation
+        run: python scripts/validate_orch_fac_007.py
