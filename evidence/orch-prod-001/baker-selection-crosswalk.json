@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "batch_id": "ORCH-PROD-001-BAKER",
+  "batch_id": "OR-PB03",
   "selection_extracted_at": "2026-08-15T20:56:00Z",
   "ordering": "manifest sequence",
   "target_count": 1,
@@ -22,7 +22,7 @@
       },
       "disposition": "target",
       "target_id": "OR-PB03-001",
-      "wave": "ORCH-PROD-001-BAKER",
+      "wave": "OR-PB03-A",
       "sequence": 1
     }
   ]
