@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "aging_step": 5,
+  "cases": [
+    {
+      "case_id": "capacity-and-priority",
+      "capacity": 2,
+      "tasks": [
+        {"task_id":"A","state":"READY","priority":100,"wait":0,"write_surface":["CA:A"]},
+        {"task_id":"B","state":"READY","priority":80,"wait":0,"write_surface":["OR:A"]},
+        {"task_id":"C","state":"READY","priority":60,"wait":0,"write_surface":["WA:A"]}
+      ],
+      "expected_selected":["A","B"]
+    },
+    {
+      "case_id": "deterministic-tie",
+      "capacity": 2,
+      "tasks": [
+        {"task_id":"B","state":"READY","priority":50,"wait":0,"write_surface":["OR:B"]},
+        {"task_id":"A","state":"READY","priority":50,"wait":0,"write_surface":["CA:B"]},
+        {"task_id":"C","state":"READY","priority":50,"wait":0,"write_surface":["WA:B"]}
+      ],
+      "expected_selected":["A","B"]
+    },
+    {
+      "case_id": "aging-prevents-starvation",
+      "capacity": 1,
+      "tasks": [
+        {"task_id":"OLD","state":"READY","priority":20,"wait":20,"write_surface":["TX:OLD"]},
+        {"task_id":"NEW","state":"READY","priority":90,"wait":0,"write_surface":["TX:NEW"]}
+      ],
+      "expected_selected":["OLD"]
+    },
+    {
+      "case_id": "overlap-excluded",
+      "capacity": 2,
+      "tasks": [
+        {"task_id":"A","state":"READY","priority":100,"wait":0,"write_surface":["TX:Ops"]},
+        {"task_id":"B","state":"READY","priority":90,"wait":0,"write_surface":["TX:Ops","TX:QA"]},
+        {"task_id":"C","state":"READY","priority":80,"wait":0,"write_surface":["CA:Ops"]}
+      ],
+      "expected_selected":["A","C"]
+    },
+    {
+      "case_id": "nonready-does-not-consume",
+      "capacity": 2,
+      "tasks": [
+        {"task_id":"A","state":"READ_ONLY","priority":999,"wait":99,"write_surface":["X"]},
+        {"task_id":"B","state":"HOLD","priority":999,"wait":99,"write_surface":["Y"]},
+        {"task_id":"C","state":"READY","priority":10,"wait":0,"write_surface":["Z"]}
+      ],
+      "expected_selected":["C"]
+    },
+    {
+      "case_id": "capacity-reuse-after-completion",
+      "capacity": 1,
+      "tasks": [
+        {"task_id":"A","state":"READY","priority":100,"wait":0,"write_surface":["CA:C"]},
+        {"task_id":"B","state":"READY","priority":90,"wait":0,"write_surface":["OR:C"]}
+      ],
+      "complete_then_reschedule":true,
+      "expected_rounds":[["A"],["B"]]
+    }
+  ]
+}
