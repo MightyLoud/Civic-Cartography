@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "batch_id": "OR-PB04",
+  "selection_source": {
+    "name": "Nested Divisions / Counties",
+    "spreadsheet_id": "139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI",
+    "sheet_id": 1652436767,
+    "authority": "Census county GEOID plus validated Oregon legislative nesting"
+  },
+  "capacity": 2,
+  "target_count": 5,
+  "ordering": "governed alphabetical continuation after ORCH-PROD-001",
+  "targets": [
+    {
+      "target_id": "OR-PB04-001",
+      "sequence": 1,
+      "wave": "OR-PB04-A",
+      "dependencies": [],
+      "census_geoid": "41007",
+      "state_fips": "41",
+      "county_fips": "007",
+      "display_name": "Clatsop County",
+      "maintained_ocdid": "ocd-division/country:us/state:or/county:clatsop",
+      "expected_classification": "government",
+      "nesting": {"sldu_fips": ["016"], "sldl_fips": ["032"]}
+    },
+    {
+      "target_id": "OR-PB04-002",
+      "sequence": 2,
+      "wave": "OR-PB04-A",
+      "dependencies": [],
+      "census_geoid": "41009",
+      "state_fips": "41",
+      "county_fips": "009",
+      "display_name": "Columbia County",
+      "maintained_ocdid": "ocd-division/country:us/state:or/county:columbia",
+      "expected_classification": "government",
+      "nesting": {"sldu_fips": ["016"], "sldl_fips": ["031", "032"]}
+    },
+    {
+      "target_id": "OR-PB04-003",
+      "sequence": 3,
+      "wave": "OR-PB04-B",
+      "dependencies": ["OR-PB04-001"],
+      "census_geoid": "41011",
+      "state_fips": "41",
+      "county_fips": "011",
+      "display_name": "Coos County",
+      "maintained_ocdid": "ocd-division/country:us/state:or/county:coos",
+      "expected_classification": "government",
+      "nesting": {"sldu_fips": ["001", "005"], "sldl_fips": ["001", "009"]}
+    },
+    {
+      "target_id": "OR-PB04-004",
+      "sequence": 4,
+      "wave": "OR-PB04-B",
+      "dependencies": ["OR-PB04-002"],
+      "census_geoid": "41013",
+      "state_fips": "41",
+      "county_fips": "013",
+      "display_name": "Crook County",
+      "maintained_ocdid": "ocd-division/country:us/state:or/county:crook",
+      "expected_classification": "government",
+      "nesting": {"sldu_fips": ["030"], "sldl_fips": ["059"]}
+    },
+    {
+      "target_id": "OR-PB04-005",
+      "sequence": 5,
+      "wave": "OR-PB04-C",
+      "dependencies": ["OR-PB04-003", "OR-PB04-004"],
+      "census_geoid": "41015",
+      "state_fips": "41",
+      "county_fips": "015",
+      "display_name": "Curry County",
+      "maintained_ocdid": "ocd-division/country:us/state:or/county:curry",
+      "expected_classification": "government",
+      "nesting": {"sldu_fips": ["001"], "sldl_fips": ["001"]}
+    }
+  ]
+}
