@@ -1,0 +1,103 @@
+name: ORCH-PROD-002 Wave B
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/orch-prod-002-wave-b.yml'
+      - 'tests/fixtures/orch_prod_002_coos.yml'
+      - 'tests/fixtures/orch_prod_002_crook.yml'
+      - 'evidence/orch-prod-002/coos-selection-crosswalk.json'
+      - 'evidence/orch-prod-002/crook-selection-crosswalk.json'
+      - 'scripts/run_orch_prod_001_benton_ci.sh'
+      - 'scripts/check_production_enrichment.py'
+      - 'scripts/apply_state_county_validation.py'
+      - 'scripts/capture_upstream_batch_with_county_validation.py'
+
+permissions:
+  contents: read
+
+env:
+  UPSTREAM_REPOSITORY: openstates/jurisdictions
+  UPSTREAM_REVISION: 6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705
+  RUN_ASOF: 2026-08-17T04:27:00Z
+  WAVE: OR-PB04-B
+  EXPECTED_TARGET_COUNT: '1'
+  PATCH_1: patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch
+  PATCH_2: patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch
+  PATCH_3: patches/openstates-jurisdictions/0003-authoritative-jurisdiction-overrides.patch
+  PATCH_4: patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch
+  OVERRIDE_REGISTRY: data/authoritative_jurisdiction_overrides.yml
+  ALIAS_REGISTRY: data/canonical_alias_groups.yml
+
+jobs:
+  coos:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      FULL_MANIFEST: tests/fixtures/orch_prod_002_coos.yml
+      CROSSWALK: evidence/orch-prod-002/coos-selection-crosswalk.json
+      BUILD_ROOT: build/orch-prod-002/coos
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out pinned upstream generator
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM_REPOSITORY }}
+          ref: ${{ env.UPSTREAM_REVISION }}
+          path: upstream
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Run Coos two-run production acceptance
+        run: bash scripts/run_orch_prod_001_benton_ci.sh
+      - name: Reject partial enrichment or zero-match stub generation
+        run: |
+          python scripts/check_production_enrichment.py \
+            build/orch-prod-002/coos/run-1/diagnostics.json \
+            build/orch-prod-002/coos/run-2/diagnostics.json
+      - name: Upload Coos evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orch-prod-002-coos-acceptance
+          path: build/orch-prod-002/coos
+          if-no-files-found: warn
+
+  crook:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      FULL_MANIFEST: tests/fixtures/orch_prod_002_crook.yml
+      CROSSWALK: evidence/orch-prod-002/crook-selection-crosswalk.json
+      BUILD_ROOT: build/orch-prod-002/crook
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out pinned upstream generator
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM_REPOSITORY }}
+          ref: ${{ env.UPSTREAM_REVISION }}
+          path: upstream
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Run Crook two-run production acceptance
+        run: bash scripts/run_orch_prod_001_benton_ci.sh
+      - name: Reject partial enrichment or zero-match stub generation
+        run: |
+          python scripts/check_production_enrichment.py \
+            build/orch-prod-002/crook/run-1/diagnostics.json \
+            build/orch-prod-002/crook/run-2/diagnostics.json
+      - name: Upload Crook evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orch-prod-002-crook-acceptance
+          path: build/orch-prod-002/crook
+          if-no-files-found: warn
