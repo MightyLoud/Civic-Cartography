@@ -1,0 +1,18 @@
+version: 1
+name: orch_prod_002_columbia
+description: ORCH-PROD-002 Wave A target 2/5 bounded Columbia County production manifest.
+state: or
+source_manifest: evidence/production-batch-or-county-smoke/source-selection-manifest.json
+selection_crosswalk: evidence/orch-prod-002/columbia-selection-crosswalk.json
+targets:
+  - target_id: OR-PB04-002
+    jurisdiction_name: Columbia County
+    state: or
+    census_geoid: "41009"
+    wave: OR-PB04-A
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:or/county:columbia
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
