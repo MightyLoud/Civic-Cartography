@@ -1,0 +1,18 @@
+version: 1
+name: orch_prod_001_clackamas
+description: ORCH-PROD-001 task 3/3 bounded Clackamas County production manifest.
+state: or
+source_manifest: evidence/production-batch-or-county-smoke/source-selection-manifest.json
+selection_crosswalk: evidence/orch-prod-001/clackamas-selection-crosswalk.json
+targets:
+  - target_id: OR-PB03-003
+    jurisdiction_name: Clackamas County
+    state: or
+    census_geoid: "41005"
+    wave: OR-PB03-A
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:or/county:clackamas
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
