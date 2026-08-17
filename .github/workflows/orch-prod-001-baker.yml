@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/orch-prod-001-baker.yml'
+      - 'scripts/check_production_enrichment.py'
       - 'tests/fixtures/orch_prod_001_baker.yml'
       - 'evidence/orch-prod-001/baker-selection-crosswalk.json'
 
@@ -47,6 +48,11 @@ jobs:
       - run: python -m pip install -r requirements-dev.txt
       - name: Run Baker through generic two-run production acceptance
         run: bash scripts/run_production_batch_ci.sh
+      - name: Reject partial enrichment or zero-match stub generation
+        run: |
+          python scripts/check_production_enrichment.py \
+            build/orch-prod-001/baker/run-1/diagnostics.json \
+            build/orch-prod-001/baker/run-2/diagnostics.json
       - name: Upload Baker production evidence
         if: always()
         uses: actions/upload-artifact@v4
