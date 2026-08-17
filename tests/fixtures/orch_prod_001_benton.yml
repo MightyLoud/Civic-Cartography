@@ -1,0 +1,18 @@
+version: 1
+name: orch_prod_001_benton
+description: ORCH-PROD-001 task 2/3 bounded Benton County production manifest.
+state: or
+source_manifest: evidence/production-batch-or-county-smoke/source-selection-manifest.json
+selection_crosswalk: evidence/orch-prod-001/benton-selection-crosswalk.json
+targets:
+  - target_id: OR-PB03-002
+    jurisdiction_name: Benton County
+    state: or
+    census_geoid: "41003"
+    wave: OR-PB03-A
+    selector:
+      type: ocdid
+      value: ocd-division/country:us/state:or/county:benton
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
