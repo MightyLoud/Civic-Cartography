@@ -102,7 +102,7 @@
         },
         "expected_archetype": {"type": "string", "minLength": 1},
         "expected_classification": {"$ref": "#/$defs/classification"},
-        "census_geoid": {"type": "string", "pattern": "^[0-9]{7}$"},
+        "census_geoid": {"type": "string", "pattern": "^(?:[0-9]{5}|[0-9]{7})$"},
         "wave": {
           "type": "string",
           "pattern": "^[A-Z0-9]+(?:-[A-Z0-9]+)*$"
@@ -123,6 +123,46 @@
             "required": ["category"]
           },
           "then": {"required": ["census_geoid", "wave"]}
+        },
+        {
+          "if": {
+            "properties": {
+              "category": {"const": "production"},
+              "selector": {
+                "properties": {
+                  "type": {"const": "ocdid"},
+                  "value": {"pattern": "/place:"}
+                },
+                "required": ["type", "value"]
+              }
+            },
+            "required": ["category", "selector"]
+          },
+          "then": {
+            "properties": {
+              "census_geoid": {"pattern": "^[0-9]{7}$"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "category": {"const": "production"},
+              "selector": {
+                "properties": {
+                  "type": {"const": "ocdid"},
+                  "value": {"pattern": "/county:"}
+                },
+                "required": ["type", "value"]
+              }
+            },
+            "required": ["category", "selector"]
+          },
+          "then": {
+            "properties": {
+              "census_geoid": {"pattern": "^[0-9]{5}$"}
+            }
+          }
         }
       ]
     }

@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "batch_id": "OR-PB03",
+  "selection_extracted_at": "2026-08-15T20:56:00Z",
+  "ordering": "manifest sequence",
+  "target_count": 3,
+  "replacement_count": 0,
+  "record_count": 3,
+  "candidates": [
+    {
+      "census_geoid": "41001",
+      "state_fips": "41",
+      "county_fips": "001",
+      "display_name": "Baker County",
+      "maintained_ocdid": "ocd-division/country:us/state:or/county:baker",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": ["001"],
+        "county_names": ["Baker"],
+        "sldu_fips": ["030"],
+        "sldl_fips": ["060"]
+      },
+      "disposition": "target",
+      "target_id": "OR-PB03-001",
+      "wave": "OR-PB03-A",
+      "sequence": 1
+    },
+    {
+      "census_geoid": "41003",
+      "state_fips": "41",
+      "county_fips": "003",
+      "display_name": "Benton County",
+      "maintained_ocdid": "ocd-division/country:us/state:or/county:benton",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": ["003"],
+        "county_names": ["Benton"],
+        "sldu_fips": ["005", "008"],
+        "sldl_fips": ["010", "015", "016"]
+      },
+      "disposition": "target",
+      "target_id": "OR-PB03-002",
+      "wave": "OR-PB03-A",
+      "sequence": 2
+    },
+    {
+      "census_geoid": "41005",
+      "state_fips": "41",
+      "county_fips": "005",
+      "display_name": "Clackamas County",
+      "maintained_ocdid": "ocd-division/country:us/state:or/county:clackamas",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": ["005"],
+        "county_names": ["Clackamas"],
+        "sldu_fips": ["009", "013", "019", "020", "021", "024", "026", "029"],
+        "sldl_fips": ["018", "026", "037", "038", "039", "040", "041", "048", "051", "052", "057"]
+      },
+      "disposition": "target",
+      "target_id": "OR-PB03-003",
+      "wave": "OR-PB03-A",
+      "sequence": 3
+    }
+  ]
+}

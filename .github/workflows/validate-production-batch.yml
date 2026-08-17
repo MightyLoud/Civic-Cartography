@@ -1,0 +1,178 @@
+name: Validate Generic Production Manifest
+
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        description: Target manifest path
+        required: true
+        default: tests/fixtures/production_batch_wa_100.yml
+      wave:
+        description: Wave identifier
+        required: true
+        default: WA-PB01-A
+      expected_target_count:
+        description: Optional expected target count; blank derives it from the manifest
+        required: false
+        default: ""
+  pull_request:
+    paths:
+      - ".github/workflows/validate-production-batch.yml"
+      - "scripts/run_production_batch.py"
+      - "scripts/run_production_batch_ci.sh"
+      - "civic_cartography/target_manifest.py"
+      - "civic_cartography/production_wave.py"
+      - "schemas/target-manifest.schema.json"
+      - "tests/test_target_manifest.py"
+      - "tests/test_production_geography_identity.py"
+      - "tests/test_production_wave.py"
+      - "tests/fixtures/production_batch_ca_pilot.yml"
+      - "tests/fixtures/production_batch_ca_20.yml"
+      - "tests/fixtures/production_batch_or_county_smoke.yml"
+      - "evidence/production-batch-ca-pilot/**"
+      - "evidence/production-batch-ca-20/**"
+      - "evidence/production-batch-or-county-smoke/**"
+
+permissions:
+  contents: read
+
+env:
+  UPSTREAM_REPOSITORY: openstates/jurisdictions
+  UPSTREAM_REVISION: 6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705
+  PATCH_1: patches/openstates-jurisdictions/0001-continue-jurisdiction-after-stub.patch
+  PATCH_2: patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch
+  PATCH_3: patches/openstates-jurisdictions/0003-authoritative-jurisdiction-overrides.patch
+  PATCH_4: patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch
+  OVERRIDE_REGISTRY: data/authoritative_jurisdiction_overrides.yml
+  ALIAS_REGISTRY: data/canonical_alias_groups.yml
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Run manifest and production-wave regression tests
+        run: python -m pytest tests/test_target_manifest.py tests/test_production_geography_identity.py tests/test_production_wave.py --color=yes
+      - name: Select requested production wave
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          args=(--manifest "${{ inputs.manifest }}" --wave "${{ inputs.wave }}" --result-path build/generic-wave.yml)
+          if [[ -n "${{ inputs.expected_target_count }}" ]]; then
+            args+=(--expected-target-count "${{ inputs.expected_target_count }}")
+          fi
+          PYTHONPATH=. python scripts/run_production_batch.py "${args[@]}"
+
+  ca-smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      RUN_ASOF: 2026-08-15T19:40:00Z
+      FULL_MANIFEST: tests/fixtures/production_batch_ca_pilot.yml
+      WAVE: CA-PB00-A
+      EXPECTED_TARGET_COUNT: "5"
+      CROSSWALK: evidence/production-batch-ca-pilot/selection-crosswalk.json
+      BUILD_ROOT: build/ca-pb00-a
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+      - name: Check out pinned upstream generator
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM_REPOSITORY }}
+          ref: ${{ env.UPSTREAM_REVISION }}
+          path: upstream
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Run CA-PB00-A through generic two-run acceptance
+        run: bash scripts/run_production_batch_ci.sh
+      - name: Upload CA smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ca-pb00-a-acceptance
+          path: build/ca-pb00-a
+          if-no-files-found: warn
+
+  ca-scale-20:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      RUN_ASOF: 2026-08-15T19:55:00Z
+      FULL_MANIFEST: tests/fixtures/production_batch_ca_20.yml
+      WAVE: CA-PB02-A
+      EXPECTED_TARGET_COUNT: "20"
+      CROSSWALK: evidence/production-batch-ca-20/selection-crosswalk.json
+      BUILD_ROOT: build/ca-pb02-a
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+      - name: Check out pinned upstream generator
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM_REPOSITORY }}
+          ref: ${{ env.UPSTREAM_REVISION }}
+          path: upstream
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Run CA-PB02-A through generic two-run acceptance
+        run: bash scripts/run_production_batch_ci.sh
+      - name: Upload CA 20-target evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ca-pb02-a-acceptance
+          path: build/ca-pb02-a
+          if-no-files-found: warn
+
+  or-county-smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      RUN_ASOF: 2026-08-15T20:56:00Z
+      FULL_MANIFEST: tests/fixtures/production_batch_or_county_smoke.yml
+      WAVE: OR-PB03-A
+      EXPECTED_TARGET_COUNT: "3"
+      CROSSWALK: evidence/production-batch-or-county-smoke/selection-crosswalk.json
+      BUILD_ROOT: build/or-pb03-a
+    steps:
+      - name: Check out Civic-Cartography
+        uses: actions/checkout@v4
+      - name: Check out pinned upstream generator
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.UPSTREAM_REPOSITORY }}
+          ref: ${{ env.UPSTREAM_REVISION }}
+          path: upstream
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Run OR-PB03-A county geography through generic two-run acceptance
+        run: bash scripts/run_production_batch_ci.sh
+      - name: Upload Oregon county smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: or-pb03-a-acceptance
+          path: build/or-pb03-a
+          if-no-files-found: warn

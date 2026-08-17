@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "batch_id": "OR-PB03",
+  "selection_extracted_at": "2026-08-15T20:56:00Z",
+  "sources": {
+    "jurisdiction_factory": {
+      "title": "OR Jurisdiction Factory v0.1",
+      "spreadsheet_id": "15A-_pC85UZevw2bInfn4bG-3Zuya_KwFJl_cm1TWMXw",
+      "sheet": "01_Jurisdiction",
+      "role": "governed county jurisdiction identity, geography QA, and release-readiness source"
+    },
+    "nested_divisions": {
+      "title": "Nested Divisions",
+      "spreadsheet_id": "139NETp-iofSoHtl_-IdSSph6xf_ePFVtR8l6KWYadSI",
+      "sheet": "Counties",
+      "role": "canonical Census county identity and state-legislative nesting source"
+    },
+    "upstream_generator": {
+      "repository": "openstates/jurisdictions",
+      "revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705",
+      "role": "pinned generator input for exact county OCDID resolution"
+    }
+  },
+  "selection_rules": [
+    "Use only OR Factory county rows with geography_qa_status PASS and release_ready TRUE.",
+    "Bind each target to the exact five-digit Census county GEOID in Nested Divisions.",
+    "Preserve county identity and every intersecting Oregon state-senate and state-house district as lists.",
+    "Use exact county OCD division selectors; do not pad or transform county GEOIDs into place-shaped identifiers.",
+    "This is a three-target non-place portability smoke, not a county-office completion claim."
+  ],
+  "counts": {
+    "selected_targets": 3,
+    "geography_ready_targets": 3,
+    "expected_wave_count": 1
+  },
+  "notes": "NAT-FAC-003 bounded county-geography portability evidence. OR Factory county rows explicitly identify a separate county-office workflow; this gate tests geography identity and generic artifact generation only."
+}

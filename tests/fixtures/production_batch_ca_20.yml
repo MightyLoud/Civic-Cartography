@@ -1,0 +1,187 @@
+version: 1
+name: production_batch_ca_20
+description: NAT-FAC-002 twenty-target California production portability wave.
+state: ca
+source_manifest: evidence/production-batch-ca-20/source-selection-manifest.json
+selection_crosswalk: evidence/production-batch-ca-20/selection-crosswalk.json
+targets:
+  - target_id: CA-PB02-001
+    jurisdiction_name: Adelanto
+    state: ca
+    census_geoid: "0600296"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:adelanto"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-002
+    jurisdiction_name: Agoura Hills
+    state: ca
+    census_geoid: "0600394"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:agoura_hills"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-003
+    jurisdiction_name: Alameda
+    state: ca
+    census_geoid: "0600562"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:alameda"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-004
+    jurisdiction_name: Albany
+    state: ca
+    census_geoid: "0600674"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:albany"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-005
+    jurisdiction_name: Alhambra
+    state: ca
+    census_geoid: "0600884"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:alhambra"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-006
+    jurisdiction_name: Aliso Viejo
+    state: ca
+    census_geoid: "0600947"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:aliso_viejo"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-007
+    jurisdiction_name: Alturas
+    state: ca
+    census_geoid: "0601444"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:alturas"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-008
+    jurisdiction_name: American Canyon
+    state: ca
+    census_geoid: "0601640"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:american_canyon"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-009
+    jurisdiction_name: Anaheim
+    state: ca
+    census_geoid: "0602000"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:anaheim"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-010
+    jurisdiction_name: Anderson
+    state: ca
+    census_geoid: "0602042"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:anderson"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-011
+    jurisdiction_name: Angels
+    state: ca
+    census_geoid: "0602112"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:angels"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-012
+    jurisdiction_name: Antioch
+    state: ca
+    census_geoid: "0602252"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:antioch"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-013
+    jurisdiction_name: Arcadia
+    state: ca
+    census_geoid: "0602462"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:arcadia"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-014
+    jurisdiction_name: Arcata
+    state: ca
+    census_geoid: "0602476"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:arcata"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-015
+    jurisdiction_name: Arroyo Grande
+    state: ca
+    census_geoid: "0602868"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:arroyo_grande"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-016
+    jurisdiction_name: Artesia
+    state: ca
+    census_geoid: "0602896"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:artesia"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-017
+    jurisdiction_name: Arvin
+    state: ca
+    census_geoid: "0602924"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:arvin"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-018
+    jurisdiction_name: Atascadero
+    state: ca
+    census_geoid: "0603064"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:atascadero"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-019
+    jurisdiction_name: Atherton
+    state: ca
+    census_geoid: "0603092"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:atherton"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
+  - target_id: CA-PB02-020
+    jurisdiction_name: Atwater
+    state: ca
+    census_geoid: "0603162"
+    wave: CA-PB02-A
+    selector: {type: ocdid, value: "ocd-division/country:us/state:ca/place:atwater"}
+    expected_archetype: AR-001
+    expected_classification: government
+    category: production
