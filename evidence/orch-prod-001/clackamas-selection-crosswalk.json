@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "batch_id": "OR-PB03",
+  "selection_extracted_at": "2026-08-15T20:56:00Z",
+  "ordering": "manifest sequence",
+  "target_count": 1,
+  "replacement_count": 0,
+  "record_count": 1,
+  "candidates": [
+    {
+      "census_geoid": "41005",
+      "state_fips": "41",
+      "county_fips": "005",
+      "display_name": "Clackamas County",
+      "maintained_ocdid": "ocd-division/country:us/state:or/county:clackamas",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": ["005"],
+        "county_names": ["Clackamas"],
+        "sldu_fips": ["009", "013", "019", "020", "021", "024", "026", "029"],
+        "sldl_fips": ["018", "026", "037", "038", "039", "040", "041", "048", "051", "052", "057"]
+      },
+      "disposition": "target",
+      "target_id": "OR-PB03-003",
+      "wave": "OR-PB03-A",
+      "sequence": 3
+    }
+  ]
+}
