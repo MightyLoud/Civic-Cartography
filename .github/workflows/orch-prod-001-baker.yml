@@ -6,8 +6,8 @@ on:
       - '.github/workflows/orch-prod-001-baker.yml'
       - 'scripts/check_production_enrichment.py'
       - 'scripts/capture_upstream_batch_with_county_validation.py'
+      - 'scripts/apply_state_county_validation.py'
       - 'scripts/run_orch_prod_001_baker_ci.sh'
-      - 'patches/openstates-jurisdictions/0005-match-state-counties-from-retained-validation.patch'
       - 'tests/fixtures/orch_prod_001_baker.yml'
       - 'evidence/orch-prod-001/baker-selection-crosswalk.json'
 
@@ -27,7 +27,6 @@ env:
   PATCH_2: patches/openstates-jurisdictions/0002-normalize-blank-lsad-before-classification.patch
   PATCH_3: patches/openstates-jurisdictions/0003-authoritative-jurisdiction-overrides.patch
   PATCH_4: patches/openstates-jurisdictions/0004-canonical-alias-jurisdiction.patch
-  PATCH_5: patches/openstates-jurisdictions/0005-match-state-counties-from-retained-validation.patch
   OVERRIDE_REGISTRY: data/authoritative_jurisdiction_overrides.yml
   ALIAS_REGISTRY: data/canonical_alias_groups.yml
 
