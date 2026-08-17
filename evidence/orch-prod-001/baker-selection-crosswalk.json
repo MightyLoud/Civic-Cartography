@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "batch_id": "ORCH-PROD-001-BAKER",
+  "selection_extracted_at": "2026-08-15T20:56:00Z",
+  "ordering": "manifest sequence",
+  "target_count": 1,
+  "replacement_count": 0,
+  "record_count": 1,
+  "candidates": [
+    {
+      "census_geoid": "41001",
+      "state_fips": "41",
+      "county_fips": "001",
+      "display_name": "Baker County",
+      "maintained_ocdid": "ocd-division/country:us/state:or/county:baker",
+      "expected_classification": "government",
+      "nesting": {
+        "county_fips": ["001"],
+        "county_names": ["Baker"],
+        "sldu_fips": ["030"],
+        "sldl_fips": ["060"]
+      },
+      "disposition": "target",
+      "target_id": "OR-PB03-001",
+      "wave": "ORCH-PROD-001-BAKER",
+      "sequence": 1
+    }
+  ]
+}
