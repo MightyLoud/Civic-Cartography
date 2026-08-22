@@ -1,0 +1,36 @@
+name: Validate ORCH-PROD-002 Aggregate Closeout
+
+on:
+  pull_request:
+    paths:
+      - 'tests/fixtures/orch_prod_002_closeout.json'
+      - 'schemas/orch-prod-002-*.schema.json'
+      - 'scripts/validate_orch_prod_002_closeout.py'
+      - 'scripts/validate_orch_prod_001_closeout.py'
+      - 'scripts/validate_orch_fac_*.py'
+      - '.github/workflows/validate-orch-prod-002-closeout.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install schema validator
+        run: python -m pip install --disable-pip-version-check jsonschema
+      - name: Validate orchestration prerequisites
+        run: |
+          python scripts/validate_orch_fac_001.py
+          python scripts/validate_orch_fac_002.py
+          python scripts/validate_orch_fac_003.py
+          python scripts/validate_orch_fac_004.py
+          python scripts/validate_orch_fac_005.py
+          python scripts/validate_orch_fac_006.py
+          python scripts/validate_orch_fac_007.py
+          python scripts/validate_orch_fac_008.py
+          python scripts/validate_orch_prod_001_closeout.py
+      - name: Reconcile ORCH-PROD-002 capacity-2 DAG closeout
+        run: python scripts/validate_orch_prod_002_closeout.py
