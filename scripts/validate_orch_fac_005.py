@@ -76,7 +76,7 @@ def main():
  assert by["diamond"]["ready_order"]==[["ROOT"],["LEFT","RIGHT"],["JOIN"]]
  assert by["parallel-roots"]["ready_order"][0]==["A","B"]
  assert by["review-blocks-child"]["exception_routes"]==1
- assert by["fail-blocks-descendants"]["remediation_routes"]>=1
+ assert by["fail-blocks-descendants"]["remediation_routes"]==2
  assert by["cycle-rejected"]["cycle_rejected"]
  output={"schema_version":1,"gate_id":"ORCH-FAC-005","status":"PASS","deterministic":True,"permutation_stable":True,"fixture_sha256":hashlib.sha256(FIXTURE.read_bytes()).hexdigest(),"results":first,"report_sha256":digest(first)}
  validate(REPORT_SCHEMA,output);print(json.dumps(output,indent=2,sort_keys=True))
