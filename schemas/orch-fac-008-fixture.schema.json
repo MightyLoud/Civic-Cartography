@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "gate_id",
+    "mode",
+    "authority"
+  ],
+  "properties": {
+    "gate_id": {
+      "const": "ORCH-FAC-008"
+    },
+    "mode": {
+      "const": "READ_ONLY_EVIDENCE_REPLAY"
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_id",
+        "jurisdiction_name",
+        "state",
+        "evaluation_id",
+        "source_manifest_sha256",
+        "manifest_sha256",
+        "run_id",
+        "evidence_run_id",
+        "completion_register_blob"
+      ],
+      "properties": {
+        "target_id": {
+          "const": "MB100-100"
+        },
+        "jurisdiction_name": {
+          "const": "Multnomah County"
+        },
+        "state": {
+          "const": "or"
+        },
+        "evaluation_id": {
+          "pattern": "^[0-9a-f]{20}$"
+        },
+        "source_manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "run_id": {
+          "pattern": "^[0-9a-f]{20}$"
+        },
+        "evidence_run_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "completion_register_blob": {
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      }
+    }
+  }
+}
