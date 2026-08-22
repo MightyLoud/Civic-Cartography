@@ -4,7 +4,16 @@ on:
   pull_request:
     paths:
       - 'schemas/rel-fac-report.schema.json'
+      - 'schemas/qa-fac-core-v1.schema.json'
       - 'tests/fixtures/rel_fac_001_cases.json'
+      - 'tests/fixtures/qa_fac_001_outcome_matrix.json'
+      - 'tests/fixtures/qa_fac_001_angels_false_clean.json'
+      - 'tests/fixtures/production_batch_ca_20.yml'
+      - 'tests/fixtures/src_fac_001_known_good_sources.json'
+      - 'evidence/production-batch-ca-20/selection-crosswalk.json'
+      - 'evidence/candidate-factory-ca-smoke/**'
+      - 'evidence/geo-fac-001/**'
+      - 'scripts/validate_qa_fac_001.py'
       - 'scripts/validate_rel_fac_001.py'
       - '.github/workflows/validate-rel-fac-001.yml'
   workflow_dispatch:
@@ -17,5 +26,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate REL-FAC transitions
+      - name: Install schema and evidence validators
+        run: python -m pip install jsonschema pyyaml
+      - name: Validate QA evidence input
+        run: python scripts/validate_qa_fac_001.py
+      - name: Validate evidence-derived REL-FAC transitions and schema
         run: python scripts/validate_rel_fac_001.py
