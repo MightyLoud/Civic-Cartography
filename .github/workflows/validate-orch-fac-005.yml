@@ -3,7 +3,13 @@ name: Validate ORCH-FAC-005 Dependency Readiness
 on:
   pull_request:
     paths:
+      - 'schemas/orch-fac-005-dag.schema.json'
+      - 'schemas/orch-fac-005-report.schema.json'
       - 'tests/fixtures/orch_fac_005_dag.json'
+      - 'scripts/validate_orch_fac_001.py'
+      - 'scripts/validate_orch_fac_002.py'
+      - 'scripts/validate_orch_fac_003.py'
+      - 'scripts/validate_orch_fac_004.py'
       - 'scripts/validate_orch_fac_005.py'
       - '.github/workflows/validate-orch-fac-005.yml'
   workflow_dispatch:
@@ -16,5 +22,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate dependency DAG scheduling
+      - name: Install schema validator
+        run: python -m pip install jsonschema
+      - name: Validate prerequisite orchestration contracts
+        run: |
+          python scripts/validate_orch_fac_001.py
+          python scripts/validate_orch_fac_002.py
+          python scripts/validate_orch_fac_003.py
+          python scripts/validate_orch_fac_004.py
+      - name: Validate evidence-derived dependency readiness
         run: python scripts/validate_orch_fac_005.py
