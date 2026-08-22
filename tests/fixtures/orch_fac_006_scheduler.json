@@ -13,7 +13,7 @@
    {"task_id":"H1","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":50,"initial_wait":0,"write_surface":["H:1"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
    {"task_id":"H2","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":45,"initial_wait":0,"write_surface":["H:2"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
    {"task_id":"H3","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":40,"initial_wait":0,"write_surface":["H:3"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
-   {"task_id":"OLD","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":10,"initial_wait":0,"write_surface":["H:OLD"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]}]},
+   {"task_id":"OLD","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":10,"initial_wait":2,"write_surface":["H:OLD"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]}]},
   {"case_id":"overlap-exclusion","capacity":2,"tasks":[
    {"task_id":"A","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":100,"initial_wait":0,"write_surface":["TX:Ops"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
    {"task_id":"B","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":90,"initial_wait":0,"write_surface":["TX:Ops","TX:QA"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
