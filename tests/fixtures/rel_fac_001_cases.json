@@ -1,0 +1,52 @@
+[
+  {
+    "case_id": "pass_with_nonblocking_provenance",
+    "source_mode": "qa_gate",
+    "qa_gate_id": "GEO-FAC-001",
+    "expected": {
+      "qa_status": "PASS",
+      "promotion_status": "READY",
+      "promotion_eligible": true
+    }
+  },
+  {
+    "case_id": "review_routes_to_queue",
+    "source_mode": "contract_checks",
+    "gate_id": "REL-FAC-REVIEW-FIXTURE",
+    "factory": "REL-FAC",
+    "checks": [
+      {"check_id": "Q01", "status": "PASS", "detail": "normalized report identity present"},
+      {"check_id": "Q05", "status": "REVIEW", "detail": "provenance requires human resolution"}
+    ],
+    "expected": {
+      "qa_status": "REVIEW",
+      "promotion_status": "QUEUED",
+      "promotion_eligible": false
+    }
+  },
+  {
+    "case_id": "fail_routes_to_blocked",
+    "source_mode": "contract_checks",
+    "gate_id": "REL-FAC-FAIL-FIXTURE",
+    "factory": "REL-FAC",
+    "checks": [
+      {"check_id": "Q01", "status": "PASS", "detail": "normalized report identity present"},
+      {"check_id": "Q03", "status": "FAIL", "detail": "required reference does not resolve"}
+    ],
+    "expected": {
+      "qa_status": "FAIL",
+      "promotion_status": "BLOCKED",
+      "promotion_eligible": false
+    }
+  },
+  {
+    "case_id": "angels_false_clean_regression",
+    "source_mode": "qa_gate",
+    "qa_gate_id": "NAT-FAC-002-ANGELS-STUB-REGRESSION",
+    "expected": {
+      "qa_status": "FAIL",
+      "promotion_status": "BLOCKED",
+      "promotion_eligible": false
+    }
+  }
+]

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "REL-FAC-001 promotion and exception report envelope",
+  "type": "object",
+  "required": ["schema_version", "status", "reports", "report_sha256"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "PASS"},
+    "report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reports": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["case_id", "gate_id", "qa_source", "qa_status", "promotion_status", "release_status", "promotion_eligible", "release_eligible", "exceptions", "source_hashes"],
+        "properties": {
+          "case_id": {"type": "string", "minLength": 1},
+          "gate_id": {"type": "string", "minLength": 1},
+          "qa_source": {"enum": ["EVIDENCE_DERIVED", "CONTRACT_FIXTURE"]},
+          "qa_status": {"enum": ["PASS", "REVIEW", "FAIL"]},
+          "promotion_status": {"enum": ["READY", "QUEUED", "BLOCKED"]},
+          "release_status": {"const": "HOLD"},
+          "promotion_eligible": {"type": "boolean"},
+          "release_eligible": {"const": false},
+          "source_hashes": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          },
+          "exceptions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["exception_id", "factory", "gate_id", "exception_type", "severity", "blocking", "status", "description"],
+              "properties": {
+                "exception_id": {"type": "string", "minLength": 1},
+                "factory": {"type": "string", "minLength": 1},
+                "gate_id": {"type": "string", "minLength": 1},
+                "entity_type": {"type": ["string", "null"]},
+                "entity_id": {"type": ["string", "null"]},
+                "exception_type": {"type": "string", "minLength": 1},
+                "severity": {"enum": ["INFO", "REVIEW", "BLOCKING", "ERROR"]},
+                "blocking": {"type": "boolean"},
+                "status": {"enum": ["OPEN", "QUEUED", "RESOLVED", "CLOSED"]},
+                "owner": {"type": ["string", "null"]},
+                "source_id": {"type": ["string", "null"]},
+                "description": {"type": "string", "minLength": 1},
+                "resolution": {"type": ["string", "null"]}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
