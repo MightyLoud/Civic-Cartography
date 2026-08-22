@@ -1,64 +1,179 @@
+#!/usr/bin/env python3
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 
-FIXTURE = Path('tests/fixtures/rel_fac_001_cases.json')
+from jsonschema import Draft202012Validator
+
+FIXTURE = Path("tests/fixtures/rel_fac_001_cases.json")
+SCHEMA = Path("schemas/rel-fac-report.schema.json")
+QA_MATRIX = Path("tests/fixtures/qa_fac_001_outcome_matrix.json")
+QA_SCRIPT = Path("scripts/validate_qa_fac_001.py")
 
 
-def derive(case):
-    data = case['input']
-    qa = data['qa_status']
-    exceptions = data.get('exceptions', [])
-    has_blocking = any(e.get('blocking') for e in exceptions if e.get('status') not in {'RESOLVED', 'CLOSED'})
+def canonical_hash(payload):
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
 
-    if qa == 'PASS' and not has_blocking:
-        promotion_status = 'READY'
-        promotion_eligible = True
-    elif qa == 'REVIEW' and not has_blocking:
-        promotion_status = 'QUEUED'
-        promotion_eligible = False
+
+def file_hash(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def load_qa_module():
+    spec = importlib.util.spec_from_file_location("qa_fac_001", QA_SCRIPT)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def derive_status(checks):
+    statuses = [row["status"] for row in checks]
+    return "FAIL" if "FAIL" in statuses else "REVIEW" if "REVIEW" in statuses else "PASS"
+
+
+def exception_from_check(case, check, blocking):
+    return {
+        "exception_id": f"{case['case_id']}-{check['check_id'].lower()}",
+        "factory": case.get("factory", "REL-FAC"),
+        "gate_id": case["gate_id"],
+        "entity_type": None,
+        "entity_id": None,
+        "exception_type": "QA_CHECK_" + check["status"],
+        "severity": "ERROR" if blocking else "REVIEW",
+        "blocking": blocking,
+        "status": "OPEN" if blocking else "QUEUED",
+        "owner": None,
+        "source_id": None,
+        "description": check["detail"],
+        "resolution": None,
+    }
+
+
+def normalized_input(case, qa_reports):
+    if case["source_mode"] == "qa_gate":
+        qa = qa_reports[case["qa_gate_id"]]
+        checks = [
+            {"check_id": check_id, "status": row["status"], "detail": row["detail"]}
+            for check_id, row in sorted(qa["checks"].items())
+        ]
+        exceptions = []
+        if qa["gate_id"] == "GEO-FAC-001":
+            q07 = next(row for row in checks if row["check_id"] == "Q07")
+            exceptions.append({
+                "exception_id": "geo-local-layer-unresolved",
+                "factory": "GEO-FAC",
+                "gate_id": qa["gate_id"],
+                "entity_type": "Division",
+                "entity_id": None,
+                "exception_type": "LOCAL_LAYER_UNRESOLVED",
+                "severity": "INFO",
+                "blocking": False,
+                "status": "OPEN",
+                "owner": None,
+                "source_id": next(iter(qa["source_hashes"])),
+                "description": q07["detail"],
+                "resolution": None,
+            })
+        for check in checks:
+            if check["status"] == "FAIL":
+                exceptions.append(exception_from_check(
+                    {**case, "gate_id": qa["gate_id"], "factory": qa["domain"]},
+                    check,
+                    True,
+                ))
+        return {
+            "gate_id": qa["gate_id"],
+            "qa_source": "EVIDENCE_DERIVED",
+            "checks": checks,
+            "source_hashes": qa["source_hashes"],
+            "exceptions": exceptions,
+        }
+
+    checks = case["checks"]
+    exceptions = [
+        exception_from_check(case, check, check["status"] == "FAIL")
+        for check in checks
+        if check["status"] in {"REVIEW", "FAIL"}
+    ]
+    return {
+        "gate_id": case["gate_id"],
+        "qa_source": "CONTRACT_FIXTURE",
+        "checks": checks,
+        "source_hashes": {str(FIXTURE): file_hash(FIXTURE)},
+        "exceptions": exceptions,
+    }
+
+
+def transition(case, normalized):
+    qa_status = derive_status(normalized["checks"])
+    active_blocking = any(
+        row["blocking"] and row["status"] not in {"RESOLVED", "CLOSED"}
+        for row in normalized["exceptions"]
+    )
+    if qa_status == "PASS" and not active_blocking:
+        promotion_status, promotion_eligible = "READY", True
+    elif qa_status == "REVIEW" and not active_blocking:
+        promotion_status, promotion_eligible = "QUEUED", False
     else:
-        promotion_status = 'BLOCKED'
-        promotion_eligible = False
+        promotion_status, promotion_eligible = "BLOCKED", False
 
     report = {
-        'gate_id': data['gate_id'],
-        'qa_status': qa,
-        'promotion_status': promotion_status,
-        'release_status': 'HOLD',
-        'promotion_eligible': promotion_eligible,
-        'release_eligible': False,
-        'exceptions': exceptions,
+        "case_id": case["case_id"],
+        "gate_id": normalized["gate_id"],
+        "qa_source": normalized["qa_source"],
+        "qa_status": qa_status,
+        "promotion_status": promotion_status,
+        "release_status": "HOLD",
+        "promotion_eligible": promotion_eligible,
+        "release_eligible": False,
+        "exceptions": normalized["exceptions"],
+        "source_hashes": normalized["source_hashes"],
     }
+    for key, expected in case["expected"].items():
+        assert report[key] == expected, (
+            f"{case['case_id']}: {key} expected {expected!r}, got {report[key]!r}"
+        )
+    assert not active_blocking or report["promotion_eligible"] is False
+    assert report["release_status"] == "HOLD" and report["release_eligible"] is False
     return report
 
 
-def canonical_hash(obj):
-    payload = json.dumps(obj, sort_keys=True, separators=(',', ':')).encode()
-    return hashlib.sha256(payload).hexdigest()
-
-
 def main():
+    qa_module = load_qa_module()
+    qa_cases = json.loads(QA_MATRIX.read_text())
+    qa_reports = {case["gate_id"]: qa_module.make_report(case) for case in qa_cases}
     cases = json.loads(FIXTURE.read_text())
-    reports = []
-    for case in cases:
-        report = derive(case)
-        expected = case['expected']
-        for key, value in expected.items():
-            assert report[key] == value, f"{case['name']}: {key} expected {value!r}, got {report[key]!r}"
-        assert report['release_status'] != 'RELEASED', f"{case['name']}: release cannot happen automatically"
-        reports.append(report)
+    reports = [transition(case, normalized_input(case, qa_reports)) for case in cases]
 
-    h1 = canonical_hash(reports)
-    h2 = canonical_hash([derive(c) for c in cases])
-    assert h1 == h2, 'deterministic report hash mismatch'
-    assert len(reports) == 4
-    assert reports[0]['promotion_status'] == 'READY'
-    assert reports[1]['promotion_status'] == 'QUEUED'
-    assert reports[2]['promotion_status'] == 'BLOCKED'
-    assert reports[3]['promotion_status'] == 'BLOCKED'
-    print(f'REL-FAC-001 PASS cases=4 sha256={h1}')
+    assert [row["promotion_status"] for row in reports] == [
+        "READY", "QUEUED", "BLOCKED", "BLOCKED"
+    ]
+    assert reports[0]["qa_source"] == "EVIDENCE_DERIVED"
+    assert reports[3]["qa_source"] == "EVIDENCE_DERIVED"
+    assert reports[3]["gate_id"].endswith("ANGELS-STUB-REGRESSION")
+    assert reports[3]["promotion_eligible"] is False
+    assert all(row["release_status"] != "RELEASED" for row in reports)
+
+    first = canonical_hash(reports)
+    second_reports = [
+        transition(case, normalized_input(case, qa_reports)) for case in cases
+    ]
+    assert first == canonical_hash(second_reports), "deterministic report hash mismatch"
+
+    output = {
+        "schema_version": 1,
+        "status": "PASS",
+        "reports": reports,
+        "report_sha256": first,
+    }
+    schema = json.loads(SCHEMA.read_text())
+    errors = list(Draft202012Validator(schema).iter_errors(output))
+    assert not errors, "\n".join(error.message for error in errors)
+    print(json.dumps(output, indent=2, sort_keys=True))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
