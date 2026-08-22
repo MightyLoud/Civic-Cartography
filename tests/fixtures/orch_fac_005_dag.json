@@ -1,61 +1,31 @@
 {
-  "version": 1,
-  "cases": [
-    {
-      "case_id": "linear-chain",
-      "tasks": [
-        {"task_id":"SRC","depends_on":[],"status":"PASS"},
-        {"task_id":"DOMAIN","depends_on":["SRC"],"status":"PASS"},
-        {"task_id":"QA","depends_on":["DOMAIN"],"status":"PASS"},
-        {"task_id":"REL","depends_on":["QA"],"status":"PASS"}
-      ],
-      "expected":{"cycle":false,"ready_order":[["SRC"],["DOMAIN"],["QA"],["REL"]],"blocked":[]}
-    },
-    {
-      "case_id": "diamond",
-      "tasks": [
-        {"task_id":"ROOT","depends_on":[],"status":"PASS"},
-        {"task_id":"LEFT","depends_on":["ROOT"],"status":"PASS"},
-        {"task_id":"RIGHT","depends_on":["ROOT"],"status":"PASS"},
-        {"task_id":"JOIN","depends_on":["LEFT","RIGHT"],"status":"PASS"}
-      ],
-      "expected":{"cycle":false,"ready_order":[["ROOT"],["LEFT","RIGHT"],["JOIN"]],"blocked":[]}
-    },
-    {
-      "case_id": "review-blocks-child",
-      "tasks": [
-        {"task_id":"SRC","depends_on":[],"status":"REVIEW"},
-        {"task_id":"DOMAIN","depends_on":["SRC"],"status":"PENDING"}
-      ],
-      "expected":{"cycle":false,"ready_order":[["SRC"]],"blocked":["DOMAIN"]}
-    },
-    {
-      "case_id": "fail-blocks-descendants",
-      "tasks": [
-        {"task_id":"SRC","depends_on":[],"status":"PASS"},
-        {"task_id":"DOMAIN","depends_on":["SRC"],"status":"FAIL"},
-        {"task_id":"QA","depends_on":["DOMAIN"],"status":"PENDING"},
-        {"task_id":"REL","depends_on":["QA"],"status":"PENDING"}
-      ],
-      "expected":{"cycle":false,"ready_order":[["SRC"],["DOMAIN"]],"blocked":["QA","REL"]}
-    },
-    {
-      "case_id": "parallel-roots",
-      "tasks": [
-        {"task_id":"A","depends_on":[],"status":"PASS"},
-        {"task_id":"B","depends_on":[],"status":"PASS"},
-        {"task_id":"C","depends_on":["A"],"status":"PASS"},
-        {"task_id":"D","depends_on":["B"],"status":"PASS"}
-      ],
-      "expected":{"cycle":false,"ready_order":[["A","B"],["C","D"]],"blocked":[]}
-    },
-    {
-      "case_id": "cycle-rejected",
-      "tasks": [
-        {"task_id":"A","depends_on":["B"],"status":"PENDING"},
-        {"task_id":"B","depends_on":["A"],"status":"PENDING"}
-      ],
-      "expected":{"cycle":true,"ready_order":[],"blocked":["A","B"]}
-    }
-  ]
+ "version":2,
+ "cases":[
+  {"case_id":"linear-chain","tasks":[
+   {"task_id":"SRC","depends_on":[],"write_surface":["L:SRC"],"terminal_checks":[{"check_id":"S","status":"PASS","detail":"source terminal evidence passes"}]},
+   {"task_id":"DOMAIN","depends_on":["SRC"],"write_surface":["L:DOMAIN"],"terminal_checks":[{"check_id":"D","status":"PASS","detail":"domain terminal evidence passes"}]},
+   {"task_id":"QA","depends_on":["DOMAIN"],"write_surface":["L:QA"],"terminal_checks":[{"check_id":"Q","status":"PASS","detail":"QA terminal evidence passes"}]},
+   {"task_id":"REL","depends_on":["QA"],"write_surface":["L:REL"],"terminal_checks":[{"check_id":"R","status":"PASS","detail":"release gate terminal evidence passes"}]}]},
+  {"case_id":"diamond","tasks":[
+   {"task_id":"ROOT","depends_on":[],"write_surface":["D:ROOT"],"terminal_checks":[{"check_id":"R","status":"PASS","detail":"root passes"}]},
+   {"task_id":"LEFT","depends_on":["ROOT"],"write_surface":["D:LEFT"],"terminal_checks":[{"check_id":"L","status":"PASS","detail":"left passes"}]},
+   {"task_id":"RIGHT","depends_on":["ROOT"],"write_surface":["D:RIGHT"],"terminal_checks":[{"check_id":"R","status":"PASS","detail":"right passes"}]},
+   {"task_id":"JOIN","depends_on":["LEFT","RIGHT"],"write_surface":["D:JOIN"],"terminal_checks":[{"check_id":"J","status":"PASS","detail":"join passes"}]}]},
+  {"case_id":"parallel-roots","tasks":[
+   {"task_id":"A","depends_on":[],"write_surface":["P:A"],"terminal_checks":[{"check_id":"A","status":"PASS","detail":"A passes"}]},
+   {"task_id":"B","depends_on":[],"write_surface":["P:B"],"terminal_checks":[{"check_id":"B","status":"PASS","detail":"B passes"}]},
+   {"task_id":"C","depends_on":["A"],"write_surface":["P:C"],"terminal_checks":[{"check_id":"C","status":"PASS","detail":"C passes"}]},
+   {"task_id":"D","depends_on":["B"],"write_surface":["P:D"],"terminal_checks":[{"check_id":"D","status":"PASS","detail":"D passes"}]}]},
+  {"case_id":"review-blocks-child","tasks":[
+   {"task_id":"SRC","depends_on":[],"write_surface":["R:SRC"],"terminal_checks":[{"check_id":"S","status":"REVIEW","detail":"source requires review"}]},
+   {"task_id":"DOMAIN","depends_on":["SRC"],"write_surface":["R:DOMAIN"],"terminal_checks":[]}]},
+  {"case_id":"fail-blocks-descendants","tasks":[
+   {"task_id":"SRC","depends_on":[],"write_surface":["F:SRC"],"terminal_checks":[{"check_id":"S","status":"PASS","detail":"source passes"}]},
+   {"task_id":"DOMAIN","depends_on":["SRC"],"write_surface":["F:DOMAIN"],"terminal_checks":[{"check_id":"D","status":"FAIL","detail":"domain fails"}]},
+   {"task_id":"QA","depends_on":["DOMAIN"],"write_surface":["F:QA"],"terminal_checks":[]},
+   {"task_id":"REL","depends_on":["QA"],"write_surface":["F:REL"],"terminal_checks":[]}]},
+  {"case_id":"cycle-rejected","tasks":[
+   {"task_id":"A","depends_on":["B"],"write_surface":["C:A"],"terminal_checks":[]},
+   {"task_id":"B","depends_on":["A"],"write_surface":["C:B"],"terminal_checks":[]}]}
+ ]
 }
