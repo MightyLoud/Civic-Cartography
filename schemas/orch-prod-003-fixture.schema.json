@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["gate_id", "target_id", "county", "geoid", "capacity", "automatic_retries", "public_release", "bodies", "shared_officials", "precinct_ids", "canonical_files"],
+  "properties": {
+    "gate_id": {"const": "ORCH-PROD-003"}, "target_id": {"const": "TX-HIDALGO-001"},
+    "county": {"const": "Hidalgo County"}, "geoid": {"const": "48215"}, "capacity": {"const": 1},
+    "automatic_retries": {"const": false}, "public_release": {"const": false},
+    "bodies": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "object", "additionalProperties": false, "required": ["id", "name", "roles"], "properties": {"id": {"type": "string", "minLength": 1}, "name": {"type": "string", "minLength": 1}, "roles": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string"}}}}},
+    "shared_officials": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"type": "string"}},
+    "precinct_ids": {"const": ["1", "2", "3", "4"]},
+    "canonical_files": {"type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": {"type": "string"}}
+  }
+}
