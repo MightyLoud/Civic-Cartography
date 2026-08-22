@@ -1,0 +1,21 @@
+{
+  "control": "SCHLEICHER-TREASURER-SOURCE-DRIFT-2026-08-13",
+  "status": "OFFICIAL_SOURCE_DRIFT_CONFIRMED",
+  "source_url": "https://www.schleichercounty.gov/page/Treasurer",
+  "retrieved_at": "2026-08-13",
+  "http_status": 200,
+  "content_type": "text/html; charset=utf-8",
+  "retained_response_sha256": "8129eb15787f93428831c4267d26c21d1489e877b0e767b6f15ed8ad40f984a5",
+  "retained_response_bytes": 38464,
+  "page_title": "County Treasurer | Schleicher County, TX",
+  "office_title": "Schleicher County Treasurer",
+  "current_officeholder": "Cassandra Buitron",
+  "previous_retained_officeholder": "Jennifer L. Henderson",
+  "supporting_markers": [
+    "County Treasurer",
+    "Cassandra Buitron",
+    "Schleicher County Treasurer",
+    "Phone/Fax: (325) 853-2596"
+  ],
+  "boundary": "The official page establishes the current displayed officeholder only. No term start, election event, succession date, or reason for the change is inferred."
+}
