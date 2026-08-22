@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ORCH-FAC-001 deterministic dispatch report",
+  "type": "object",
+  "required": ["schema_version", "gate_id", "status", "deterministic", "fixture_sha256", "results", "report_sha256"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "gate_id": {"const": "ORCH-FAC-001"},
+    "status": {"const": "PASS"},
+    "deterministic": {"const": true},
+    "fixture_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "results": {
+      "type": "array",
+      "minItems": 7,
+      "items": {
+        "type": "object",
+        "required": ["case_id", "final_status", "promotion_status", "promotion_eligible", "final_lock_state", "held_locks", "peak_held_locks", "rejected_claims", "rejection_reasons", "handoff_to"],
+        "properties": {
+          "case_id": {"type": "string", "minLength": 1},
+          "final_status": {"enum": ["PASS", "REVIEW", "FAIL"]},
+          "promotion_status": {"enum": ["READY", "QUEUED", "BLOCKED"]},
+          "promotion_eligible": {"type": "boolean"},
+          "final_lock_state": {"enum": ["RELEASED", "HOLD", "BLOCKED", "NOT_HELD", "READ_ONLY"]},
+          "held_locks": {"type": "integer", "minimum": 0},
+          "peak_held_locks": {"type": "integer", "minimum": 0},
+          "rejected_claims": {"type": "integer", "minimum": 0},
+          "rejection_reasons": {"type": "array", "items": {"enum": ["NONWRITING_OWNER", "OWNER_ALREADY_HELD", "TASK_ALREADY_HELD", "SURFACE_CONFLICT"]}},
+          "handoff_to": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

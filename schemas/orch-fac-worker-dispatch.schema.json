@@ -1,34 +1,31 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://civicdata.tech/schemas/orch-fac-worker-dispatch.schema.json",
-  "title": "ORCH-FAC Worker Dispatch Contract",
+  "title": "ORCH-FAC-001 Worker Dispatch Fixture",
   "type": "object",
   "required": ["version", "cases"],
   "properties": {
-    "version": {"const": 1},
+    "version": {"const": 2},
     "cases": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 7,
       "items": {
         "type": "object",
         "required": ["case_id", "initial_registry", "actions", "expected"],
         "properties": {
           "case_id": {"type": "string", "minLength": 1},
-          "initial_registry": {
-            "type": "array",
-            "items": {"$ref": "#/$defs/registryRow"}
-          },
-          "actions": {
-            "type": "array",
-            "items": {"$ref": "#/$defs/action"}
-          },
+          "initial_registry": {"type": "array", "items": {"$ref": "#/$defs/registryRow"}},
+          "actions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/action"}},
           "expected": {
             "type": "object",
-            "required": ["final_status", "held_locks", "rejected_claims"],
+            "required": ["final_status", "promotion_status", "held_locks", "peak_held_locks", "rejected_claims", "handoff_to"],
             "properties": {
               "final_status": {"enum": ["PASS", "REVIEW", "FAIL"]},
+              "promotion_status": {"enum": ["READY", "QUEUED", "BLOCKED"]},
               "held_locks": {"type": "integer", "minimum": 0},
-              "rejected_claims": {"type": "integer", "minimum": 0}
+              "peak_held_locks": {"type": "integer", "minimum": 0},
+              "rejected_claims": {"type": "integer", "minimum": 0},
+              "handoff_to": {"type": "string"}
             },
             "additionalProperties": false
           }
@@ -40,30 +37,54 @@
   "$defs": {
     "registryRow": {
       "type": "object",
-      "required": ["conversation_id", "task_id", "write_surface", "status", "lock_state", "lock_owner"],
+      "required": ["conversation_id", "task_id", "write_surface", "status", "lock_state", "lock_owner", "handoff_to"],
       "properties": {
-        "conversation_id": {"type": "string"},
-        "task_id": {"type": "string"},
-        "write_surface": {"type": "array", "items": {"type": "string"}},
-        "status": {"type": "string"},
+        "conversation_id": {"type": "string", "minLength": 1},
+        "task_id": {"type": "string", "minLength": 1},
+        "write_surface": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "status": {"type": "string", "minLength": 1},
         "lock_state": {"enum": ["HELD", "READ_ONLY", "HOLD", "BLOCKED", "NOT_HELD", "RELEASED"]},
-        "lock_owner": {"type": "string"},
+        "lock_owner": {"type": "string", "minLength": 1},
         "handoff_to": {"type": "string"}
       },
       "additionalProperties": false
     },
-    "action": {
+    "qaCheck": {
       "type": "object",
-      "required": ["type"],
+      "required": ["check_id", "status", "detail"],
       "properties": {
-        "type": {"enum": ["claim", "complete"]},
-        "conversation_id": {"type": "string"},
-        "task_id": {"type": "string"},
-        "write_surface": {"type": "array", "items": {"type": "string"}},
-        "qa_status": {"enum": ["PASS", "REVIEW", "FAIL"]},
-        "handoff_to": {"type": "string"}
+        "check_id": {"type": "string", "minLength": 1},
+        "status": {"enum": ["PASS", "REVIEW", "FAIL"]},
+        "detail": {"type": "string", "minLength": 1}
       },
       "additionalProperties": false
+    },
+    "action": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "conversation_id", "task_id", "write_surface"],
+          "properties": {
+            "type": {"const": "claim"},
+            "conversation_id": {"type": "string", "minLength": 1},
+            "task_id": {"type": "string", "minLength": 1},
+            "write_surface": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "conversation_id", "task_id", "qa_checks", "handoff_to"],
+          "properties": {
+            "type": {"const": "complete"},
+            "conversation_id": {"type": "string", "minLength": 1},
+            "task_id": {"type": "string", "minLength": 1},
+            "qa_checks": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/qaCheck"}},
+            "handoff_to": {"enum": ["QA-00", "EXCEPTION-QUEUE", "REMEDIATION"]}
+          },
+          "additionalProperties": false
+        }
+      ]
     }
   },
   "additionalProperties": false
