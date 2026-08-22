@@ -1,0 +1,10 @@
+{
+  "target_id": "CA-PB02-011",
+  "jurisdiction_name": "Angels",
+  "original_selector": "ocd-division/country:us/state:ca/place:angels_camp",
+  "validation_match_count": 0,
+  "capture_message": "No validation match found",
+  "reported_acceptance": true,
+  "downstream_output_kind": "stub",
+  "preserved_as_regression_only": true
+}
