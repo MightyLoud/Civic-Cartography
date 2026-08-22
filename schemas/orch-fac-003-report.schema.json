@@ -1,0 +1,17 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://civicdata.tech/schemas/orch-fac-003-report.schema.json",
+  "type":"object",
+  "required":["schema_version","gate_id","status","deterministic","permutation_stable","fixture_sha256","results","report_sha256"],
+  "properties":{
+    "schema_version":{"const":1},"gate_id":{"const":"ORCH-FAC-003"},"status":{"const":"PASS"},"deterministic":{"const":true},"permutation_stable":{"const":true},
+    "fixture_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},"report_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "results":{"type":"array","minItems":4,"items":{"type":"object","required":["case_id","batch_status","promotion_ready","review","fail","waves","queued_events","held_locks","all_terminal","children"],"properties":{
+      "case_id":{"type":"string"},"batch_status":{"enum":["PASS","REVIEW","FAIL"]},"promotion_ready":{"type":"integer","minimum":0},"review":{"type":"integer","minimum":0},"fail":{"type":"integer","minimum":0},"waves":{"type":"integer","minimum":1},"queued_events":{"type":"integer","minimum":0},"held_locks":{"const":0},"all_terminal":{"const":true},
+      "children":{"type":"array","minItems":2,"items":{"type":"object","required":["task_id","terminal_status","promotion_status","release_status","held_locks","wave","events"],"properties":{
+        "task_id":{"type":"string"},"terminal_status":{"enum":["PASS","REVIEW","FAIL"]},"promotion_status":{"enum":["READY","QUEUED","BLOCKED"]},"release_status":{"const":"HOLD"},"held_locks":{"const":0},"wave":{"type":"integer","minimum":1},
+        "events":{"type":"array","minItems":2,"items":{"type":"object"}}
+      },"additionalProperties":true}}
+    },"additionalProperties":false}}
+  },"additionalProperties":false
+}
