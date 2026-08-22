@@ -1,0 +1,25 @@
+name: Validate CAN-FAC-003 Oregon Multi-Winner Smoke
+
+on:
+  pull_request:
+    paths:
+      - 'schemas/candidate-factory-contest-office.schema.json'
+      - 'evidence/candidate-factory-or-smoke/**'
+      - 'evidence/candidate-factory-ca-smoke/**'
+      - 'scripts/check_can_fac_002_ca_smoke.py'
+      - 'scripts/check_can_fac_003_or_smoke.py'
+      - '.github/workflows/validate-can-fac-003-or-smoke.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preserve CAN-FAC-002 California compatibility
+        run: python scripts/check_can_fac_002_ca_smoke.py
+      - name: Validate CAN-FAC-003 Oregon multi-winner contract
+        run: python scripts/check_can_fac_003_or_smoke.py
