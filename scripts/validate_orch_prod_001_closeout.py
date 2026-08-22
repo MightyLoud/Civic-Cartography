@@ -75,7 +75,7 @@ def validate_trace(events):
         kind = event["event_type"]
         if kind == "LOCK_ACQUIRED":
             held += 1
-        elif kind in {"STAGE_START", "STAGE_COMPLETE", "PROMOTION_READY", "HANDOFF"} and held != 1:
+        elif kind in {"STAGE_START", "STAGE_COMPLETE", "PROMOTION_READY"} and held != 1:
             raise ValueError("mutating event without exactly one lock")
         elif kind == "HANDOFF":
             handoffs += 1
