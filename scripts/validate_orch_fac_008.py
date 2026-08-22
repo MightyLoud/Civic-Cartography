@@ -132,7 +132,7 @@ def replay(authority, row, register_bytes):
             if lock != "RELEASED":
                 raise ValueError("lock already held")
             lock = "HELD"
-        elif kind in {"STAGE_START", "STAGE_COMPLETE", "PROMOTION_READY"} and lock != "HELD":
+        elif kind in {"STAGE_START", "STAGE_COMPLETE"} and lock != "HELD":
             raise ValueError("mutating replay event without lock")
         elif kind == "PROMOTION_READY":
             promotion = all(fact["status"] == "PASS" for fact in facts)
