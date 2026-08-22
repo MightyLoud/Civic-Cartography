@@ -1,0 +1,19 @@
+name: Validate CAN-FAC-004 Washington Candidate Smoke
+on:
+  pull_request:
+    paths:
+      - 'evidence/candidate-factory-wa-smoke/**'
+      - 'scripts/check_can_fac_004_wa_smoke.py'
+      - '.github/workflows/validate-can-fac-004-wa-smoke.yml'
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate California regression
+        run: python scripts/check_can_fac_002_ca_smoke.py
+      - name: Validate Washington smoke
+        run: python scripts/check_can_fac_004_wa_smoke.py
