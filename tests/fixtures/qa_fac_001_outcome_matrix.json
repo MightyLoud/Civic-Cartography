@@ -2,91 +2,42 @@
   {
     "gate_id": "NAT-FAC-002",
     "domain": "NAT-FAC",
+    "adapter": "nat_fac_002",
     "expected_status": "PASS",
-    "checks": {
-      "Q01": {"status": "PASS", "detail": "required manifest/artifact fields present"},
-      "Q02": {"status": "PASS", "detail": "no duplicate target IDs"},
-      "Q03": {"status": "PASS", "detail": "all target references resolve"},
-      "Q04": {"status": "PASS", "detail": "20 selected targets = 20 accepted targets"},
-      "Q05": {"status": "PASS", "detail": "artifact inventory and source evidence present"},
-      "Q06": {"status": "PASS", "detail": "controlled dispositions valid"},
-      "Q07": {"status": "PASS", "detail": "no unsupported geography or nesting inference"},
-      "Q08": {"status": "PASS", "detail": "20/20 nesting and acceptance parity"},
-      "Q09": {"status": "PASS", "detail": "second run deterministic"},
-      "Q10": {"status": "PASS", "detail": "gate eligible after all required checks"}
-    },
-    "domain_checks": [{"status": "PASS", "detail": "Angels resolves through normal validation match"}]
+    "source_files": [
+      "tests/fixtures/production_batch_ca_20.yml",
+      "evidence/production-batch-ca-20/selection-crosswalk.json"
+    ]
   },
   {
     "gate_id": "CAN-FAC-002",
     "domain": "CAN-FAC",
+    "adapter": "can_fac_002",
     "expected_status": "PASS",
-    "checks": {
-      "Q01": {"status": "PASS", "detail": "Election/Contest/Person/Candidacy required fields present"},
-      "Q02": {"status": "PASS", "detail": "canonical IDs unique"},
-      "Q03": {"status": "PASS", "detail": "candidacy-person-contest-office joins resolve"},
-      "Q04": {"status": "PASS", "detail": "4 raw source records = 4 candidacies"},
-      "Q05": {"status": "PASS", "detail": "4 evidence records and links present"},
-      "Q06": {"status": "PASS", "detail": "candidate statuses controlled"},
-      "Q07": {"status": "PASS", "detail": "no party/incumbent inference"},
-      "Q08": {"status": "PASS", "detail": "entity and evidence counts reconcile"},
-      "Q09": {"status": "PASS", "detail": "raw payload hashes stable"},
-      "Q10": {"status": "PASS", "detail": "proof eligible; production write remains out of scope"}
-    },
-    "domain_checks": [{"status": "PASS", "detail": "two contests map to existing governed CA offices"}]
+    "source_files": [
+      "evidence/candidate-factory-ca-smoke/can-fac-002-rohnert-park.json",
+      "evidence/candidate-factory-ca-smoke/can-fac-002-source-evidence.json"
+    ]
   },
   {
     "gate_id": "GEO-FAC-001",
     "domain": "GEO-FAC",
+    "adapter": "geo_fac_001",
     "expected_status": "PASS",
-    "checks": {
-      "Q01": {"status": "PASS", "detail": "10 fixture inputs satisfy resolver contract"},
-      "Q02": {"status": "PASS", "detail": "test IDs unique"},
-      "Q03": {"status": "PASS", "detail": "jurisdiction/division references resolve"},
-      "Q04": {"status": "PASS", "detail": "10 inputs = 10 resolver outputs"},
-      "Q05": {"status": "PASS", "detail": "boundary source evidence present for all cases"},
-      "Q06": {"status": "PASS", "detail": "resolver statuses controlled"},
-      "Q07": {"status": "PASS", "detail": "unresolved local districts remain explicit, not inferred"},
-      "Q08": {"status": "PASS", "detail": "10/10 expected citywide division parity"},
-      "Q09": {"status": "PASS", "detail": "canonical output hash stable across rerun"},
-      "Q10": {"status": "PASS", "detail": "fixture smoke eligible; live geocoder remains out of scope"}
-    },
-    "domain_checks": [{"status": "PASS", "detail": "city_council_district explicitly unresolved"}]
+    "source_files": ["evidence/geo-fac-001/ca-address-resolver-smoke.json"]
   },
   {
     "gate_id": "SRC-FAC-001",
     "domain": "SRC-FAC",
+    "adapter": "src_fac_001",
     "expected_status": "PASS",
-    "checks": {
-      "Q01": {"status": "PASS", "detail": "10 discovery cases satisfy contract"},
-      "Q02": {"status": "PASS", "detail": "case IDs unique"},
-      "Q03": {"status": "PASS", "detail": "governed adapter IDs resolve or are explicit NONE"},
-      "Q04": {"status": "PASS", "detail": "10 requested cases = 10 dispositions"},
-      "Q05": {"status": "PASS", "detail": "official source URLs retained"},
-      "Q06": {"status": "PASS", "detail": "source and adapter-match statuses controlled"},
-      "Q07": {"status": "PASS", "detail": "no third-party source classified OFFICIAL"},
-      "Q08": {"status": "PASS", "detail": "known-good source/adapter expectations reconcile"},
-      "Q09": {"status": "PASS", "detail": "discovery fixture hash stable"},
-      "Q10": {"status": "PASS", "detail": "known-good contract proof eligible; live crawling out of scope"}
-    },
-    "domain_checks": [{"status": "PASS", "detail": "unknown adapter matches fail closed instead of being invented"}]
+    "source_files": ["tests/fixtures/src_fac_001_known_good_sources.json"]
   },
   {
     "gate_id": "NAT-FAC-002-ANGELS-STUB-REGRESSION",
     "domain": "NAT-FAC",
+    "adapter": "angels_false_clean",
     "expected_status": "FAIL",
-    "checks": {
-      "Q01": {"status": "PASS", "detail": "required report fields present"},
-      "Q02": {"status": "PASS", "detail": "target IDs unique"},
-      "Q03": {"status": "PASS", "detail": "references syntactically resolve"},
-      "Q04": {"status": "PASS", "detail": "reported target accounting balances"},
-      "Q05": {"status": "REVIEW", "detail": "capture evidence says No validation match found"},
-      "Q06": {"status": "PASS", "detail": "statuses are controlled"},
-      "Q07": {"status": "FAIL", "detail": "downstream overlay promoted a stub after missing validation match"},
-      "Q08": {"status": "FAIL", "detail": "reported acceptance conflicts with capture evidence"},
-      "Q09": {"status": "PASS", "detail": "stub behavior is deterministic but determinism alone is insufficient"},
-      "Q10": {"status": "FAIL", "detail": "not eligible for promotion"}
-    },
-    "domain_checks": [{"status": "FAIL", "detail": "normal upstream validation match required"}]
+    "source_files": ["tests/fixtures/qa_fac_001_angels_false_clean.json"]
   }
 ]
