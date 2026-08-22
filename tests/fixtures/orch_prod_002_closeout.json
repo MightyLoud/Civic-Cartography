@@ -1,0 +1,133 @@
+{
+  "gate_id": "ORCH-PROD-002",
+  "capacity": 2,
+  "automatic_retries": false,
+  "public_release": false,
+  "selection": {
+    "pr": 462,
+    "head_sha": "9e1bf7d3835293f6b53ae88814241e95a977b972",
+    "merge_sha": "8943acd3ff04b8720f7a3a2071f628f370ac6db0",
+    "workflow_run_id": 31993627583,
+    "job_id": 95281347377,
+    "status": "PASS"
+  },
+  "waves": [
+    {
+      "wave": "OR-PB04-A",
+      "pr": 463,
+      "base_sha": "8943acd3ff04b8720f7a3a2071f628f370ac6db0",
+      "head_sha": "e787ea118c2dab278c2a7f7b3e0aeb5f2de5aec2",
+      "merge_sha": "2649d193a7b10bb8b648e38338228f3e1d79463f",
+      "workflow_run_id": 31993798389,
+      "tasks": [
+        {
+          "status": "PASS",
+          "production_acceptance": true,
+          "deterministic": true,
+          "nesting_parity": true,
+          "enrichment_guard": true,
+          "sequence": 1,
+          "target_id": "OR-PB04-001",
+          "county": "Clatsop County",
+          "geoid": "41007",
+          "dependencies": [],
+          "job_id": 95281803891,
+          "production_run_id": "df01ac52f1a3d118dd8d",
+          "artifact_id": 9276177882,
+          "artifact_sha256": "3b9b31e6fb13879b07778c4d9b3da580ebff2c7009a881b6c5962e9df2bf973b"
+        },
+        {
+          "status": "PASS",
+          "production_acceptance": true,
+          "deterministic": true,
+          "nesting_parity": true,
+          "enrichment_guard": true,
+          "sequence": 2,
+          "target_id": "OR-PB04-002",
+          "county": "Columbia County",
+          "geoid": "41009",
+          "dependencies": [],
+          "job_id": 95281803898,
+          "production_run_id": "6734a88bc06de2de9bfc",
+          "artifact_id": 9276178318,
+          "artifact_sha256": "cc4c5833bdc0433c92ac41638b16453535c1f7cd2e52627444d029e7ff4e45e3"
+        }
+      ]
+    },
+    {
+      "wave": "OR-PB04-B",
+      "pr": 464,
+      "base_sha": "2649d193a7b10bb8b648e38338228f3e1d79463f",
+      "head_sha": "de087ba69d31af46d647ae8df32593f181521a70",
+      "merge_sha": "9497fc6d5257e442a7f3fff9ffcaea870af99445",
+      "workflow_run_id": 31994616230,
+      "tasks": [
+        {
+          "status": "PASS",
+          "production_acceptance": true,
+          "deterministic": true,
+          "nesting_parity": true,
+          "enrichment_guard": true,
+          "sequence": 3,
+          "target_id": "OR-PB04-003",
+          "county": "Coos County",
+          "geoid": "41011",
+          "dependencies": [
+            "OR-PB04-001"
+          ],
+          "job_id": 95283957637,
+          "production_run_id": "929374d137a3e31e7e68",
+          "artifact_id": 9276437169,
+          "artifact_sha256": "f299e13e87627b4450ec5626089c59f232c4cf43e8c93145b146e5daae9f1985"
+        },
+        {
+          "status": "PASS",
+          "production_acceptance": true,
+          "deterministic": true,
+          "nesting_parity": true,
+          "enrichment_guard": true,
+          "sequence": 4,
+          "target_id": "OR-PB04-004",
+          "county": "Crook County",
+          "geoid": "41013",
+          "dependencies": [
+            "OR-PB04-002"
+          ],
+          "job_id": 95283957638,
+          "production_run_id": "77ed654d6ab8d27328ea",
+          "artifact_id": 9276431373,
+          "artifact_sha256": "842835f3c3dc7b60eb39dd517d8bf51e97e19b948bb12148e2c6ad7bad0f3c91"
+        }
+      ]
+    },
+    {
+      "wave": "OR-PB04-C",
+      "pr": 465,
+      "base_sha": "9497fc6d5257e442a7f3fff9ffcaea870af99445",
+      "head_sha": "ca9db81f0a945ccbf0e2bdd51bea33d22aee6499",
+      "merge_sha": "afd6daba8fc0dd58791eb278b2ae05ee88b20054",
+      "workflow_run_id": 31995018692,
+      "tasks": [
+        {
+          "status": "PASS",
+          "production_acceptance": true,
+          "deterministic": true,
+          "nesting_parity": true,
+          "enrichment_guard": true,
+          "sequence": 5,
+          "target_id": "OR-PB04-005",
+          "county": "Curry County",
+          "geoid": "41015",
+          "dependencies": [
+            "OR-PB04-003",
+            "OR-PB04-004"
+          ],
+          "job_id": 95285014841,
+          "production_run_id": "d06577ffac8d2049f5a7",
+          "artifact_id": 9276557783,
+          "artifact_sha256": "6ca2a0022affad147479544c66fa6e1ef47d81988f2d236293a4676f4d669997"
+        }
+      ]
+    }
+  ]
+}
