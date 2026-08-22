@@ -1,0 +1,913 @@
+version: 1
+name: mb100_final_100
+description: >-
+  Frozen MB100 closeout manifest generated from Measured Batch 100!A:J at the
+  certified main state 9440188ed766da8d9ec20f39ef781efad970a59c.
+run_asof: "2026-08-13T01:42:43Z"
+targets:
+  - target_id: "MB100-001"
+    jurisdiction_name: "Seattle"
+    state: "wa"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:wa/place:seattle"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: regression_fixture
+  - target_id: "MB100-002"
+    jurisdiction_name: "Tacoma"
+    state: "wa"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:wa/place:tacoma"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: regression_fixture
+  - target_id: "MB100-003"
+    jurisdiction_name: "Pierce County"
+    state: "wa"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:wa/county:pierce"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: regression_fixture
+  - target_id: "MB100-004"
+    jurisdiction_name: "Colorado Springs School District 11"
+    state: "co"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:co/county:el_paso/school_district:colorado_springs_school_district_no._11"
+    expected_archetype: "AR-003"
+    expected_classification: "school_system"
+    category: regression_fixture
+  - target_id: "MB100-005"
+    jurisdiction_name: "Regional Transportation District"
+    state: "co"
+    selector:
+      type: explicit_lookup
+      name: "Regional Transportation District"
+      resolution_policy: override_or_exception
+    expected_archetype: "AR-004"
+    expected_classification: "transit_authority"
+    category: regression_fixture
+  - target_id: "MB100-006"
+    jurisdiction_name: "City and County of Denver"
+    state: "co"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:co/place:denver"
+    expected_archetype: "AR-005"
+    expected_classification: "government"
+    category: regression_fixture
+  - target_id: "MB100-007"
+    jurisdiction_name: "Spokane"
+    state: "wa"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:wa/place:spokane"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-008"
+    jurisdiction_name: "Albuquerque"
+    state: "nm"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:nm/place:albuquerque"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-009"
+    jurisdiction_name: "Boston"
+    state: "ma"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ma/place:boston"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-010"
+    jurisdiction_name: "Phoenix"
+    state: "az"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:az/place:phoenix"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-011"
+    jurisdiction_name: "San Antonio"
+    state: "tx"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:tx/place:san_antonio"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-012"
+    jurisdiction_name: "Charlotte"
+    state: "nc"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:nc/place:charlotte"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-013"
+    jurisdiction_name: "Columbus"
+    state: "oh"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:oh/place:columbus"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-014"
+    jurisdiction_name: "Detroit"
+    state: "mi"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:mi/place:detroit"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-015"
+    jurisdiction_name: "Milwaukee"
+    state: "wi"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:wi/place:milwaukee"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-016"
+    jurisdiction_name: "Omaha"
+    state: "ne"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ne/place:omaha"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-017"
+    jurisdiction_name: "Wichita"
+    state: "ks"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ks/place:wichita"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-018"
+    jurisdiction_name: "Memphis"
+    state: "tn"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:tn/place:memphis"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-019"
+    jurisdiction_name: "Raleigh"
+    state: "nc"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:nc/place:raleigh"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-020"
+    jurisdiction_name: "Atlanta"
+    state: "ga"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ga/place:atlanta"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-021"
+    jurisdiction_name: "Salt Lake City"
+    state: "ut"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ut/place:salt_lake_city"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-022"
+    jurisdiction_name: "King County"
+    state: "wa"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:wa/county:king"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-023"
+    jurisdiction_name: "Cuyahoga County"
+    state: "oh"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:oh/county:cuyahoga"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-024"
+    jurisdiction_name: "Miami-Dade County"
+    state: "fl"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:fl/county:miami-dade"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-025"
+    jurisdiction_name: "Allegheny County"
+    state: "pa"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:pa/county:allegheny"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-026"
+    jurisdiction_name: "Cook County"
+    state: "il"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:il/county:cook"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-027"
+    jurisdiction_name: "Dallas County"
+    state: "tx"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:tx/county:dallas"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-028"
+    jurisdiction_name: "Fulton County"
+    state: "ga"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ga/county:fulton"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-029"
+    jurisdiction_name: "Hennepin County"
+    state: "mn"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:mn/county:hennepin"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-030"
+    jurisdiction_name: "Denver Public Schools"
+    state: "co"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:co/county:denver/school_district:denver_1"
+    expected_archetype: "AR-003"
+    expected_classification: "school_system"
+    category: new_known_archetype
+  - target_id: "MB100-031"
+    jurisdiction_name: "Seattle Public Schools"
+    state: "wa"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:wa/county:king/school_district:seattle_public_schools"
+    expected_archetype: "AR-003"
+    expected_classification: "school_system"
+    category: new_known_archetype
+  - target_id: "MB100-032"
+    jurisdiction_name: "Clark County School District"
+    state: "nv"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:nv/county:clark/school_district:clark_county_school_district"
+    expected_archetype: "AR-003"
+    expected_classification: "school_system"
+    category: new_known_archetype
+  - target_id: "MB100-033"
+    jurisdiction_name: "Albuquerque Public Schools"
+    state: "nm"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:nm/county:bernalillo/school_district:albuquerque_public_schools"
+    expected_archetype: "AR-003"
+    expected_classification: "school_system"
+    category: new_known_archetype
+  - target_id: "MB100-034"
+    jurisdiction_name: "Boston Public Schools"
+    state: "ma"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ma/county:suffolk/school_district:boston"
+    expected_archetype: "AR-003"
+    expected_classification: "school_system"
+    category: new_known_archetype
+  - target_id: "MB100-035"
+    jurisdiction_name: "Atlanta Public Schools"
+    state: "ga"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ga/county:fulton/school_district:atlanta_public_schools"
+    expected_archetype: "AR-003"
+    expected_classification: "school_system"
+    category: new_known_archetype
+  - target_id: "MB100-036"
+    jurisdiction_name: "Houston Independent School District"
+    state: "tx"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:tx/county:harris/school_district:houston_isd"
+    expected_archetype: "AR-003"
+    expected_classification: "school_system"
+    category: new_known_archetype
+  - target_id: "MB100-037"
+    jurisdiction_name: "Philadelphia City School District"
+    state: "pa"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:pa/county:philadelphia/school_district:philadelphia_city_sd"
+    expected_archetype: "AR-003"
+    expected_classification: "school_system"
+    category: new_known_archetype
+  - target_id: "MB100-038"
+    jurisdiction_name: "Bay Area Rapid Transit District"
+    state: "ca"
+    selector:
+      type: explicit_lookup
+      name: "Bay Area Rapid Transit District"
+      resolution_policy: override_or_exception
+    expected_archetype: "AR-004"
+    expected_classification: "transit_authority"
+    category: new_known_archetype
+  - target_id: "MB100-039"
+    jurisdiction_name: "City and County of San Francisco"
+    state: "ca"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ca/place:san_francisco"
+    expected_archetype: "AR-005"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-040"
+    jurisdiction_name: "City and County of Broomfield"
+    state: "co"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:co/place:broomfield"
+    expected_archetype: "AR-005"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-041"
+    jurisdiction_name: "Metropolitan Water Reclamation District"
+    state: "il"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:il/sewer:mwrd"
+    expected_archetype: "AR-D01"
+    expected_classification: "special_purpose_district"
+    category: new_known_archetype
+  - target_id: "MB100-042"
+    jurisdiction_name: "Port of Seattle"
+    state: "wa"
+    selector:
+      type: explicit_lookup
+      name: "Port of Seattle"
+      resolution_policy: override_or_exception
+    expected_archetype: "AR-D01"
+    expected_classification: "special_purpose_district"
+    category: new_known_archetype
+  - target_id: "MB100-043"
+    jurisdiction_name: "Metropolitan Government of Nashville and Davidson County"
+    state: "tn"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:tn/county:davidson"
+    expected_archetype: "AR-D02"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-044"
+    jurisdiction_name: "City of New Orleans"
+    state: "la"
+    selector:
+      type: alias_group
+      members:
+        - "ocd-division/country:us/state:la/parish:orleans"
+        - "ocd-division/country:us/state:la/place:new_orleans"
+      canonical_rule: maintained_alias
+    expected_archetype: "DISCOVERY — PARISH"
+    expected_classification: "government"
+    category: discovery
+  - target_id: "MB100-045"
+    jurisdiction_name: "Regional Transit Authority"
+    state: "il"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:il/transit:rta"
+    expected_archetype: "DISCOVERY — TRANSIT SEGMENT"
+    expected_classification: "transit_authority"
+    category: discovery
+  - target_id: "MB100-046"
+    jurisdiction_name: "Castaic Lake Water Agency"
+    state: "ca"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ca/county:los_angeles/water:castaic_lake_water_agency"
+    expected_archetype: "DISCOVERY — WATER SEGMENT"
+    expected_classification: "special_purpose_district"
+    category: discovery
+  - target_id: "MB100-047"
+    jurisdiction_name: "Louisville–Jefferson County Metro Government"
+    state: "ky"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ky/county:jefferson"
+    expected_archetype: "DISCOVERY — CONSOLIDATED IDENTITY"
+    expected_classification: "government"
+    category: discovery
+  - target_id: "MB100-048"
+    jurisdiction_name: "Greenwich Town"
+    state: "ct"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ct/place:greenwich"
+    expected_archetype: "DISCOVERY — COUSUB-AS-PLACE"
+    expected_classification: "government"
+    category: discovery
+  - target_id: "MB100-049"
+    jurisdiction_name: "Baltimore City"
+    state: "md"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:md/place:baltimore"
+    expected_archetype: "DISCOVERY — INDEPENDENT CITY ALIAS"
+    expected_classification: "government"
+    category: discovery
+  - target_id: "MB100-050"
+    jurisdiction_name: "San Juan Municipio"
+    state: "pr"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/territory:pr/municipio:san_juan"
+    expected_archetype: "DISCOVERY — TERRITORY MUNICIPIO"
+    expected_classification: "government"
+    category: discovery
+  - target_id: "MB100-051"
+    jurisdiction_name: "Birmingham"
+    state: "al"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:al/place:birmingham"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-052"
+    jurisdiction_name: "Fairbanks"
+    state: "ak"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ak/place:fairbanks"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-053"
+    jurisdiction_name: "Little Rock"
+    state: "ar"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ar/place:little_rock"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-054"
+    jurisdiction_name: "Wilmington"
+    state: "de"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:de/place:wilmington"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-055"
+    jurisdiction_name: "Boise City"
+    state: "id"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:id/place:boise_city"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-056"
+    jurisdiction_name: "Fort Wayne"
+    state: "in"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:in/place:fort_wayne"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-057"
+    jurisdiction_name: "Des Moines"
+    state: "ia"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ia/place:des_moines"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-058"
+    jurisdiction_name: "Portland"
+    state: "me"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:me/place:portland"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-059"
+    jurisdiction_name: "Jackson"
+    state: "ms"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ms/place:jackson"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-060"
+    jurisdiction_name: "Kansas City"
+    state: "mo"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:mo/place:kansas_city"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-061"
+    jurisdiction_name: "Billings"
+    state: "mt"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:mt/place:billings"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-062"
+    jurisdiction_name: "Manchester"
+    state: "nh"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:nh/place:manchester"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-063"
+    jurisdiction_name: "Newark"
+    state: "nj"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:nj/place:newark"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-064"
+    jurisdiction_name: "Buffalo"
+    state: "ny"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ny/place:buffalo"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-065"
+    jurisdiction_name: "Fargo"
+    state: "nd"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:nd/place:fargo"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-066"
+    jurisdiction_name: "Oklahoma City"
+    state: "ok"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ok/place:oklahoma_city"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-067"
+    jurisdiction_name: "Portland"
+    state: "or"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:or/place:portland"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-068"
+    jurisdiction_name: "Providence"
+    state: "ri"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ri/place:providence"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-069"
+    jurisdiction_name: "Charleston"
+    state: "sc"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:sc/place:charleston"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-070"
+    jurisdiction_name: "Sioux Falls"
+    state: "sd"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:sd/place:sioux_falls"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-071"
+    jurisdiction_name: "Burlington"
+    state: "vt"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:vt/place:burlington"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-072"
+    jurisdiction_name: "Richmond"
+    state: "va"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:va/place:richmond"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-073"
+    jurisdiction_name: "Charleston"
+    state: "wv"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:wv/place:charleston"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-074"
+    jurisdiction_name: "Cheyenne"
+    state: "wy"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:wy/place:cheyenne"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-075"
+    jurisdiction_name: "Washington, District of Columbia"
+    state: "dc"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/district:dc"
+    expected_archetype: "DISCOVERY — FEDERAL DISTRICT IDENTITY"
+    expected_classification: "government"
+    category: discovery
+  - target_id: "MB100-076"
+    jurisdiction_name: "Las Vegas"
+    state: "nv"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:nv/place:las_vegas"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-077"
+    jurisdiction_name: "Sacramento"
+    state: "ca"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ca/place:sacramento"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-078"
+    jurisdiction_name: "El Paso"
+    state: "tx"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:tx/place:el_paso"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-079"
+    jurisdiction_name: "Pittsburgh"
+    state: "pa"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:pa/place:pittsburgh"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-080"
+    jurisdiction_name: "Toledo"
+    state: "oh"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:oh/place:toledo"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-081"
+    jurisdiction_name: "Minneapolis"
+    state: "mn"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:mn/place:minneapolis"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-082"
+    jurisdiction_name: "Appleton"
+    state: "wi"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:wi/place:appleton"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-083"
+    jurisdiction_name: "Lincoln"
+    state: "ne"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ne/place:lincoln"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-084"
+    jurisdiction_name: "Topeka"
+    state: "ks"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ks/place:topeka"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-085"
+    jurisdiction_name: "Knoxville"
+    state: "tn"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:tn/place:knoxville"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-086"
+    jurisdiction_name: "Savannah"
+    state: "ga"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ga/place:savannah"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-087"
+    jurisdiction_name: "Provo"
+    state: "ut"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ut/place:provo"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-088"
+    jurisdiction_name: "Miami"
+    state: "fl"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:fl/place:miami"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-089"
+    jurisdiction_name: "Springfield"
+    state: "il"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:il/place:springfield"
+    expected_archetype: "AR-001"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-090"
+    jurisdiction_name: "Jefferson County"
+    state: "al"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:al/county:jefferson"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-091"
+    jurisdiction_name: "Hawaii County"
+    state: "hi"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:hi/county:hawaii"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-092"
+    jurisdiction_name: "Ada County"
+    state: "id"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:id/county:ada"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-093"
+    jurisdiction_name: "Marion County"
+    state: "in"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:in/county:marion"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-094"
+    jurisdiction_name: "Polk County"
+    state: "ia"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:ia/county:polk"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-095"
+    jurisdiction_name: "Cumberland County"
+    state: "me"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:me/county:cumberland"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-096"
+    jurisdiction_name: "Jackson County"
+    state: "mo"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:mo/county:jackson"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-097"
+    jurisdiction_name: "Yellowstone County"
+    state: "mt"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:mt/county:yellowstone"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-098"
+    jurisdiction_name: "Hillsborough County"
+    state: "nh"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:nh/county:hillsborough"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-099"
+    jurisdiction_name: "Essex County"
+    state: "nj"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:nj/county:essex"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype
+  - target_id: "MB100-100"
+    jurisdiction_name: "Multnomah County"
+    state: "or"
+    selector:
+      type: ocdid
+      value: "ocd-division/country:us/state:or/county:multnomah"
+    expected_archetype: "AR-002"
+    expected_classification: "government"
+    category: new_known_archetype

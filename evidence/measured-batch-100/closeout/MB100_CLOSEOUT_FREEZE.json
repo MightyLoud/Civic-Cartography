@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-08-13T02:01:49Z",
+  "repository": "MightyLoud/Civic-Cartography",
+  "frozen_main_commit": "9440188ed766da8d9ec20f39ef781efad970a59c",
+  "completion_register_path": "evidence/measured-batch-100/completion-register.csv",
+  "completion_register_blob": "97514a9789545a3757e8908dec192becea1f99ec",
+  "workbook": {
+    "spreadsheet_id": "1YtpyYfLIWmo0zzv1urmET9HNZKlgzaWtRwJnxzGh350",
+    "title": "CivicData.tech Program Command Center",
+    "measured_batch_sheet_id": 1961950621,
+    "scale_readiness_sheet_id": 20260802
+  },
+  "upstream": {
+    "repository": "openstates/jurisdictions",
+    "revision": "6fbe7d6aed32c3b781490c8e4c5a737bdd6e4705"
+  },
+  "contract": {
+    "target_count": 100,
+    "strict_complete_count": 100,
+    "pass_count": 100,
+    "control_count": 6,
+    "measured_count": 94,
+    "checksum_parity_count": 100,
+    "explicit_completion_count": 60,
+    "legacy_proxy_count": 40,
+    "completion_gap_count": 0,
+    "failed_count": 0,
+    "unrouted_count": 0,
+    "strict_timer_integrity_count": 77,
+    "strict_timer_denominator": 94,
+    "historical_timer_exception_count": 17,
+    "decision_source_conflict_count": 2,
+    "promotion_gates_passed": 7,
+    "promotion_gates_total": 8,
+    "promotion_status": "HOLD AT 100",
+    "promotion_authorized": false,
+    "successor_decision_required": true
+  },
+  "source_ranges": {
+    "final_manifest": "Measured Batch 100!A10:J110",
+    "final_results": "Measured Batch 100!A10:AG110",
+    "completion_contract": "System_State!U61:AB160",
+    "explicit_register_cache": "System_State!A61:S121",
+    "timer_contract": "Scale Readiness!A65:J80",
+    "archetypes": "Archetype Registry!A4:L11"
+  },
+  "certification": {
+    "commit": "00ebd495ca5eee46f97e40f456622b3c696c97a1",
+    "path": "evidence/measured-batch-100/certification.json",
+    "blob": "4983d1b7f3633a0bcb75d868217dd1fe4b2a2ef9",
+    "decision_id": "D-094",
+    "status": "CERTIFIED_COMPLETE_HOLD_AT_100"
+  }
+}
