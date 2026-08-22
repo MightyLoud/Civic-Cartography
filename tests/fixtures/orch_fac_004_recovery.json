@@ -1,45 +1,45 @@
 {
-  "version": 1,
-  "cases": [
+  "version":2,
+  "cases":[
     {
-      "case_id": "interrupted-resume-pass",
-      "task_id": "TASK-A",
-      "idempotency_key": "TASK-A:v1",
-      "initial": {"lock_state":"HELD","lock_owner":"WORKER-A","completed_stages":["SRC-FAC","DOMAIN"],"terminal":null,"writes":["src:sha-a","domain:sha-b"],"retry_count":0},
-      "recovery": {"reason":"worker_interrupted","new_owner":"WORKER-B","remaining_stages":{"QA-FAC":"PASS","REL-FAC":"PASS"}},
-      "expected": {"terminal":"PASS","retry_count":1,"writes":4,"handoffs":1,"exceptions":0,"held_locks":0}
+      "case_id":"interrupted-resume-pass","task_id":"TASK-A","idempotency_key":"TASK-A:v1",
+      "initial":{"lock_state":"HELD","lock_owner":"WORKER-A","completed_stages":["source","domain"],"retry_count":0,"terminal_status":null,"writes":[
+        {"stage":"source","key":"TASK-A:v1:source","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+        {"stage":"domain","key":"TASK-A:v1:domain","sha256":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}]},
+      "recovery":{"action":"RECOVER_INTERRUPTED","reason":"worker_interrupted","new_owner":"WORKER-B","idempotency_key":"TASK-A:v1","attempts":[
+        {"stage":"domain","key":"TASK-A:v1:domain","sha256":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","checks":[{"check_id":"D","status":"PASS","detail":"duplicate completed write"}]},
+        {"stage":"qa","key":"TASK-A:v1:qa","sha256":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","checks":[{"check_id":"Q","status":"PASS","detail":"QA passes"}]},
+        {"stage":"rel","key":"TASK-A:v1:rel","sha256":"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd","checks":[{"check_id":"R","status":"PASS","detail":"promotion ready; release held"}]}]}
     },
     {
-      "case_id": "terminal-retry-noop",
-      "task_id": "TASK-B",
-      "idempotency_key": "TASK-B:v1",
-      "initial": {"lock_state":"RELEASED","lock_owner":"NONE","completed_stages":["SRC-FAC","DOMAIN","QA-FAC","REL-FAC"],"terminal":"PASS","writes":["src:x","domain:y","qa:z","rel:q"],"retry_count":1,"handoffs":1},
-      "recovery": {"reason":"duplicate_delivery","new_owner":"WORKER-C","remaining_stages":{"REL-FAC":"PASS"}},
-      "expected": {"terminal":"PASS","retry_count":1,"writes":4,"handoffs":1,"exceptions":0,"held_locks":0}
+      "case_id":"terminal-retry-noop","task_id":"TASK-B","idempotency_key":"TASK-B:v1",
+      "initial":{"lock_state":"RELEASED","lock_owner":"NONE","completed_stages":["source","domain","qa","rel"],"retry_count":1,"terminal_status":"PASS","writes":[
+        {"stage":"source","key":"TASK-B:v1:source","sha256":"1111111111111111111111111111111111111111111111111111111111111111"},
+        {"stage":"domain","key":"TASK-B:v1:domain","sha256":"2222222222222222222222222222222222222222222222222222222222222222"},
+        {"stage":"qa","key":"TASK-B:v1:qa","sha256":"3333333333333333333333333333333333333333333333333333333333333333"},
+        {"stage":"rel","key":"TASK-B:v1:rel","sha256":"4444444444444444444444444444444444444444444444444444444444444444"}]},
+      "recovery":{"action":"REPLAY","reason":"duplicate_delivery","new_owner":"WORKER-C","idempotency_key":"TASK-B:v1","attempts":[]}
     },
     {
-      "case_id": "stale-lock-reclaim",
-      "task_id": "TASK-C",
-      "idempotency_key": "TASK-C:v1",
-      "initial": {"lock_state":"HELD","lock_owner":"DEAD-WORKER","completed_stages":["SRC-FAC"],"terminal":null,"writes":["src:c"],"retry_count":2},
-      "recovery": {"reason":"stale_lock","new_owner":"WORKER-D","remaining_stages":{"DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}},
-      "expected": {"terminal":"PASS","retry_count":3,"writes":4,"handoffs":1,"exceptions":0,"held_locks":0}
+      "case_id":"stale-lock-reclaim","task_id":"TASK-C","idempotency_key":"TASK-C:v1",
+      "initial":{"lock_state":"HELD","lock_owner":"DEAD-WORKER","completed_stages":["source"],"retry_count":2,"terminal_status":null,"writes":[{"stage":"source","key":"TASK-C:v1:source","sha256":"5555555555555555555555555555555555555555555555555555555555555555"}]},
+      "recovery":{"action":"RECOVER_STALE","reason":"stale_lock","new_owner":"WORKER-D","idempotency_key":"TASK-C:v1","attempts":[
+        {"stage":"domain","key":"TASK-C:v1:domain","sha256":"6666666666666666666666666666666666666666666666666666666666666666","checks":[{"check_id":"D","status":"PASS","detail":"domain passes"}]},
+        {"stage":"qa","key":"TASK-C:v1:qa","sha256":"7777777777777777777777777777777777777777777777777777777777777777","checks":[{"check_id":"Q","status":"PASS","detail":"QA passes"}]},
+        {"stage":"rel","key":"TASK-C:v1:rel","sha256":"8888888888888888888888888888888888888888888888888888888888888888","checks":[{"check_id":"R","status":"PASS","detail":"promotion ready; release held"}]}]}
     },
     {
-      "case_id": "recovery-review",
-      "task_id": "TASK-D",
-      "idempotency_key": "TASK-D:v1",
-      "initial": {"lock_state":"HOLD","lock_owner":"NONE","completed_stages":["SRC-FAC"],"terminal":null,"writes":["src:d"],"retry_count":0},
-      "recovery": {"reason":"manual_review_retry","new_owner":"WORKER-E","remaining_stages":{"DOMAIN":"PASS","QA-FAC":"REVIEW"}},
-      "expected": {"terminal":"REVIEW","retry_count":1,"writes":3,"handoffs":0,"exceptions":1,"held_locks":0}
+      "case_id":"recovery-review","task_id":"TASK-D","idempotency_key":"TASK-D:v1",
+      "initial":{"lock_state":"HOLD","lock_owner":"NONE","completed_stages":["source"],"retry_count":0,"terminal_status":null,"writes":[{"stage":"source","key":"TASK-D:v1:source","sha256":"9999999999999999999999999999999999999999999999999999999999999999"}]},
+      "recovery":{"action":"RETRY","reason":"manual_review_retry","new_owner":"WORKER-E","idempotency_key":"TASK-D:v1","attempts":[
+        {"stage":"domain","key":"TASK-D:v1:domain","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1","checks":[{"check_id":"D","status":"PASS","detail":"domain passes"}]},
+        {"stage":"qa","key":"TASK-D:v1:qa","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa2","checks":[{"check_id":"Q","status":"REVIEW","detail":"QA requires review"}]}]}
     },
     {
-      "case_id": "recovery-fail",
-      "task_id": "TASK-E",
-      "idempotency_key": "TASK-E:v1",
-      "initial": {"lock_state":"BLOCKED","lock_owner":"NONE","completed_stages":["SRC-FAC"],"terminal":null,"writes":["src:e"],"retry_count":1},
-      "recovery": {"reason":"remediation_retry","new_owner":"WORKER-F","remaining_stages":{"DOMAIN":"FAIL"}},
-      "expected": {"terminal":"FAIL","retry_count":2,"writes":2,"handoffs":0,"exceptions":1,"held_locks":0}
+      "case_id":"recovery-fail","task_id":"TASK-E","idempotency_key":"TASK-E:v1",
+      "initial":{"lock_state":"BLOCKED","lock_owner":"NONE","completed_stages":["source"],"retry_count":1,"terminal_status":null,"writes":[{"stage":"source","key":"TASK-E:v1:source","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa3"}]},
+      "recovery":{"action":"RETRY","reason":"remediation_retry","new_owner":"WORKER-F","idempotency_key":"TASK-E:v1","attempts":[
+        {"stage":"domain","key":"TASK-E:v1:domain","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa4","checks":[{"check_id":"D","status":"FAIL","detail":"domain fails"}]}]}
     }
   ]
 }

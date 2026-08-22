@@ -1,0 +1,14 @@
+{
+ "$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://civicdata.tech/schemas/orch-fac-004-recovery.schema.json","type":"object","required":["version","cases"],
+ "properties":{"version":{"const":2},"cases":{"type":"array","minItems":5,"maxItems":5,"items":{"$ref":"#/$defs/case"}}},"additionalProperties":false,
+ "$defs":{
+  "check":{"type":"object","required":["check_id","status","detail"],"properties":{"check_id":{"type":"string","minLength":1},"status":{"enum":["PASS","REVIEW","FAIL"]},"detail":{"type":"string","minLength":1}},"additionalProperties":false},
+  "write":{"type":"object","required":["stage","key","sha256"],"properties":{"stage":{"enum":["source","domain","qa","rel"]},"key":{"type":"string","minLength":1},"sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"}},"additionalProperties":false},
+  "attempt":{"type":"object","required":["stage","key","sha256","checks"],"properties":{"stage":{"enum":["source","domain","qa","rel"]},"key":{"type":"string","minLength":1},"sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},"checks":{"type":"array","minItems":1,"items":{"$ref":"#/$defs/check"}}},"additionalProperties":false},
+  "case":{"type":"object","required":["case_id","task_id","idempotency_key","initial","recovery"],"properties":{
+   "case_id":{"type":"string","minLength":1},"task_id":{"type":"string","minLength":1},"idempotency_key":{"type":"string","minLength":1},
+   "initial":{"type":"object","required":["lock_state","lock_owner","completed_stages","retry_count","terminal_status","writes"],"properties":{"lock_state":{"enum":["HELD","RELEASED","HOLD","BLOCKED"]},"lock_owner":{"type":"string"},"completed_stages":{"type":"array","uniqueItems":true,"items":{"enum":["source","domain","qa","rel"]}},"retry_count":{"type":"integer","minimum":0},"terminal_status":{"type":["string","null"],"enum":["PASS","REVIEW","FAIL",null]},"writes":{"type":"array","items":{"$ref":"#/$defs/write"}}},"additionalProperties":false},
+   "recovery":{"type":"object","required":["action","reason","new_owner","idempotency_key","attempts"],"properties":{"action":{"enum":["RECOVER_INTERRUPTED","RECOVER_STALE","RETRY","REPLAY"]},"reason":{"type":"string","minLength":1},"new_owner":{"type":"string","minLength":1},"idempotency_key":{"type":"string","minLength":1},"attempts":{"type":"array","items":{"$ref":"#/$defs/attempt"}}},"additionalProperties":false}
+  },"additionalProperties":false}
+ }
+}
