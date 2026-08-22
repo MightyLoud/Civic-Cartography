@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlencode
 
-from scripts import fetch_arcgis_districts as shared
+import fetch_arcgis_districts as shared
 
 USER_AGENT = "Mozilla/5.0 Civic-Cartography-validator/1.0"
 HEADERS = {
