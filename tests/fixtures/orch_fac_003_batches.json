@@ -1,39 +1,38 @@
 {
-  "version": 1,
+  "version": 2,
+  "max_parallel": 2,
+  "nonwriting_workers": ["MON-015"],
   "cases": [
     {
       "case_id": "parallel-clean-pass",
       "children": [
-        {"task_id": "CA-001", "write_surface": ["CA:A"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}},
-        {"task_id": "OR-001", "write_surface": ["OR:A"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}},
-        {"task_id": "WA-001", "write_surface": ["WA:A"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}}
-      ],
-      "expected": {"batch_status":"PASS","promotion_ready":3,"review":0,"fail":0,"overlap_waits":0}
+        {"task_id": "CA-001", "domain_factory": "CAN-FAC", "worker": "CAN-FAC", "write_surface": ["CA:A"], "stage_checks": {"source":[{"check_id":"SRC","status":"PASS","detail":"source passes"}],"domain":[{"check_id":"DOM","status":"PASS","detail":"domain passes"}],"qa":[{"check_id":"QA","status":"PASS","detail":"QA passes"}],"rel":[{"check_id":"REL","status":"PASS","detail":"promotion ready; release held"}]}},
+        {"task_id": "OR-001", "domain_factory": "NAT-FAC", "worker": "NAT-FAC", "write_surface": ["OR:A"], "stage_checks": {"source":[{"check_id":"SRC","status":"PASS","detail":"source passes"}],"domain":[{"check_id":"DOM","status":"PASS","detail":"domain passes"}],"qa":[{"check_id":"QA","status":"PASS","detail":"QA passes"}],"rel":[{"check_id":"REL","status":"PASS","detail":"promotion ready; release held"}]}},
+        {"task_id": "WA-001", "domain_factory": "GEO-FAC", "worker": "GEO-FAC", "write_surface": ["WA:A"], "stage_checks": {"source":[{"check_id":"SRC","status":"PASS","detail":"source passes"}],"domain":[{"check_id":"DOM","status":"PASS","detail":"domain passes"}],"qa":[{"check_id":"QA","status":"PASS","detail":"QA passes"}],"rel":[{"check_id":"REL","status":"PASS","detail":"promotion ready; release held"}]}}
+      ]
     },
     {
-      "case_id": "overlap-serializes",
+      "case_id": "overlap-queues",
       "children": [
-        {"task_id": "TX-001", "write_surface": ["TX:Ops_Tracker"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}},
-        {"task_id": "TX-002", "write_surface": ["TX:Ops_Tracker","TX:Office_QA"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}}
-      ],
-      "expected": {"batch_status":"PASS","promotion_ready":2,"review":0,"fail":0,"overlap_waits":1}
+        {"task_id": "TX-001", "domain_factory": "CAN-FAC", "worker": "CAN-FAC", "write_surface": ["TX:Ops_Tracker"], "stage_checks": {"source":[{"check_id":"SRC","status":"PASS","detail":"source passes"}],"domain":[{"check_id":"DOM","status":"PASS","detail":"domain passes"}],"qa":[{"check_id":"QA","status":"PASS","detail":"QA passes"}],"rel":[{"check_id":"REL","status":"PASS","detail":"promotion ready; release held"}]}},
+        {"task_id": "TX-002", "domain_factory": "NAT-FAC", "worker": "NAT-FAC", "write_surface": ["TX:Ops_Tracker","TX:Office_QA"], "stage_checks": {"source":[{"check_id":"SRC","status":"PASS","detail":"source passes"}],"domain":[{"check_id":"DOM","status":"PASS","detail":"domain passes"}],"qa":[{"check_id":"QA","status":"PASS","detail":"QA passes"}],"rel":[{"check_id":"REL","status":"PASS","detail":"promotion ready; release held"}]}},
+        {"task_id": "CO-001", "domain_factory": "GEO-FAC", "worker": "GEO-FAC", "write_surface": ["CO:Ops_Tracker"], "stage_checks": {"source":[{"check_id":"SRC","status":"PASS","detail":"source passes"}],"domain":[{"check_id":"DOM","status":"PASS","detail":"domain passes"}],"qa":[{"check_id":"QA","status":"PASS","detail":"QA passes"}],"rel":[{"check_id":"REL","status":"PASS","detail":"promotion ready; release held"}]}}
+      ]
     },
     {
-      "case_id": "mixed-review",
+      "case_id": "mixed-review-fail-isolation",
       "children": [
-        {"task_id": "CA-002", "write_surface": ["CA:B"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}},
-        {"task_id": "OR-002", "write_surface": ["OR:B"], "stages": {"SRC-FAC":"REVIEW"}}
-      ],
-      "expected": {"batch_status":"REVIEW","promotion_ready":1,"review":1,"fail":0,"overlap_waits":0}
+        {"task_id": "CA-002", "domain_factory": "CAN-FAC", "worker": "CAN-FAC", "write_surface": ["CA:B"], "stage_checks": {"source":[{"check_id":"SRC","status":"PASS","detail":"source passes"}],"domain":[{"check_id":"DOM","status":"PASS","detail":"domain passes"}],"qa":[{"check_id":"QA","status":"PASS","detail":"QA passes"}],"rel":[{"check_id":"REL","status":"PASS","detail":"promotion ready; release held"}]}},
+        {"task_id": "OR-002", "domain_factory": "NAT-FAC", "worker": "NAT-FAC", "write_surface": ["OR:B"], "stage_checks": {"source":[{"check_id":"SRC","status":"REVIEW","detail":"source requires review"}]}},
+        {"task_id": "TX-003", "domain_factory": "GEO-FAC", "worker": "GEO-FAC", "write_surface": ["TX:C"], "stage_checks": {"source":[{"check_id":"SRC","status":"PASS","detail":"source passes"}],"domain":[{"check_id":"DOM","status":"FAIL","detail":"domain references fail"}]}}
+      ]
     },
     {
-      "case_id": "mixed-fail",
+      "case_id": "read-only-rejected",
       "children": [
-        {"task_id": "WA-002", "write_surface": ["WA:B"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"PASS","REL-FAC":"PASS"}},
-        {"task_id": "TX-003", "write_surface": ["TX:C"], "stages": {"SRC-FAC":"PASS","DOMAIN":"FAIL"}},
-        {"task_id": "CA-003", "write_surface": ["CA:C"], "stages": {"SRC-FAC":"PASS","DOMAIN":"PASS","QA-FAC":"REVIEW"}}
-      ],
-      "expected": {"batch_status":"FAIL","promotion_ready":1,"review":1,"fail":1,"overlap_waits":0}
+        {"task_id": "MON-001", "domain_factory": "MON-015", "worker": "MON-015", "write_surface": ["TX:Monitor"], "stage_checks": {"source":[{"check_id":"SRC","status":"PASS","detail":"must not execute"}]}},
+        {"task_id": "TX-004", "domain_factory": "CAN-FAC", "worker": "CAN-FAC", "write_surface": ["TX:D"], "stage_checks": {"source":[{"check_id":"SRC","status":"PASS","detail":"source passes"}],"domain":[{"check_id":"DOM","status":"PASS","detail":"domain passes"}],"qa":[{"check_id":"QA","status":"PASS","detail":"QA passes"}],"rel":[{"check_id":"REL","status":"PASS","detail":"promotion ready; release held"}]}}
+      ]
     }
   ]
 }
