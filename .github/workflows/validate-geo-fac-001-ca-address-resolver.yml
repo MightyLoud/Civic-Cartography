@@ -1,0 +1,21 @@
+name: Validate GEO-FAC-001 California Address Resolver
+
+on:
+  pull_request:
+    paths:
+      - "schemas/address-resolver-contract.schema.json"
+      - "evidence/geo-fac-001/**"
+      - "scripts/check_geo_fac_001_ca_address_resolver.py"
+      - ".github/workflows/validate-geo-fac-001-ca-address-resolver.yml"
+  workflow_dispatch:
+
+jobs:
+  geo-fac-001:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate deterministic California resolver smoke
+        run: python scripts/check_geo_fac_001_ca_address_resolver.py
