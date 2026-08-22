@@ -1,4 +1,16 @@
-pytest>=9.0.3,<10.0
-PyYAML>=6.0,<7.0
-jsonschema>=4.23,<5.0
-httpx>=0.28,<1.0
+# Direct development and workflow dependencies.
+# Install the complete environment with:
+#   python -m pip install --require-hashes -r requirements-dev.lock
+pytest==9.1.1
+PyYAML==6.0.3
+jsonschema==4.26.0
+httpx==0.28.1
+Pillow==12.3.0
+pyproj==3.7.2
+pyshp==3.1.6
+shapely==2.1.2
+uv==0.11.33
+pypdfium2==5.12.1
+pip-audit==2.9.0
+pip-tools==7.5.1
+pip-licenses==5.5.5
