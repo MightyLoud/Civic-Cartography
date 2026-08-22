@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ORCH-FAC-002 orchestration report",
+  "type": "object",
+  "required": ["schema_version", "gate_id", "status", "deterministic", "fixture_sha256", "results", "report_sha256"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "gate_id": {"const": "ORCH-FAC-002"},
+    "status": {"const": "PASS"},
+    "deterministic": {"const": true},
+    "fixture_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "results": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "required": ["case_id", "terminal_status", "promotion_status", "release_status", "terminal_route", "stages_executed", "held_locks", "events"],
+        "properties": {
+          "case_id": {"type": "string", "minLength": 1},
+          "terminal_status": {"enum": ["PASS", "REVIEW", "FAIL"]},
+          "promotion_status": {"enum": ["READY", "QUEUED", "BLOCKED"]},
+          "release_status": {"const": "HOLD"},
+          "terminal_route": {"enum": ["PROGRAM-CONTROL", "EXCEPTION-QUEUE", "REMEDIATION"]},
+          "stages_executed": {"type": "integer", "minimum": 0, "maximum": 4},
+          "held_locks": {"const": 0},
+          "events": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "required": ["event"],
+              "properties": {
+                "event": {"enum": ["acquire", "stage_result", "release", "reject", "route"]},
+                "stage": {"enum": ["source", "domain", "qa", "rel"]},
+                "actor": {"type": "string"},
+                "status": {"enum": ["PASS", "REVIEW", "FAIL"]},
+                "reason": {"enum": ["READ_ONLY"]},
+                "target": {"enum": ["PROGRAM-CONTROL", "EXCEPTION-QUEUE", "REMEDIATION"]}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
