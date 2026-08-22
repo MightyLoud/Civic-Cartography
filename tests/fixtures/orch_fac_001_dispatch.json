@@ -1,42 +1,64 @@
 {
-  "version": 1,
+  "version": 2,
   "cases": [
     {
-      "case_id": "single-owner-pass-handoff",
-      "initial_registry": [],
+      "case_id": "mon-int-qa-single-owner-pass",
+      "initial_registry": [
+        {"conversation_id": "MON-015", "task_id": "SMOKE", "write_surface": [], "status": "DONE — PASS HANDOFF COMPLETE", "lock_state": "READ_ONLY", "lock_owner": "NONE", "handoff_to": "INT-022-L2"}
+      ],
       "actions": [
         {"type": "claim", "conversation_id": "INT-022-L2", "task_id": "WS-022-L2", "write_surface": ["START HERE", "Dashboard", "Workstreams"]},
-        {"type": "complete", "conversation_id": "INT-022-L2", "task_id": "WS-022-L2", "qa_status": "PASS", "handoff_to": "QA-00"}
+        {"type": "complete", "conversation_id": "INT-022-L2", "task_id": "WS-022-L2", "qa_checks": [{"check_id": "Q01", "status": "PASS", "detail": "required orchestration facts present"}, {"check_id": "Q08", "status": "PASS", "detail": "registry state reconciles"}], "handoff_to": "QA-00"}
       ],
-      "expected": {"final_status": "PASS", "held_locks": 0, "rejected_claims": 0}
+      "expected": {"final_status": "PASS", "promotion_status": "READY", "held_locks": 0, "peak_held_locks": 1, "rejected_claims": 0, "handoff_to": "QA-00"}
     },
     {
-      "case_id": "duplicate-overlap-rejected",
+      "case_id": "overlapping-surface-rejected",
       "initial_registry": [],
       "actions": [
         {"type": "claim", "conversation_id": "WORKER-A", "task_id": "BATCH-1", "write_surface": ["TX_CANONICAL", "Ops_Tracker"]},
         {"type": "claim", "conversation_id": "WORKER-B", "task_id": "BATCH-2", "write_surface": ["Ops_Tracker", "Office_QA"]},
-        {"type": "complete", "conversation_id": "WORKER-A", "task_id": "BATCH-1", "qa_status": "PASS", "handoff_to": "QA-00"}
+        {"type": "complete", "conversation_id": "WORKER-A", "task_id": "BATCH-1", "qa_checks": [{"check_id": "Q01", "status": "PASS", "detail": "batch is valid"}], "handoff_to": "QA-00"}
       ],
-      "expected": {"final_status": "PASS", "held_locks": 0, "rejected_claims": 1}
+      "expected": {"final_status": "PASS", "promotion_status": "READY", "held_locks": 0, "peak_held_locks": 1, "rejected_claims": 1, "handoff_to": "QA-00"}
+    },
+    {
+      "case_id": "same-owner-second-lock-rejected",
+      "initial_registry": [],
+      "actions": [
+        {"type": "claim", "conversation_id": "WORKER-A", "task_id": "BATCH-1", "write_surface": ["Surface-A"]},
+        {"type": "claim", "conversation_id": "WORKER-A", "task_id": "BATCH-2", "write_surface": ["Surface-B"]},
+        {"type": "complete", "conversation_id": "WORKER-A", "task_id": "BATCH-1", "qa_checks": [{"check_id": "Q01", "status": "PASS", "detail": "single owner retained"}], "handoff_to": "QA-00"}
+      ],
+      "expected": {"final_status": "PASS", "promotion_status": "READY", "held_locks": 0, "peak_held_locks": 1, "rejected_claims": 1, "handoff_to": "QA-00"}
+    },
+    {
+      "case_id": "duplicate-task-second-owner-rejected",
+      "initial_registry": [],
+      "actions": [
+        {"type": "claim", "conversation_id": "WORKER-A", "task_id": "BATCH-1", "write_surface": ["Surface-A"]},
+        {"type": "claim", "conversation_id": "WORKER-B", "task_id": "BATCH-1", "write_surface": ["Surface-B"]},
+        {"type": "complete", "conversation_id": "WORKER-A", "task_id": "BATCH-1", "qa_checks": [{"check_id": "Q02", "status": "PASS", "detail": "task owner remains unique"}], "handoff_to": "QA-00"}
+      ],
+      "expected": {"final_status": "PASS", "promotion_status": "READY", "held_locks": 0, "peak_held_locks": 1, "rejected_claims": 1, "handoff_to": "QA-00"}
     },
     {
       "case_id": "review-queues-no-successor-writer",
       "initial_registry": [],
       "actions": [
         {"type": "claim", "conversation_id": "CAN-WORKER", "task_id": "CAN-FAC-X", "write_surface": ["candidate-proof"]},
-        {"type": "complete", "conversation_id": "CAN-WORKER", "task_id": "CAN-FAC-X", "qa_status": "REVIEW", "handoff_to": "EXCEPTION-QUEUE"}
+        {"type": "complete", "conversation_id": "CAN-WORKER", "task_id": "CAN-FAC-X", "qa_checks": [{"check_id": "Q05", "status": "REVIEW", "detail": "provenance requires human resolution"}], "handoff_to": "EXCEPTION-QUEUE"}
       ],
-      "expected": {"final_status": "REVIEW", "held_locks": 0, "rejected_claims": 0}
+      "expected": {"final_status": "REVIEW", "promotion_status": "QUEUED", "held_locks": 0, "peak_held_locks": 1, "rejected_claims": 0, "handoff_to": "EXCEPTION-QUEUE"}
     },
     {
       "case_id": "fail-blocks-no-successor-writer",
       "initial_registry": [],
       "actions": [
         {"type": "claim", "conversation_id": "NAT-WORKER", "task_id": "NAT-FAC-X", "write_surface": ["production-wave"]},
-        {"type": "complete", "conversation_id": "NAT-WORKER", "task_id": "NAT-FAC-X", "qa_status": "FAIL", "handoff_to": "REMEDIATION"}
+        {"type": "complete", "conversation_id": "NAT-WORKER", "task_id": "NAT-FAC-X", "qa_checks": [{"check_id": "Q03", "status": "FAIL", "detail": "required reference does not resolve"}], "handoff_to": "REMEDIATION"}
       ],
-      "expected": {"final_status": "FAIL", "held_locks": 0, "rejected_claims": 0}
+      "expected": {"final_status": "FAIL", "promotion_status": "BLOCKED", "held_locks": 0, "peak_held_locks": 1, "rejected_claims": 0, "handoff_to": "REMEDIATION"}
     },
     {
       "case_id": "read-only-cannot-write",
@@ -46,7 +68,7 @@
       "actions": [
         {"type": "claim", "conversation_id": "MON-015", "task_id": "SMOKE-WRITE", "write_surface": ["Dashboard"]}
       ],
-      "expected": {"final_status": "REVIEW", "held_locks": 0, "rejected_claims": 1}
+      "expected": {"final_status": "REVIEW", "promotion_status": "QUEUED", "held_locks": 0, "peak_held_locks": 0, "rejected_claims": 1, "handoff_to": "INT-022-L2"}
     }
   ]
 }
