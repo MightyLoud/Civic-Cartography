@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://civicdata.tech/schemas/qa-fac-core-v1.schema.json",
+  "title": "QA-FAC Shared Core Report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "reports", "report_sha256"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "PASS"},
+    "report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reports": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {"$ref": "#/$defs/report"}
+    }
+  },
+  "$defs": {
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "detail"],
+      "properties": {
+        "status": {"enum": ["PASS", "REVIEW", "FAIL", "NA"]},
+        "detail": {"type": "string", "minLength": 1}
+      }
+    },
+    "report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gate_id", "domain", "status", "checks", "source_hashes", "release_eligible", "errors", "warnings"],
+      "properties": {
+        "gate_id": {"type": "string", "minLength": 1},
+        "domain": {"enum": ["NAT-FAC", "CAN-FAC", "GEO-FAC", "SRC-FAC"]},
+        "status": {"enum": ["PASS", "REVIEW", "FAIL"]},
+        "checks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["Q01", "Q02", "Q03", "Q04", "Q05", "Q06", "Q07", "Q08", "Q09", "Q10"],
+          "properties": {
+            "Q01": {"$ref": "#/$defs/check"},
+            "Q02": {"$ref": "#/$defs/check"},
+            "Q03": {"$ref": "#/$defs/check"},
+            "Q04": {"$ref": "#/$defs/check"},
+            "Q05": {"$ref": "#/$defs/check"},
+            "Q06": {"$ref": "#/$defs/check"},
+            "Q07": {"$ref": "#/$defs/check"},
+            "Q08": {"$ref": "#/$defs/check"},
+            "Q09": {"$ref": "#/$defs/check"},
+            "Q10": {"$ref": "#/$defs/check"}
+          }
+        },
+        "source_hashes": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "release_eligible": {"type": "boolean"},
+        "errors": {"type": "array", "items": {"type": "string"}},
+        "warnings": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}
