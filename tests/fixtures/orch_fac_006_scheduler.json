@@ -1,65 +1,30 @@
 {
-  "version": 1,
-  "aging_step": 5,
-  "cases": [
-    {
-      "case_id": "capacity-and-priority",
-      "capacity": 2,
-      "tasks": [
-        {"task_id":"A","state":"READY","priority":100,"wait":0,"write_surface":["CA:A"]},
-        {"task_id":"B","state":"READY","priority":80,"wait":0,"write_surface":["OR:A"]},
-        {"task_id":"C","state":"READY","priority":60,"wait":0,"write_surface":["WA:A"]}
-      ],
-      "expected_selected":["A","B"]
-    },
-    {
-      "case_id": "deterministic-tie",
-      "capacity": 2,
-      "tasks": [
-        {"task_id":"B","state":"READY","priority":50,"wait":0,"write_surface":["OR:B"]},
-        {"task_id":"A","state":"READY","priority":50,"wait":0,"write_surface":["CA:B"]},
-        {"task_id":"C","state":"READY","priority":50,"wait":0,"write_surface":["WA:B"]}
-      ],
-      "expected_selected":["A","B"]
-    },
-    {
-      "case_id": "aging-prevents-starvation",
-      "capacity": 1,
-      "tasks": [
-        {"task_id":"OLD","state":"READY","priority":20,"wait":20,"write_surface":["TX:OLD"]},
-        {"task_id":"NEW","state":"READY","priority":90,"wait":0,"write_surface":["TX:NEW"]}
-      ],
-      "expected_selected":["OLD"]
-    },
-    {
-      "case_id": "overlap-excluded",
-      "capacity": 2,
-      "tasks": [
-        {"task_id":"A","state":"READY","priority":100,"wait":0,"write_surface":["TX:Ops"]},
-        {"task_id":"B","state":"READY","priority":90,"wait":0,"write_surface":["TX:Ops","TX:QA"]},
-        {"task_id":"C","state":"READY","priority":80,"wait":0,"write_surface":["CA:Ops"]}
-      ],
-      "expected_selected":["A","C"]
-    },
-    {
-      "case_id": "nonready-does-not-consume",
-      "capacity": 2,
-      "tasks": [
-        {"task_id":"A","state":"READ_ONLY","priority":999,"wait":99,"write_surface":["X"]},
-        {"task_id":"B","state":"HOLD","priority":999,"wait":99,"write_surface":["Y"]},
-        {"task_id":"C","state":"READY","priority":10,"wait":0,"write_surface":["Z"]}
-      ],
-      "expected_selected":["C"]
-    },
-    {
-      "case_id": "capacity-reuse-after-completion",
-      "capacity": 1,
-      "tasks": [
-        {"task_id":"A","state":"READY","priority":100,"wait":0,"write_surface":["CA:C"]},
-        {"task_id":"B","state":"READY","priority":90,"wait":0,"write_surface":["OR:C"]}
-      ],
-      "complete_then_reschedule":true,
-      "expected_rounds":[["A"],["B"]]
-    }
-  ]
+ "version":2,"aging_step":20,
+ "cases":[
+  {"case_id":"capacity-priority","capacity":2,"tasks":[
+   {"task_id":"A","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":100,"initial_wait":0,"write_surface":["CA:A"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
+   {"task_id":"B","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":80,"initial_wait":0,"write_surface":["OR:A"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
+   {"task_id":"C","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":60,"initial_wait":0,"write_surface":["WA:A"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]}]},
+  {"case_id":"deterministic-tie","capacity":2,"tasks":[
+   {"task_id":"B","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":50,"initial_wait":0,"write_surface":["OR:B"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
+   {"task_id":"A","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":50,"initial_wait":0,"write_surface":["CA:B"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
+   {"task_id":"C","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":50,"initial_wait":0,"write_surface":["WA:B"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]}]},
+  {"case_id":"aging-prevents-starvation","capacity":1,"tasks":[
+   {"task_id":"H1","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":50,"initial_wait":0,"write_surface":["H:1"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
+   {"task_id":"H2","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":45,"initial_wait":0,"write_surface":["H:2"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
+   {"task_id":"H3","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":40,"initial_wait":0,"write_surface":["H:3"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
+   {"task_id":"OLD","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":10,"initial_wait":2,"write_surface":["H:OLD"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]}]},
+  {"case_id":"overlap-exclusion","capacity":2,"tasks":[
+   {"task_id":"A","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":100,"initial_wait":0,"write_surface":["TX:Ops"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
+   {"task_id":"B","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":90,"initial_wait":0,"write_surface":["TX:Ops","TX:QA"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
+   {"task_id":"C","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":80,"initial_wait":0,"write_surface":["CA:Ops"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]}]},
+  {"case_id":"nonready-exclusion","capacity":2,"tasks":[
+   {"task_id":"RO","state_source":"READ_ONLY","predecessors":[],"priority":999,"initial_wait":99,"write_surface":["X"],"terminal_checks":[]},
+   {"task_id":"HOLD","state_source":"HOLD","predecessors":[],"priority":999,"initial_wait":99,"write_surface":["Y"],"terminal_checks":[]},
+   {"task_id":"BLOCK","state_source":"BLOCKED","predecessors":[{"task_id":"P","status":"REVIEW"}],"priority":999,"initial_wait":99,"write_surface":["W"],"terminal_checks":[]},
+   {"task_id":"READY","state_source":"ORCH-FAC-005:READY","predecessors":[],"priority":10,"initial_wait":0,"write_surface":["Z"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]}]},
+  {"case_id":"dependency-derived-ready","capacity":1,"tasks":[
+   {"task_id":"GOOD","state_source":"ORCH-FAC-005:READY","predecessors":[{"task_id":"P1","status":"PASS"},{"task_id":"P2","status":"PASS"}],"priority":20,"initial_wait":0,"write_surface":["D:G"],"terminal_checks":[{"check_id":"T","status":"PASS","detail":"terminal evidence passes"}]},
+   {"task_id":"BAD","state_source":"BLOCKED","predecessors":[{"task_id":"P3","status":"FAIL"}],"priority":100,"initial_wait":0,"write_surface":["D:B"],"terminal_checks":[]}]}
+ ]
 }

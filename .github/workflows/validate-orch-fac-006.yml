@@ -3,11 +3,17 @@ name: Validate ORCH-FAC-006 Priority Capacity Scheduling
 on:
   pull_request:
     paths:
+      - 'schemas/orch-fac-006-scheduler.schema.json'
+      - 'schemas/orch-fac-006-report.schema.json'
       - 'tests/fixtures/orch_fac_006_scheduler.json'
+      - 'scripts/validate_orch_fac_001.py'
+      - 'scripts/validate_orch_fac_002.py'
+      - 'scripts/validate_orch_fac_003.py'
+      - 'scripts/validate_orch_fac_004.py'
+      - 'scripts/validate_orch_fac_005.py'
       - 'scripts/validate_orch_fac_006.py'
       - '.github/workflows/validate-orch-fac-006.yml'
   workflow_dispatch:
-
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -16,5 +22,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate priority and capacity scheduling
+      - name: Install schema validator
+        run: python -m pip install jsonschema
+      - name: Validate prerequisite orchestration contracts
+        run: |
+          python scripts/validate_orch_fac_001.py
+          python scripts/validate_orch_fac_002.py
+          python scripts/validate_orch_fac_003.py
+          python scripts/validate_orch_fac_004.py
+          python scripts/validate_orch_fac_005.py
+      - name: Validate evidence-derived priority capacity scheduling
         run: python scripts/validate_orch_fac_006.py
