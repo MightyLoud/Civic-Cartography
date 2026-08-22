@@ -4,7 +4,8 @@ on:
   pull_request:
     paths:
       - 'tests/fixtures/orch_fac_007_events.json'
-      - 'scripts/validate_orch_fac_007.py'
+      - 'schemas/orch-fac-007-*.schema.json'
+      - 'scripts/validate_orch_fac_*.py'
       - '.github/workflows/validate-orch-fac-007.yml'
   workflow_dispatch:
 
@@ -16,5 +17,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate event replay and reconciliation
+      - name: Install schema validator
+        run: python -m pip install --disable-pip-version-check jsonschema
+      - name: Validate prerequisite orchestration gates
+        run: |
+          python scripts/validate_orch_fac_001.py
+          python scripts/validate_orch_fac_002.py
+          python scripts/validate_orch_fac_003.py
+          python scripts/validate_orch_fac_004.py
+          python scripts/validate_orch_fac_005.py
+          python scripts/validate_orch_fac_006.py
+      - name: Validate append-only event replay and reconciliation
         run: python scripts/validate_orch_fac_007.py

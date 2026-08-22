@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ORCH-FAC-007 validation report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "gate_id",
+    "status",
+    "prerequisites",
+    "canonical_order",
+    "hash_chain_verified",
+    "deterministic",
+    "duplicate_events_suppressed",
+    "event_types_covered",
+    "tamper_probes",
+    "registry_snapshots",
+    "report_sha256"
+  ],
+  "properties": {
+    "gate_id": {
+      "const": "ORCH-FAC-007"
+    },
+    "status": {
+      "const": "PASS"
+    },
+    "prerequisites": {
+      "type": "array",
+      "const": [
+        "ORCH-FAC-001",
+        "ORCH-FAC-002",
+        "ORCH-FAC-003",
+        "ORCH-FAC-004",
+        "ORCH-FAC-005",
+        "ORCH-FAC-006"
+      ]
+    },
+    "canonical_order": {
+      "const": true
+    },
+    "hash_chain_verified": {
+      "const": true
+    },
+    "deterministic": {
+      "const": true
+    },
+    "duplicate_events_suppressed": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "event_types_covered": {
+      "type": "array",
+      "minItems": 11,
+      "uniqueItems": true
+    },
+    "tamper_probes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "missing_event",
+        "illegal_transition",
+        "conflicting_duplicate",
+        "hash_tamper"
+      ],
+      "properties": {
+        "missing_event": {
+          "const": "REJECTED"
+        },
+        "illegal_transition": {
+          "const": "REJECTED"
+        },
+        "conflicting_duplicate": {
+          "const": "REJECTED"
+        },
+        "hash_tamper": {
+          "const": "REJECTED"
+        }
+      }
+    },
+    "registry_snapshots": {
+      "type": "array",
+      "minItems": 3
+    },
+    "report_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

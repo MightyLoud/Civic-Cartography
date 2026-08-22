@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ORCH-FAC-007 event fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "cases"
+  ],
+  "properties": {
+    "version": {
+      "const": 2
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "case_id",
+          "events",
+          "registry_snapshot"
+        ],
+        "properties": {
+          "case_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "events": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/$defs/event"
+            }
+          },
+          "registry_snapshot": {
+            "$ref": "#/$defs/snapshot"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "conversation_id",
+        "actor",
+        "gate_id",
+        "write_surface"
+      ],
+      "properties": {
+        "conversation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "write_surface": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "idempotency_key",
+        "task_id",
+        "seq",
+        "event_type",
+        "previous_state",
+        "next_state",
+        "context"
+      ],
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "event_type": {
+          "enum": [
+            "READY",
+            "DISPATCH",
+            "LOCK_ACQUIRED",
+            "STAGE_START",
+            "STAGE_COMPLETE",
+            "REVIEW",
+            "FAIL",
+            "RETRY",
+            "LOCK_RELEASED",
+            "PROMOTION_READY",
+            "HANDOFF"
+          ]
+        },
+        "previous_state": {
+          "enum": [
+            "BLOCKED",
+            "READY",
+            "DISPATCHED",
+            "ACTIVE",
+            "REVIEW",
+            "FAIL",
+            "READY_FOR_HANDOFF",
+            "COMPLETED"
+          ]
+        },
+        "next_state": {
+          "enum": [
+            "BLOCKED",
+            "READY",
+            "DISPATCHED",
+            "ACTIVE",
+            "REVIEW",
+            "FAIL",
+            "READY_FOR_HANDOFF",
+            "COMPLETED"
+          ]
+        },
+        "context": {
+          "$ref": "#/$defs/context"
+        }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_id",
+        "state",
+        "lock_state",
+        "promotion_ready",
+        "retry_count"
+      ],
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "lock_state": {
+          "enum": [
+            "HELD",
+            "RELEASED"
+          ]
+        },
+        "promotion_ready": {
+          "type": "boolean"
+        },
+        "retry_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}
