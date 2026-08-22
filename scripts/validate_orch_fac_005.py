@@ -53,12 +53,19 @@ def run_case(case,orch2):
     if not(surface&surfaces):wave.append(tid);surfaces|=surface
  blocked=sorted(tid for tid,s in states.items() if s=="BLOCKED")
  exception_routes=remediation_routes=0
+ def terminal_ancestors(tid):
+  found=set();stack=list(tasks[tid]["depends_on"])
+  while stack:
+   dep=stack.pop()
+   if terminal.get(dep) in {"REVIEW","FAIL"}:found.add(dep)
+   stack.extend(tasks[dep]["depends_on"])
+  return sorted(found)
  for tid in blocked:
-  ancestors=[d for d in tasks[tid]["depends_on"] if terminal.get(d) in {"REVIEW","FAIL"}]
-  if ancestors:
-   status="FAIL" if any(terminal[d]=="FAIL" for d in ancestors) else "REVIEW";target="REMEDIATION" if status=="FAIL" else "EXCEPTION-QUEUE"
-   events.append({"event":"BLOCKED_CONTEXT","task_id":tid,"predecessors":sorted(ancestors),"status":status,"target":target})
-   remediation_routes+=status=="FAIL";exception_routes+=status=="REVIEW"
+  ancestors=terminal_ancestors(tid)
+  assert ancestors,f"{tid}: blocked without terminal predecessor context"
+  status="FAIL" if any(terminal[d]=="FAIL" for d in ancestors) else "REVIEW";target="REMEDIATION" if status=="FAIL" else "EXCEPTION-QUEUE"
+  events.append({"event":"BLOCKED_CONTEXT","task_id":tid,"predecessors":ancestors,"status":status,"target":target})
+  remediation_routes+=status=="FAIL";exception_routes+=status=="REVIEW"
  assert not held
  assert sum(e["event"]=="READY" for e in events)==len(ready_emitted)
  for tid in ready_emitted:assert sum(e["event"]=="READY" and e["task_id"]==tid for e in events)==1
