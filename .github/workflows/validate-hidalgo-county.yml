@@ -3,6 +3,7 @@ name: Validate Hidalgo County dual-body schema
 on:
   push:
   pull_request:
+  workflow_call:
 
 permissions:
   contents: read

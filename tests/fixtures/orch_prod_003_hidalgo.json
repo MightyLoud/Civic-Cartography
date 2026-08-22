@@ -1,0 +1,16 @@
+{
+  "gate_id": "ORCH-PROD-003",
+  "target_id": "TX-HIDALGO-001",
+  "county": "Hidalgo County",
+  "geoid": "48215",
+  "capacity": 1,
+  "automatic_retries": false,
+  "public_release": false,
+  "bodies": [
+    {"id": "TX:county:hidalgo:commissioners_court", "name": "Hidalgo County Commissioners Court", "roles": ["County Judge", "Commissioner"]},
+    {"id": "TX:county:hidalgo:drainage_district_1", "name": "Hidalgo County Drainage District No. 1 Board of Directors", "roles": ["Chairman", "Board Member"]}
+  ],
+  "shared_officials": ["Richard F. Cortez", "David L. Fuentes", "Eduardo Eddie Cantu", "Everardo Ever Villarreal", "Ellie Torres"],
+  "precinct_ids": ["1", "2", "3", "4"],
+  "canonical_files": ["data/geojson/hidalgo_county_countywide.geojson", "data/geojson/hidalgo_county_commissioner_precincts.geojson"]
+}

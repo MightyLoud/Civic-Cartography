@@ -1,0 +1,34 @@
+name: Validate ORCH-PROD-003 Hidalgo production proof
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/validate-hidalgo-county.yml'
+      - '.github/workflows/validate-orch-prod-003.yml'
+      - 'scripts/validate_orch_prod_003.py'
+      - 'schemas/orch-prod-003-*.json'
+      - 'tests/fixtures/orch_prod_003_hidalgo.json'
+      - 'data/geojson/hidalgo_county_*.geojson'
+
+permissions:
+  contents: read
+
+jobs:
+  hidalgo-live-contract:
+    uses: ./.github/workflows/validate-hidalgo-county.yml
+
+  orchestration-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install jsonschema
+      - name: Validate prerequisite orchestration contracts
+        run: |
+          for gate in 001 002 003 004 005 006 007 008; do python scripts/validate_orch_fac_${gate}.py >/dev/null; done
+          python scripts/validate_orch_prod_001_closeout.py >/dev/null
+          python scripts/validate_orch_prod_002_closeout.py >/dev/null
+      - name: Validate bounded Hidalgo production proof
+        run: python scripts/validate_orch_prod_003.py
