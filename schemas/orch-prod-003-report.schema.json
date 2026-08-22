@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["gate_id", "status", "target_id", "geoid", "distinct_bodies", "shared_officials", "precinct_ids", "canonical_sha256", "event_trace_sha256", "max_held_locks", "held_locks", "handoffs", "terminal_dispositions", "deterministic", "fail_closed_verified", "tamper_probes", "report_sha256"],
+  "properties": {
+    "gate_id": {"const": "ORCH-PROD-003"}, "status": {"const": "PASS"}, "target_id": {"const": "TX-HIDALGO-001"}, "geoid": {"const": "48215"},
+    "distinct_bodies": {"const": 2}, "shared_officials": {"const": 5}, "precinct_ids": {"const": ["1", "2", "3", "4"]},
+    "canonical_sha256": {"pattern": "^[0-9a-f]{64}$"}, "event_trace_sha256": {"pattern": "^[0-9a-f]{64}$"},
+    "max_held_locks": {"const": 1}, "held_locks": {"const": 0}, "handoffs": {"const": 1}, "terminal_dispositions": {"const": 1},
+    "deterministic": {"const": true}, "fail_closed_verified": {"const": true},
+    "tamper_probes": {"type": "object", "minProperties": 10, "additionalProperties": {"const": "REJECTED"}},
+    "report_sha256": {"pattern": "^[0-9a-f]{64}$"}
+  }
+}
