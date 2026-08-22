@@ -1,120 +1,98 @@
 #!/usr/bin/env python3
-import copy
-import hashlib
-import json
+import copy, hashlib, importlib.util, json
 from pathlib import Path
+from jsonschema import Draft202012Validator
 
-FIXTURE = Path("tests/fixtures/orch_fac_004_recovery.json")
-STAGE_ORDER = ["SRC-FAC", "DOMAIN", "QA-FAC", "REL-FAC"]
+FIXTURE=Path("tests/fixtures/orch_fac_004_recovery.json")
+INPUT_SCHEMA=Path("schemas/orch-fac-004-recovery.schema.json")
+REPORT_SCHEMA=Path("schemas/orch-fac-004-report.schema.json")
+ORCH2=Path("scripts/validate_orch_fac_002.py")
+STAGES=("source","domain","qa","rel")
 
-
-def canonical_hash(obj):
-    return hashlib.sha256(json.dumps(obj, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
-
-
-def stage_write(stage, task_id):
-    return f"{stage.lower()}:{task_id}"
-
-
-def run_case(case):
-    state = copy.deepcopy(case["initial"])
-    state.setdefault("handoffs", 0)
-    state.setdefault("exceptions", 0)
-    recovery = case["recovery"]
-
-    # Terminal replay is an idempotent no-op.
-    if state.get("terminal") in {"PASS", "REVIEW", "FAIL"}:
-        result = {
-            "case_id": case["case_id"],
-            "terminal": state["terminal"],
-            "retry_count": state["retry_count"],
-            "writes": len(state["writes"]),
-            "handoffs": state.get("handoffs", 0),
-            "exceptions": state.get("exceptions", 0),
-            "held_locks": 0,
-        }
-        return result
-
-    # Recovery must be explicit and must reclaim/release any prior lock before ownership changes.
-    if not recovery.get("reason") or not recovery.get("new_owner"):
-        raise AssertionError(f"implicit recovery forbidden: {case['case_id']}")
-    state["lock_state"] = "HELD"
-    state["lock_owner"] = recovery["new_owner"]
-    state["retry_count"] += 1
-
-    completed = set(state.get("completed_stages", []))
-    writes = set(state.get("writes", []))
-    terminal = None
-
-    for stage in STAGE_ORDER:
-        if stage in completed:
-            continue
-        if stage not in recovery["remaining_stages"]:
-            continue
-        status = recovery["remaining_stages"][stage]
-        write_key = stage_write(stage, case["task_id"])
-        # Idempotency: stage output is applied once even if retry input repeats it.
-        writes.add(write_key)
-        completed.add(stage)
-        if status == "REVIEW":
-            terminal = "REVIEW"
-            state["exceptions"] = 1
-            break
-        if status == "FAIL":
-            terminal = "FAIL"
-            state["exceptions"] = 1
-            break
-
-    if terminal is None:
-        terminal = "PASS" if all(s in completed for s in STAGE_ORDER) else None
-
-    state["completed_stages"] = sorted(completed, key=STAGE_ORDER.index)
-    state["writes"] = sorted(writes)
-    state["terminal"] = terminal
-    state["lock_state"] = "RELEASED" if terminal == "PASS" else ("HOLD" if terminal == "REVIEW" else "BLOCKED")
-    state["lock_owner"] = "NONE"
-    if terminal == "PASS":
-        state["handoffs"] = 1
-    elif terminal in {"REVIEW", "FAIL"}:
-        state["handoffs"] = 0
-
-    result = {
-        "case_id": case["case_id"],
-        "terminal": terminal,
-        "retry_count": state["retry_count"],
-        "writes": len(state["writes"]),
-        "handoffs": state.get("handoffs", 0),
-        "exceptions": state.get("exceptions", 0),
-        "held_locks": 1 if state["lock_state"] == "HELD" else 0,
-    }
-    for key, expected in case["expected"].items():
-        if result[key] != expected:
-            raise AssertionError(f"{case['case_id']} {key}: got {result[key]!r}, expected {expected!r}")
-    if terminal == "PASS" and result["handoffs"] != 1:
-        raise AssertionError(f"PASS must produce exactly one handoff: {case['case_id']}")
-    if terminal in {"REVIEW", "FAIL"} and result["exceptions"] != 1:
-        raise AssertionError(f"non-PASS must produce exactly one exception: {case['case_id']}")
-    if result["held_locks"]:
-        raise AssertionError(f"recovery leaked lock: {case['case_id']}")
-    return result
-
-
+def load_orch2():
+ spec=importlib.util.spec_from_file_location("orch2",ORCH2); m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
+def canonical(v): return json.dumps(v,sort_keys=True,separators=(",",":"))
+def digest(v): return hashlib.sha256(canonical(v).encode()).hexdigest()
+def validate(path,v):
+ errors=list(Draft202012Validator(json.loads(path.read_text())).iter_errors(v)); assert not errors,"\n".join(e.message for e in errors)
+def validate_history(case,state):
+ assert (state["lock_state"]=="HELD")== (state["lock_owner"]!="NONE"), f"{case['case_id']}: lock owner mismatch"
+ assert state["completed_stages"]==[s for s in STAGES if s in state["completed_stages"]], f"{case['case_id']}: stage order"
+ seen={}
+ for w in state["writes"]:
+  assert w["key"]==f"{case['idempotency_key']}:{w['stage']}", f"{case['case_id']}: write identity mismatch"
+  assert w["stage"] in state["completed_stages"], f"{case['case_id']}: write without completed stage"
+  assert w["key"] not in seen, f"{case['case_id']}: duplicate committed key"
+  seen[w["key"]]=w["sha256"]
+ assert len(seen)==len(state["completed_stages"]), f"{case['case_id']}: completed stage/write mismatch"
+ return seen
+def replay_terminal(case,state,event_name="NOOP_TERMINAL_REPLAY"):
+ assert state["lock_state"]!="HELD" and state["lock_owner"]=="NONE"
+ status=state["terminal_status"]; assert status in {"PASS","REVIEW","FAIL"}
+ return state,[{"event":event_name,"task_id":case["task_id"],"idempotency_key":case["idempotency_key"],"terminal_status":status}]
+def recover(case,orch2):
+ state=copy.deepcopy(case["initial"]); writes=validate_history(case,state); rec=case["recovery"]; events=[]; suppressed=0
+ assert rec["idempotency_key"]==case["idempotency_key"], f"{case['case_id']}: retry changed identity"
+ if state["terminal_status"] is not None:
+  before=canonical(state); state,events=replay_terminal(case,state); assert canonical(state)==before
+  return finish(case,state,events,suppressed)
+ if state["lock_state"]=="HELD":
+  required="RECOVER_STALE" if rec["reason"]=="stale_lock" else "RECOVER_INTERRUPTED"
+  assert rec["action"]==required, f"{case['case_id']}: explicit recovery action required"
+  events.append({"event":"LOCK_RELEASED","owner":state["lock_owner"],"reason":rec["reason"]})
+  state["lock_state"]="RELEASED"; state["lock_owner"]="NONE"
+ else:
+  assert rec["action"]=="RETRY", f"{case['case_id']}: explicit retry required"
+ state["retry_count"]+=1
+ events.append({"event":"RETRY_REQUESTED","task_id":case["task_id"],"idempotency_key":rec["idempotency_key"],"retry_count":state["retry_count"],"reason":rec["reason"]})
+ state["lock_state"]="HELD"; state["lock_owner"]=rec["new_owner"]; events.append({"event":"LOCK_ACQUIRED","owner":rec["new_owner"],"retry_count":state["retry_count"]})
+ terminal=None
+ for attempt in rec["attempts"]:
+  expected=f"{case['idempotency_key']}:{attempt['stage']}"; assert attempt["key"]==expected
+  if attempt["key"] in writes:
+   assert writes[attempt["key"]]==attempt["sha256"], f"{case['case_id']}: conflicting duplicate write"
+   suppressed+=1; events.append({"event":"WRITE_SUPPRESSED","stage":attempt["stage"],"key":attempt["key"],"sha256":attempt["sha256"]}); continue
+  assert attempt["stage"] not in state["completed_stages"], f"{case['case_id']}: completed stage reapplied"
+  next_stage=STAGES[len(state["completed_stages"])]; assert attempt["stage"]==next_stage, f"{case['case_id']}: stage order violation"
+  status=orch2.load_orch1().qa_status(attempt["checks"])
+  writes[attempt["key"]]=attempt["sha256"]; state["writes"].append({"stage":attempt["stage"],"key":attempt["key"],"sha256":attempt["sha256"]}); state["completed_stages"].append(attempt["stage"])
+  events.append({"event":"WRITE_APPLIED","stage":attempt["stage"],"key":attempt["key"],"sha256":attempt["sha256"],"status":status})
+  if status!="PASS": terminal=status; break
+ if terminal is None:
+  terminal="PASS" if state["completed_stages"]==list(STAGES) else None
+ assert terminal is not None, f"{case['case_id']}: retry did not reach terminal"
+ state["terminal_status"]=terminal; state["lock_state"]="RELEASED"; state["lock_owner"]="NONE"; events.append({"event":"LOCK_RELEASED","owner":rec["new_owner"],"reason":"terminal"})
+ if terminal=="PASS": events.append({"event":"HANDOFF","target":"PROGRAM-CONTROL"})
+ elif terminal=="REVIEW": events.append({"event":"EXCEPTION","target":"EXCEPTION-QUEUE"})
+ else: events.append({"event":"REMEDIATION","target":"REMEDIATION"})
+ validate_history(case,state)
+ # A repeated delivery of recovered terminal state is a byte-stable no-op.
+ before=canonical(state); replayed,replay_events=replay_terminal(case,copy.deepcopy(state)); assert canonical(replayed)==before
+ events.extend(replay_events)
+ return finish(case,state,events,suppressed)
+def finish(case,state,events,suppressed):
+ terminal_events=[e for e in events if e["event"] in {"HANDOFF","EXCEPTION","REMEDIATION"}]
+ if events[0]["event"]=="NOOP_TERMINAL_REPLAY":
+  handoffs=1 if state["terminal_status"]=="PASS" else 0; exceptions=1 if state["terminal_status"]!="PASS" else 0
+ else:
+  assert len(terminal_events)==1
+  handoffs=sum(e["event"]=="HANDOFF" for e in terminal_events); exceptions=sum(e["event"] in {"EXCEPTION","REMEDIATION"} for e in terminal_events)
+ return {"case_id":case["case_id"],"task_id":case["task_id"],"terminal_status":state["terminal_status"],"retry_count":state["retry_count"],"writes":len(state["writes"]),"handoffs":handoffs,"exceptions":exceptions,"held_locks":int(state["lock_state"]=="HELD"),"duplicate_writes_suppressed":suppressed,"events":events,"state_sha256":digest(state)}
+def conflict_probe(data,orch2):
+ case=copy.deepcopy(next(c for c in data["cases"] if c["case_id"]=="interrupted-resume-pass"))
+ case["recovery"]["attempts"][0]["sha256"]="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+ try: recover(case,orch2)
+ except AssertionError as e: assert "conflicting duplicate write" in str(e); return
+ raise AssertionError("conflicting duplicate was not rejected")
 def main():
-    data = json.loads(FIXTURE.read_text())
-    first = [run_case(c) for c in data["cases"]]
-    second = [run_case(c) for c in data["cases"]]
-    h1, h2 = canonical_hash(first), canonical_hash(second)
-    if h1 != h2:
-        raise AssertionError("recovery output is not deterministic")
-    print(json.dumps({
-        "gate_id": "ORCH-FAC-004",
-        "status": "PASS",
-        "cases": len(first),
-        "deterministic": True,
-        "report_sha256": h1,
-        "results": first,
-    }, indent=2, sort_keys=True))
-
-
-if __name__ == "__main__":
-    main()
+ data=json.loads(FIXTURE.read_text()); validate(INPUT_SCHEMA,data); assert len({c["case_id"] for c in data["cases"]})==len(data["cases"])
+ orch2=load_orch2(); first=sorted((recover(c,orch2) for c in data["cases"]),key=lambda r:r["case_id"]); second=sorted((recover(c,orch2) for c in reversed(data["cases"])),key=lambda r:r["case_id"])
+ assert first==second; conflict_probe(data,orch2)
+ by={r["case_id"]:r for r in first}; assert by["interrupted-resume-pass"]["duplicate_writes_suppressed"]==1
+ assert by["terminal-retry-noop"]["retry_count"]==1 and by["terminal-retry-noop"]["events"][0]["event"]=="NOOP_TERMINAL_REPLAY"
+ assert by["stale-lock-reclaim"]["events"][0]["event"]=="LOCK_RELEASED"
+ assert by["recovery-review"]["terminal_status"]=="REVIEW" and by["recovery-fail"]["terminal_status"]=="FAIL"
+ assert all(r["held_locks"]==0 for r in first)
+ output={"schema_version":1,"gate_id":"ORCH-FAC-004","status":"PASS","deterministic":True,"idempotent_replay":True,"fixture_sha256":hashlib.sha256(FIXTURE.read_bytes()).hexdigest(),"results":first,"report_sha256":digest(first)}
+ validate(REPORT_SCHEMA,output); print(json.dumps(output,indent=2,sort_keys=True))
+if __name__=="__main__": main()
