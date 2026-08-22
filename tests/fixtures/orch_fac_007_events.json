@@ -1,64 +1,534 @@
 {
-  "version": 1,
+  "version": 2,
   "cases": [
     {
-      "case_id": "clean-pass-trace",
+      "case_id": "clean-pass-with-duplicate",
       "events": [
-        {"event_id":"e1","idempotency_key":"k1","seq":1,"task_id":"T1","event_type":"READY","actor":"ORCH","previous_state":"BLOCKED","next_state":"READY"},
-        {"event_id":"e2","idempotency_key":"k2","seq":2,"task_id":"T1","event_type":"DISPATCH","actor":"ORCH","previous_state":"READY","next_state":"DISPATCHED"},
-        {"event_id":"e3","idempotency_key":"k3","seq":3,"task_id":"T1","event_type":"LOCK_ACQUIRED","actor":"WORKER-A","previous_state":"DISPATCHED","next_state":"ACTIVE","write_surface":["CA:A"]},
-        {"event_id":"e4","idempotency_key":"k4","seq":4,"task_id":"T1","event_type":"STAGE_COMPLETE","actor":"WORKER-A","gate_id":"SRC-FAC","result":"PASS"},
-        {"event_id":"e5","idempotency_key":"k5","seq":5,"task_id":"T1","event_type":"PROMOTION_READY","actor":"REL-FAC","previous_state":"ACTIVE","next_state":"READY_FOR_HANDOFF"},
-        {"event_id":"e6","idempotency_key":"k6","seq":6,"task_id":"T1","event_type":"LOCK_RELEASED","actor":"WORKER-A","previous_state":"READY_FOR_HANDOFF","next_state":"READY_FOR_HANDOFF"},
-        {"event_id":"e7","idempotency_key":"k7","seq":7,"task_id":"T1","event_type":"HANDOFF","actor":"ORCH","previous_state":"READY_FOR_HANDOFF","next_state":"COMPLETED"}
+        {
+          "event_id": "pass-e1",
+          "idempotency_key": "pass-k1",
+          "task_id": "TASK-PASS",
+          "seq": 1,
+          "event_type": "READY",
+          "previous_state": "BLOCKED",
+          "next_state": "READY",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "ORCH",
+            "gate_id": "ORCH-FAC-007",
+            "write_surface": [
+              "registry:tasks"
+            ]
+          }
+        },
+        {
+          "event_id": "pass-e2",
+          "idempotency_key": "pass-k2",
+          "task_id": "TASK-PASS",
+          "seq": 2,
+          "event_type": "DISPATCH",
+          "previous_state": "READY",
+          "next_state": "DISPATCHED",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "ORCH",
+            "gate_id": "ORCH-FAC-007",
+            "write_surface": [
+              "registry:tasks"
+            ]
+          }
+        },
+        {
+          "event_id": "pass-e3",
+          "idempotency_key": "pass-k3",
+          "task_id": "TASK-PASS",
+          "seq": 3,
+          "event_type": "LOCK_ACQUIRED",
+          "previous_state": "DISPATCHED",
+          "next_state": "ACTIVE",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-A",
+            "gate_id": "ORCH-FAC-006",
+            "write_surface": [
+              "surface:A"
+            ]
+          }
+        },
+        {
+          "event_id": "pass-e4",
+          "idempotency_key": "pass-k4",
+          "task_id": "TASK-PASS",
+          "seq": 4,
+          "event_type": "STAGE_START",
+          "previous_state": "ACTIVE",
+          "next_state": "ACTIVE",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-A",
+            "gate_id": "SRC-FAC-001",
+            "write_surface": [
+              "surface:A"
+            ]
+          }
+        },
+        {
+          "event_id": "pass-e5",
+          "idempotency_key": "pass-k5",
+          "task_id": "TASK-PASS",
+          "seq": 5,
+          "event_type": "STAGE_COMPLETE",
+          "previous_state": "ACTIVE",
+          "next_state": "ACTIVE",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-A",
+            "gate_id": "SRC-FAC-001",
+            "write_surface": [
+              "surface:A"
+            ]
+          }
+        },
+        {
+          "event_id": "pass-e5",
+          "idempotency_key": "pass-k5",
+          "task_id": "TASK-PASS",
+          "seq": 5,
+          "event_type": "STAGE_COMPLETE",
+          "previous_state": "ACTIVE",
+          "next_state": "ACTIVE",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-A",
+            "gate_id": "SRC-FAC-001",
+            "write_surface": [
+              "surface:A"
+            ]
+          }
+        },
+        {
+          "event_id": "pass-e6",
+          "idempotency_key": "pass-k6",
+          "task_id": "TASK-PASS",
+          "seq": 6,
+          "event_type": "PROMOTION_READY",
+          "previous_state": "ACTIVE",
+          "next_state": "READY_FOR_HANDOFF",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "REL-FAC",
+            "gate_id": "REL-FAC-001",
+            "write_surface": [
+              "registry:promotion"
+            ]
+          }
+        },
+        {
+          "event_id": "pass-e7",
+          "idempotency_key": "pass-k7",
+          "task_id": "TASK-PASS",
+          "seq": 7,
+          "event_type": "LOCK_RELEASED",
+          "previous_state": "READY_FOR_HANDOFF",
+          "next_state": "READY_FOR_HANDOFF",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-A",
+            "gate_id": "ORCH-FAC-006",
+            "write_surface": [
+              "surface:A"
+            ]
+          }
+        },
+        {
+          "event_id": "pass-e8",
+          "idempotency_key": "pass-k8",
+          "task_id": "TASK-PASS",
+          "seq": 8,
+          "event_type": "HANDOFF",
+          "previous_state": "READY_FOR_HANDOFF",
+          "next_state": "COMPLETED",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "ORCH",
+            "gate_id": "ORCH-FAC-007",
+            "write_surface": [
+              "registry:tasks"
+            ]
+          }
+        }
       ],
-      "expected":{"state":"COMPLETED","lock":"RELEASED","promotion_ready":true,"reconciliation":"PASS"}
+      "registry_snapshot": {
+        "task_id": "TASK-PASS",
+        "state": "COMPLETED",
+        "lock_state": "RELEASED",
+        "promotion_ready": true,
+        "retry_count": 0
+      }
     },
     {
-      "case_id": "review-trace",
+      "case_id": "review",
       "events": [
-        {"event_id":"r1","idempotency_key":"rk1","seq":1,"task_id":"T2","event_type":"READY","actor":"ORCH","previous_state":"BLOCKED","next_state":"READY"},
-        {"event_id":"r2","idempotency_key":"rk2","seq":2,"task_id":"T2","event_type":"DISPATCH","actor":"ORCH","previous_state":"READY","next_state":"DISPATCHED"},
-        {"event_id":"r3","idempotency_key":"rk3","seq":3,"task_id":"T2","event_type":"LOCK_ACQUIRED","actor":"WORKER-B","previous_state":"DISPATCHED","next_state":"ACTIVE","write_surface":["OR:A"]},
-        {"event_id":"r4","idempotency_key":"rk4","seq":4,"task_id":"T2","event_type":"REVIEW","actor":"QA-FAC","previous_state":"ACTIVE","next_state":"REVIEW"},
-        {"event_id":"r5","idempotency_key":"rk5","seq":5,"task_id":"T2","event_type":"LOCK_RELEASED","actor":"WORKER-B","previous_state":"REVIEW","next_state":"REVIEW"}
+        {
+          "event_id": "review-e1",
+          "idempotency_key": "review-k1",
+          "task_id": "TASK-REVIEW",
+          "seq": 1,
+          "event_type": "READY",
+          "previous_state": "BLOCKED",
+          "next_state": "READY",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "ORCH",
+            "gate_id": "ORCH-FAC-007",
+            "write_surface": [
+              "registry:tasks"
+            ]
+          }
+        },
+        {
+          "event_id": "review-e2",
+          "idempotency_key": "review-k2",
+          "task_id": "TASK-REVIEW",
+          "seq": 2,
+          "event_type": "DISPATCH",
+          "previous_state": "READY",
+          "next_state": "DISPATCHED",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "ORCH",
+            "gate_id": "ORCH-FAC-007",
+            "write_surface": [
+              "registry:tasks"
+            ]
+          }
+        },
+        {
+          "event_id": "review-e3",
+          "idempotency_key": "review-k3",
+          "task_id": "TASK-REVIEW",
+          "seq": 3,
+          "event_type": "LOCK_ACQUIRED",
+          "previous_state": "DISPATCHED",
+          "next_state": "ACTIVE",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-B",
+            "gate_id": "ORCH-FAC-006",
+            "write_surface": [
+              "surface:B"
+            ]
+          }
+        },
+        {
+          "event_id": "review-e4",
+          "idempotency_key": "review-k4",
+          "task_id": "TASK-REVIEW",
+          "seq": 4,
+          "event_type": "STAGE_START",
+          "previous_state": "ACTIVE",
+          "next_state": "ACTIVE",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-B",
+            "gate_id": "QA-FAC-001",
+            "write_surface": [
+              "surface:B"
+            ]
+          }
+        },
+        {
+          "event_id": "review-e5",
+          "idempotency_key": "review-k5",
+          "task_id": "TASK-REVIEW",
+          "seq": 5,
+          "event_type": "REVIEW",
+          "previous_state": "ACTIVE",
+          "next_state": "REVIEW",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "QA-FAC",
+            "gate_id": "QA-FAC-001",
+            "write_surface": [
+              "registry:review"
+            ]
+          }
+        },
+        {
+          "event_id": "review-e6",
+          "idempotency_key": "review-k6",
+          "task_id": "TASK-REVIEW",
+          "seq": 6,
+          "event_type": "LOCK_RELEASED",
+          "previous_state": "REVIEW",
+          "next_state": "REVIEW",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-B",
+            "gate_id": "ORCH-FAC-006",
+            "write_surface": [
+              "surface:B"
+            ]
+          }
+        }
       ],
-      "expected":{"state":"REVIEW","lock":"RELEASED","promotion_ready":false,"reconciliation":"PASS"}
+      "registry_snapshot": {
+        "task_id": "TASK-REVIEW",
+        "state": "REVIEW",
+        "lock_state": "RELEASED",
+        "promotion_ready": false,
+        "retry_count": 0
+      }
     },
     {
-      "case_id": "fail-retry-trace",
+      "case_id": "fail-retry-pass",
       "events": [
-        {"event_id":"f1","idempotency_key":"fk1","seq":1,"task_id":"T3","event_type":"READY","actor":"ORCH","previous_state":"BLOCKED","next_state":"READY"},
-        {"event_id":"f2","idempotency_key":"fk2","seq":2,"task_id":"T3","event_type":"DISPATCH","actor":"ORCH","previous_state":"READY","next_state":"DISPATCHED"},
-        {"event_id":"f3","idempotency_key":"fk3","seq":3,"task_id":"T3","event_type":"LOCK_ACQUIRED","actor":"WORKER-C","previous_state":"DISPATCHED","next_state":"ACTIVE","write_surface":["WA:A"]},
-        {"event_id":"f4","idempotency_key":"fk4","seq":4,"task_id":"T3","event_type":"FAIL","actor":"QA-FAC","previous_state":"ACTIVE","next_state":"FAIL"},
-        {"event_id":"f5","idempotency_key":"fk5","seq":5,"task_id":"T3","event_type":"LOCK_RELEASED","actor":"WORKER-C","previous_state":"FAIL","next_state":"FAIL"},
-        {"event_id":"f6","idempotency_key":"fk6","seq":6,"task_id":"T3","event_type":"RETRY","actor":"ORCH","previous_state":"FAIL","next_state":"READY"},
-        {"event_id":"f7","idempotency_key":"fk7","seq":7,"task_id":"T3","event_type":"DISPATCH","actor":"ORCH","previous_state":"READY","next_state":"DISPATCHED"},
-        {"event_id":"f8","idempotency_key":"fk8","seq":8,"task_id":"T3","event_type":"LOCK_ACQUIRED","actor":"WORKER-C","previous_state":"DISPATCHED","next_state":"ACTIVE","write_surface":["WA:A"]},
-        {"event_id":"f9","idempotency_key":"fk9","seq":9,"task_id":"T3","event_type":"PROMOTION_READY","actor":"REL-FAC","previous_state":"ACTIVE","next_state":"READY_FOR_HANDOFF"},
-        {"event_id":"f10","idempotency_key":"fk10","seq":10,"task_id":"T3","event_type":"LOCK_RELEASED","actor":"WORKER-C","previous_state":"READY_FOR_HANDOFF","next_state":"READY_FOR_HANDOFF"},
-        {"event_id":"f11","idempotency_key":"fk11","seq":11,"task_id":"T3","event_type":"HANDOFF","actor":"ORCH","previous_state":"READY_FOR_HANDOFF","next_state":"COMPLETED"}
+        {
+          "event_id": "retry-e1",
+          "idempotency_key": "retry-k1",
+          "task_id": "TASK-RETRY",
+          "seq": 1,
+          "event_type": "READY",
+          "previous_state": "BLOCKED",
+          "next_state": "READY",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "ORCH",
+            "gate_id": "ORCH-FAC-007",
+            "write_surface": [
+              "registry:tasks"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e2",
+          "idempotency_key": "retry-k2",
+          "task_id": "TASK-RETRY",
+          "seq": 2,
+          "event_type": "DISPATCH",
+          "previous_state": "READY",
+          "next_state": "DISPATCHED",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "ORCH",
+            "gate_id": "ORCH-FAC-007",
+            "write_surface": [
+              "registry:tasks"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e3",
+          "idempotency_key": "retry-k3",
+          "task_id": "TASK-RETRY",
+          "seq": 3,
+          "event_type": "LOCK_ACQUIRED",
+          "previous_state": "DISPATCHED",
+          "next_state": "ACTIVE",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-C",
+            "gate_id": "ORCH-FAC-006",
+            "write_surface": [
+              "surface:C"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e4",
+          "idempotency_key": "retry-k4",
+          "task_id": "TASK-RETRY",
+          "seq": 4,
+          "event_type": "STAGE_START",
+          "previous_state": "ACTIVE",
+          "next_state": "ACTIVE",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-C",
+            "gate_id": "QA-FAC-001",
+            "write_surface": [
+              "surface:C"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e5",
+          "idempotency_key": "retry-k5",
+          "task_id": "TASK-RETRY",
+          "seq": 5,
+          "event_type": "FAIL",
+          "previous_state": "ACTIVE",
+          "next_state": "FAIL",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "QA-FAC",
+            "gate_id": "QA-FAC-001",
+            "write_surface": [
+              "registry:failure"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e6",
+          "idempotency_key": "retry-k6",
+          "task_id": "TASK-RETRY",
+          "seq": 6,
+          "event_type": "LOCK_RELEASED",
+          "previous_state": "FAIL",
+          "next_state": "FAIL",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-C",
+            "gate_id": "ORCH-FAC-006",
+            "write_surface": [
+              "surface:C"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e7",
+          "idempotency_key": "retry-k7",
+          "task_id": "TASK-RETRY",
+          "seq": 7,
+          "event_type": "RETRY",
+          "previous_state": "FAIL",
+          "next_state": "READY",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "ORCH",
+            "gate_id": "ORCH-FAC-007",
+            "write_surface": [
+              "registry:tasks"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e8",
+          "idempotency_key": "retry-k8",
+          "task_id": "TASK-RETRY",
+          "seq": 8,
+          "event_type": "DISPATCH",
+          "previous_state": "READY",
+          "next_state": "DISPATCHED",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "ORCH",
+            "gate_id": "ORCH-FAC-007",
+            "write_surface": [
+              "registry:tasks"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e9",
+          "idempotency_key": "retry-k9",
+          "task_id": "TASK-RETRY",
+          "seq": 9,
+          "event_type": "LOCK_ACQUIRED",
+          "previous_state": "DISPATCHED",
+          "next_state": "ACTIVE",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-C",
+            "gate_id": "ORCH-FAC-006",
+            "write_surface": [
+              "surface:C"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e10",
+          "idempotency_key": "retry-k10",
+          "task_id": "TASK-RETRY",
+          "seq": 10,
+          "event_type": "STAGE_START",
+          "previous_state": "ACTIVE",
+          "next_state": "ACTIVE",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-C",
+            "gate_id": "QA-FAC-001",
+            "write_surface": [
+              "surface:C"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e11",
+          "idempotency_key": "retry-k11",
+          "task_id": "TASK-RETRY",
+          "seq": 11,
+          "event_type": "STAGE_COMPLETE",
+          "previous_state": "ACTIVE",
+          "next_state": "ACTIVE",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-C",
+            "gate_id": "QA-FAC-001",
+            "write_surface": [
+              "surface:C"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e12",
+          "idempotency_key": "retry-k12",
+          "task_id": "TASK-RETRY",
+          "seq": 12,
+          "event_type": "PROMOTION_READY",
+          "previous_state": "ACTIVE",
+          "next_state": "READY_FOR_HANDOFF",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "REL-FAC",
+            "gate_id": "REL-FAC-001",
+            "write_surface": [
+              "registry:promotion"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e13",
+          "idempotency_key": "retry-k13",
+          "task_id": "TASK-RETRY",
+          "seq": 13,
+          "event_type": "LOCK_RELEASED",
+          "previous_state": "READY_FOR_HANDOFF",
+          "next_state": "READY_FOR_HANDOFF",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "WORKER-C",
+            "gate_id": "ORCH-FAC-006",
+            "write_surface": [
+              "surface:C"
+            ]
+          }
+        },
+        {
+          "event_id": "retry-e14",
+          "idempotency_key": "retry-k14",
+          "task_id": "TASK-RETRY",
+          "seq": 14,
+          "event_type": "HANDOFF",
+          "previous_state": "READY_FOR_HANDOFF",
+          "next_state": "COMPLETED",
+          "context": {
+            "conversation_id": "conv-orch-fac-007",
+            "actor": "ORCH",
+            "gate_id": "ORCH-FAC-007",
+            "write_surface": [
+              "registry:tasks"
+            ]
+          }
+        }
       ],
-      "expected":{"state":"COMPLETED","lock":"RELEASED","promotion_ready":true,"reconciliation":"PASS"}
-    },
-    {
-      "case_id": "duplicate-suppressed",
-      "events": [
-        {"event_id":"d1","idempotency_key":"dk1","seq":1,"task_id":"T4","event_type":"READY","actor":"ORCH","previous_state":"BLOCKED","next_state":"READY"},
-        {"event_id":"d1","idempotency_key":"dk1","seq":1,"task_id":"T4","event_type":"READY","actor":"ORCH","previous_state":"BLOCKED","next_state":"READY"}
-      ],
-      "expected":{"state":"READY","lock":"RELEASED","promotion_ready":false,"reconciliation":"PASS"}
-    },
-    {
-      "case_id": "tampered-missing-release",
-      "events": [
-        {"event_id":"t1","idempotency_key":"tk1","seq":1,"task_id":"T5","event_type":"READY","actor":"ORCH","previous_state":"BLOCKED","next_state":"READY"},
-        {"event_id":"t2","idempotency_key":"tk2","seq":2,"task_id":"T5","event_type":"DISPATCH","actor":"ORCH","previous_state":"READY","next_state":"DISPATCHED"},
-        {"event_id":"t3","idempotency_key":"tk3","seq":3,"task_id":"T5","event_type":"LOCK_ACQUIRED","actor":"WORKER-D","previous_state":"DISPATCHED","next_state":"ACTIVE","write_surface":["TX:A"]},
-        {"event_id":"t4","idempotency_key":"tk4","seq":4,"task_id":"T5","event_type":"HANDOFF","actor":"ORCH","previous_state":"ACTIVE","next_state":"COMPLETED"}
-      ],
-      "expected":{"reconciliation":"FAIL"}
+      "registry_snapshot": {
+        "task_id": "TASK-RETRY",
+        "state": "COMPLETED",
+        "lock_state": "RELEASED",
+        "promotion_ready": true,
+        "retry_count": 1
+      }
     }
   ]
 }
