@@ -16,6 +16,11 @@ EXPECTED = [
     ("OR-PB03-002", "Benton County", "41003", 459),
     ("OR-PB03-003", "Clackamas County", "41005", 460),
 ]
+KNOWN_EVIDENCE = {
+    "OR-PB03-001": (31989075122, 95269155928, "147bf699bde562f4a6c1", "17dc286c0b6a5bd0858188721f33fc1b866f14dde04ff8a8ac5f340e01cfe794"),
+    "OR-PB03-002": (31992029955, 95277173414, "ef7b94f40587e24bf517", "28cfe25843e58622b1e6dafc919367ab0d85da3d633aeede095200bc3cbd49a6"),
+    "OR-PB03-003": (31992370600, 95278072027, "6b55416ff61f70ae2ed8", "6c3fb7a59d4e1a44584f56c6fea99a986d580bfd8c103b4b2cd9e9f6226b4287"),
+}
 
 
 def canonical_bytes(value):
@@ -108,8 +113,11 @@ def reconcile(data):
         required = ("production_acceptance", "deterministic", "nesting_parity", "enrichment_guard")
         if task["status"] != "PASS" or not all(task[field] for field in required):
             raise ValueError("production evidence did not pass")
-        if len({task["head_sha"], task["merge_sha"], task["artifact_sha256"]}) != 3:
-            raise ValueError("invalid evidence identity")
+        observed = (task["workflow_run_id"], task["job_id"], task["production_run_id"], task["artifact_sha256"])
+        if observed != KNOWN_EVIDENCE[task["target_id"]]:
+            raise ValueError("exact run/job/production/artifact evidence mismatch")
+        if task["head_sha"] == task["merge_sha"]:
+            raise ValueError("invalid commit identity")
         active += 1
         if active > data["capacity"]:
             raise ValueError("capacity exceeded")
