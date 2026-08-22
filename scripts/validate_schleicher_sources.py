@@ -148,9 +148,17 @@ def live()->None:
     ]
     accessible=0
     for url,markers in contracts:
-        page=fetch(url)
+        page=None
+        for attempt in range(1,4):
+            page=fetch(url)
+            try:
+                require(page,url,markers)
+                break
+            except SystemExit:
+                if attempt==3:
+                    raise
+                time.sleep(attempt*3)
         accessible+=page is not None
-        require(page,url,markers)
     print(f"Validated {accessible} live Schleicher County page contract(s).")
 
 def main()->None:

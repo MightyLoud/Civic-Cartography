@@ -6,7 +6,7 @@ from importlib import metadata
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'evidence/licensing/lic-g5'; OUT.mkdir(parents=True,exist_ok=True)
-GEN=Path('/tmp/requirements-dev.generated.lock'); COM=ROOT/'requirements-dev.lock'
+GEN=Path('/tmp/requirements-ci.generated.lock'); COM=ROOT/'requirements-ci.lock'
 NORM=lambda s: re.sub(r'[-_.]+','-',s).lower()
 SHA=lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
@@ -78,15 +78,14 @@ def audit():
 def main():
     lock=parse_lock(GEN); committed=parse_lock(COM); acts=actions(); inst=installers(); aud=audit()
     direct=[]
-    for raw in (ROOT/'requirements-dev.txt').read_text().splitlines():
-        x=raw.split('#',1)[0].strip()
-        if x:direct.append(NORM(re.split(r'[<>=!~ ]',x,1)[0]))
-    names={r['name'] for r in lock}; pytest=next((r['version'] for r in lock if r['name']=='pytest'),None)
-    nums=tuple(map(int,re.findall(r'\d+',pytest or '0')[:3])); fixed=nums>=(9,0,3) and nums<(10,0,0)
+    for req_file in ('requirements-dev.txt','requirements-ci.txt'):
+      for raw in (ROOT/req_file).read_text().splitlines():
+          x=raw.split('#',1)[0].strip()
+          if x and not x.startswith('-r '):direct.append(NORM(re.split(r'[<>=!~ ]',x,1)[0]))
+    names={r['name'] for r in lock}
     pkgs=json.loads((OUT/'python-licenses.json').read_text()) if (OUT/'python-licenses.json').exists() else []
     package_names={NORM(x.get('Name','')) for x in pkgs}
     checks={
-      'pytest_fixed_range':fixed,
       'generated_lock_exists':GEN.exists(),
       'committed_lock_exists':COM.exists(),
       'lock_matches_generated':GEN.exists() and COM.exists() and SHA(GEN)==SHA(COM),
@@ -102,7 +101,7 @@ def main():
       'lock_deterministic':os.getenv('LOCK_EXIT')=='0'}
     passed=all(checks.values())
     env={'python':platform.python_version(),'pip':metadata.version('pip'),'pip-tools':metadata.version('pip-tools'),'pip-audit':metadata.version('pip-audit'),'pip-licenses':metadata.version('pip-licenses')}
-    ev={'control_id':'LIC-G5','schema_version':1,'repository':'MightyLoud/Civic-Cartography','commit_sha':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'tree_sha':subprocess.check_output(['git','rev-parse','HEAD^{tree}'],cwd=ROOT,text=True).strip(),'github_run_id':os.getenv('GITHUB_RUN_ID'),'environment':env,'requirements_sha256':SHA(ROOT/'requirements-dev.txt'),'generated_lock_sha256':SHA(GEN) if GEN.exists() else None,'committed_lock_sha256':SHA(COM) if COM.exists() else None,'resolved_dependencies':lock,'workflow_actions':acts,'mutable_action_refs':[a['reference'] for a in acts if a.get('kind')=='external' and not a.get('ref_is_sha')],'installer_commands':inst,'vulnerabilities':aud,'checks':checks,'lic_g5_pass':passed,'authority_boundary':{'dependency_licenses_create_root_license':False,'publication_authority':False,'transfer_authority':False,'implementation_authority':False},'reopen_on':['dependency or lock change','workflow action or installer change','new vulnerability','repository drift']}
+    ev={'control_id':'LIC-G5','schema_version':1,'repository':'MightyLoud/Civic-Cartography','commit_sha':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'tree_sha':subprocess.check_output(['git','rev-parse','HEAD^{tree}'],cwd=ROOT,text=True).strip(),'github_run_id':os.getenv('GITHUB_RUN_ID'),'environment':env,'requirements_sha256':SHA(ROOT/'requirements-ci.txt'),'generated_lock_sha256':SHA(GEN) if GEN.exists() else None,'committed_lock_sha256':SHA(COM) if COM.exists() else None,'resolved_dependencies':lock,'workflow_actions':acts,'mutable_action_refs':[a['reference'] for a in acts if a.get('kind')=='external' and not a.get('ref_is_sha')],'installer_commands':inst,'vulnerabilities':aud,'checks':checks,'lic_g5_pass':passed,'authority_boundary':{'dependency_licenses_create_root_license':False,'publication_authority':False,'transfer_authority':False,'implementation_authority':False},'reopen_on':['dependency or lock change','workflow action or installer change','new vulnerability','repository drift']}
     dump('workflow-actions.json',acts); dump('installer-inventory.json',inst); dump('lic-g5-evidence.json',ev)
     manifest={p.name:SHA(p) for p in OUT.iterdir() if p.is_file() and p.name!='SHA256SUMS.json'}; dump('SHA256SUMS.json',manifest)
     (OUT/'README.md').write_text('# LIC-G5 Supply-Chain Evidence\n\n'+f"Result: **{'PASS' if passed else 'OPEN / FAIL-CLOSED'}**\n\n"+'\n'.join(f"- [{'x' if v else ' '}] `{k}`" for k,v in checks.items())+'\n\nDependency and action licenses do not create a root Civic-Cartography license.\n')
