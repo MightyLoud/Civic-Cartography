@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "gate_id",
+    "capacity",
+    "automatic_retries",
+    "public_release",
+    "tasks"
+  ],
+  "properties": {
+    "gate_id": {
+      "const": "ORCH-PROD-001"
+    },
+    "capacity": {
+      "const": 1
+    },
+    "automatic_retries": {
+      "const": false
+    },
+    "public_release": {
+      "const": false
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sequence",
+          "target_id",
+          "county",
+          "geoid",
+          "ocdid",
+          "pr",
+          "base_sha",
+          "head_sha",
+          "merge_sha",
+          "workflow_run_id",
+          "job_id",
+          "status",
+          "production_run_id",
+          "artifact_id",
+          "artifact_sha256",
+          "production_acceptance",
+          "deterministic",
+          "nesting_parity",
+          "enrichment_guard"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "target_id": {
+            "pattern": "^OR-PB03-00[1-3]$"
+          },
+          "county": {
+            "type": "string"
+          },
+          "geoid": {
+            "pattern": "^4100[135]$"
+          },
+          "ocdid": {
+            "pattern": "^ocd-division/country:us/state:or/county:"
+          },
+          "pr": {
+            "type": "integer"
+          },
+          "base_sha": {
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "head_sha": {
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "merge_sha": {
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "workflow_run_id": {
+            "type": "integer"
+          },
+          "job_id": {
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "PASS",
+              "REVIEW",
+              "FAIL"
+            ]
+          },
+          "production_run_id": {
+            "pattern": "^[0-9a-f]{20}$"
+          },
+          "artifact_id": {
+            "type": "integer"
+          },
+          "artifact_sha256": {
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "production_acceptance": {
+            "type": "boolean"
+          },
+          "deterministic": {
+            "type": "boolean"
+          },
+          "nesting_parity": {
+            "type": "boolean"
+          },
+          "enrichment_guard": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}
