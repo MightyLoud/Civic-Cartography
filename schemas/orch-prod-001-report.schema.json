@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "gate_id",
+    "status",
+    "capacity",
+    "tasks",
+    "serial_order_verified",
+    "fail_closed_verified",
+    "max_held_locks",
+    "held_locks",
+    "handoffs",
+    "event_trace_sha256",
+    "deterministic",
+    "tamper_probes",
+    "report_sha256"
+  ],
+  "properties": {
+    "gate_id": {
+      "const": "ORCH-PROD-001"
+    },
+    "status": {
+      "const": "PASS"
+    },
+    "capacity": {
+      "const": 1
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "serial_order_verified": {
+      "const": true
+    },
+    "fail_closed_verified": {
+      "const": true
+    },
+    "max_held_locks": {
+      "const": 1
+    },
+    "held_locks": {
+      "const": 0
+    },
+    "handoffs": {
+      "const": 3
+    },
+    "event_trace_sha256": {
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "deterministic": {
+      "const": true
+    },
+    "tamper_probes": {
+      "type": "object",
+      "minProperties": 8,
+      "additionalProperties": {
+        "const": "REJECTED"
+      }
+    },
+    "report_sha256": {
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}
