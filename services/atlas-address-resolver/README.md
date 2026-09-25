@@ -35,3 +35,25 @@ The service runs these on startup and logs `SELFTEST {...}` records:
 ```bash
 python app.py
 ```
+
+
+## Governance overlays
+
+The county water layers contain both direct water providers and broader water-governance entities.
+
+The resolver keeps these concepts separate:
+
+- `provider_id` / `action_route_id`: only direct-service provider routing.
+- `governance_overlays`: overlapping institutions that matter for water governance but are not the resident's tap-water utility.
+
+Current non-retail overlay classes:
+
+- Cheyenne Creek Metropolitan Park & Water District → `streamflow_water_rights_district`
+- Southeastern Colorado Water Conservancy District → `regional_water_supply_authority`
+- Upper Arkansas Water Conservancy District → `regional_augmentation_authority`
+- Upper Big Sandy Ground Water Management District → `groundwater_regulator`
+- Upper Black Squirrel Creek Ground Water Management District → `groundwater_regulator`
+
+The live classification contract covers all 19 current raw county water-layer values. Direct-provider and non-retail-overlay classification are mutually exclusive.
+
+Atlas governance for the same contract lives in `24_Water_Layer_Classification`.
