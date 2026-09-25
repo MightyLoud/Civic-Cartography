@@ -30,19 +30,19 @@ class LiveResolverTests(unittest.TestCase):
         ),
         (
             "WIDEFIELD",
-            "8495 Fontaine Blvd, Colorado Springs, CO 80925",
+            "6965 Mesa Ridge Parkway, Fountain, CO 80817",
             "gov_us_co_el_paso_widefield_wsd",
             "action_widefield_water_service_interruption",
         ),
         (
             "WOODMOOR",
-            "1845 Woodmoor Drive, Monument, CO 80132",
+            "17230 Jackson Creek Pkwy, Monument, CO 80132",
             "gov_us_co_el_paso_woodmoor_water",
             "action_woodmoor_water_service_interruption",
         ),
         (
             "ACADEMY",
-            "1755 Spring Valley Drive, Colorado Springs, CO 80921",
+            "980 Tari Dr, Colorado Springs, CO 80921",
             "gov_us_co_el_paso_academy_wsd",
             "action_academy_water_service_request",
         ),
