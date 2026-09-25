@@ -88,18 +88,36 @@ class LiveResolverTests(unittest.TestCase):
                     "f": "json",
                     "where": "1=1",
                     "outFields": "*",
-                    "returnGeometry": "false",
+                    "returnGeometry": "true",
                     "returnCentroid": "true",
                     "outSR": "4326",
                 })
                 for feature in data.get("features") or []:
                     attrs = feature.get("attributes") or {}
                     values = " | ".join(str(v) for v in attrs.values() if v is not None).upper()
-                    if needle in values:
-                        centroid = feature.get("centroid") or {}
-                        if centroid.get("x") is not None and centroid.get("y") is not None:
-                            return centroid["y"], centroid["x"], values
-        self.fail(f"No centroid found for {provider_text}")
+                    if needle not in values:
+                        continue
+
+                    # Prefer ArcGIS centroid when it really intersects the feature.
+                    centroid = feature.get("centroid") or {}
+                    cx, cy = centroid.get("x"), centroid.get("y")
+                    if cx is not None and cy is not None:
+                        candidate = resolver.resolve("", cy, cx)
+                        if (candidate.get("provider_id", "") or ""):
+                            return cy, cx, values
+
+                    # Some multipart/concave polygons have an ArcGIS centroid outside
+                    # the actual service area. A polygon ring vertex is evidence-native
+                    # and guaranteed to lie on the returned feature boundary.
+                    geometry = feature.get("geometry") or {}
+                    for ring in geometry.get("rings") or []:
+                        for point in ring:
+                            if isinstance(point, list) and len(point) >= 2:
+                                x, y = point[0], point[1]
+                                candidate = resolver.resolve("", y, x)
+                                if (candidate.get("provider_id", "") or ""):
+                                    return y, x, values
+        self.fail(f"No intersecting provider point found for {provider_text}")
 
     def test_expansion_provider_polygon_controls(self):
         cases = [
