@@ -20,11 +20,11 @@ COLORADO_SPRINGS_GEOID = "0816000"
 CSU_WATER_PLAN = "https://www.csu.org/hubfs/Document-Library/2022WaterEfficiencyPlan.pdf"
 
 PROVIDERS = [
-    (r"\bDONALA\b", "government", "gov_us_co_el_paso_donala_wsd", "Donala Water & Sanitation District", "area_ref_donala_wsd_assessor_map", "sar_water_donala_wsd", ""),
+    (r"\bDONALA\b", "government", "gov_us_co_el_paso_donala_wsd", "Donala Water & Sanitation District", "area_ref_donala_wsd_assessor_map", "sar_water_donala_wsd", "action_donala_water_service_interruption"),
     (r"\bWIDEFIELD\b", "government", "gov_us_co_el_paso_widefield_wsd", "Widefield Water and Sanitation District", "area_ref_widefield_wsd_assessor_map", "sar_water_widefield_wsd", ""),
     (r"\bWOODMOOR\b", "government", "gov_us_co_el_paso_woodmoor_water", "Woodmoor Water & Sanitation District No. 1", "area_ref_woodmoor_wsd_assessor_map", "sar_water_woodmoor_water", ""),
     (r"\bACADEMY\b", "government", "gov_us_co_el_paso_academy_wsd", "Academy Water and Sanitation District", "area_ref_academy_wsd_assessor_map", "sar_water_academy_wsd", ""),
-    (r"\bSECURITY\b", "government", "gov_us_co_el_paso_security_wsd", "Security Water and Sanitation Districts", "area_ref_security_wsd_assessor_map", "sar_water_security_wsd", ""),
+    (r"\bSECURITY\b", "government", "gov_us_co_el_paso_security_wsd", "Security Water and Sanitation Districts", "area_ref_security_wsd_assessor_map", "sar_water_security_wsd", "action_security_water_service_interruption"),
 ]
 
 CSV_FIELDS = [
