@@ -54,6 +54,31 @@ class LiveResolverTests(unittest.TestCase):
         ),
     ]
 
+    def test_layer_inventory(self):
+        for layer_name, item_id in resolver.COUNTY_LAYERS:
+            service_url = resolver.arcgis_service_url(item_id)
+            service_url = (service_url or "").rstrip("/")
+            metadata = resolver.get_json(service_url, {"f": "json"})
+            layers = metadata.get("layers") or []
+            all_strings = set()
+            targets = [layer.get("id") for layer in layers if layer.get("id") is not None]
+            if not targets:
+                targets = [None]
+            for layer_id in targets:
+                layer_url = service_url if layer_id is None else f"{service_url}/{layer_id}"
+                data = resolver.get_json(layer_url + "/query", {
+                    "f": "json",
+                    "where": "1=1",
+                    "outFields": "*",
+                    "returnGeometry": "false",
+                })
+                for feature in data.get("features") or []:
+                    attrs = feature.get("attributes") or {}
+                    for value in attrs.values():
+                        if isinstance(value, str) and value.strip():
+                            all_strings.add(value.strip())
+            print({"layer_inventory": layer_name, "values": sorted(all_strings)})
+
     def test_live_provider_and_route_controls(self):
         failures = []
         for label, address, expected_provider, expected_route in self.cases:
