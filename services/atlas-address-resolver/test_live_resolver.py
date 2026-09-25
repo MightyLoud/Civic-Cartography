@@ -101,6 +101,42 @@ class LiveResolverTests(unittest.TestCase):
                             return centroid["y"], centroid["x"], values
         self.fail(f"No centroid found for {provider_text}")
 
+    def test_expansion_provider_polygon_controls(self):
+        cases = [
+            ("GARDEN VALLEY SWD", "gov_us_co_el_paso_garden_valley_water_sanitation_district", ""),
+            ("FOREST VIEW ACRES WD", "gov_us_co_el_paso_forest_view_acres_water_district", "action_forest_view_acres_water_service_interruption"),
+            ("PARK FOREST WD", "gov_us_co_el_paso_park_forest_water_district", ""),
+            ("PIONEER LOOKOUT WD", "gov_us_co_el_paso_pioneer_lookout_water_district", "action_pioneer_lookout_water_service_issue"),
+            ("RED ROCK VALLEY ESTATES WD", "gov_us_co_el_paso_red_rock_valley_estates_water_district", ""),
+            ("ROCK CREEK MESA WD", "gov_us_co_el_paso_rock_creek_mesa_water_district", "action_rock_creek_mesa_water_service_interruption"),
+            ("STRATMOOR HILLS WD", "gov_us_co_el_paso_stratmoor_hills_water_district", "action_stratmoor_hills_water_service_interruption"),
+            ("TURKEY CANON RANCH WD", "gov_us_co_el_paso_turkey_canon_ranch_water_district", "action_turkey_canon_water_service_request"),
+        ]
+        failures = []
+        for provider_text, expected_provider, expected_route in cases:
+            with self.subTest(provider=provider_text):
+                latitude, longitude, raw = self._provider_centroid(provider_text)
+                result = resolver.resolve("", latitude, longitude)
+                actual_provider = result.get("provider_id", "") or ""
+                actual_route = result.get("action_route_id", "") or ""
+                print({
+                    "label": "EXPANSION_POLYGON_CENTROID",
+                    "provider_text": provider_text,
+                    "latitude": latitude,
+                    "longitude": longitude,
+                    "raw_provider": raw,
+                    "expected_provider": expected_provider,
+                    "actual_provider": actual_provider,
+                    "expected_action_route": expected_route,
+                    "actual_action_route": actual_route,
+                    "resolver_status": result.get("resolver_status"),
+                    "evidence_method": result.get("evidence_method"),
+                    "diagnostics": result.get("diagnostics"),
+                })
+                if actual_provider != expected_provider or actual_route != expected_route:
+                    failures.append((provider_text, expected_provider, actual_provider, expected_route, actual_route, result))
+        self.assertFalse(failures, failures)
+
     def test_widefield_polygon_provider_and_route(self):
         latitude, longitude, raw = self._provider_centroid("WIDEFIELD SWD")
         result = resolver.resolve("", latitude, longitude)
