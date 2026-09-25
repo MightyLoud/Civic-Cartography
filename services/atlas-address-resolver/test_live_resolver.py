@@ -48,6 +48,60 @@ class LiveResolverTests(unittest.TestCase):
         ),
     ]
 
+    expected_raw_layer_values = {
+        "sanitation_water": {
+            "ACADEMY SWD",
+            "DONALA SWD AREA A",
+            "DONALA SWD AREA B",
+            "GARDEN VALLEY SWD",
+            "WIDEFIELD SWD",
+            "WOODMOOR SWD",
+        },
+        "water_district": {
+            "CHEYENNE CREEK MD PARK & WATER",
+            "FOREST VIEW ACRES WD",
+            "PARK FOREST WD",
+            "PIONEER LOOKOUT WD",
+            "RED ROCK VALLEY ESTATES WD",
+            "ROCK CREEK MESA WD",
+            "SECURITY WD",
+            "SOUTHEASTERN COLORADO WATER CONSERVANCY",
+            "STRATMOOR HILLS WD",
+            "TURKEY CANON RANCH WD",
+            "UPPER ARKANSAS WCD",
+            "UPPER BIG SANDY GROUND WD",
+            "UPPER BLK SQUIRREL CRK GRD WD",
+        },
+    }
+
+    expected_nonretail = {
+        "CHEYENNE CREEK MD PARK & WATER": "streamflow_water_rights_district",
+        "SOUTHEASTERN COLORADO WATER CONSERVANCY": "regional_water_supply_authority",
+        "UPPER ARKANSAS WCD": "regional_augmentation_authority",
+        "UPPER BIG SANDY GROUND WD": "groundwater_regulator",
+        "UPPER BLK SQUIRREL CRK GRD WD": "groundwater_regulator",
+    }
+
+    def test_all_expected_raw_layer_values_are_classified(self):
+        for layer_name, values in self.expected_raw_layer_values.items():
+            for raw_name in values:
+                with self.subTest(layer=layer_name, raw_name=raw_name):
+                    features = [{"attributes": {"name": raw_name}}]
+                    provider = resolver.normalize_provider(features)
+                    overlays = resolver.classify_overlays(features)
+                    classified = bool(provider) or bool(overlays)
+                    self.assertTrue(classified, raw_name)
+                    self.assertFalse(bool(provider) and bool(overlays), raw_name)
+
+    def test_nonretail_overlay_values_never_normalize_as_provider(self):
+        for raw_name, expected_class in self.expected_nonretail.items():
+            with self.subTest(raw_name=raw_name):
+                features = [{"attributes": {"name": raw_name}}]
+                self.assertIsNone(resolver.normalize_provider(features))
+                overlays = resolver.classify_overlays(features)
+                self.assertEqual(len(overlays), 1)
+                self.assertEqual(overlays[0]["resolver_class"], expected_class)
+
     def test_layer_inventory(self):
         for layer_name, item_id in resolver.COUNTY_LAYERS:
             service_url = resolver.arcgis_service_url(item_id)
@@ -72,6 +126,11 @@ class LiveResolverTests(unittest.TestCase):
                         if isinstance(value, str) and value.strip():
                             all_strings.add(value.strip())
             print({"layer_inventory": layer_name, "values": sorted(all_strings)})
+            expected = self.expected_raw_layer_values.get(layer_name, set())
+            self.assertTrue(expected.issubset(all_strings), {
+                "layer": layer_name,
+                "missing": sorted(expected - all_strings),
+            })
 
     def _provider_centroid(self, provider_text):
         needle = provider_text.upper()
