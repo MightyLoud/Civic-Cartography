@@ -14,14 +14,14 @@ COUNTY_LAYERS = [
     ("sanitation_water", "c1af3e27396949f49291d4a4e91745fe"),
     ("water_district", "dd0c224892d94eb8a840d41531518b65"),
 ]
-CSU_WATER_QUERY = "https://maps.csu.org:6443/arcgis/rest/services/Base/MapServer/110/query"
+CSU_WATER_QUERY = "https://maps.csu.org:6443/arcgis/rest/services/Base/MapServer/112/query"
 
 PROVIDERS = [
-    (r"\\bDONALA\\b", "government", "gov_us_co_el_paso_donala_wsd", "Donala Water & Sanitation District", "area_ref_donala_wsd_assessor_map", "sar_water_donala_wsd", ""),
-    (r"\\bWIDEFIELD\\b", "government", "gov_us_co_el_paso_widefield_wsd", "Widefield Water and Sanitation District", "area_ref_widefield_wsd_assessor_map", "sar_water_widefield_wsd", ""),
-    (r"\\bWOODMOOR\\b", "government", "gov_us_co_el_paso_woodmoor_water", "Woodmoor Water & Sanitation District No. 1", "area_ref_woodmoor_wsd_assessor_map", "sar_water_woodmoor_water", ""),
-    (r"\\bACADEMY\\b", "government", "gov_us_co_el_paso_academy_wsd", "Academy Water and Sanitation District", "area_ref_academy_wsd_assessor_map", "sar_water_academy_wsd", ""),
-    (r"\\bSECURITY\\b", "government", "gov_us_co_el_paso_security_wsd", "Security Water and Sanitation Districts", "area_ref_security_wsd_assessor_map", "sar_water_security_wsd", ""),
+    (r"\bDONALA\b", "government", "gov_us_co_el_paso_donala_wsd", "Donala Water & Sanitation District", "area_ref_donala_wsd_assessor_map", "sar_water_donala_wsd", ""),
+    (r"\bWIDEFIELD\b", "government", "gov_us_co_el_paso_widefield_wsd", "Widefield Water and Sanitation District", "area_ref_widefield_wsd_assessor_map", "sar_water_widefield_wsd", ""),
+    (r"\bWOODMOOR\b", "government", "gov_us_co_el_paso_woodmoor_water", "Woodmoor Water & Sanitation District No. 1", "area_ref_woodmoor_wsd_assessor_map", "sar_water_woodmoor_water", ""),
+    (r"\bACADEMY\b", "government", "gov_us_co_el_paso_academy_wsd", "Academy Water and Sanitation District", "area_ref_academy_wsd_assessor_map", "sar_water_academy_wsd", ""),
+    (r"\bSECURITY\b", "government", "gov_us_co_el_paso_security_wsd", "Security Water and Sanitation Districts", "area_ref_security_wsd_assessor_map", "sar_water_security_wsd", ""),
 ]
 
 CSV_FIELDS = [
@@ -65,11 +65,9 @@ def arcgis_service_url(item_id):
     return get_json(ARCGIS_ITEM.format(item_id), {"f": "json"}).get("url")
 
 
-def query_point(service_url, longitude, latitude):
-    service_url = (service_url or "").rstrip("/")
-    if re.search(r"/(FeatureServer|MapServer)$", service_url, re.I):
-        service_url += "/0"
-    data = get_json(service_url + "/query", {
+def query_point(layer_url, longitude, latitude):
+    layer_url = (layer_url or "").rstrip("/")
+    data = get_json(layer_url + "/query", {
         "f": "json",
         "where": "1=1",
         "geometry": f"{longitude},{latitude}",
@@ -80,6 +78,27 @@ def query_point(service_url, longitude, latitude):
         "returnGeometry": "false",
     })
     return data.get("features") or []
+
+
+def query_service_layers(service_url, longitude, latitude):
+    """Query every advertised feature/map sublayer when an item URL is a service root."""
+    service_url = (service_url or "").rstrip("/")
+    if re.search(r"/(FeatureServer|MapServer)/\\d+$", service_url, re.I):
+        return query_point(service_url, longitude, latitude)
+
+    if re.search(r"/(FeatureServer|MapServer)$", service_url, re.I):
+        metadata = get_json(service_url, {"f": "json"})
+        layers = metadata.get("layers") or []
+        features = []
+        for layer in layers:
+            layer_id = layer.get("id")
+            if layer_id is None:
+                continue
+            features.extend(query_point(f"{service_url}/{layer_id}", longitude, latitude))
+        if layers:
+            return features
+
+    return query_point(service_url, longitude, latitude)
 
 
 def normalize_provider(features):
@@ -150,7 +169,7 @@ def resolve(address="", latitude=None, longitude=None):
             if not service_url:
                 diagnostics.append(layer_name + "_no_url")
                 continue
-            provider = normalize_provider(query_point(service_url, longitude, latitude))
+            provider = normalize_provider(query_service_layers(service_url, longitude, latitude))
             source_urls.append("https://www.arcgis.com/home/item.html?id=" + item_id)
             if provider:
                 return {
@@ -170,7 +189,7 @@ def resolve(address="", latitude=None, longitude=None):
 
     try:
         if in_csu_water_boundary(longitude, latitude):
-            source_urls.append("https://maps.csu.org/Geocortex/Essentials/REST/sites/GIS_Public_Portal/map/mapservices/11/layers/110")
+            source_urls.append("https://maps.csu.org/Geocortex/Essentials/REST/sites/GIS_Public_Portal/map/mapservices/11/layers/112")
             return {
                 "input_address": address,
                 "matched_address": matched_address,
