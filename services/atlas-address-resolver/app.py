@@ -14,7 +14,10 @@ COUNTY_LAYERS = [
     ("sanitation_water", "c1af3e27396949f49291d4a4e91745fe"),
     ("water_district", "dd0c224892d94eb8a840d41531518b65"),
 ]
-CSU_WATER_QUERY = "https://maps.csu.org:6443/arcgis/rest/services/Base/MapServer/112/query"\nTIGER_PLACES_QUERY = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query"\nCOLORADO_SPRINGS_GEOID = "0816000"\nCSU_WATER_PLAN = "https://www.csu.org/hubfs/Document-Library/2022WaterEfficiencyPlan.pdf"
+CSU_WATER_QUERY = "https://maps.csu.org:6443/arcgis/rest/services/Base/MapServer/112/query"
+TIGER_PLACES_QUERY = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query"
+COLORADO_SPRINGS_GEOID = "0816000"
+CSU_WATER_PLAN = "https://www.csu.org/hubfs/Document-Library/2022WaterEfficiencyPlan.pdf"
 
 PROVIDERS = [
     (r"\bDONALA\b", "government", "gov_us_co_el_paso_donala_wsd", "Donala Water & Sanitation District", "area_ref_donala_wsd_assessor_map", "sar_water_donala_wsd", ""),
