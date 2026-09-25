@@ -12,7 +12,7 @@ class LiveResolverTests(unittest.TestCase):
     cases = [
         (
             "CSU",
-            "2855 Mesa Road, Colorado Springs, CO 80904",
+            "111 S Cascade Ave, Colorado Springs, CO 80903",
             "body_us_co_el_paso_colorado_springs_utilities",
         ),
         (
@@ -22,7 +22,7 @@ class LiveResolverTests(unittest.TestCase):
         ),
         (
             "SECURITY",
-            "6310 Highway 85-87, Fountain, CO 80817",
+            "4613 Dancing Light Way, Colorado Springs, CO 80911",
             "gov_us_co_el_paso_security_wsd",
         ),
         (
