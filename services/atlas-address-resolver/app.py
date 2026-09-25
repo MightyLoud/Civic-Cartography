@@ -14,7 +14,7 @@ COUNTY_LAYERS = [
     ("sanitation_water", "c1af3e27396949f49291d4a4e91745fe"),
     ("water_district", "dd0c224892d94eb8a840d41531518b65"),
 ]
-CSU_WATER_QUERY = "https://maps.csu.org:6443/arcgis/rest/services/Base/MapServer/112/query"
+CSU_WATER_QUERY = "https://maps.csu.org:6443/arcgis/rest/services/Base/MapServer/112/query"\nTIGER_PLACES_QUERY = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query"\nCOLORADO_SPRINGS_GEOID = "0816000"\nCSU_WATER_PLAN = "https://www.csu.org/hubfs/Document-Library/2022WaterEfficiencyPlan.pdf"
 
 PROVIDERS = [
     (r"\bDONALA\b", "government", "gov_us_co_el_paso_donala_wsd", "Donala Water & Sanitation District", "area_ref_donala_wsd_assessor_map", "sar_water_donala_wsd", ""),
@@ -133,6 +133,24 @@ def in_csu_water_boundary(longitude, latitude):
     return bool(data.get("features"))
 
 
+def in_colorado_springs_place(longitude, latitude):
+    """Return True only when the point intersects the current Colorado Springs incorporated-place polygon."""
+    data = get_json(TIGER_PLACES_QUERY, {
+        "f": "json",
+        "where": f"GEOID='{COLORADO_SPRINGS_GEOID}'",
+        "geometry": f"{longitude},{latitude}",
+        "geometryType": "esriGeometryPoint",
+        "inSR": "4326",
+        "spatialRel": "esriSpatialRelIntersects",
+        "outFields": "GEOID,BASENAME",
+        "returnGeometry": "false",
+    })
+    return any(
+        str((feature.get("attributes") or {}).get("GEOID", "")) == COLORADO_SPRINGS_GEOID
+        for feature in (data.get("features") or [])
+    )
+
+
 def resolve(address="", latitude=None, longitude=None):
     diagnostics = []
     matched_address = ""
@@ -208,7 +226,38 @@ def resolve(address="", latitude=None, longitude=None):
                 "diagnostics": ";".join(diagnostics),
             }
     except Exception as exc:
-        diagnostics.append(f"csu={type(exc).__name__}:{str(exc)[:120]}")
+        diagnostics.append(f"csu_direct={type(exc).__name__}:{str(exc)[:120]}")
+
+    # Bounded fallback for points inside the actual Colorado Springs incorporated-place
+    # polygon after local district exclusion. This is not a mailing-address inference:
+    # TIGERweb must spatially confirm GEOID 0816000. CSU's official Water Efficiency
+    # Plan states that the water system serves City residents as well as some customers
+    # outside City limits. Outside-city CSU service still requires direct provider evidence.
+    try:
+        if in_colorado_springs_place(longitude, latitude):
+            source_urls.extend([
+                "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4",
+                CSU_WATER_PLAN,
+            ])
+            return {
+                "input_address": address,
+                "matched_address": matched_address,
+                "latitude": latitude,
+                "longitude": longitude,
+                "geocode_status": geocode_status,
+                "provider_type": "body",
+                "provider_id": "body_us_co_el_paso_colorado_springs_utilities",
+                "provider_name": "Colorado Springs Utilities",
+                "service_area_ref_id": "area_ref_csu_water_service_boundary_live",
+                "service_area_route_id": "sar_water_csu_service_area",
+                "action_route_id": "action_cos_water_service_interruption",
+                "resolver_status": "RESOLVED",
+                "evidence_method": "census_geocode+district_exclusion+tigerweb_colorado_springs_place+csu_in_city_default",
+                "source_urls": ";".join(source_urls),
+                "diagnostics": ";".join(diagnostics),
+            }
+    except Exception as exc:
+        diagnostics.append(f"tigerweb_city={type(exc).__name__}:{str(exc)[:120]}")
 
     return {
         "input_address": address,
