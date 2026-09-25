@@ -35,9 +35,18 @@ PROVIDERS = [
     (r"\bTURKEY CANON RANCH\b", "government", "gov_us_co_el_paso_turkey_canon_ranch_water_district", "Turkey Canon Ranch Water District", "area_ref_turkey_canon_ranch_wd_live_gis", "sar_water_turkey_canon_ranch_wd", "action_turkey_canon_water_service_request"),
 ]
 
+
+NON_RETAIL_OVERLAYS = [
+    (r"\bCHEYENNE CREEK MD PARK & WATER\b", "streamflow_water_rights_district", "gov_us_co_el_paso_cheyenne_creek_metropolitan_district", "Cheyenne Creek Metropolitan Park and Water District", "area_ref_cheyenne_creek_water_overlay_live_gis", "sar_water_cheyenne_creek_overlay"),
+    (r"\bSOUTHEASTERN COLORADO WATER CONSERVANCY\b", "regional_water_supply_authority", "gov_us_co_southeastern_colorado_water_conservancy_district", "Southeastern Colorado Water Conservancy District", "area_ref_secwcd_live_gis", "sar_water_secwcd_overlay"),
+    (r"\bUPPER ARKANSAS WCD\b", "regional_augmentation_authority", "gov_us_co_upper_arkansas_water_conservancy_district", "Upper Arkansas Water Conservancy District", "area_ref_uawcd_live_gis", "sar_water_uawcd_overlay"),
+    (r"\bUPPER BIG SANDY GROUND WD\b", "groundwater_regulator", "gov_us_co_upper_big_sandy_ground_water_management_district", "Upper Big Sandy Ground Water Management District", "area_ref_upper_big_sandy_ground_wd_live_gis", "sar_water_upper_big_sandy_overlay"),
+    (r"\bUPPER BLK SQUIRREL CRK GRD WD\b", "groundwater_regulator", "gov_us_co_el_paso_upper_black_squirrel_creek_ground_water_management_district", "Upper Black Squirrel Creek Ground Water Management District", "area_ref_upper_black_squirrel_ground_wd_live_gis", "sar_water_upper_black_squirrel_overlay"),
+]
+
 CSV_FIELDS = [
     "input_address", "matched_address", "latitude", "longitude", "geocode_status",
-    "provider_type", "provider_id", "provider_name", "service_area_ref_id",
+    "provider_type", "provider_id", "provider_name", "governance_overlays", "service_area_ref_id",
     "service_area_route_id", "action_route_id", "resolver_status",
     "evidence_method", "source_urls", "diagnostics",
 ]
@@ -130,6 +139,30 @@ def normalize_provider(features):
     return None
 
 
+
+def classify_overlays(features):
+    matches = []
+    seen = set()
+    for feature in features:
+        attrs = feature.get("attributes") or {}
+        text = " | ".join(str(v) for v in attrs.values() if v is not None).upper()
+        for pattern, overlay_class, object_id, object_name, area_ref, route_id in NON_RETAIL_OVERLAYS:
+            if re.search(pattern, text, re.I) and object_id not in seen:
+                seen.add(object_id)
+                matches.append({
+                    "resolver_class": overlay_class,
+                    "object_id": object_id,
+                    "object_name": object_name,
+                    "service_area_ref_id": area_ref,
+                    "service_area_route_id": route_id,
+                })
+    return matches
+
+
+def encode_overlays(overlays):
+    return json.dumps(overlays, separators=(",", ":"), sort_keys=True) if overlays else ""
+
+
 def in_csu_water_boundary(longitude, latitude):
     data = get_json(CSU_WATER_QUERY, {
         "f": "json",
@@ -164,6 +197,7 @@ def in_colorado_springs_place(longitude, latitude):
 
 def resolve(address="", latitude=None, longitude=None):
     diagnostics = []
+    governance_overlays = []
     matched_address = ""
     geocode_status = "COORDINATES_PROVIDED"
 
@@ -172,6 +206,7 @@ def resolve(address="", latitude=None, longitude=None):
             return {
                 "input_address": "",
                 "geocode_status": "MISSING_INPUT",
+                "governance_overlays": "",
                 "resolver_status": "UNRESOLVED",
             }
         try:
@@ -183,6 +218,7 @@ def resolve(address="", latitude=None, longitude=None):
             return {
                 "input_address": address,
                 "geocode_status": "NO_MATCH",
+                "governance_overlays": "",
                 "resolver_status": "UNRESOLVED",
                 "diagnostics": ";".join(diagnostics),
             }
@@ -191,14 +227,19 @@ def resolve(address="", latitude=None, longitude=None):
 
     source_urls = []
 
-    # District-first: a normalized local district beats a broader CSU fallback.
+    # District-first: direct-service providers win provider dispatch, while
+    # non-retail water-governance polygons are preserved separately.
     for layer_name, item_id in COUNTY_LAYERS:
         try:
             service_url = arcgis_service_url(item_id)
             if not service_url:
                 diagnostics.append(layer_name + "_no_url")
                 continue
-            provider = normalize_provider(query_service_layers(service_url, longitude, latitude))
+            features = query_service_layers(service_url, longitude, latitude)
+            for overlay in classify_overlays(features):
+                if not any(existing.get("object_id") == overlay.get("object_id") for existing in governance_overlays):
+                    governance_overlays.append(overlay)
+            provider = normalize_provider(features)
             source_urls.append("https://www.arcgis.com/home/item.html?id=" + item_id)
             if provider:
                 return {
@@ -208,6 +249,7 @@ def resolve(address="", latitude=None, longitude=None):
                     "longitude": longitude,
                     "geocode_status": geocode_status,
                     **provider,
+                    "governance_overlays": encode_overlays(governance_overlays),
                     "resolver_status": "RESOLVED",
                     "evidence_method": "census_geocode+el_paso_" + layer_name + "_polygon",
                     "source_urls": ";".join(source_urls),
@@ -228,6 +270,7 @@ def resolve(address="", latitude=None, longitude=None):
                 "provider_type": "body",
                 "provider_id": "body_us_co_el_paso_colorado_springs_utilities",
                 "provider_name": "Colorado Springs Utilities",
+                "governance_overlays": encode_overlays(governance_overlays),
                 "service_area_ref_id": "area_ref_csu_water_service_boundary_live",
                 "service_area_route_id": "sar_water_csu_service_area",
                 "action_route_id": "action_cos_water_service_interruption",
@@ -240,10 +283,8 @@ def resolve(address="", latitude=None, longitude=None):
         diagnostics.append(f"csu_direct={type(exc).__name__}:{str(exc)[:120]}")
 
     # Bounded fallback for points inside the actual Colorado Springs incorporated-place
-    # polygon after local district exclusion. This is not a mailing-address inference:
-    # TIGERweb must spatially confirm GEOID 0816000. CSU's official Water Efficiency
-    # Plan states that the water system serves City residents as well as some customers
-    # outside City limits. Outside-city CSU service still requires direct provider evidence.
+    # polygon after local district exclusion. Governance overlays do not block a retail
+    # provider; they remain visible as additional institutional context.
     try:
         if in_colorado_springs_place(longitude, latitude):
             source_urls.extend([
@@ -259,6 +300,7 @@ def resolve(address="", latitude=None, longitude=None):
                 "provider_type": "body",
                 "provider_id": "body_us_co_el_paso_colorado_springs_utilities",
                 "provider_name": "Colorado Springs Utilities",
+                "governance_overlays": encode_overlays(governance_overlays),
                 "service_area_ref_id": "area_ref_csu_water_service_boundary_live",
                 "service_area_route_id": "sar_water_csu_service_area",
                 "action_route_id": "action_cos_water_service_interruption",
@@ -279,6 +321,7 @@ def resolve(address="", latitude=None, longitude=None):
         "provider_type": "unknown",
         "provider_id": "",
         "provider_name": "",
+        "governance_overlays": encode_overlays(governance_overlays),
         "service_area_ref_id": "",
         "service_area_route_id": "",
         "action_route_id": "",
