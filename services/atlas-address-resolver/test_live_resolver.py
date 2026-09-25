@@ -29,12 +29,6 @@ class LiveResolverTests(unittest.TestCase):
             "action_security_water_service_interruption",
         ),
         (
-            "WIDEFIELD",
-            "10545 Drennan Road, Colorado Springs, CO 80925",
-            "gov_us_co_el_paso_widefield_wsd",
-            "action_widefield_water_service_interruption",
-        ),
-        (
             "WOODMOOR",
             "17230 Jackson Creek Pkwy, Monument, CO 80132",
             "gov_us_co_el_paso_woodmoor_water",
@@ -78,6 +72,53 @@ class LiveResolverTests(unittest.TestCase):
                         if isinstance(value, str) and value.strip():
                             all_strings.add(value.strip())
             print({"layer_inventory": layer_name, "values": sorted(all_strings)})
+
+    def _provider_centroid(self, provider_text):
+        needle = provider_text.upper()
+        for _layer_name, item_id in resolver.COUNTY_LAYERS:
+            service_url = (resolver.arcgis_service_url(item_id) or "").rstrip("/")
+            metadata = resolver.get_json(service_url, {"f": "json"})
+            layers = metadata.get("layers") or []
+            targets = [layer.get("id") for layer in layers if layer.get("id") is not None]
+            if not targets:
+                targets = [None]
+            for layer_id in targets:
+                layer_url = service_url if layer_id is None else f"{service_url}/{layer_id}"
+                data = resolver.get_json(layer_url + "/query", {
+                    "f": "json",
+                    "where": "1=1",
+                    "outFields": "*",
+                    "returnGeometry": "false",
+                    "returnCentroid": "true",
+                    "outSR": "4326",
+                })
+                for feature in data.get("features") or []:
+                    attrs = feature.get("attributes") or {}
+                    values = " | ".join(str(v) for v in attrs.values() if v is not None).upper()
+                    if needle in values:
+                        centroid = feature.get("centroid") or {}
+                        if centroid.get("x") is not None and centroid.get("y") is not None:
+                            return centroid["y"], centroid["x"], values
+        self.fail(f"No centroid found for {provider_text}")
+
+    def test_widefield_polygon_provider_and_route(self):
+        latitude, longitude, raw = self._provider_centroid("WIDEFIELD SWD")
+        result = resolver.resolve("", latitude, longitude)
+        print({
+            "label": "WIDEFIELD_POLYGON_CENTROID",
+            "latitude": latitude,
+            "longitude": longitude,
+            "raw_provider": raw,
+            "expected_provider": "gov_us_co_el_paso_widefield_wsd",
+            "actual_provider": result.get("provider_id", "") or "",
+            "expected_action_route": "action_widefield_water_service_interruption",
+            "actual_action_route": result.get("action_route_id", "") or "",
+            "resolver_status": result.get("resolver_status"),
+            "evidence_method": result.get("evidence_method"),
+            "diagnostics": result.get("diagnostics"),
+        })
+        self.assertEqual(result.get("provider_id", "") or "", "gov_us_co_el_paso_widefield_wsd")
+        self.assertEqual(result.get("action_route_id", "") or "", "action_widefield_water_service_interruption")
 
     def test_live_provider_and_route_controls(self):
         failures = []
