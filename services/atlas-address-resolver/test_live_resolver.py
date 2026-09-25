@@ -30,7 +30,7 @@ class LiveResolverTests(unittest.TestCase):
         ),
         (
             "WIDEFIELD",
-            "6965 Mesa Ridge Parkway, Fountain, CO 80817",
+            "10545 Drennan Road, Colorado Springs, CO 80925",
             "gov_us_co_el_paso_widefield_wsd",
             "action_widefield_water_service_interruption",
         ),
