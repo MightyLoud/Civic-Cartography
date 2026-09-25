@@ -25,6 +25,14 @@ PROVIDERS = [
     (r"\bWOODMOOR\b", "government", "gov_us_co_el_paso_woodmoor_water", "Woodmoor Water & Sanitation District No. 1", "area_ref_woodmoor_wsd_assessor_map", "sar_water_woodmoor_water", "action_woodmoor_water_service_interruption"),
     (r"\bACADEMY\b", "government", "gov_us_co_el_paso_academy_wsd", "Academy Water and Sanitation District", "area_ref_academy_wsd_assessor_map", "sar_water_academy_wsd", "action_academy_water_service_request"),
     (r"\bSECURITY\b", "government", "gov_us_co_el_paso_security_wsd", "Security Water and Sanitation Districts", "area_ref_security_wsd_assessor_map", "sar_water_security_wsd", "action_security_water_service_interruption"),
+    (r"\bGARDEN VALLEY\b", "government", "gov_us_co_el_paso_garden_valley_water_sanitation_district", "Garden Valley Water and Sanitation District", "area_ref_garden_valley_wsd_live_gis", "sar_water_garden_valley_wsd", ""),
+    (r"\bFOREST VIEW ACRES\b", "government", "gov_us_co_el_paso_forest_view_acres_water_district", "Forest View Acres Water District", "area_ref_forest_view_acres_wd_live_gis", "sar_water_forest_view_acres_wd", "action_forest_view_acres_water_service_interruption"),
+    (r"\bPARK FOREST\b", "government", "gov_us_co_el_paso_park_forest_water_district", "Park Forest Water District", "area_ref_park_forest_wd_live_gis", "sar_water_park_forest_wd", ""),
+    (r"\bPIONEER LOOKOUT\b", "government", "gov_us_co_el_paso_pioneer_lookout_water_district", "Pioneer Lookout Water District", "area_ref_pioneer_lookout_wd_live_gis", "sar_water_pioneer_lookout_wd", "action_pioneer_lookout_water_service_issue"),
+    (r"\bRED ROCK VALLEY ESTATES\b", "government", "gov_us_co_el_paso_red_rock_valley_estates_water_district", "Red Rock Valley Estates Water District", "area_ref_red_rock_valley_estates_wd_live_gis", "sar_water_red_rock_valley_estates_wd", ""),
+    (r"\bROCK CREEK MESA\b", "government", "gov_us_co_el_paso_rock_creek_mesa_water_district", "Rock Creek Mesa Water District", "area_ref_rock_creek_mesa_wd_live_gis", "sar_water_rock_creek_mesa_wd", "action_rock_creek_mesa_water_service_interruption"),
+    (r"\bSTRATMOOR HILLS\b", "government", "gov_us_co_el_paso_stratmoor_hills_water_district", "Stratmoor Hills Water District", "area_ref_stratmoor_hills_wd_live_gis", "sar_water_stratmoor_hills_wd", "action_stratmoor_hills_water_service_interruption"),
+    (r"\bTURKEY CANON RANCH\b", "government", "gov_us_co_el_paso_turkey_canon_ranch_water_district", "Turkey Canon Ranch Water District", "area_ref_turkey_canon_ranch_wd_live_gis", "sar_water_turkey_canon_ranch_wd", "action_turkey_canon_water_service_request"),
 ]
 
 CSV_FIELDS = [
