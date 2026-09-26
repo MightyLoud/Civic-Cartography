@@ -77,3 +77,41 @@ Safety contract:
 - Overlay routes appear only inside `governance_overlays`.
 - SECWCD allocation routing is eligibility- and annual-cycle-gated; it does not imply an application window or Project Water availability is always open.
 - Groundwater-management routes provide District-level regulatory guidance and do not pretend the districts are retail utilities or the State's well-permit issuing authority.
+
+
+## Human issue classifier
+
+The resolver can classify a plain-language water problem separately from location/provider resolution.
+
+Pass the issue text as:
+
+```
+/resolve.json?address=...&issue=My%20water%20is%20out
+```
+
+Classifier outputs:
+
+- `issue_type`
+- `issue_route_id`
+- `issue_route_source` (`provider` or `governance_overlay`)
+- `issue_classifier_status`
+- `issue_route_candidates`
+
+Current canonical issue types:
+
+- `water_service_interruption` → direct provider Action Route
+- `groundwater_regulatory_question` → groundwater-regulator overlay route
+- `augmentation_water_need` → regional augmentation overlay route
+- `project_water_allocation` → regional project-water overlay route
+- `cheyenne_creek_governance` → Cheyenne Creek governance overlay route
+
+Fail-closed statuses include:
+
+- `NEEDS_LOCATION`
+- `LOCATION_UNRESOLVED`
+- `PROCESS_BLOCKED`
+- `NO_APPLICABLE_ROUTE`
+- `AMBIGUOUS`
+- `UNSUPPORTED`
+
+The issue classifier never overwrites the underlying `provider_id`, top-level provider `action_route_id`, or `governance_overlays`.
