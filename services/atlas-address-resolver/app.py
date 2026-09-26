@@ -37,11 +37,11 @@ PROVIDERS = [
 
 
 NON_RETAIL_OVERLAYS = [
-    (r"\bCHEYENNE CREEK MD PARK & WATER\b", "streamflow_water_rights_district", "gov_us_co_el_paso_cheyenne_creek_metropolitan_district", "Cheyenne Creek Metropolitan Park and Water District", "area_ref_cheyenne_creek_water_overlay_live_gis", "sar_water_cheyenne_creek_overlay"),
-    (r"\bSOUTHEASTERN COLORADO WATER CONSERVANCY\b", "regional_water_supply_authority", "gov_us_co_southeastern_colorado_water_conservancy_district", "Southeastern Colorado Water Conservancy District", "area_ref_secwcd_live_gis", "sar_water_secwcd_overlay"),
-    (r"\bUPPER ARKANSAS WCD\b", "regional_augmentation_authority", "gov_us_co_upper_arkansas_water_conservancy_district", "Upper Arkansas Water Conservancy District", "area_ref_uawcd_live_gis", "sar_water_uawcd_overlay"),
-    (r"\bUPPER BIG SANDY GROUND WD\b", "groundwater_regulator", "gov_us_co_upper_big_sandy_ground_water_management_district", "Upper Big Sandy Ground Water Management District", "area_ref_upper_big_sandy_ground_wd_live_gis", "sar_water_upper_big_sandy_overlay"),
-    (r"\bUPPER BLK SQUIRREL CRK GRD WD\b", "groundwater_regulator", "gov_us_co_el_paso_upper_black_squirrel_creek_ground_water_management_district", "Upper Black Squirrel Creek Ground Water Management District", "area_ref_upper_black_squirrel_ground_wd_live_gis", "sar_water_upper_black_squirrel_overlay"),
+    (r"\bCHEYENNE CREEK MD PARK & WATER\b", "streamflow_water_rights_district", "gov_us_co_el_paso_cheyenne_creek_metropolitan_district", "Cheyenne Creek Metropolitan Park and Water District", "area_ref_cheyenne_creek_water_overlay_live_gis", "sar_water_cheyenne_creek_overlay", "action_cheyenne_creek_streamflow_governance_inquiry"),
+    (r"\bSOUTHEASTERN COLORADO WATER CONSERVANCY\b", "regional_water_supply_authority", "gov_us_co_southeastern_colorado_water_conservancy_district", "Southeastern Colorado Water Conservancy District", "area_ref_secwcd_live_gis", "sar_water_secwcd_overlay", "action_secwcd_project_water_allocation"),
+    (r"\bUPPER ARKANSAS WCD\b", "regional_augmentation_authority", "gov_us_co_upper_arkansas_water_conservancy_district", "Upper Arkansas Water Conservancy District", "area_ref_uawcd_live_gis", "sar_water_uawcd_overlay", "action_uawcd_augmentation_application"),
+    (r"\bUPPER BIG SANDY GROUND WD\b", "groundwater_regulator", "gov_us_co_upper_big_sandy_ground_water_management_district", "Upper Big Sandy Ground Water Management District", "area_ref_upper_big_sandy_ground_wd_live_gis", "sar_water_upper_big_sandy_overlay", "action_upper_big_sandy_groundwater_regulatory_inquiry"),
+    (r"\bUPPER BLK SQUIRREL CRK GRD WD\b", "groundwater_regulator", "gov_us_co_el_paso_upper_black_squirrel_creek_ground_water_management_district", "Upper Black Squirrel Creek Ground Water Management District", "area_ref_upper_black_squirrel_ground_wd_live_gis", "sar_water_upper_black_squirrel_overlay", "action_upper_black_squirrel_groundwater_regulatory_inquiry"),
 ]
 
 CSV_FIELDS = [
@@ -146,7 +146,7 @@ def classify_overlays(features):
     for feature in features:
         attrs = feature.get("attributes") or {}
         text = " | ".join(str(v) for v in attrs.values() if v is not None).upper()
-        for pattern, overlay_class, object_id, object_name, area_ref, route_id in NON_RETAIL_OVERLAYS:
+        for pattern, overlay_class, object_id, object_name, area_ref, route_id, action_route_id in NON_RETAIL_OVERLAYS:
             if re.search(pattern, text, re.I) and object_id not in seen:
                 seen.add(object_id)
                 matches.append({
@@ -155,6 +155,7 @@ def classify_overlays(features):
                     "object_name": object_name,
                     "service_area_ref_id": area_ref,
                     "service_area_route_id": route_id,
+                    "action_route_id": action_route_id,
                 })
     return matches
 
