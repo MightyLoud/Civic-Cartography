@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "services/atlas-address-resolver/**"
+      - "docs/contracts/atlas-civicdata-representation-provider-v0.1.md"
       - ".github/workflows/validate-atlas-address-resolver.yml"
   workflow_dispatch:
 
@@ -20,6 +21,12 @@ jobs:
         with:
           python-version: "3.12"
       - name: Compile resolver
-        run: python -m py_compile services/atlas-address-resolver/app.py
+        run: >-
+          python -m py_compile
+          services/atlas-address-resolver/app.py
+          services/atlas-address-resolver/representation_provider.py
+          services/atlas-address-resolver/test_representation_provider.py
+      - name: Run representation provider contract controls
+        run: python services/atlas-address-resolver/test_representation_provider.py
       - name: Run live address-provider controls
         run: python services/atlas-address-resolver/test_live_resolver.py
