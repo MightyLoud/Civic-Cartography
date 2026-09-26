@@ -328,6 +328,43 @@ class LiveResolverTests(unittest.TestCase):
         self.assertFalse(failures, failures)
 
 
+    def test_cross_domain_institution_routes_without_location(self):
+        unresolved = {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT", "governance_overlays": ""}
+
+        result = resolver.apply_issue_route(
+            unresolved,
+            "I need an ADA accommodation for a Colorado Springs city program.",
+        )
+        self.assertEqual(result["issue_domain"], "accessibility")
+        self.assertEqual(result["issue_type"], "public_program_accessibility_barrier")
+        self.assertEqual(result["issue_classifier_status"], "ROUTED")
+        self.assertEqual(result["issue_route_source"], "institution")
+        self.assertEqual(result["issue_route_id"], "action_cos_accessibility_public_program")
+
+        result = resolver.apply_issue_route(
+            unresolved,
+            "I want to file a CORA request for Colorado Springs city records.",
+        )
+        self.assertEqual(result["issue_domain"], "public_records")
+        self.assertEqual(result["issue_type"], "city_public_record_request")
+        self.assertEqual(result["issue_classifier_status"], "ROUTED")
+        self.assertEqual(result["issue_route_source"], "institution")
+        self.assertEqual(result["issue_route_id"], "action_cos_public_records_general")
+
+    def test_cross_domain_needs_institution(self):
+        unresolved = {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT", "governance_overlays": ""}
+
+        result = resolver.apply_issue_route(unresolved, "I need public records.")
+        self.assertEqual(result["issue_domain"], "public_records")
+        self.assertEqual(result["issue_type"], "city_public_record_request")
+        self.assertEqual(result["issue_classifier_status"], "NEEDS_INSTITUTION")
+        self.assertEqual(result["issue_route_id"], "")
+
+        result = resolver.apply_issue_route(unresolved, "I need an ADA accommodation.")
+        self.assertEqual(result["issue_domain"], "accessibility")
+        self.assertEqual(result["issue_classifier_status"], "NEEDS_INSTITUTION")
+        self.assertEqual(result["issue_route_id"], "")
+
     def test_issue_classifier_plain_language_routes(self):
         # Retail service problem → direct provider Action Route.
         result = resolver.apply_issue_route(
