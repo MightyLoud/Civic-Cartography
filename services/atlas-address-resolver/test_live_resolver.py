@@ -365,6 +365,21 @@ class LiveResolverTests(unittest.TestCase):
                 self.assertEqual(result["issue_route_source"], "institution")
                 self.assertEqual(result["issue_route_id"], expected_route)
 
+        # Explicit dumping-vs-discharge precedence examples.
+        result = resolver.apply_issue_route(
+            spatial,
+            "Someone is illegally dumping trash in a public area.",
+        )
+        self.assertEqual(result["issue_type"], "public_space_trash_or_illegal_dumping")
+        self.assertEqual(result["issue_route_id"], "action_cos_public_space_dumping_report")
+
+        result = resolver.apply_issue_route(
+            spatial,
+            "Someone dumped oil into a storm drain.",
+        )
+        self.assertEqual(result["issue_type"], "illegal_dumping_or_nonemergency_spill")
+        self.assertEqual(result["issue_route_id"], "action_cos_illicit_discharge_report")
+
         # Property trash stays in Neighborhood Services code enforcement, while public-space dumping stays in general City intake.
         result = resolver.apply_issue_route(
             spatial,
