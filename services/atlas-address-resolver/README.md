@@ -115,3 +115,30 @@ Fail-closed statuses include:
 - `UNSUPPORTED`
 
 The issue classifier never overwrites the underlying `provider_id`, top-level provider `action_route_id`, or `governance_overlays`.
+
+
+## Cross-domain civic issue routing
+
+The resolver now supports both spatial issues and institution-first civic issues.
+
+### Institution-first routes
+These do not require an address when the responsible institution is explicit in the issue text:
+
+- Colorado Springs ADA / public-program accessibility → `action_cos_accessibility_public_program`
+- Colorado Springs public records / CORA → `action_cos_public_records_general`
+
+Generic wording such as "I need public records" or "I need an ADA accommodation" fails closed with `NEEDS_INSTITUTION` rather than assuming Colorado Springs.
+
+### Spatial routes
+Water issues continue to use the existing address/provider/governance-overlay resolver.
+
+The classifier output includes:
+
+- `issue_domain`
+- `issue_type`
+- `issue_route_id`
+- `issue_route_source`
+- `issue_classifier_status`
+- `issue_route_candidates`
+
+This allows the same endpoint to route institution-based and location-based civic problems without changing the underlying provider or governance models.
