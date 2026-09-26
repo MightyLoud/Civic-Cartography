@@ -156,7 +156,7 @@ ISSUE_RULES = [
     (
         "code_enforcement",
         "public_space_trash_or_illegal_dumping",
-        [r"\billegal dumping\b", r"\bdumped trash\b", r"\bdumped debris\b", r"\btrash pile\b", r"\bdebris pile\b", r"\bgarbage dumped\b", r"\bdumped garbage\b", r"\btires dumped\b", r"\bdumped tires\b", r"\bmattress dumped\b", r"\bdumped mattress\b"],
+        [r"\billegal dumping\b", r"\bdumped (?:a )?trash\b", r"\bdumped (?:a )?debris\b", r"\btrash pile\b", r"\bdebris pile\b", r"\bgarbage dumped\b", r"\bdumped (?:a )?garbage\b", r"\btires dumped\b", r"\bdumped (?:a )?tires\b", r"\bmattress dumped\b", r"\bdumped (?:a )?mattress\b"],
         [],
         True,
         "institution",
