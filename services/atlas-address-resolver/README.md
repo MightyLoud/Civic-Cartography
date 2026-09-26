@@ -227,3 +227,19 @@ All three require a resolved point inside the Colorado Springs incorporated-plac
 - outside Colorado Springs → `NO_APPLICABLE_ROUTE`
 
 Wildlife is excluded from the domestic-animal routes. The Atlas actor record explicitly represents HSPPR as an external contracted service actor and does not imply City ownership of the nonprofit.
+
+## Permits and licensing cohort
+
+The resolver now distinguishes three Colorado Springs permit/licensing responsibility patterns:
+
+- City-regulated business-license applicability/application → `action_cos_business_license`
+- Building/construction permit determination through Pikes Peak Regional Building Department → `action_cos_building_permit`
+- Special-event permit determination through the Office of Special Events → `action_cos_special_event_permit`
+
+Important authority rules:
+
+- Colorado Springs does not have a general business license. The City Clerk route determines whether the business type is one of the regulated license categories.
+- PPRBD is modeled as a regional authority, not a City department. The Colorado Springs resolver route is location-gated to the pilot city while PPRBD itself serves multiple jurisdictions.
+- Special-event routing begins with the Office of Special Events / Permit Partner and preserves additional approvals such as road closures, alcohol, noise, vendors, or park-specific permits.
+
+All three routes require a resolved point inside the Colorado Springs incorporated-place polygon. Missing location returns `NEEDS_LOCATION`; outside-city points return `NO_APPLICABLE_ROUTE`.
