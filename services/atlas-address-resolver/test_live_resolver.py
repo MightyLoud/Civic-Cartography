@@ -334,14 +334,14 @@ class LiveResolverTests(unittest.TestCase):
             (
                 "There are overgrown weeds and junk outside on the property.",
                 "code_enforcement",
-                "neighborhood_code_or_nuisance_violation",
-                "action_cos_neighborhood_code_complaint",
+                "property_code_nuisance",
+                "action_cos_code_enforcement_nuisance",
             ),
             (
-                "Someone is illegally dumping debris here.",
-                "code_enforcement",
-                "illegal_dumping_or_debris",
-                "action_cos_illegal_dumping_complaint",
+                "Someone is illegally dumping yard waste here.",
+                "stormwater",
+                "illegal_dumping_or_nonemergency_spill",
+                "action_cos_illicit_dumping_nonemergency",
             ),
             (
                 "There is an abandoned vehicle that has not moved for 3 days.",
@@ -364,8 +364,8 @@ class LiveResolverTests(unittest.TestCase):
             spatial,
             "There is an inoperable vehicle on private property.",
         )
-        self.assertEqual(result["issue_type"], "neighborhood_code_or_nuisance_violation")
-        self.assertEqual(result["issue_route_id"], "action_cos_neighborhood_code_complaint")
+        self.assertEqual(result["issue_type"], "property_code_nuisance")
+        self.assertEqual(result["issue_route_id"], "action_cos_code_enforcement_nuisance")
 
         missing = {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT", "governance_overlays": ""}
         for issue, _domain, _type, _route in cases:
