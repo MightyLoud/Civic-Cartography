@@ -284,3 +284,21 @@ Responsibility safeguards:
 - Fire-code complaints route to the Division of the Fire Marshal. Building-code, health/housing, hydrant, outdoor-burning, and emergency issues retain their separate channels.
 
 All four routes require a resolved point inside the Colorado Springs incorporated-place polygon. Missing location returns `NEEDS_LOCATION`; outside-city points return `NO_APPLICABLE_ROUTE`.
+
+## Municipal Court / adjudication cohort
+
+The resolver now supports institution-first Colorado Springs Municipal Court routing:
+
+- Contest a Colorado Springs parking ticket → `action_cos_contest_parking_ticket`
+- Handle a Colorado Springs Municipal Court traffic/ordinance citation → `action_cos_municipal_citation_case`
+- Pay a payable Colorado Springs Municipal Court ticket/fine → `action_cos_municipal_court_payment`
+- Obtain a Colorado Springs Municipal Court record/transcript → `action_cos_municipal_court_records`
+
+These routes do not require an address when the issue text explicitly identifies Colorado Springs or Municipal Court. Generic ticket/court language without a resolvable institution fails closed with `NEEDS_INSTITUTION`.
+
+Responsibility safeguards:
+
+- Parking enforcement and parking-ticket adjudication remain separate.
+- Paying a ticket is not treated as equivalent to contesting it; current ticket/case instructions control payable status and appearance requirements.
+- Court records remain distinct from the general City CORA route and from CSPD criminal-justice records.
+- The summons controls jurisdiction; citations naming another court are outside these routes.
