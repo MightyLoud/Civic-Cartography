@@ -63,6 +63,7 @@ ISSUE_RULES = [
         "institution",
         "",
         "action_cos_accessibility_public_program",
+        "",
     ),
     (
         "public_records",
@@ -73,6 +74,18 @@ ISSUE_RULES = [
         "institution",
         "",
         "action_cos_public_records_general",
+        "",
+    ),
+    (
+        "transportation",
+        "pothole_or_street_surface_defect",
+        [r"\bpothole\b", r"\bstreet pothole\b", r"\broad pothole\b", r"\bpavement hole\b", r"\bstreet surface defect\b"],
+        [],
+        True,
+        "institution",
+        "",
+        "action_cos_pothole_report",
+        "colorado_springs_place",
     ),
     (
         "water",
@@ -82,6 +95,7 @@ ISSUE_RULES = [
         True,
         "governance_overlay",
         "regional_water_supply_authority",
+        "",
         "",
     ),
     (
@@ -93,6 +107,7 @@ ISSUE_RULES = [
         "governance_overlay",
         "regional_augmentation_authority",
         "",
+        "",
     ),
     (
         "water",
@@ -102,6 +117,7 @@ ISSUE_RULES = [
         True,
         "governance_overlay",
         "streamflow_water_rights_district",
+        "",
         "",
     ),
     (
@@ -113,6 +129,7 @@ ISSUE_RULES = [
         "governance_overlay",
         "groundwater_regulator",
         "",
+        "",
     ),
     (
         "water",
@@ -121,6 +138,7 @@ ISSUE_RULES = [
         [],
         True,
         "provider",
+        "",
         "",
         "",
     ),
@@ -420,10 +438,11 @@ def classify_issue(issue_text):
             "required_overlay_class": "",
             "requires_location": False,
             "fixed_action_route_id": "",
+            "required_location_scope": "",
             "issue_classifier_status": "NOT_CLASSIFIED",
         }
 
-    for issue_domain, issue_type, patterns, context_patterns, requires_location, route_source, required_overlay_class, fixed_action_route_id in ISSUE_RULES:
+    for issue_domain, issue_type, patterns, context_patterns, requires_location, route_source, required_overlay_class, fixed_action_route_id, required_location_scope in ISSUE_RULES:
         if not any(re.search(pattern, text, re.I) for pattern in patterns):
             continue
         if context_patterns and not any(re.search(pattern, text, re.I) for pattern in context_patterns):
@@ -435,6 +454,7 @@ def classify_issue(issue_text):
                 "required_overlay_class": required_overlay_class,
                 "requires_location": requires_location,
                 "fixed_action_route_id": fixed_action_route_id,
+                "required_location_scope": required_location_scope,
                 "issue_classifier_status": "NEEDS_INSTITUTION",
             }
         return {
@@ -445,6 +465,7 @@ def classify_issue(issue_text):
             "required_overlay_class": required_overlay_class,
             "requires_location": requires_location,
             "fixed_action_route_id": fixed_action_route_id,
+            "required_location_scope": required_location_scope,
             "issue_classifier_status": "CLASSIFIED",
         }
 
@@ -456,6 +477,7 @@ def classify_issue(issue_text):
         "required_overlay_class": "",
         "requires_location": False,
         "fixed_action_route_id": "",
+        "required_location_scope": "",
         "issue_classifier_status": "UNSUPPORTED",
     }
 
@@ -475,6 +497,26 @@ def apply_issue_route(result, issue_text):
     if status in ("NOT_CLASSIFIED", "UNSUPPORTED", "NEEDS_INSTITUTION"):
         return routed
 
+    if classification.get("requires_location"):
+        if routed.get("geocode_status") == "MISSING_INPUT":
+            routed["issue_classifier_status"] = "NEEDS_LOCATION"
+            return routed
+        if routed.get("geocode_status") == "NO_MATCH":
+            routed["issue_classifier_status"] = "LOCATION_UNRESOLVED"
+            return routed
+
+        required_scope = classification.get("required_location_scope", "") or ""
+        if required_scope == "colorado_springs_place":
+            latitude = routed.get("latitude")
+            longitude = routed.get("longitude")
+            try:
+                if latitude is None or longitude is None or not in_colorado_springs_place(longitude, latitude):
+                    routed["issue_classifier_status"] = "NO_APPLICABLE_ROUTE"
+                    return routed
+            except Exception:
+                routed["issue_classifier_status"] = "LOCATION_UNRESOLVED"
+                return routed
+
     if classification.get("issue_route_source") == "institution":
         fixed_route = classification.get("fixed_action_route_id", "") or ""
         if fixed_route:
@@ -484,14 +526,6 @@ def apply_issue_route(result, issue_text):
         else:
             routed["issue_classifier_status"] = "NO_APPLICABLE_ROUTE"
         return routed
-
-    if classification.get("requires_location"):
-        if routed.get("geocode_status") == "MISSING_INPUT":
-            routed["issue_classifier_status"] = "NEEDS_LOCATION"
-            return routed
-        if routed.get("geocode_status") == "NO_MATCH":
-            routed["issue_classifier_status"] = "LOCATION_UNRESOLVED"
-            return routed
 
     if classification.get("issue_route_source") == "provider":
         provider_id = routed.get("provider_id", "") or ""
