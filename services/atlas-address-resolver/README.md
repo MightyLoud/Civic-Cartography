@@ -173,3 +173,31 @@ Fail-closed behavior:
 - outside Colorado Springs → `NO_APPLICABLE_ROUTE`
 
 The municipal boundary is an intake-routing control, not proof of City ownership/maintenance responsibility for every road, asset, or drainage structure.
+
+
+## Optional representation enrichment
+
+`/resolve.json` can optionally attach a certified civic-representation result from a separate provider.
+
+Configuration:
+
+```text
+ATLAS_REPRESENTATION_PROVIDER_URL=<location-aware provider endpoint>
+ATLAS_REPRESENTATION_PROVIDER_TIMEOUT=10
+```
+
+When the URL is unset, the JSON response reports `representation.status = DISABLED`.
+The existing `/resolve.csv` contract is unchanged and never calls the representation provider.
+
+Atlas sends the provider only `lat` and `lon`; it does not send the typed or matched street address.
+
+A `PASS` response must include a pinned snapshot-manifest hash, OCD jurisdiction/division IDs,
+fully certified representation gates, applicable Posts/offices and holders, exact seat/vacancy
+parity, valid reviewed shared IDs when present, and `canonical_writes = 0`.
+
+Malformed IDs, uncertified data, broken seat parity, provider errors, or non-zero write claims
+fail closed as `INVALID_RESPONSE` or `UNAVAILABLE`.
+
+This interface is designed for the canonical representation layer maintained in
+`MightyLoud/CivicData`. Live activation remains off until a governed Colorado Springs /
+El Paso location-aware representation provider exists.
