@@ -211,7 +211,7 @@ ISSUE_RULES = [
     (
         "courts",
         "contest_parking_ticket",
-        [r"\bcontest (?:a |my |the )?parking ticket\b", r"\bdispute (?:a |my |the )?parking ticket\b", r"\bfight (?:a |my |the )?parking ticket\b", r"\bparking ticket referee\b"],
+        [r"\bcontest (?:a |my |the )?(?:colorado springs )?parking ticket\b", r"\bdispute (?:a |my |the )?(?:colorado springs )?parking ticket\b", r"\bfight (?:a |my |the )?(?:colorado springs )?parking ticket\b", r"\bparking ticket referee\b"],
         [r"\bcolorado springs\b", r"\bmunicipal court\b", r"\bcity parking ticket\b"],
         False,
         "institution",
@@ -222,7 +222,7 @@ ISSUE_RULES = [
     (
         "courts",
         "municipal_court_payment",
-        [r"\bpay (?:a |my |the )?(?:parking |traffic )?(?:ticket|citation|fine)\b", r"\bpay court fine\b", r"\bcourt payment\b", r"\bpay my ticket\b", r"\bpay my fine\b"],
+        [r"\bpay (?:a |my |the )?(?:colorado springs )?(?:parking |traffic )?(?:ticket|citation|fine)\b", r"\bpay court fine\b", r"\bcourt payment\b", r"\bpay my ticket\b", r"\bpay my fine\b"],
         [r"\bcolorado springs\b", r"\bmunicipal court\b", r"\bcity ticket\b", r"\bcity citation\b"],
         False,
         "institution",
@@ -233,7 +233,7 @@ ISSUE_RULES = [
     (
         "courts",
         "municipal_traffic_or_ordinance_citation",
-        [r"\bcontest (?:a |my |the )?(?:traffic )?(?:ticket|citation)\b", r"\bplead not guilty\b", r"\btraffic court\b", r"\bmunicipal citation\b", r"\bcourt date for (?:a |my |the )?(?:ticket|citation)\b"],
+        [r"\bcontest (?:a |my |the )?(?:colorado springs )?(?:traffic )?(?:ticket|citation)\b", r"\bplead not guilty\b", r"\btraffic court\b", r"\bmunicipal citation\b", r"\bcourt date for (?:a |my |the )?(?:colorado springs )?(?:ticket|citation)\b"],
         [r"\bcolorado springs\b", r"\bmunicipal court\b", r"\bcity citation\b", r"\bcity ticket\b"],
         False,
         "institution",
