@@ -243,3 +243,26 @@ Important authority rules:
 - Special-event routing begins with the Office of Special Events / Permit Partner and preserves additional approvals such as road closures, alcohol, noise, vendors, or park-specific permits.
 
 All three routes require a resolved point inside the Colorado Springs incorporated-place polygon. Missing location returns `NEEDS_LOCATION`; outside-city points return `NO_APPLICABLE_ROUTE`.
+
+## Planning and land-use cohort
+
+The resolver now separates Colorado Springs planning responsibilities across Land Use Review, Planning Commission, City Clerk, and City Council.
+
+Current location-gated routes:
+
+- Zoning / allowed-use guidance → `action_cos_zoning_land_use_question`
+- Development application / review → `action_cos_development_application`
+- Use or non-use variance → `action_cos_land_use_variance`
+- Rezoning / zone change → `action_cos_zone_change`
+- Appeal an administrative land-use decision → `action_cos_admin_land_use_appeal`
+- Appeal a Planning Commission decision to City Council → `action_cos_planning_commission_appeal`
+
+Decision-chain safeguards:
+
+- Land Use Review handles pre-application, intake and administrative review.
+- Planning Commission decides specified variance/hearing applications and hears administrative appeals.
+- Planning Commission recommends zone changes; City Council makes the final zone-change decision.
+- Administrative appeals file through Land Use Review; Planning Commission appeals file through the City Clerk for City Council review.
+- The current City process uses a 10-day appeal window. Current forms and fees remain external/current-state data and are not hard-coded.
+
+All six routes require a resolved point inside the Colorado Springs incorporated-place polygon. Missing location returns `NEEDS_LOCATION`; outside-city points return `NO_APPLICABLE_ROUTE`.
