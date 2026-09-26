@@ -191,3 +191,22 @@ All four require a resolvable point inside the Colorado Springs incorporated-pla
 - outside Colorado Springs → `NO_APPLICABLE_ROUTE`
 
 Emergency/hazardous spills, active crimes, and immediate hazards remain outside these non-emergency routes.
+
+
+## Neighborhood and code-enforcement cohort
+
+The cross-domain classifier includes four Colorado Springs location-gated neighborhood/enforcement routes:
+
+- Private-property / neighborhood code nuisance → `action_cos_code_enforcement_complaint`
+- Non-emergency illicit discharge / environmental dumping → `action_cos_illicit_discharge_report`
+- Generic public-space trash / illegal dumping → `action_cos_public_space_dumping_report`
+- Abandoned vehicle on a City street / right-of-way → `action_cos_abandoned_street_vehicle_report`
+
+Classifier precedence is intentional:
+
+1. Environmental/stormwater dumping language wins over generic illegal dumping.
+2. Private-property vehicle/property nuisance language routes to general Neighborhood Services code enforcement.
+3. Abandoned street-vehicle language routes to the specific 72-hour street/right-of-way process.
+4. Generic public-space trash/dumping falls back to GoCOS City intake for downstream triage.
+
+All four require a resolved point inside the Colorado Springs incorporated-place polygon. Missing location fails with `NEEDS_LOCATION`; outside-city locations fail with `NO_APPLICABLE_ROUTE`.
