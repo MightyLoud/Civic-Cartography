@@ -266,3 +266,21 @@ Decision-chain safeguards:
 - The current City process uses a 10-day appeal window. Current forms and fees remain external/current-state data and are not hard-coded.
 
 All six routes require a resolved point inside the Colorado Springs incorporated-place polygon. Missing location returns `NEEDS_LOCATION`; outside-city points return `NO_APPLICABLE_ROUTE`.
+
+## Public safety / non-emergency cohort
+
+The resolver now separates four Colorado Springs non-emergency public-safety patterns:
+
+- Excessive-noise / loud-party complaint → `action_cos_noise_complaint`
+- Current parking violation / enforcement → `action_cos_parking_enforcement_report`
+- Non-emergency police report → `action_cos_nonemergency_police_report`
+- Fire-code violation / hazard concern → `action_cos_fire_code_concern`
+
+Responsibility safeguards:
+
+- CSPD non-emergency dispatch is used for non-life-threatening police/noise matters; emergencies and crimes in progress remain outside this route set.
+- Eligible minor crimes may use CSPD online reporting; ineligible non-emergency incidents fall back to 719-444-7000.
+- Parking enforcement is shared: Parking System Enterprise officers handle Downtown and Old Colorado City while CSPD primarily handles parking enforcement elsewhere in the City. Abandoned vehicles and parking-ticket disputes remain separate.
+- Fire-code complaints route to the Division of the Fire Marshal. Building-code, health/housing, hydrant, outdoor-burning, and emergency issues retain their separate channels.
+
+All four routes require a resolved point inside the Colorado Springs incorporated-place polygon. Missing location returns `NEEDS_LOCATION`; outside-city points return `NO_APPLICABLE_ROUTE`.
