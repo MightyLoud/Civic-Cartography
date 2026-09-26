@@ -328,6 +328,31 @@ class LiveResolverTests(unittest.TestCase):
         self.assertFalse(failures, failures)
 
 
+    def test_pothole_location_gated_routing(self):
+        # In-city address routes to City Public Works pothole intake.
+        spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
+        result = resolver.apply_issue_route(spatial, "There is a pothole in the road.")
+        self.assertEqual(result["issue_domain"], "transportation")
+        self.assertEqual(result["issue_type"], "pothole_or_street_surface_defect")
+        self.assertEqual(result["issue_classifier_status"], "ROUTED")
+        self.assertEqual(result["issue_route_source"], "institution")
+        self.assertEqual(result["issue_route_id"], "action_cos_pothole_report")
+
+        # Missing location fails closed.
+        result = resolver.apply_issue_route(
+            {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT", "governance_overlays": ""},
+            "There is a pothole in the road.",
+        )
+        self.assertEqual(result["issue_classifier_status"], "NEEDS_LOCATION")
+        self.assertEqual(result["issue_route_id"], "")
+
+        # A point in the Woodmoor service area is outside the Colorado Springs place boundary.
+        lat, lon, _raw = self._provider_centroid("WOODMOOR SWD")
+        spatial = resolver.resolve("", lat, lon)
+        result = resolver.apply_issue_route(spatial, "There is a pothole in the road.")
+        self.assertEqual(result["issue_classifier_status"], "NO_APPLICABLE_ROUTE")
+        self.assertEqual(result["issue_route_id"], "")
+
     def test_cross_domain_institution_routes_without_location(self):
         unresolved = {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT", "governance_overlays": ""}
 
