@@ -48,7 +48,42 @@ CSV_FIELDS = [
     "input_address", "matched_address", "latitude", "longitude", "geocode_status",
     "provider_type", "provider_id", "provider_name", "governance_overlays", "service_area_ref_id",
     "service_area_route_id", "action_route_id", "resolver_status",
+    "issue_text", "issue_type", "issue_route_id", "issue_route_source",
+    "issue_classifier_status", "issue_route_candidates",
     "evidence_method", "source_urls", "diagnostics",
+]
+
+ISSUE_RULES = [
+    (
+        "project_water_allocation",
+        [r"\bproject water\b", r"\bfryingpan[- ]arkansas\b", r"\bfry[- ]ark\b"],
+        "governance_overlay",
+        "regional_water_supply_authority",
+    ),
+    (
+        "augmentation_water_need",
+        [r"\baugmentation\b", r"\breplacement water\b"],
+        "governance_overlay",
+        "regional_augmentation_authority",
+    ),
+    (
+        "cheyenne_creek_governance",
+        [r"\bcheyenne creek\b"],
+        "governance_overlay",
+        "streamflow_water_rights_district",
+    ),
+    (
+        "groundwater_regulatory_question",
+        [r"\bgroundwater\b", r"\bwell permit\b", r"\bwell rules?\b", r"\bwell regulation\b", r"\bgroundwater export\b", r"\bgroundwater metering\b"],
+        "governance_overlay",
+        "groundwater_regulator",
+    ),
+    (
+        "water_service_interruption",
+        [r"\bno water\b", r"\bwater(?: is|'s)? out\b", r"\boutage\b", r"\blow (?:water )?pressure\b", r"\bwater main break\b", r"\bservice interruption\b", r"\bwater leak\b", r"\bwater service problem\b"],
+        "provider",
+        "",
+    ),
 ]
 
 SELF_TESTS = [
@@ -333,6 +368,93 @@ def resolve(address="", latitude=None, longitude=None):
     }
 
 
+
+def classify_issue(issue_text):
+    text = (issue_text or "").strip().lower()
+    if not text:
+        return {
+            "issue_text": "",
+            "issue_type": "",
+            "issue_route_source": "",
+            "required_overlay_class": "",
+            "issue_classifier_status": "NOT_CLASSIFIED",
+        }
+    for issue_type, patterns, route_source, required_overlay_class in ISSUE_RULES:
+        if any(re.search(pattern, text, re.I) for pattern in patterns):
+            return {
+                "issue_text": issue_text,
+                "issue_type": issue_type,
+                "issue_route_source": route_source,
+                "required_overlay_class": required_overlay_class,
+                "issue_classifier_status": "CLASSIFIED",
+            }
+    return {
+        "issue_text": issue_text,
+        "issue_type": "",
+        "issue_route_source": "",
+        "required_overlay_class": "",
+        "issue_classifier_status": "UNSUPPORTED",
+    }
+
+
+def apply_issue_route(result, issue_text):
+    routed = dict(result)
+    classification = classify_issue(issue_text)
+    routed["issue_text"] = classification.get("issue_text", "")
+    routed["issue_type"] = classification.get("issue_type", "")
+    routed["issue_route_id"] = ""
+    routed["issue_route_source"] = classification.get("issue_route_source", "")
+    routed["issue_classifier_status"] = classification.get("issue_classifier_status", "")
+    routed["issue_route_candidates"] = ""
+
+    status = classification.get("issue_classifier_status")
+    if status in ("NOT_CLASSIFIED", "UNSUPPORTED"):
+        return routed
+
+    if routed.get("geocode_status") == "MISSING_INPUT":
+        routed["issue_classifier_status"] = "NEEDS_LOCATION"
+        return routed
+    if routed.get("geocode_status") == "NO_MATCH":
+        routed["issue_classifier_status"] = "LOCATION_UNRESOLVED"
+        return routed
+
+    if classification.get("issue_route_source") == "provider":
+        provider_id = routed.get("provider_id", "") or ""
+        provider_route = routed.get("action_route_id", "") or ""
+        if provider_id and provider_route:
+            routed["issue_route_id"] = provider_route
+            routed["issue_route_source"] = "provider"
+            routed["issue_classifier_status"] = "ROUTED"
+        elif provider_id:
+            routed["issue_classifier_status"] = "PROCESS_BLOCKED"
+        else:
+            routed["issue_classifier_status"] = "NO_APPLICABLE_ROUTE"
+        return routed
+
+    overlays = json.loads(routed.get("governance_overlays") or "[]")
+    required_class = classification.get("required_overlay_class", "")
+    candidates = [
+        {
+            "object_id": overlay.get("object_id", ""),
+            "resolver_class": overlay.get("resolver_class", ""),
+            "action_route_id": overlay.get("action_route_id", ""),
+        }
+        for overlay in overlays
+        if overlay.get("resolver_class") == required_class and overlay.get("action_route_id")
+    ]
+    routed["issue_route_candidates"] = json.dumps(candidates, separators=(",", ":"), sort_keys=True) if candidates else ""
+
+    if len(candidates) == 1:
+        routed["issue_route_id"] = candidates[0]["action_route_id"]
+        routed["issue_route_source"] = "governance_overlay"
+        routed["issue_classifier_status"] = "ROUTED"
+    elif len(candidates) > 1:
+        routed["issue_classifier_status"] = "AMBIGUOUS"
+    else:
+        routed["issue_classifier_status"] = "NO_APPLICABLE_ROUTE"
+    return routed
+
+
 def run_self_tests():
     results = []
     for label, address, expected_provider_id in SELF_TESTS:
@@ -378,6 +500,7 @@ class Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         params = urllib.parse.parse_qs(parsed.query)
         address = (params.get("address") or [""])[0].strip()
+        issue = (params.get("issue") or [""])[0].strip()
         lat = (params.get("lat") or [None])[0]
         lon = (params.get("lon") or [None])[0]
 
@@ -398,7 +521,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_text(200, json.dumps(run_self_tests()), "application/json")
 
         if parsed.path in ("/resolve.csv", "/resolve.json"):
-            result = resolve(address, lat, lon)
+            result = apply_issue_route(resolve(address, lat, lon), issue)
             if parsed.path.endswith(".json"):
                 return self.send_text(200, json.dumps(result), "application/json")
             output = io.StringIO()
