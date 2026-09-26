@@ -134,7 +134,7 @@ ISSUE_RULES = [
     (
         "stormwater",
         "illegal_dumping_or_nonemergency_spill",
-        [r"\billegal dumping.*storm drain\b", r"\bdumping.*storm drain\b", r"\bdumping.*into drain\b", r"\bdumping.*waterway\b", r"\bspill in street\b", r"\boil in street\b", r"\bconcrete wash(?: water)?\b", r"\bconstruction discharge\b", r"\bdumped yard waste\b", r"\byard waste dumped\b", r"\bnon[- ]hazardous waste\b", r"\bsmall spill\b", r"\billicit discharge\b"],
+        [r"\billegal dumping.*storm drain\b", r"\bdumping.*storm drain\b", r"\bdumped.*storm drain\b", r"\bdumping.*into drain\b", r"\bdumped.*into drain\b", r"\bdumping.*waterway\b", r"\bdumped.*waterway\b", r"\bspill in street\b", r"\boil in street\b", r"\bconcrete wash(?: water)?\b", r"\bconstruction discharge\b", r"\bdumped yard waste\b", r"\byard waste dumped\b", r"\bnon[- ]hazardous waste\b", r"\bsmall spill\b", r"\billicit discharge\b"],
         [],
         True,
         "institution",
@@ -156,7 +156,7 @@ ISSUE_RULES = [
     (
         "code_enforcement",
         "public_space_trash_or_illegal_dumping",
-        [r"\billegal dumping\b", r"\bdumped (?:a )?trash\b", r"\bdumped (?:a )?debris\b", r"\btrash pile\b", r"\bdebris pile\b", r"\bgarbage dumped\b", r"\bdumped (?:a )?garbage\b", r"\btires dumped\b", r"\bdumped (?:a )?tires\b", r"\bmattress dumped\b", r"\bdumped (?:a )?mattress\b"],
+        [r"\billegal dumping\b", r"\billegally dumping\b", r"\bdumped (?:a )?trash\b", r"\bdumped (?:a )?debris\b", r"\btrash pile\b", r"\bdebris pile\b", r"\bgarbage dumped\b", r"\bdumped (?:a )?garbage\b", r"\btires dumped\b", r"\bdumped (?:a )?tires\b", r"\bmattress dumped\b", r"\bdumped (?:a )?mattress\b"],
         [],
         True,
         "institution",
