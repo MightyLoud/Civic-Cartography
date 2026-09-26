@@ -328,6 +328,74 @@ class LiveResolverTests(unittest.TestCase):
         self.assertFalse(failures, failures)
 
 
+    def test_public_safety_nonemergency_location_gated_routes(self):
+        spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
+        cases = [
+            (
+                "There is a loud party next door and I need to make a noise complaint.",
+                "public_safety",
+                "nonemergency_noise_complaint",
+                "action_cos_noise_complaint",
+            ),
+            (
+                "There is a car illegally parked and blocking my driveway.",
+                "transportation",
+                "parking_violation_enforcement",
+                "action_cos_parking_enforcement_report",
+            ),
+            (
+                "I need to file a police report for theft.",
+                "public_safety",
+                "nonemergency_police_report",
+                "action_cos_nonemergency_police_report",
+            ),
+            (
+                "There is a blocked exit and a fire code violation.",
+                "public_safety",
+                "fire_code_violation_or_hazard",
+                "action_cos_fire_code_concern",
+            ),
+        ]
+        for issue, expected_domain, expected_type, expected_route in cases:
+            with self.subTest(issue=issue):
+                result = resolver.apply_issue_route(spatial, issue)
+                self.assertEqual(result["issue_domain"], expected_domain)
+                self.assertEqual(result["issue_type"], expected_type)
+                self.assertEqual(result["issue_classifier_status"], "ROUTED")
+                self.assertEqual(result["issue_route_source"], "institution")
+                self.assertEqual(result["issue_route_id"], expected_route)
+
+        # Existing abandoned-vehicle routing must continue to win over generic parking enforcement.
+        result = resolver.apply_issue_route(
+            spatial,
+            "There is an abandoned vehicle that has not moved for 3 days.",
+        )
+        self.assertEqual(result["issue_type"], "abandoned_vehicle_on_city_street")
+        self.assertEqual(result["issue_route_id"], "action_cos_abandoned_street_vehicle_report")
+
+        # An explicitly in-progress crime must not be classified as a non-emergency report.
+        result = resolver.apply_issue_route(
+            spatial,
+            "A crime is in progress right now.",
+        )
+        self.assertEqual(result["issue_classifier_status"], "UNSUPPORTED")
+        self.assertEqual(result["issue_route_id"], "")
+
+        missing = {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT", "governance_overlays": ""}
+        for issue, _domain, _type, _route in cases:
+            with self.subTest(missing_location=issue):
+                result = resolver.apply_issue_route(missing, issue)
+                self.assertEqual(result["issue_classifier_status"], "NEEDS_LOCATION")
+                self.assertEqual(result["issue_route_id"], "")
+
+        lat, lon, _raw = self._provider_centroid("WOODMOOR SWD")
+        outside = resolver.resolve("", lat, lon)
+        for issue, _domain, _type, _route in cases:
+            with self.subTest(outside_city=issue):
+                result = resolver.apply_issue_route(outside, issue)
+                self.assertEqual(result["issue_classifier_status"], "NO_APPLICABLE_ROUTE")
+                self.assertEqual(result["issue_route_id"], "")
+
     def test_planning_land_use_location_gated_routes(self):
         spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
         cases = [
