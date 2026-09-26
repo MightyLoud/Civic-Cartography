@@ -1,0 +1,25 @@
+name: Validate Atlas Address Resolver
+
+on:
+  pull_request:
+    paths:
+      - "services/atlas-address-resolver/**"
+      - ".github/workflows/validate-atlas-address-resolver.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-resolver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile resolver
+        run: python -m py_compile services/atlas-address-resolver/app.py
+      - name: Run live address-provider controls
+        run: python services/atlas-address-resolver/test_live_resolver.py
