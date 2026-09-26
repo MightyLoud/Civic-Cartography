@@ -244,7 +244,7 @@ ISSUE_RULES = [
     (
         "courts",
         "municipal_court_record_or_transcript",
-        [r"\bmunicipal court records\b", r"\bcourt records request\b", r"\bcourt transcript\b", r"\bcase record\b", r"\bcopy of court record\b", r"\bmunicipal court transcript\b"],
+        [r"\bmunicipal court records\b", r"\bcourt records\b", r"\bcourt records request\b", r"\bcourt transcript\b", r"\bcase record\b", r"\bcopy of court record\b", r"\bmunicipal court transcript\b"],
         [r"\bcolorado springs\b", r"\bmunicipal court\b", r"\bcity court\b"],
         False,
         "institution",
