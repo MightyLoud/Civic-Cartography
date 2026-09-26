@@ -328,52 +328,6 @@ class LiveResolverTests(unittest.TestCase):
         self.assertFalse(failures, failures)
 
 
-    def test_neighborhood_code_enforcement_routes(self):
-        spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
-        cases = [
-            (
-                "There are overgrown weeds and debris on the property.",
-                "code_enforcement",
-                "neighborhood_code_or_nuisance_violation",
-                "action_cos_neighborhood_code_complaint",
-            ),
-            (
-                "Someone illegally dumped trash here.",
-                "code_enforcement",
-                "illegal_dumping_or_debris",
-                "action_cos_illegal_dumping_complaint",
-            ),
-            (
-                "There is an abandoned vehicle parked here for over 72 hours.",
-                "code_enforcement",
-                "abandoned_vehicle_on_city_street",
-                "action_cos_abandoned_street_vehicle_report",
-            ),
-        ]
-        for issue, expected_domain, expected_type, expected_route in cases:
-            with self.subTest(issue=issue):
-                result = resolver.apply_issue_route(spatial, issue)
-                self.assertEqual(result["issue_domain"], expected_domain)
-                self.assertEqual(result["issue_type"], expected_type)
-                self.assertEqual(result["issue_classifier_status"], "ROUTED")
-                self.assertEqual(result["issue_route_source"], "institution")
-                self.assertEqual(result["issue_route_id"], expected_route)
-
-        missing = {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT", "governance_overlays": ""}
-        for issue, _domain, _type, _route in cases:
-            with self.subTest(missing_location=issue):
-                result = resolver.apply_issue_route(missing, issue)
-                self.assertEqual(result["issue_classifier_status"], "NEEDS_LOCATION")
-                self.assertEqual(result["issue_route_id"], "")
-
-        lat, lon, _raw = self._provider_centroid("WOODMOOR SWD")
-        outside = resolver.resolve("", lat, lon)
-        for issue, _domain, _type, _route in cases:
-            with self.subTest(outside_city=issue):
-                result = resolver.apply_issue_route(outside, issue)
-                self.assertEqual(result["issue_classifier_status"], "NO_APPLICABLE_ROUTE")
-                self.assertEqual(result["issue_route_id"], "")
-
     def test_code_enforcement_location_gated_routes(self):
         spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
         cases = [
