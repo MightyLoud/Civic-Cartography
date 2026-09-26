@@ -365,6 +365,21 @@ class LiveResolverTests(unittest.TestCase):
                 self.assertEqual(result["issue_route_source"], "institution")
                 self.assertEqual(result["issue_route_id"], expected_route)
 
+        # Property trash stays in Neighborhood Services code enforcement, while public-space dumping stays in general City intake.
+        result = resolver.apply_issue_route(
+            spatial,
+            "There is garbage and debris on the property.",
+        )
+        self.assertEqual(result["issue_type"], "property_code_nuisance")
+        self.assertEqual(result["issue_route_id"], "action_cos_code_enforcement_complaint")
+
+        result = resolver.apply_issue_route(
+            spatial,
+            "Someone dumped tires in a public area.",
+        )
+        self.assertEqual(result["issue_type"], "public_space_trash_or_illegal_dumping")
+        self.assertEqual(result["issue_route_id"], "action_cos_public_space_dumping_report")
+
         # Private-property inoperable vehicle belongs to general Neighborhood Services code enforcement.
         result = resolver.apply_issue_route(
             spatial,
