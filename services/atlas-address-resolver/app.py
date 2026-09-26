@@ -48,40 +48,80 @@ CSV_FIELDS = [
     "input_address", "matched_address", "latitude", "longitude", "geocode_status",
     "provider_type", "provider_id", "provider_name", "governance_overlays", "service_area_ref_id",
     "service_area_route_id", "action_route_id", "resolver_status",
-    "issue_text", "issue_type", "issue_route_id", "issue_route_source",
+    "issue_text", "issue_domain", "issue_type", "issue_route_id", "issue_route_source",
     "issue_classifier_status", "issue_route_candidates",
     "evidence_method", "source_urls", "diagnostics",
 ]
 
 ISSUE_RULES = [
     (
+        "accessibility",
+        "public_program_accessibility_barrier",
+        [r"\bada accommodation\b", r"\baccessibility accommodation\b", r"\bdisability access\b", r"\breasonable modification\b", r"\baccessible city program\b", r"\bada grievance\b"],
+        [r"\bcolorado springs\b", r"\bcity of colorado springs\b", r"\bcity program\b", r"\bcity service\b", r"\bcity facility\b", r"\bcity activity\b"],
+        False,
+        "institution",
+        "",
+        "action_cos_accessibility_public_program",
+    ),
+    (
+        "public_records",
+        "city_public_record_request",
+        [r"\bcora\b", r"\bpublic records\b", r"\bopen records\b", r"\brecords request\b", r"\bcity records\b"],
+        [r"\bcolorado springs\b", r"\bcity of colorado springs\b", r"\bcolorado springs city\b", r"\bcity records\b"],
+        False,
+        "institution",
+        "",
+        "action_cos_public_records_general",
+    ),
+    (
+        "water",
         "project_water_allocation",
         [r"\bproject water\b", r"\bfryingpan[- ]arkansas\b", r"\bfry[- ]ark\b"],
+        [],
+        True,
         "governance_overlay",
         "regional_water_supply_authority",
+        "",
     ),
     (
+        "water",
         "augmentation_water_need",
         [r"\baugmentation\b", r"\breplacement water\b"],
+        [],
+        True,
         "governance_overlay",
         "regional_augmentation_authority",
+        "",
     ),
     (
+        "water",
         "cheyenne_creek_governance",
         [r"\bcheyenne creek\b"],
+        [],
+        True,
         "governance_overlay",
         "streamflow_water_rights_district",
+        "",
     ),
     (
+        "water",
         "groundwater_regulatory_question",
         [r"\bgroundwater\b", r"\bwell permit\b", r"\bwell rules?\b", r"\bwell regulation\b", r"\bgroundwater export\b", r"\bgroundwater metering\b"],
+        [],
+        True,
         "governance_overlay",
         "groundwater_regulator",
+        "",
     ),
     (
+        "water",
         "water_service_interruption",
         [r"\bno water\b", r"\bwater(?: is|'s)? out\b", r"\boutage\b", r"\blow (?:water )?pressure\b", r"\bwater main break\b", r"\bservice interruption\b", r"\bwater leak\b", r"\bwater service problem\b"],
+        [],
+        True,
         "provider",
+        "",
         "",
     ),
 ]
@@ -374,25 +414,48 @@ def classify_issue(issue_text):
     if not text:
         return {
             "issue_text": "",
+            "issue_domain": "",
             "issue_type": "",
             "issue_route_source": "",
             "required_overlay_class": "",
+            "requires_location": False,
+            "fixed_action_route_id": "",
             "issue_classifier_status": "NOT_CLASSIFIED",
         }
-    for issue_type, patterns, route_source, required_overlay_class in ISSUE_RULES:
-        if any(re.search(pattern, text, re.I) for pattern in patterns):
+
+    for issue_domain, issue_type, patterns, context_patterns, requires_location, route_source, required_overlay_class, fixed_action_route_id in ISSUE_RULES:
+        if not any(re.search(pattern, text, re.I) for pattern in patterns):
+            continue
+        if context_patterns and not any(re.search(pattern, text, re.I) for pattern in context_patterns):
             return {
                 "issue_text": issue_text,
+                "issue_domain": issue_domain,
                 "issue_type": issue_type,
                 "issue_route_source": route_source,
                 "required_overlay_class": required_overlay_class,
-                "issue_classifier_status": "CLASSIFIED",
+                "requires_location": requires_location,
+                "fixed_action_route_id": fixed_action_route_id,
+                "issue_classifier_status": "NEEDS_INSTITUTION",
             }
+        return {
+            "issue_text": issue_text,
+            "issue_domain": issue_domain,
+            "issue_type": issue_type,
+            "issue_route_source": route_source,
+            "required_overlay_class": required_overlay_class,
+            "requires_location": requires_location,
+            "fixed_action_route_id": fixed_action_route_id,
+            "issue_classifier_status": "CLASSIFIED",
+        }
+
     return {
         "issue_text": issue_text,
+        "issue_domain": "",
         "issue_type": "",
         "issue_route_source": "",
         "required_overlay_class": "",
+        "requires_location": False,
+        "fixed_action_route_id": "",
         "issue_classifier_status": "UNSUPPORTED",
     }
 
@@ -401,6 +464,7 @@ def apply_issue_route(result, issue_text):
     routed = dict(result)
     classification = classify_issue(issue_text)
     routed["issue_text"] = classification.get("issue_text", "")
+    routed["issue_domain"] = classification.get("issue_domain", "")
     routed["issue_type"] = classification.get("issue_type", "")
     routed["issue_route_id"] = ""
     routed["issue_route_source"] = classification.get("issue_route_source", "")
@@ -408,15 +472,26 @@ def apply_issue_route(result, issue_text):
     routed["issue_route_candidates"] = ""
 
     status = classification.get("issue_classifier_status")
-    if status in ("NOT_CLASSIFIED", "UNSUPPORTED"):
+    if status in ("NOT_CLASSIFIED", "UNSUPPORTED", "NEEDS_INSTITUTION"):
         return routed
 
-    if routed.get("geocode_status") == "MISSING_INPUT":
-        routed["issue_classifier_status"] = "NEEDS_LOCATION"
+    if classification.get("issue_route_source") == "institution":
+        fixed_route = classification.get("fixed_action_route_id", "") or ""
+        if fixed_route:
+            routed["issue_route_id"] = fixed_route
+            routed["issue_route_source"] = "institution"
+            routed["issue_classifier_status"] = "ROUTED"
+        else:
+            routed["issue_classifier_status"] = "NO_APPLICABLE_ROUTE"
         return routed
-    if routed.get("geocode_status") == "NO_MATCH":
-        routed["issue_classifier_status"] = "LOCATION_UNRESOLVED"
-        return routed
+
+    if classification.get("requires_location"):
+        if routed.get("geocode_status") == "MISSING_INPUT":
+            routed["issue_classifier_status"] = "NEEDS_LOCATION"
+            return routed
+        if routed.get("geocode_status") == "NO_MATCH":
+            routed["issue_classifier_status"] = "LOCATION_UNRESOLVED"
+            return routed
 
     if classification.get("issue_route_source") == "provider":
         provider_id = routed.get("provider_id", "") or ""
