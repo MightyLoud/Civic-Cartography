@@ -328,5 +328,83 @@ class LiveResolverTests(unittest.TestCase):
         self.assertFalse(failures, failures)
 
 
+    def test_issue_classifier_plain_language_routes(self):
+        # Retail service problem → direct provider Action Route.
+        result = resolver.apply_issue_route(
+            resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903"),
+            "My water is out and I have no water.",
+        )
+        self.assertEqual(result["issue_type"], "water_service_interruption")
+        self.assertEqual(result["issue_classifier_status"], "ROUTED")
+        self.assertEqual(result["issue_route_source"], "provider")
+        self.assertEqual(result["issue_route_id"], "action_cos_water_service_interruption")
+
+        # Groundwater question → groundwater-regulator overlay, not retail provider.
+        lat, lon, _raw, spatial = self._overlay_intersecting_point(
+            "UPPER BLK SQUIRREL CRK GRD WD",
+            "gov_us_co_el_paso_upper_black_squirrel_creek_ground_water_management_district",
+        )
+        result = resolver.apply_issue_route(spatial, "I have a well permit and groundwater rules question.")
+        self.assertEqual(result["issue_type"], "groundwater_regulatory_question")
+        self.assertEqual(result["issue_classifier_status"], "ROUTED")
+        self.assertEqual(result["issue_route_source"], "governance_overlay")
+        self.assertEqual(result["issue_route_id"], "action_upper_black_squirrel_groundwater_regulatory_inquiry")
+
+        # Augmentation → UAWCD overlay route.
+        lat, lon, _raw, spatial = self._overlay_intersecting_point(
+            "UPPER ARKANSAS WCD",
+            "gov_us_co_upper_arkansas_water_conservancy_district",
+        )
+        result = resolver.apply_issue_route(spatial, "I need augmentation water for my well.")
+        self.assertEqual(result["issue_type"], "augmentation_water_need")
+        self.assertEqual(result["issue_classifier_status"], "ROUTED")
+        self.assertEqual(result["issue_route_id"], "action_uawcd_augmentation_application")
+
+        # Project Water → SECWCD overlay route, even where CSU is the retail provider.
+        lat, lon, _raw, spatial = self._overlay_intersecting_point(
+            "SOUTHEASTERN COLORADO WATER CONSERVANCY",
+            "gov_us_co_southeastern_colorado_water_conservancy_district",
+        )
+        result = resolver.apply_issue_route(spatial, "We want to apply for Fryingpan-Arkansas Project Water allocation.")
+        self.assertEqual(result["issue_type"], "project_water_allocation")
+        self.assertEqual(result["issue_classifier_status"], "ROUTED")
+        self.assertEqual(result["issue_route_id"], "action_secwcd_project_water_allocation")
+        self.assertNotEqual(result["issue_route_id"], result.get("action_route_id", ""))
+
+        # Cheyenne Creek governance → specialized overlay route, not CSU route.
+        lat, lon, _raw, spatial = self._overlay_intersecting_point(
+            "CHEYENNE CREEK MD PARK & WATER",
+            "gov_us_co_el_paso_cheyenne_creek_metropolitan_district",
+        )
+        result = resolver.apply_issue_route(spatial, "I have a Cheyenne Creek streamflow and water-rights question.")
+        self.assertEqual(result["issue_type"], "cheyenne_creek_governance")
+        self.assertEqual(result["issue_classifier_status"], "ROUTED")
+        self.assertEqual(result["issue_route_id"], "action_cheyenne_creek_streamflow_governance_inquiry")
+
+    def test_issue_classifier_fail_closed_states(self):
+        # A direct provider can resolve while its process route remains held.
+        lat, lon, _raw = self._provider_centroid("GARDEN VALLEY SWD")
+        spatial = resolver.resolve("", lat, lon)
+        result = resolver.apply_issue_route(spatial, "My water is out.")
+        self.assertEqual(result["provider_id"], "gov_us_co_el_paso_garden_valley_water_sanitation_district")
+        self.assertEqual(result["issue_classifier_status"], "PROCESS_BLOCKED")
+        self.assertEqual(result["issue_route_id"], "")
+
+        # Recognized issue with no location asks for location rather than guessing.
+        result = resolver.apply_issue_route(
+            {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT"},
+            "My water is out.",
+        )
+        self.assertEqual(result["issue_classifier_status"], "NEEDS_LOCATION")
+
+        # Unsupported language stays unsupported.
+        result = resolver.apply_issue_route(
+            resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903"),
+            "I need help with something unrelated.",
+        )
+        self.assertEqual(result["issue_classifier_status"], "UNSUPPORTED")
+        self.assertEqual(result["issue_route_id"], "")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
