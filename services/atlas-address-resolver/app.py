@@ -112,7 +112,7 @@ ISSUE_RULES = [
     (
         "transportation",
         "streetlight_outage_or_damage",
-        [r"\bstreetlight out\b", r"\bstreet light out\b", r"\bstreetlight outage\b", r"\bstreet light outage\b", r"\bdowned streetlight\b", r"\bbroken streetlight\b", r"\bstreetlight knocked down\b", r"\blight pole knocked down\b"],
+        [r"\bstreetlight out\b", r"\bstreetlight is out\b", r"\bstreet light out\b", r"\bstreet light is out\b", r"\bstreetlight outage\b", r"\bstreet light outage\b", r"\bdowned streetlight\b", r"\bbroken streetlight\b", r"\bstreetlight knocked down\b", r"\blight pole knocked down\b"],
         [],
         True,
         "institution",
