@@ -142,3 +142,17 @@ The classifier output includes:
 - `issue_route_candidates`
 
 This allows the same endpoint to route institution-based and location-based civic problems without changing the underlying provider or governance models.
+
+
+## Transportation service routing
+
+The cross-domain classifier includes a location-gated Colorado Springs pothole / street-surface rule.
+
+- Issue type: `pothole_or_street_surface_defect`
+- Action Route: `action_cos_pothole_report`
+- Route source: `institution`
+- Spatial gate: the address/point must resolve inside the Colorado Springs incorporated-place polygon.
+- Missing location → `NEEDS_LOCATION`
+- Outside Colorado Springs place boundary → `NO_APPLICABLE_ROUTE`
+
+The municipal-boundary gate is only an intake-routing control. It does not assert that every roadway inside the boundary is City-maintained; the City intake process may triage state, private, or other non-City roadway issues.
