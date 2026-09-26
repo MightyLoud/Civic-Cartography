@@ -156,3 +156,20 @@ The cross-domain classifier includes a location-gated Colorado Springs pothole /
 - Outside Colorado Springs place boundary → `NO_APPLICABLE_ROUTE`
 
 The municipal-boundary gate is only an intake-routing control. It does not assert that every roadway inside the boundary is City-maintained; the City intake process may triage state, private, or other non-City roadway issues.
+
+
+## Municipal service-request cohort
+
+The cross-domain classifier now supports additional Colorado Springs location-gated City services:
+
+- Traffic signal / sign issue → `action_cos_traffic_signal_sign_report`
+- Clogged storm drain / drainage maintenance → `action_cos_storm_drain_maintenance`
+- Streetlight outage / damage → `action_cos_streetlight_maintenance`
+
+All three require a resolvable point inside the Colorado Springs incorporated-place polygon.
+
+Fail-closed behavior:
+- missing location → `NEEDS_LOCATION`
+- outside Colorado Springs → `NO_APPLICABLE_ROUTE`
+
+The municipal boundary is an intake-routing control, not proof of City ownership/maintenance responsibility for every road, asset, or drainage structure.
