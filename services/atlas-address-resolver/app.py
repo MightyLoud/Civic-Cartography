@@ -145,7 +145,7 @@ ISSUE_RULES = [
     (
         "planning_land_use",
         "appeal_planning_commission_decision",
-        [r"\bappeal planning commission decision\b", r"\bappeal planning commission\b", r"\bappeal to city council planning\b", r"\bchallenge planning commission decision\b"],
+        [r"\bappeal (?:a |the )?planning commission decision\b", r"\bappeal (?:a |the )?planning commission\b", r"\bappeal to city council planning\b", r"\bchallenge (?:a |the )?planning commission decision\b"],
         [],
         True,
         "institution",
@@ -156,7 +156,7 @@ ISSUE_RULES = [
     (
         "planning_land_use",
         "appeal_administrative_land_use_decision",
-        [r"\bappeal administrative planning decision\b", r"\bappeal planner decision\b", r"\bappeal land use staff decision\b", r"\bappeal administrative land use decision\b"],
+        [r"\bappeal (?:an |the )?administrative planning decision\b", r"\bappeal (?:a |the )?planner decision\b", r"\bappeal (?:a |the )?land use staff decision\b", r"\bappeal (?:an |the )?administrative land use decision\b"],
         [],
         True,
         "institution",
