@@ -328,6 +328,75 @@ class LiveResolverTests(unittest.TestCase):
         self.assertFalse(failures, failures)
 
 
+    def test_planning_land_use_location_gated_routes(self):
+        spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
+        cases = [
+            (
+                "What is my zoning district?",
+                "planning_land_use",
+                "zoning_or_allowed_use_question",
+                "action_cos_zoning_land_use_question",
+            ),
+            (
+                "I need to submit a development plan.",
+                "planning_land_use",
+                "development_application_review",
+                "action_cos_development_application",
+            ),
+            (
+                "I need a zoning variance.",
+                "planning_land_use",
+                "use_or_nonuse_variance",
+                "action_cos_land_use_variance",
+            ),
+            (
+                "I want to rezone my property.",
+                "planning_land_use",
+                "zone_change_rezoning",
+                "action_cos_zone_change",
+            ),
+            (
+                "I need to appeal an administrative planning decision.",
+                "planning_land_use",
+                "appeal_administrative_land_use_decision",
+                "action_cos_admin_land_use_appeal",
+            ),
+            (
+                "I need to appeal a Planning Commission decision.",
+                "planning_land_use",
+                "appeal_planning_commission_decision",
+                "action_cos_planning_commission_appeal",
+            ),
+        ]
+        for issue, expected_domain, expected_type, expected_route in cases:
+            with self.subTest(issue=issue):
+                result = resolver.apply_issue_route(spatial, issue)
+                self.assertEqual(result["issue_domain"], expected_domain)
+                self.assertEqual(result["issue_type"], expected_type)
+                self.assertEqual(result["issue_classifier_status"], "ROUTED")
+                self.assertEqual(result["issue_route_source"], "institution")
+                self.assertEqual(result["issue_route_id"], expected_route)
+
+        # Specific appeal/variance/rezoning language must win over generic planning language.
+        result = resolver.apply_issue_route(spatial, "I want a zone change for my property.")
+        self.assertEqual(result["issue_type"], "zone_change_rezoning")
+        self.assertEqual(result["issue_route_id"], "action_cos_zone_change")
+
+        missing = {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT", "governance_overlays": ""}
+        for issue, _domain, _type, _route in cases:
+            with self.subTest(missing_location=issue):
+                result = resolver.apply_issue_route(missing, issue)
+                self.assertEqual(result["issue_classifier_status"], "NEEDS_LOCATION")
+                self.assertEqual(result["issue_route_id"], "")
+
+        lat, lon, _raw = self._provider_centroid("WOODMOOR SWD")
+        outside = resolver.resolve("", lat, lon)
+        for issue, _domain, _type, _route in cases:
+            with self.subTest(outside_city=issue):
+                result = resolver.apply_issue_route(outside, issue)
+                self.assertEqual(result["issue_classifier_status"], "NO_APPLICABLE_ROUTE")
+                self.assertEqual(result["issue_route_id"], "")
+
     def test_permits_licensing_location_gated_routes(self):
         spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
         cases = [
