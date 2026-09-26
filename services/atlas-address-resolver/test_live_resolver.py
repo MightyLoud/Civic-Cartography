@@ -328,6 +328,52 @@ class LiveResolverTests(unittest.TestCase):
         self.assertFalse(failures, failures)
 
 
+    def test_additional_location_gated_city_service_routes(self):
+        spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
+        cases = [
+            (
+                "The traffic signal is malfunctioning.",
+                "transportation",
+                "traffic_signal_or_sign_issue",
+                "action_cos_traffic_signal_sign_report",
+            ),
+            (
+                "There is a clogged storm drain.",
+                "stormwater",
+                "clogged_storm_drain_or_drainage_maintenance",
+                "action_cos_storm_drain_maintenance",
+            ),
+            (
+                "The streetlight is out.",
+                "transportation",
+                "streetlight_outage_or_damage",
+                "action_cos_streetlight_maintenance",
+            ),
+        ]
+        for issue, expected_domain, expected_type, expected_route in cases:
+            with self.subTest(issue=issue):
+                result = resolver.apply_issue_route(spatial, issue)
+                self.assertEqual(result["issue_domain"], expected_domain)
+                self.assertEqual(result["issue_type"], expected_type)
+                self.assertEqual(result["issue_classifier_status"], "ROUTED")
+                self.assertEqual(result["issue_route_source"], "institution")
+                self.assertEqual(result["issue_route_id"], expected_route)
+
+        missing = {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT", "governance_overlays": ""}
+        for issue, _domain, _type, _route in cases:
+            with self.subTest(missing_location=issue):
+                result = resolver.apply_issue_route(missing, issue)
+                self.assertEqual(result["issue_classifier_status"], "NEEDS_LOCATION")
+                self.assertEqual(result["issue_route_id"], "")
+
+        lat, lon, _raw = self._provider_centroid("WOODMOOR SWD")
+        outside = resolver.resolve("", lat, lon)
+        for issue, _domain, _type, _route in cases:
+            with self.subTest(outside_city=issue):
+                result = resolver.apply_issue_route(outside, issue)
+                self.assertEqual(result["issue_classifier_status"], "NO_APPLICABLE_ROUTE")
+                self.assertEqual(result["issue_route_id"], "")
+
     def test_pothole_location_gated_routing(self):
         # In-city address routes to City Public Works pothole intake.
         spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
