@@ -134,7 +134,7 @@ ISSUE_RULES = [
     (
         "code_enforcement",
         "illegal_dumping_or_debris",
-        [r"\billegal dumping\b", r"\bdumped trash\b", r"\bdumped debris\b", r"\btrash dumped\b", r"\bdebris dumped\b", r"\billegal trash pile\b"],
+        [r"\billegal dumping\b", r"\billegally dumping\b", r"\billegally dumped\b", r"\bdumped trash\b", r"\bdumped debris\b", r"\btrash dumped\b", r"\bdebris dumped\b", r"\billegal trash pile\b"],
         [],
         True,
         "institution",
