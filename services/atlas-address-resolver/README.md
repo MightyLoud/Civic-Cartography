@@ -173,3 +173,21 @@ Fail-closed behavior:
 - outside Colorado Springs → `NO_APPLICABLE_ROUTE`
 
 The municipal boundary is an intake-routing control, not proof of City ownership/maintenance responsibility for every road, asset, or drainage structure.
+
+
+## Neighborhood and code-enforcement routing
+
+The civic classifier distinguishes four location-gated Colorado Springs neighborhood/enforcement patterns:
+
+- Private-property / neighborhood nuisance → `action_cos_code_enforcement_complaint`
+- Non-emergency environmental dumping / illicit discharge → `action_cos_illicit_discharge_report`
+- Abandoned or inoperable vehicle on a City street/right-of-way → `action_cos_abandoned_street_vehicle_report`
+- General public-space trash / illegal dumping → `action_cos_public_space_dumping_report`
+
+Precedence matters. Stormwater/environmental dumping language is evaluated before generic public-space dumping so environmental discharges do not fall into the cleanup-only route. Private-property inoperable vehicles stay in the property nuisance route, while abandoned street/right-of-way vehicles use the specific vehicle route.
+
+All four require a resolvable point inside the Colorado Springs incorporated-place polygon:
+- missing location → `NEEDS_LOCATION`
+- outside Colorado Springs → `NO_APPLICABLE_ROUTE`
+
+Emergency/hazardous spills, active crimes, and immediate hazards remain outside these non-emergency routes.
