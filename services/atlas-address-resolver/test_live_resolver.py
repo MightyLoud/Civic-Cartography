@@ -75,11 +75,11 @@ class LiveResolverTests(unittest.TestCase):
     }
 
     expected_nonretail = {
-        "CHEYENNE CREEK MD PARK & WATER": "streamflow_water_rights_district",
-        "SOUTHEASTERN COLORADO WATER CONSERVANCY": "regional_water_supply_authority",
-        "UPPER ARKANSAS WCD": "regional_augmentation_authority",
-        "UPPER BIG SANDY GROUND WD": "groundwater_regulator",
-        "UPPER BLK SQUIRREL CRK GRD WD": "groundwater_regulator",
+        "CHEYENNE CREEK MD PARK & WATER": ("streamflow_water_rights_district", "gov_us_co_el_paso_cheyenne_creek_metropolitan_district", "action_cheyenne_creek_streamflow_governance_inquiry"),
+        "SOUTHEASTERN COLORADO WATER CONSERVANCY": ("regional_water_supply_authority", "gov_us_co_southeastern_colorado_water_conservancy_district", "action_secwcd_project_water_allocation"),
+        "UPPER ARKANSAS WCD": ("regional_augmentation_authority", "gov_us_co_upper_arkansas_water_conservancy_district", "action_uawcd_augmentation_application"),
+        "UPPER BIG SANDY GROUND WD": ("groundwater_regulator", "gov_us_co_upper_big_sandy_ground_water_management_district", "action_upper_big_sandy_groundwater_regulatory_inquiry"),
+        "UPPER BLK SQUIRREL CRK GRD WD": ("groundwater_regulator", "gov_us_co_el_paso_upper_black_squirrel_creek_ground_water_management_district", "action_upper_black_squirrel_groundwater_regulatory_inquiry"),
     }
 
     def test_all_expected_raw_layer_values_are_classified(self):
@@ -94,13 +94,15 @@ class LiveResolverTests(unittest.TestCase):
                     self.assertFalse(bool(provider) and bool(overlays), raw_name)
 
     def test_nonretail_overlay_values_never_normalize_as_provider(self):
-        for raw_name, expected_class in self.expected_nonretail.items():
+        for raw_name, (expected_class, expected_object, expected_route) in self.expected_nonretail.items():
             with self.subTest(raw_name=raw_name):
                 features = [{"attributes": {"name": raw_name}}]
                 self.assertIsNone(resolver.normalize_provider(features))
                 overlays = resolver.classify_overlays(features)
                 self.assertEqual(len(overlays), 1)
                 self.assertEqual(overlays[0]["resolver_class"], expected_class)
+                self.assertEqual(overlays[0]["object_id"], expected_object)
+                self.assertEqual(overlays[0]["action_route_id"], expected_route)
 
     def test_layer_inventory(self):
         for layer_name, item_id in resolver.COUNTY_LAYERS:
@@ -213,6 +215,69 @@ class LiveResolverTests(unittest.TestCase):
                 if actual_provider != expected_provider or actual_route != expected_route:
                     failures.append((provider_text, expected_provider, actual_provider, expected_route, actual_route, result))
         self.assertFalse(failures, failures)
+
+    def _overlay_intersecting_point(self, raw_name, expected_object_id):
+        needle = raw_name.upper()
+        for _layer_name, item_id in resolver.COUNTY_LAYERS:
+            service_url = (resolver.arcgis_service_url(item_id) or "").rstrip("/")
+            metadata = resolver.get_json(service_url, {"f": "json"})
+            layers = metadata.get("layers") or []
+            targets = [layer.get("id") for layer in layers if layer.get("id") is not None] or [None]
+            for layer_id in targets:
+                layer_url = service_url if layer_id is None else f"{service_url}/{layer_id}"
+                data = resolver.get_json(layer_url + "/query", {
+                    "f": "json",
+                    "where": "1=1",
+                    "outFields": "*",
+                    "returnGeometry": "true",
+                    "returnCentroid": "true",
+                    "outSR": "4326",
+                })
+                for feature in data.get("features") or []:
+                    attrs = feature.get("attributes") or {}
+                    values = " | ".join(str(v) for v in attrs.values() if v is not None).upper()
+                    if needle not in values:
+                        continue
+                    points = []
+                    centroid = feature.get("centroid") or {}
+                    if centroid.get("x") is not None and centroid.get("y") is not None:
+                        points.append((centroid["y"], centroid["x"]))
+                    geometry = feature.get("geometry") or {}
+                    for ring in geometry.get("rings") or []:
+                        for point in ring:
+                            if isinstance(point, list) and len(point) >= 2:
+                                points.append((point[1], point[0]))
+                                if len(points) >= 30:
+                                    break
+                        if len(points) >= 30:
+                            break
+                    for latitude, longitude in points:
+                        result = resolver.resolve("", latitude, longitude)
+                        overlays = json.loads(result.get("governance_overlays") or "[]")
+                        if any(o.get("object_id") == expected_object_id for o in overlays):
+                            return latitude, longitude, values, result
+        self.fail(f"No live overlay control point found for {raw_name}")
+
+    def test_nonretail_overlay_live_action_routes(self):
+        for raw_name, (_expected_class, expected_object, expected_route) in self.expected_nonretail.items():
+            with self.subTest(raw_name=raw_name):
+                latitude, longitude, raw, result = self._overlay_intersecting_point(raw_name, expected_object)
+                overlays = json.loads(result.get("governance_overlays") or "[]")
+                match = next(o for o in overlays if o.get("object_id") == expected_object)
+                print({
+                    "label": "NONRETAIL_OVERLAY_LIVE",
+                    "raw_name": raw_name,
+                    "latitude": latitude,
+                    "longitude": longitude,
+                    "raw_overlay": raw,
+                    "overlay_object_id": match.get("object_id"),
+                    "overlay_action_route_id": match.get("action_route_id"),
+                    "provider_id": result.get("provider_id", "") or "",
+                    "provider_action_route_id": result.get("action_route_id", "") or "",
+                })
+                self.assertEqual(match.get("action_route_id"), expected_route)
+                self.assertNotEqual(result.get("provider_id", "") or "", expected_object)
+                self.assertNotEqual(result.get("action_route_id", "") or "", expected_route)
 
     def test_widefield_polygon_provider_and_route(self):
         latitude, longitude, raw = self._provider_centroid("WIDEFIELD SWD")
