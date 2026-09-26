@@ -210,3 +210,20 @@ Classifier precedence is intentional:
 4. Generic public-space trash/dumping falls back to GoCOS City intake for downstream triage.
 
 All four require a resolved point inside the Colorado Springs incorporated-place polygon. Missing location fails with `NEEDS_LOCATION`; outside-city locations fail with `NO_APPLICABLE_ROUTE`.
+
+## Animal services / contracted-delivery cohort
+
+Colorado Springs animal-control delivery is modeled as a contracted-service pattern: the City retains the route scope while Humane Society of the Pikes Peak Region (HSPPR) Animal Law Enforcement is the operational service actor.
+
+Current location-gated routes:
+
+- Animal cruelty, neglect, dog bite/attack, or animal distress → `action_cos_animal_cruelty_distress_report`
+- Stray, found, injured, or aggressive domestic animal → `action_cos_stray_found_aggressive_animal`
+- Colorado Springs dog/cat licensing → `action_cos_pet_license`
+
+All three require a resolved point inside the Colorado Springs incorporated-place polygon:
+
+- missing location → `NEEDS_LOCATION`
+- outside Colorado Springs → `NO_APPLICABLE_ROUTE`
+
+Wildlife is excluded from the domestic-animal routes. The Atlas actor record explicitly represents HSPPR as an external contracted service actor and does not imply City ownership of the nonprofit.
