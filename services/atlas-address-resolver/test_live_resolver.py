@@ -328,6 +328,57 @@ class LiveResolverTests(unittest.TestCase):
         self.assertFalse(failures, failures)
 
 
+    def test_animal_services_location_gated_routes(self):
+        spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
+        cases = [
+            (
+                "I need to report animal cruelty and neglect.",
+                "animal_services",
+                "animal_cruelty_neglect_or_distress",
+                "action_cos_animal_cruelty_distress_report",
+            ),
+            (
+                "I found a stray dog that is injured.",
+                "animal_services",
+                "stray_found_or_aggressive_domestic_animal",
+                "action_cos_stray_found_aggressive_animal",
+            ),
+            (
+                "I need to renew my dog license.",
+                "animal_services",
+                "dog_or_cat_license",
+                "action_cos_pet_license",
+            ),
+        ]
+        for issue, expected_domain, expected_type, expected_route in cases:
+            with self.subTest(issue=issue):
+                result = resolver.apply_issue_route(spatial, issue)
+                self.assertEqual(result["issue_domain"], expected_domain)
+                self.assertEqual(result["issue_type"], expected_type)
+                self.assertEqual(result["issue_classifier_status"], "ROUTED")
+                self.assertEqual(result["issue_route_source"], "institution")
+                self.assertEqual(result["issue_route_id"], expected_route)
+
+        # A bite/attack is handled by the ALE welfare/emergency route rather than the generic aggressive-animal route.
+        result = resolver.apply_issue_route(spatial, "A dog bite just happened.")
+        self.assertEqual(result["issue_type"], "animal_cruelty_neglect_or_distress")
+        self.assertEqual(result["issue_route_id"], "action_cos_animal_cruelty_distress_report")
+
+        missing = {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT", "governance_overlays": ""}
+        for issue, _domain, _type, _route in cases:
+            with self.subTest(missing_location=issue):
+                result = resolver.apply_issue_route(missing, issue)
+                self.assertEqual(result["issue_classifier_status"], "NEEDS_LOCATION")
+                self.assertEqual(result["issue_route_id"], "")
+
+        lat, lon, _raw = self._provider_centroid("WOODMOOR SWD")
+        outside = resolver.resolve("", lat, lon)
+        for issue, _domain, _type, _route in cases:
+            with self.subTest(outside_city=issue):
+                result = resolver.apply_issue_route(outside, issue)
+                self.assertEqual(result["issue_classifier_status"], "NO_APPLICABLE_ROUTE")
+                self.assertEqual(result["issue_route_id"], "")
+
     def test_code_enforcement_location_gated_routes(self):
         spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
         cases = [
