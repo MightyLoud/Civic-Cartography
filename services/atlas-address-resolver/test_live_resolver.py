@@ -328,6 +328,64 @@ class LiveResolverTests(unittest.TestCase):
         self.assertFalse(failures, failures)
 
 
+    def test_municipal_court_institution_first_routes(self):
+        missing = {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT", "governance_overlays": ""}
+
+        cases = [
+            (
+                "I need to contest a Colorado Springs parking ticket.",
+                "courts",
+                "contest_parking_ticket",
+                "action_cos_contest_parking_ticket",
+            ),
+            (
+                "I need to contest a Colorado Springs traffic ticket.",
+                "courts",
+                "municipal_traffic_or_ordinance_citation",
+                "action_cos_municipal_citation_case",
+            ),
+            (
+                "I need to pay my Colorado Springs traffic ticket.",
+                "courts",
+                "municipal_court_payment",
+                "action_cos_municipal_court_payment",
+            ),
+            (
+                "I need Colorado Springs Municipal Court records.",
+                "courts",
+                "municipal_court_record_or_transcript",
+                "action_cos_municipal_court_records",
+            ),
+        ]
+
+        for issue, expected_domain, expected_type, expected_route in cases:
+            with self.subTest(issue=issue):
+                result = resolver.apply_issue_route(missing, issue)
+                self.assertEqual(result["issue_domain"], expected_domain)
+                self.assertEqual(result["issue_type"], expected_type)
+                self.assertEqual(result["issue_classifier_status"], "ROUTED")
+                self.assertEqual(result["issue_route_source"], "institution")
+                self.assertEqual(result["issue_route_id"], expected_route)
+
+        # Generic court/ticket language must not guess the issuing court.
+        for issue in (
+            "I need to contest a parking ticket.",
+            "I need to pay my traffic ticket.",
+            "I need court records.",
+        ):
+            with self.subTest(needs_institution=issue):
+                result = resolver.apply_issue_route(missing, issue)
+                self.assertEqual(result["issue_classifier_status"], "NEEDS_INSTITUTION")
+                self.assertEqual(result["issue_route_id"], "")
+
+        # Paying and contesting stay distinct.
+        result = resolver.apply_issue_route(
+            missing,
+            "I need to pay my Colorado Springs parking ticket.",
+        )
+        self.assertEqual(result["issue_type"], "municipal_court_payment")
+        self.assertEqual(result["issue_route_id"], "action_cos_municipal_court_payment")
+
     def test_public_safety_nonemergency_location_gated_routes(self):
         spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
         cases = [
