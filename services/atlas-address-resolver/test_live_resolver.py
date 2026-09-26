@@ -328,6 +328,57 @@ class LiveResolverTests(unittest.TestCase):
         self.assertFalse(failures, failures)
 
 
+    def test_permits_licensing_location_gated_routes(self):
+        spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
+        cases = [
+            (
+                "Do I need a business license?",
+                "permits_licensing",
+                "city_business_license",
+                "action_cos_business_license",
+            ),
+            (
+                "Do I need a building permit for a deck?",
+                "permits_licensing",
+                "building_construction_permit",
+                "action_cos_building_permit",
+            ),
+            (
+                "I need a special event permit for a festival.",
+                "permits_licensing",
+                "special_event_permit",
+                "action_cos_special_event_permit",
+            ),
+        ]
+        for issue, expected_domain, expected_type, expected_route in cases:
+            with self.subTest(issue=issue):
+                result = resolver.apply_issue_route(spatial, issue)
+                self.assertEqual(result["issue_domain"], expected_domain)
+                self.assertEqual(result["issue_type"], expected_type)
+                self.assertEqual(result["issue_classifier_status"], "ROUTED")
+                self.assertEqual(result["issue_route_source"], "institution")
+                self.assertEqual(result["issue_route_id"], expected_route)
+
+        # Specific permit language must win cleanly and never collapse to a generic unsupported permit route.
+        result = resolver.apply_issue_route(spatial, "I need a water heater permit.")
+        self.assertEqual(result["issue_type"], "building_construction_permit")
+        self.assertEqual(result["issue_route_id"], "action_cos_building_permit")
+
+        missing = {"resolver_status": "UNRESOLVED", "geocode_status": "MISSING_INPUT", "governance_overlays": ""}
+        for issue, _domain, _type, _route in cases:
+            with self.subTest(missing_location=issue):
+                result = resolver.apply_issue_route(missing, issue)
+                self.assertEqual(result["issue_classifier_status"], "NEEDS_LOCATION")
+                self.assertEqual(result["issue_route_id"], "")
+
+        lat, lon, _raw = self._provider_centroid("WOODMOOR SWD")
+        outside = resolver.resolve("", lat, lon)
+        for issue, _domain, _type, _route in cases:
+            with self.subTest(outside_city=issue):
+                result = resolver.apply_issue_route(outside, issue)
+                self.assertEqual(result["issue_classifier_status"], "NO_APPLICABLE_ROUTE")
+                self.assertEqual(result["issue_route_id"], "")
+
     def test_animal_services_location_gated_routes(self):
         spatial = resolver.resolve("111 S Cascade Ave, Colorado Springs, CO 80903")
         cases = [
