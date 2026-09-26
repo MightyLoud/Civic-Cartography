@@ -8,6 +8,8 @@ import urllib.parse
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+from representation_provider import resolve_representation
+
 CENSUS_GEOCODER = "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress"
 ARCGIS_ITEM = "https://www.arcgis.com/sharing/rest/content/items/{}/"
 COUNTY_LAYERS = [
@@ -18,6 +20,8 @@ CSU_WATER_QUERY = "https://maps.csu.org:6443/arcgis/rest/services/Base/MapServer
 TIGER_PLACES_QUERY = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Places_CouSub_ConCity_SubMCD/MapServer/4/query"
 COLORADO_SPRINGS_GEOID = "0816000"
 CSU_WATER_PLAN = "https://www.csu.org/hubfs/Document-Library/2022WaterEfficiencyPlan.pdf"
+REPRESENTATION_PROVIDER_URL = os.environ.get("ATLAS_REPRESENTATION_PROVIDER_URL", "").strip()
+REPRESENTATION_PROVIDER_TIMEOUT = float(os.environ.get("ATLAS_REPRESENTATION_PROVIDER_TIMEOUT", "10"))
 
 PROVIDERS = [
     (r"\bDONALA\b", "government", "gov_us_co_el_paso_donala_wsd", "Donala Water & Sanitation District", "area_ref_donala_wsd_assessor_map", "sar_water_donala_wsd", "action_donala_water_service_interruption"),
@@ -701,6 +705,7 @@ class Handler(BaseHTTPRequestHandler):
                 "ok": True,
                 "service": "atlas-address-resolver",
                 "version": "0.1",
+                "representation_provider_configured": bool(REPRESENTATION_PROVIDER_URL),
             }), "application/json")
 
         if parsed.path == "/selftest.json":
@@ -709,6 +714,12 @@ class Handler(BaseHTTPRequestHandler):
         if parsed.path in ("/resolve.csv", "/resolve.json"):
             result = apply_issue_route(resolve(address, lat, lon), issue)
             if parsed.path.endswith(".json"):
+                result["representation"] = resolve_representation(
+                    result,
+                    REPRESENTATION_PROVIDER_URL,
+                    get_json,
+                    timeout=REPRESENTATION_PROVIDER_TIMEOUT,
+                )
                 return self.send_text(200, json.dumps(result), "application/json")
             output = io.StringIO()
             writer = csv.DictWriter(output, fieldnames=CSV_FIELDS, extrasaction="ignore")
