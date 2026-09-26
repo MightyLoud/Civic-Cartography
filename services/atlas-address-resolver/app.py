@@ -123,7 +123,7 @@ ISSUE_RULES = [
     (
         "code_enforcement",
         "property_code_nuisance",
-        [r"\bovergrown weeds\b", r"\bovergrown vegetation\b", r"\btall weeds\b", r"\blitter on property\b", r"\bdebris on property\b", r"\btrash on property\b", r"\bgarbage on property\b", r"\bjunk outside\b", r"\bjunk on property\b", r"\boutside storage\b", r"\bjunk vehicle on property\b", r"\binoperable vehicle on private property\b", r"\brv storage violation\b", r"\bunshoveled sidewalk\b", r"\bsidewalk blocked by vegetation\b"],
+        [r"\bovergrown weeds\b", r"\bovergrown vegetation\b", r"\btall weeds\b", r"\blitter (?:on|at) (?:the )?property\b", r"\bdebris (?:on|at) (?:the )?property\b", r"\btrash (?:on|at) (?:the )?property\b", r"\bgarbage (?:on|at) (?:the )?property\b", r"\bjunk outside\b", r"\bjunk (?:on|at) (?:the )?property\b", r"\boutside storage\b", r"\bjunk vehicle (?:on|at) (?:the )?property\b", r"\binoperable vehicle on private property\b", r"\brv storage violation\b", r"\bunshoveled sidewalk\b", r"\bsidewalk blocked by vegetation\b"],
         [],
         True,
         "institution",
