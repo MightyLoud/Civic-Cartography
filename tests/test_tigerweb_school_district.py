@@ -62,6 +62,7 @@ def test_canonicalize_adds_school_district_join_contract() -> None:
         geometry_id="eanes-isd-districtwide",
         retrieved_at="2026-08-01",
         request_url="https://example.test/query",
+        source_vintage="2026-01-01",
     )
 
     feature = result["features"][0]
@@ -74,4 +75,5 @@ def test_canonicalize_adds_school_district_join_contract() -> None:
     assert properties["district_type"] == "at_large"
     assert properties["district_id"] == "DISTRICTWIDE"
     assert properties["census_geoid"] == "4817760"
+    assert properties["source_vintage"] == "2026-01-01"
     assert feature["geometry"] == SAMPLE_PAYLOAD["features"][0]["geometry"]
