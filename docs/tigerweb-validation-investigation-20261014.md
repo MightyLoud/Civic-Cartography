@@ -100,3 +100,9 @@ This is independently reproducible dependency freshness drift, unrelated to geog
 - No tracked `data/`, `evidence/` or workflow files were changed. No merge, manual dispatch, release, schedule or source-system write was performed.
 
 Next action: review the code correction separately from PR #480, then prepare a bounded baseline reconciliation. Preserve old raw evidence; capture fresh responses and their metadata; quantify changed polygons and address-control impact; reconcile authority, vintage, joins and source manifests; approve each release before replacing its baseline. Handle the El Paso host migration and LIC-G5 lock policy as separate changes. PR #480 remains a draft manual-only preflight; this investigation does not establish complete Civic Monitoring v0.5 operation or change `GATE-CM-006` from `WAIT`.
+
+## October 14 code review follow-up
+
+Review reproduced an integer-normalization edge case: Python considers `False == 0` and `0.0 == 0`. After normalizing a stored `"0"`, the earlier comparator could accept these unsupported source types. The comparator now accepts only nonnegative JSON integers or ASCII digit strings for the two area fields, rejecting booleans, floats, nulls, negative values and decimal strings before comparison. Eight additional regression cases cover this rejection.
+
+After this correction: 40 focused TIGERweb tests passed; the full local suite passed 230 tests; 34-file normalized validation and GeoJSON validation passed. The earlier 222-test GitHub result refers to commit `51a05895e374b45b96788064c49629148c509294`, before these eight new cases. No approved baseline or workflow was changed by the review correction.

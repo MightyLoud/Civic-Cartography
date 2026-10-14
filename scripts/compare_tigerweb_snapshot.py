@@ -22,9 +22,13 @@ def stable_attributes(properties: dict[str, Any]) -> dict[str, Any]:
     for field in VOLATILE_SOURCE_FIELDS:
         properties.pop(field, None)
     for field in INTEGER_SOURCE_FIELDS:
-        value = properties.get(field)
+        if field not in properties:
+            continue
+        value = properties[field]
         if isinstance(value, str) and re.fullmatch(r"[0-9]+", value):
             properties[field] = int(value)
+        elif type(value) is not int or value < 0:
+            raise ValueError(f"TIGERweb source attribute {field} must be a nonnegative integer")
     return properties
 
 

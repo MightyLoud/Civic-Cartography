@@ -139,7 +139,20 @@ def test_area_value_changes_still_fail(tmp_path: Path, fresh_value) -> None:
     write(tmp_path / "fresh.json", fresh)
     errors = compare_canonical_files(tmp_path / "committed.json", tmp_path / "fresh.json")
     assert len(errors) == 1
-    assert "source attributes changed: AREAWATER" in errors[0]
+    assert "AREAWATER" in errors[0]
+
+
+@pytest.mark.parametrize("value", [False, True, 0.0, 1.0, -1, None, "0.0", "-1"])
+def test_invalid_area_types_cannot_compare_equal_to_an_integer(tmp_path: Path, value) -> None:
+    committed = canonical_payload()
+    fresh = canonical_payload()
+    committed["features"][0]["properties"]["source_attributes"]["AREAWATER"] = "0"
+    fresh["features"][0]["properties"]["source_attributes"]["AREAWATER"] = value
+    write(tmp_path / "committed.json", committed)
+    write(tmp_path / "fresh.json", fresh)
+    errors = compare_canonical_files(tmp_path / "committed.json", tmp_path / "fresh.json")
+    assert len(errors) == 1
+    assert "AREAWATER must be a nonnegative integer" in errors[0]
 
 
 @pytest.mark.parametrize("field", ["GEOID", "NAME"])
