@@ -38,7 +38,11 @@ Seventeen explicitly synthetic probes in the added/removed coverage demonstrate 
 
 No suitable trusted physical-address coordinate controls for these Texas cases were found in the inspected repository. Real-address impact remains `UNVERIFIED`. Candidate-to-normalized geometry joins were dry-run in a disposable overlay and passed; that validates identifiers, not source authority or release readiness.
 
-The City of Oak Point's [Planning & Engineering page](https://www.oakpointtexas.com/173/Planning-Engineering) provides an official planning route and links a zoning map. The available linked zoning map is dated October 2022; it does not resolve the 2026 discrepancy. A read-only attempt to obtain Denton County's existing PoliticalBoundaries ArcGIS service metadata returned HTTP 403. Neither an old zoning map nor an inaccessible endpoint was substituted for the controlling Census source. No outreach was sent.
+The City of Oak Point's [Planning & Engineering page](https://www.oakpointtexas.com/173/Planning-Engineering) currently links a live public ArcGIS experience, `ba87aee73fc74607bcca8cd8356071f2`, owned by `OakpointDevelopment`. It resolves to web map `8bd15c6337ea45c3b572936116f7b3a6` and its City Boundaries layer at `Landmark_Base_GC/MapServer/1`, published by `DentonCountyGIS`. The October 2022 static zoning PDF located earlier is historical context, not the current link. This corrects the earlier map-source note.
+
+The live county query returns separate `TYPE=CITY` and `TYPE=ETJ` features. Only the city-limit feature (`INC_MUNI=OAK POINT`, `CityCode=OAKP`) was compared; ETJ was excluded. Its last-edited timestamp is February 17, 2026, which is not a verified legal effective date. The county city-limit polygon differs from stored Census coverage by 12.8975% and from fresh Census coverage by 1.8180%, relative to the county polygon. Fresh Census remains different by approximately 273,340 m² and 598.457 m projected Hausdorff distance. This independent official source narrows the investigation but does not resolve it or approve replacement.
+
+The [Oak Point authority evidence](../evidence/tigerweb-baseline-preparation-20261014/oak-point-authority/) preserves the source graph, raw city/ETJ query, fresh Census response, comparison measurements and blocked disposition. A previous `PoliticalBoundaries_GC` metadata request returned HTTP 403; the city-linked `Landmark_Base_GC` endpoint was accessible. No inaccessible source was substituted and no outreach was sent.
 
 ## Bounded review order
 
