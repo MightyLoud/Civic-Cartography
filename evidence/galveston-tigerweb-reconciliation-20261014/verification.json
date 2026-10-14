@@ -1,0 +1,39 @@
+{
+  "base_code_commit": "289b27ce6e72c6fc2481b75748c3dc9cc1b48586",
+  "baseline_replacement_in_main_approved": false,
+  "capture_date": "2026-10-14",
+  "checks": {
+    "existing_roster_legal_cutover_portal_contracts_passed": true,
+    "focused_tests_passed": 36,
+    "fresh_precinct_snapshot_comparison_passed": true,
+    "full_tests_passed": 231,
+    "geojson_joins_passed": true,
+    "normalized_file_count": 34,
+    "tigerweb_snapshot_comparison_passed": true
+  },
+  "file_sha256": {
+    "data/geojson/galveston_county_commissioner_precincts.geojson": "973e869d47ddd52f1d0388e7714cc111e05ede4bbb45f0a935737bb541f7aed6",
+    "data/geojson/galveston_county_countywide.geojson": "eca0fd9d25fa10c196a083e8ca6c6b447d97496cad129d0ba92f70ca50a9efee",
+    "data/raw/galveston-county/archive/2026-08-02/galveston_county_countywide.geojson": "b468eb3767a5ae2f13becb474c4be0208a2a6625516f64ff9d03d034f91a1ecf",
+    "data/raw/galveston-county/archive/2026-08-02/tigerweb-county-48167.geojson": "d4ca2266cb618e88b06c3f0e2b0b4a53a7aa2aaaced73abd9e1e7fb3d2164f9d",
+    "data/raw/galveston-county/source-manifest.csv": "b2b1691322cd8afe2767c636cbbf5bd0218eb48830eae1c7ab14cb260cfe2429",
+    "data/raw/galveston-county/tigerweb-county-48167.geojson": "08c4a685625b8f04ac43b517b0c9a4269e191613a905039f378594bdd2432173"
+  },
+  "geoid": "48167",
+  "geometry_exactly_equal_to_original": true,
+  "geometry_id": "galveston-county-countywide",
+  "geometry_sha256": "9ffd6cc930a627af79a87275fd45711bba606ea02b08829579002a77f3814441",
+  "prior_raw_and_canonical_preserved_byte_for_byte": true,
+  "source_access_limit": "One county source page was accessible; twelve county pages returned HTTP 403 under the existing optional-page policy. This is not a fresh certification of all officeholders.",
+  "source_vintage": "2026-01-01",
+  "stable_source_values_equal": true,
+  "status": "DRAFT_NOT_MERGED",
+  "unchanged_scope": [
+    "normalized records",
+    "current officeholder evidence",
+    "abolished office evidence",
+    "precinct geometry",
+    "portal source contract",
+    "Civic Monitoring preflight"
+  ]
+}

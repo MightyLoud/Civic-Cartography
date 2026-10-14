@@ -67,7 +67,7 @@ jobs:
               --geoid 48167 \
               --record-id TX:county:galveston:countywide:COUNTYWIDE \
               --geometry-id galveston-county-countywide \
-              --retrieved-at 2026-08-02 \
+              --retrieved-at 2026-10-14 \
               --raw-output build/galveston-county/county/raw/tigerweb-county-48167.geojson \
               --output build/galveston-county/county/geojson/galveston_county_countywide.geojson; then
               exit 0

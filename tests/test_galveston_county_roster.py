@@ -14,6 +14,24 @@ COUNTY = ROOT / "data/geojson/galveston_county_countywide.geojson"
 OPERATIONAL_LAYER = "https://services5.arcgis.com/NAnnb4W7JLztFw9i/arcgis/rest/services/Galveston_County_Commissioner_Precincts_2026/FeatureServer/0"
 
 
+def test_galveston_census_provenance_refresh_preserves_geometry_and_source_values() -> None:
+    from scripts.compare_tigerweb_snapshot import compare_raw_and_canonical, stable_source_view
+
+    archive = ROOT / "data/raw/galveston-county/archive/2026-08-02"
+    archived_county = json.loads((archive / "galveston_county_countywide.geojson").read_text())
+    current_county = json.loads(COUNTY.read_text())
+    assert current_county["features"][0]["geometry"] == archived_county["features"][0]["geometry"]
+    assert stable_source_view(current_county, canonical=True) == stable_source_view(archived_county, canonical=True)
+    assert compare_raw_and_canonical(archive / "tigerweb-county-48167.geojson", archive / "galveston_county_countywide.geojson") == []
+    assert compare_raw_and_canonical(ROOT / "data/raw/galveston-county/tigerweb-county-48167.geojson", COUNTY) == []
+    properties = current_county["features"][0]["properties"]
+    assert properties["source_vintage"] == "2026-01-01"
+    assert properties["source_retrieved_at"] == "2026-10-14"
+    with MANIFEST.open(newline="", encoding="utf-8") as handle:
+        census = next(row for row in csv.DictReader(handle) if row["source_id"] == "census-galveston-county")
+    assert census["retrieved_at"] == properties["source_retrieved_at"]
+
+
 def test_galveston_county_effective_cutover_contract() -> None:
     expected = {
         "County Judge": "Mark A. Henry",
