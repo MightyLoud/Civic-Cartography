@@ -1,0 +1,1387 @@
+{
+  "approved_baselines_preserved": true,
+  "area_crs": "EPSG:5070",
+  "base_commit": "289b27ce6e72c6fc2481b75748c3dc9cc1b48586",
+  "baseline_replacement_approved": false,
+  "generated_at_utc": "2026-10-14T15:39:53.827492+00:00",
+  "geos": "3.14.1",
+  "method": "exact source coordinates; no snap, buffer, tolerance, simplification or geometry repair",
+  "prepare_script_sha256": "9f2fb7e5a71ef705b09a3d6066e86284b92cc9839cfd4e2ff15c7b969c72732a",
+  "proj": "9.8.1",
+  "pyproj": "3.8.0",
+  "python": "3.12.14",
+  "real_address_controls_available": 0,
+  "rows": [
+    {
+      "actual_changed_source_fields": [
+        "AREALAND",
+        "AREAWATER"
+      ],
+      "added_area_m2": 0.20226558707423692,
+      "baseline_path": "data/geojson/travis_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "4f35478810172f7d5c8a5a373d65652100406c49a0d01c2ca6a3ccc42569109f",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/travis_county_countywide.geojson",
+      "candidate_sha256": "386692e184ca4a72f0106580a53e5c42ae0ae8c1325133171ab20afc9c40dc3a",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:38.487354+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:31.393310+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": true,
+      "geoid": "48453",
+      "geometry_id": "travis-county-countywide",
+      "hausdorff_distance_m": 0.012559980793630826,
+      "join_and_attribution_unchanged": true,
+      "name": "travis_county_countywide",
+      "net_area_change_m2": 0.015819072723388672,
+      "projected_baseline_area_m2": 2654806461.924507,
+      "projected_candidate_area_m2": 2654806461.940326,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/travis_county_countywide.geojson",
+      "raw_sha256": "58be8ed55b76ab8965a84b8f79a02f7614e8d7680ea873f90032ccd65e9b9253",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:travis:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 0.18644590406087858,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748453%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 2575299585,
+          "candidate": 2575354868
+        },
+        "AREAWATER": {
+          "baseline": 79506870,
+          "candidate": 79451592
+        }
+      },
+      "symmetric_difference_area_m2": 0.3887114911351155,
+      "symmetric_difference_pct_of_baseline": 1.4641801453704952e-08,
+      "synthetic_probes": [
+        {
+          "baseline_covers": false,
+          "candidate_covers": true,
+          "change": "added",
+          "coordinates": [
+            -97.84647851740107,
+            30.47369149990317
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": false,
+          "change": "removed",
+          "coordinates": [
+            -97.85116346092055,
+            30.48265849986425
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        }
+      ],
+      "topologically_equal": false
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND",
+        "AREAWATER",
+        "CENTLAT",
+        "CENTLON"
+      ],
+      "added_area_m2": 347218.27455704263,
+      "baseline_path": "data/geojson/denton_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "802063c0b81a538fae0dedd5b3272a785432d16a2fad34a77566ac8673a13faa",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/denton_county_countywide.geojson",
+      "candidate_sha256": "c3369594b52cf12d6e640598fca57cb922508b16439e492fcdd7d7034625b52b",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:38.525479+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:31.399392+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": true,
+      "geoid": "48121",
+      "geometry_id": "denton-county-countywide",
+      "hausdorff_distance_m": 66.2089298423298,
+      "join_and_attribution_unchanged": true,
+      "name": "denton_county_countywide",
+      "net_area_change_m2": 347146.8825688362,
+      "projected_baseline_area_m2": 2464791433.0448146,
+      "projected_candidate_area_m2": 2465138579.9273834,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/denton_county_countywide.geojson",
+      "raw_sha256": "7a552168c3636c6fba3eda737096d75c63aeebc14a2bbaa92279ed2d13b6eb50",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:denton:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 71.39198676271896,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748121%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 2275331242,
+          "candidate": 2274391019
+        },
+        "AREAWATER": {
+          "baseline": 189459989,
+          "candidate": 190747364
+        },
+        "CENTLAT": {
+          "baseline": "+33.2054606",
+          "candidate": "+33.2054638"
+        },
+        "CENTLON": {
+          "baseline": "-097.1168139",
+          "candidate": "-097.1168260"
+        }
+      },
+      "symmetric_difference_area_m2": 347289.66654380533,
+      "symmetric_difference_pct_of_baseline": 0.014090022461445766,
+      "synthetic_probes": [
+        {
+          "baseline_covers": false,
+          "candidate_covers": true,
+          "change": "added",
+          "coordinates": [
+            -96.94272978585477,
+            32.988713000101896
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": false,
+          "change": "removed",
+          "coordinates": [
+            -96.92556952969596,
+            33.41537600027494
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        }
+      ],
+      "topologically_equal": false
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND",
+        "CENTLAT",
+        "CENTLON"
+      ],
+      "added_area_m2": 25.253962179324468,
+      "baseline_path": "data/geojson/carrollton_farmers_branch_isd_districtwide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "654f976e5885cf93253b8cd4957b9a74577db2189d48e48fe3e37bc0ee0dbe8f",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/carrollton_farmers_branch_isd_districtwide.geojson",
+      "candidate_sha256": "427835de5805def1c2be1070c0bae96b18230ca76e664197c69e32dd57e31303",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:38.480084+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:31.395356+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": true,
+      "geoid": "4813050",
+      "geometry_id": "carrollton-farmers-branch-isd-districtwide",
+      "hausdorff_distance_m": 44.47654155734213,
+      "join_and_attribution_unchanged": true,
+      "name": "carrollton_farmers_branch_isd_districtwide",
+      "net_area_change_m2": -29740.893108427525,
+      "projected_baseline_area_m2": 125081368.67086934,
+      "projected_candidate_area_m2": 125051627.77776091,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/carrollton_farmers_branch_isd_districtwide.geojson",
+      "raw_sha256": "c3982123587aa1ff1fb576ec30948c33d00774539726d00d92daada6f0d36bbf",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:school_district:carrollton-farmers-branch-isd:at_large:DISTRICTWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 29766.14707041912,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14/query?where=BASENAME+LIKE+%27%25Carrollton-Farmers+Branch%25%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 122372279,
+          "candidate": 122342541
+        },
+        "CENTLAT": {
+          "baseline": "+32.9460217",
+          "candidate": "+32.9460108"
+        },
+        "CENTLON": {
+          "baseline": "-096.9133555",
+          "candidate": "-096.9133531"
+        }
+      },
+      "symmetric_difference_area_m2": 29791.401032598445,
+      "symmetric_difference_pct_of_baseline": 0.02381761676352417,
+      "synthetic_probes": [
+        {
+          "baseline_covers": false,
+          "candidate_covers": true,
+          "change": "added",
+          "coordinates": [
+            -96.85486912021838,
+            33.01171239138266
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": false,
+          "change": "removed",
+          "coordinates": [
+            -96.93873645994313,
+            32.988713000101896
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        }
+      ],
+      "topologically_equal": false
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND",
+        "AREAWATER",
+        "CENTLAT",
+        "CENTLON",
+        "INTPTLAT",
+        "INTPTLON"
+      ],
+      "added_area_m2": 429055.42312951846,
+      "baseline_path": "data/geojson/oak_point_citywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "3f07753397719fe2f009ef1a7d313eb61dc85c2f02a1fe4ef61ec3ba58783904",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/oak_point_citywide.geojson",
+      "candidate_sha256": "81b7ebafcece414a63298d57eed61a110edcd6e4bdd82adf243b2f7e6917f133",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:38.430016+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:31.401830+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": true,
+      "geoid": "4853130",
+      "geometry_id": "oak-point-citywide",
+      "hausdorff_distance_m": 845.9208638125493,
+      "join_and_attribution_unchanged": true,
+      "name": "oak_point_citywide",
+      "net_area_change_m2": -927393.7687922474,
+      "projected_baseline_area_m2": 15985515.597611511,
+      "projected_candidate_area_m2": 15058121.828819264,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/oak_point_citywide.geojson",
+      "raw_sha256": "54b69a1f7734b03791eb8f0aadc36e207406a6b76ff177e724274d4c684c986c",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:municipality:oak-point:at_large:CITYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 1356449.1919217322,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/28/query?where=GEOID%3D%274853130%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 15164856,
+          "candidate": 14648902
+        },
+        "AREAWATER": {
+          "baseline": 820661,
+          "candidate": 409220
+        },
+        "CENTLAT": {
+          "baseline": "+33.1795326",
+          "candidate": "+33.1801249"
+        },
+        "CENTLON": {
+          "baseline": "-096.9907520",
+          "candidate": "-096.9894650"
+        },
+        "INTPTLAT": {
+          "baseline": "+33.1704413",
+          "candidate": "+33.1704002"
+        },
+        "INTPTLON": {
+          "baseline": "-096.9874828",
+          "candidate": "-096.9876817"
+        }
+      },
+      "symmetric_difference_area_m2": 1785504.6150512507,
+      "symmetric_difference_pct_of_baseline": 11.169515328726922,
+      "synthetic_probes": [
+        {
+          "baseline_covers": false,
+          "candidate_covers": true,
+          "change": "added",
+          "coordinates": [
+            -96.96418411213787,
+            33.178094149502456
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": false,
+          "change": "removed",
+          "coordinates": [
+            -96.98025862509826,
+            33.1975819997745
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        }
+      ],
+      "topologically_equal": false
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND",
+        "AREAWATER"
+      ],
+      "added_area_m2": 0.0,
+      "baseline_path": "data/geojson/montgomery_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "ee694a6b9bec006ec0055f89baca648b8dbdc703c1420506fbf8e2bdd6fd7de9",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/montgomery_county_countywide.geojson",
+      "candidate_sha256": "feaa9c4ca499b211b9999d4f46bbe38af866002a78def35cc229ad60251943c5",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:43.887341+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:38.435482+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": false,
+      "geoid": "48339",
+      "geometry_id": "montgomery-county-countywide",
+      "hausdorff_distance_m": 0.0,
+      "join_and_attribution_unchanged": true,
+      "name": "montgomery_county_countywide",
+      "net_area_change_m2": 0.0,
+      "projected_baseline_area_m2": 2789121217.5153155,
+      "projected_candidate_area_m2": 2789121217.5153155,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/montgomery_county_countywide.geojson",
+      "raw_sha256": "3414741fa2b641d50f849db1c2313e0857528899fa2a7a5672ac0fec43e30330",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:montgomery:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 0.0,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748339%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 2699229345,
+          "candidate": 2699231373
+        },
+        "AREAWATER": {
+          "baseline": 89891730,
+          "candidate": 89889706
+        }
+      },
+      "symmetric_difference_area_m2": 0.0,
+      "symmetric_difference_pct_of_baseline": 0.0,
+      "synthetic_probes": [],
+      "topologically_equal": true
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND",
+        "AREAWATER",
+        "CENTLAT",
+        "CENTLON"
+      ],
+      "added_area_m2": 0.0,
+      "baseline_path": "data/geojson/tarrant_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "54f56b4d0e8471e5aa7304a025aa20ce02f3a9d31c2336cae32d959572f4c101",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/tarrant_county_countywide.geojson",
+      "candidate_sha256": "20c1b757519ab7d0b21aa5a6f5b05fec265ee47de0d43e89e882243652c73dd3",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:43.510580+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:38.485617+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": true,
+      "geoid": "48439",
+      "geometry_id": "tarrant-county-countywide",
+      "hausdorff_distance_m": 18.07934075836058,
+      "join_and_attribution_unchanged": true,
+      "name": "tarrant_county_countywide",
+      "net_area_change_m2": -5742.914898395538,
+      "projected_baseline_area_m2": 2340768736.9904895,
+      "projected_candidate_area_m2": 2340762994.075591,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/tarrant_county_countywide.geojson",
+      "raw_sha256": "766be55b1b4cc07dcc49db0464d53dd9dd5b225a0578733bb96d1a0400a3c439",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:tarrant:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 5742.914898238444,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748439%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 2241376178,
+          "candidate": 2241375331
+        },
+        "AREAWATER": {
+          "baseline": 99392439,
+          "candidate": 99387546
+        },
+        "CENTLAT": {
+          "baseline": "+32.7718353",
+          "candidate": "+32.7718348"
+        },
+        "CENTLON": {
+          "baseline": "-097.2911316",
+          "candidate": "-097.2911314"
+        }
+      },
+      "symmetric_difference_area_m2": 5742.914898238444,
+      "symmetric_difference_pct_of_baseline": 0.0002453431134603272,
+      "synthetic_probes": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": false,
+          "change": "removed",
+          "coordinates": [
+            -97.10409581119512,
+            32.990172499808956
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        }
+      ],
+      "topologically_equal": false
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND",
+        "AREAWATER"
+      ],
+      "added_area_m2": 0.18644590406087858,
+      "baseline_path": "data/geojson/williamson_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "0536f6a1070c2e77f1847ef297c468d51c5cb11cffce6a657f03d366ce9ba980",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/williamson_county_countywide.geojson",
+      "candidate_sha256": "f15fb87c58d22b669aa1cb5df57e93eb1cdd0a1faee8303dd8df368fc897d63e",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:43.539156+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:38.492643+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": true,
+      "geoid": "48491",
+      "geometry_id": "williamson-county-countywide",
+      "hausdorff_distance_m": 0.012559980793630826,
+      "join_and_attribution_unchanged": true,
+      "name": "williamson_county_countywide",
+      "net_area_change_m2": -0.015819549560546875,
+      "projected_baseline_area_m2": 2931564949.957362,
+      "projected_candidate_area_m2": 2931564949.9415426,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/williamson_county_countywide.geojson",
+      "raw_sha256": "6220cb3e4ac8f9a3e61a443ef6888653945614a4dac92811728ad3f95e64acdc",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:williamson:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 0.2022655870742085,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748491%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 2890090365,
+          "candidate": 2890092199
+        },
+        "AREAWATER": {
+          "baseline": 41474365,
+          "candidate": 41472527
+        }
+      },
+      "symmetric_difference_area_m2": 0.3887114911350871,
+      "symmetric_difference_pct_of_baseline": 1.3259521715210185e-08,
+      "synthetic_probes": [
+        {
+          "baseline_covers": false,
+          "candidate_covers": true,
+          "change": "added",
+          "coordinates": [
+            -97.85116346092055,
+            30.48265849986425
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": false,
+          "change": "removed",
+          "coordinates": [
+            -97.84647851740107,
+            30.47369149990317
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        }
+      ],
+      "topologically_equal": false
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND",
+        "AREAWATER"
+      ],
+      "added_area_m2": 5.8895593276620275,
+      "baseline_path": "data/geojson/harris_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "fb58fd85d33fb648273443c15a00ada1b3432e77dd6faea69f9375bb933f88d9",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/harris_county_countywide.geojson",
+      "candidate_sha256": "b5179df09996e4abb877395a4fd5e50dc128dcdac95b242d8881242c9b80333f",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:44.066633+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:38.539570+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": true,
+      "geoid": "48201",
+      "geometry_id": "harris-county-countywide",
+      "hausdorff_distance_m": 0.027268330467602086,
+      "join_and_attribution_unchanged": true,
+      "name": "harris_county_countywide",
+      "net_area_change_m2": 3.300344467163086,
+      "projected_baseline_area_m2": 4602509062.857564,
+      "projected_candidate_area_m2": 4602509066.157908,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/harris_county_countywide.geojson",
+      "raw_sha256": "cf70e97abda028942582dcca79d7aab5404d9bfdf2a6de3857748f50b46fea8b",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:harris:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 2.58921503941688,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748201%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 4421991136,
+          "candidate": 4422002774
+        },
+        "AREAWATER": {
+          "baseline": 180517819,
+          "candidate": 180506183
+        }
+      },
+      "symmetric_difference_area_m2": 8.478774367078907,
+      "symmetric_difference_pct_of_baseline": 1.8422069899879095e-07,
+      "synthetic_probes": [
+        {
+          "baseline_covers": false,
+          "candidate_covers": true,
+          "change": "added",
+          "coordinates": [
+            -95.93376394601361,
+            30.088244999777316
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": false,
+          "change": "removed",
+          "coordinates": [
+            -95.9212355759174,
+            30.053984500016888
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        }
+      ],
+      "topologically_equal": false
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND",
+        "AREAWATER"
+      ],
+      "added_area_m2": 0.0,
+      "baseline_path": "data/geojson/fort_bend_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "769fbbf28c38fba94d370eb7ab0ec1c3b29d8c7215ae970dcfac0740b87a0035",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/fort_bend_county_countywide.geojson",
+      "candidate_sha256": "a7b7214769c448716b4a86dab8d0726eb1b7d450ec73171a341f055577ef3124",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:48.815611+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:43.516965+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": false,
+      "geoid": "48157",
+      "geometry_id": "fort-bend-county-countywide",
+      "hausdorff_distance_m": 0.0,
+      "join_and_attribution_unchanged": true,
+      "name": "fort_bend_county_countywide",
+      "net_area_change_m2": 0.0,
+      "projected_baseline_area_m2": 2293508637.3916044,
+      "projected_candidate_area_m2": 2293508637.3916044,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/fort_bend_county_countywide.geojson",
+      "raw_sha256": "d716e726c8c5487f698ab3b53188cec43e093e6a8c2209199703a96716088e95",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:fort-bend:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 0.0,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748157%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 2232877080,
+          "candidate": 2232877078
+        },
+        "AREAWATER": {
+          "baseline": 60631457,
+          "candidate": 60631454
+        }
+      },
+      "symmetric_difference_area_m2": 0.0,
+      "symmetric_difference_pct_of_baseline": 0.0,
+      "synthetic_probes": [],
+      "topologically_equal": true
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND",
+        "AREAWATER",
+        "CENTLAT",
+        "CENTLON"
+      ],
+      "added_area_m2": 184.76541194847545,
+      "baseline_path": "data/geojson/dallas_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "761ed411a9ba2bd7dabeae42335cf4e1d2a653d2be39ac9e22a731eb3445c035",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/dallas_county_countywide.geojson",
+      "candidate_sha256": "1e810335aee4dfdd125a60c14b82c9d21dfc76edd7c5ef1c552e1d787b9dbd09",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:48.561203+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:43.542595+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": true,
+      "geoid": "48113",
+      "geometry_id": "dallas-county-countywide",
+      "hausdorff_distance_m": 26.734864612124387,
+      "join_and_attribution_unchanged": true,
+      "name": "dallas_county_countywide",
+      "net_area_change_m2": -137514.8097600937,
+      "projected_baseline_area_m2": 2353374996.9599323,
+      "projected_candidate_area_m2": 2353237482.150172,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/dallas_county_countywide.geojson",
+      "raw_sha256": "9206fad07f1f7fdc4ff2b90b2ac9c3e8ac96916bea0be5eae55b7ec85c199828",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:dallas:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 137699.57517518805,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748113%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 2261553244,
+          "candidate": 2261417193
+        },
+        "AREAWATER": {
+          "baseline": 91821724,
+          "candidate": 91820257
+        },
+        "CENTLAT": {
+          "baseline": "+32.7664847",
+          "candidate": "+32.7664717"
+        },
+        "CENTLON": {
+          "baseline": "-096.7777649",
+          "candidate": "-096.7777546"
+        }
+      },
+      "symmetric_difference_area_m2": 137884.3405871365,
+      "symmetric_difference_pct_of_baseline": 0.005859004228618652,
+      "synthetic_probes": [
+        {
+          "baseline_covers": false,
+          "candidate_covers": true,
+          "change": "added",
+          "coordinates": [
+            -96.79359294420061,
+            32.54705349980506
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": false,
+          "change": "removed",
+          "coordinates": [
+            -96.94272978585477,
+            32.988713000101896
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        }
+      ],
+      "topologically_equal": false
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND"
+      ],
+      "added_area_m2": 0.0,
+      "baseline_path": "data/geojson/hidalgo_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "d6fcb524b08e59fb70b9190800eed454c26cbdcf0daac95929b1d16ee355b618",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/hidalgo_county_countywide.geojson",
+      "candidate_sha256": "2783e7cc1135a78bd281a8bc8edbd0715d83f0aab7ed6a7f3606abbd5c085a87",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:48.885912+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:43.903566+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": false,
+      "geoid": "48215",
+      "geometry_id": "hidalgo-county-countywide",
+      "hausdorff_distance_m": 0.0,
+      "join_and_attribution_unchanged": true,
+      "name": "hidalgo_county_countywide",
+      "net_area_change_m2": 0.0,
+      "projected_baseline_area_m2": 4099514637.18497,
+      "projected_candidate_area_m2": 4099514637.18497,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/hidalgo_county_countywide.geojson",
+      "raw_sha256": "29c59add1ad73b81d401e259c16b8eb6648298257464b271b7dc9690d4ce61eb",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:hidalgo:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 0.0,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748215%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 4069433009,
+          "candidate": 4069433006
+        }
+      },
+      "symmetric_difference_area_m2": 0.0,
+      "symmetric_difference_pct_of_baseline": 0.0,
+      "synthetic_probes": [],
+      "topologically_equal": true
+    },
+    {
+      "actual_changed_source_fields": [],
+      "added_area_m2": 0.0,
+      "baseline_path": "data/geojson/galveston_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "b468eb3767a5ae2f13becb474c4be0208a2a6625516f64ff9d03d034f91a1ecf",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/galveston_county_countywide.geojson",
+      "candidate_sha256": "1891f8accb8faf82dfca00d9ff1f8cbfe575da56dfb18ba133c3ccb2be60fece",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:48.850209+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:44.096778+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": false,
+      "geoid": "48167",
+      "geometry_id": "galveston-county-countywide",
+      "hausdorff_distance_m": 0.0,
+      "join_and_attribution_unchanged": true,
+      "name": "galveston_county_countywide",
+      "net_area_change_m2": 0.0,
+      "projected_baseline_area_m2": 2263503743.144566,
+      "projected_candidate_area_m2": 2263503743.144566,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/galveston_county_countywide.geojson",
+      "raw_sha256": "b1a53e70ea2681e970239aef515c25142d1fb9e29a89df6277210aba10f8749d",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:galveston:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 0.0,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748167%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {},
+      "symmetric_difference_area_m2": 0.0,
+      "symmetric_difference_pct_of_baseline": 0.0,
+      "synthetic_probes": [],
+      "topologically_equal": true
+    },
+    {
+      "actual_changed_source_fields": [],
+      "added_area_m2": 0.0,
+      "baseline_path": "data/geojson/kaufman_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "caf1d7132d973fafb5ad24671d6c6a0ffdfa30fa4c7228867944ded858457666",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/kaufman_county_countywide.geojson",
+      "candidate_sha256": "53626ca4f0c8cc66e17a2bf9050a575042c849b5199f8e40af9dceeacf87adda",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:59.853825+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:48.565165+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": false,
+      "geoid": "48257",
+      "geometry_id": "kaufman-county-countywide",
+      "hausdorff_distance_m": 0.0,
+      "join_and_attribution_unchanged": true,
+      "name": "kaufman_county_countywide",
+      "net_area_change_m2": 0.0,
+      "projected_baseline_area_m2": 2091452355.0938582,
+      "projected_candidate_area_m2": 2091452355.0938582,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/kaufman_county_countywide.geojson",
+      "raw_sha256": "8fedb4862c3524f050989ce8d7e0b0aa506354e5f03e82f65b1403d877e85a3e",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:kaufman:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 0.0,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748257%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {},
+      "symmetric_difference_area_m2": 0.0,
+      "symmetric_difference_pct_of_baseline": 0.0,
+      "synthetic_probes": [],
+      "topologically_equal": true
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND",
+        "AREAWATER",
+        "CENTLAT"
+      ],
+      "added_area_m2": 12.509204351127583,
+      "baseline_path": "data/geojson/collin_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "788691e1cbe20ffbcbd9976f56031bdf1e62bdb6fcf779287e50635a95ba523f",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/collin_county_countywide.geojson",
+      "candidate_sha256": "b1d17f9c358920772ff80decc7c827c6e6522d1dd8dd5ffb6801010f2a4f83e5",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:59.924642+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:48.849821+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": true,
+      "geoid": "48085",
+      "geometry_id": "collin-county-countywide",
+      "hausdorff_distance_m": 0.041081749783074085,
+      "join_and_attribution_unchanged": true,
+      "name": "collin_county_countywide",
+      "net_area_change_m2": -15.141112327575684,
+      "projected_baseline_area_m2": 2294393792.3781505,
+      "projected_candidate_area_m2": 2294393777.237038,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/collin_county_countywide.geojson",
+      "raw_sha256": "4112237fed735fa58d981d13148266ed6cfddfe14d5ee5ad8f5238303f89850c",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:collin:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 27.65031629444161,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748085%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 2179592974,
+          "candidate": 2179610853
+        },
+        "AREAWATER": {
+          "baseline": 114800794,
+          "candidate": 114782910
+        },
+        "CENTLAT": {
+          "baseline": "+33.1879302",
+          "candidate": "+33.1879301"
+        }
+      },
+      "symmetric_difference_area_m2": 40.15952064556919,
+      "symmetric_difference_pct_of_baseline": 1.750332518287702e-06,
+      "synthetic_probes": [
+        {
+          "baseline_covers": false,
+          "candidate_covers": true,
+          "change": "added",
+          "coordinates": [
+            -96.31632421760095,
+            32.98163649968418
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": false,
+          "change": "removed",
+          "coordinates": [
+            -96.83515388843308,
+            33.36211449991447
+          ],
+          "kind": "synthetic_change_probe",
+          "real_address": false
+        }
+      ],
+      "topologically_equal": false
+    },
+    {
+      "actual_changed_source_fields": [],
+      "added_area_m2": 0.0,
+      "baseline_path": "data/geojson/arlington_citywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "751a5ce1daf54fad53de3882c832dab956b9425280e835e8cff4095867a93c52",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/arlington_citywide.geojson",
+      "candidate_sha256": "a721d98fa4a09ccb66de4504380d7230ba45a380052550cbde4b0a2e1087d651",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:39:00.136498+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:48.861705+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": false,
+      "geoid": "4804000",
+      "geometry_id": "arlington-citywide",
+      "hausdorff_distance_m": 0.0,
+      "join_and_attribution_unchanged": true,
+      "name": "arlington_citywide",
+      "net_area_change_m2": 0.0,
+      "projected_baseline_area_m2": 257395835.5331976,
+      "projected_candidate_area_m2": 257395835.5331976,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/arlington_citywide.geojson",
+      "raw_sha256": "27573304f2d88344ce0b9dd2b3d23be7b0440d6cef3964818e5e5c682cfe49b9",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:municipality:arlington:at_large:CITYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 0.0,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/28/query?where=GEOID%3D%274804000%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {},
+      "symmetric_difference_area_m2": 0.0,
+      "symmetric_difference_pct_of_baseline": 0.0,
+      "synthetic_probes": [],
+      "topologically_equal": true
+    },
+    {
+      "actual_changed_source_fields": [],
+      "added_area_m2": 0.0,
+      "baseline_path": "data/geojson/olmos_park_citywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "9f779a20b74de6b54f3bb92715942704f39f286c9a4178af8c418c02f7bcbcbc",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/olmos_park_citywide.geojson",
+      "candidate_sha256": "45e467510f862713840c51ca47c8d479ad57f4d5687c4647ba43b87c68bb890d",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:38:59.795088+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:48.892125+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": false,
+      "geoid": "4853988",
+      "geometry_id": "olmos-park-citywide",
+      "hausdorff_distance_m": 0.0,
+      "join_and_attribution_unchanged": true,
+      "name": "olmos_park_citywide",
+      "net_area_change_m2": 0.0,
+      "projected_baseline_area_m2": 1590826.4873355802,
+      "projected_candidate_area_m2": 1590826.4873355802,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/olmos_park_citywide.geojson",
+      "raw_sha256": "368228efe7741e7729778d1ed58f7dfe2bdccdeb9426bd83b233ecaa821d6a5d",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:municipality:olmos-park:at_large:CITYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 0.0,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/28/query?where=GEOID%3D%274853988%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {},
+      "symmetric_difference_area_m2": 0.0,
+      "symmetric_difference_pct_of_baseline": 0.0,
+      "synthetic_probes": [],
+      "topologically_equal": true
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND"
+      ],
+      "added_area_m2": 0.0,
+      "baseline_path": "data/geojson/bexar_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "58fd045673bbd807fe5aeabb4d1aa8f45eff8b540c4d787714dfa9372efe1039",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/bexar_county_countywide.geojson",
+      "candidate_sha256": "2054776b72263783141b217a4e84e12bdb5ac644dea46b0e2a928c83dab46797",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:39:05.471012+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:59.798994+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": false,
+      "geoid": "48029",
+      "geometry_id": "bexar-county-countywide",
+      "hausdorff_distance_m": 0.0,
+      "join_and_attribution_unchanged": true,
+      "name": "bexar_county_countywide",
+      "net_area_change_m2": 0.0,
+      "projected_baseline_area_m2": 3253250013.5878334,
+      "projected_candidate_area_m2": 3253250013.5878334,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/bexar_county_countywide.geojson",
+      "raw_sha256": "28c2adca43d19ab9222a0a84888921ba966e9e1e0acc45874b64fa7ab0eff0e5",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:bexar:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 0.0,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748029%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 3212765009,
+          "candidate": 3212765014
+        }
+      },
+      "symmetric_difference_area_m2": 0.0,
+      "symmetric_difference_pct_of_baseline": 0.0,
+      "synthetic_probes": [],
+      "topologically_equal": true
+    },
+    {
+      "actual_changed_source_fields": [
+        "AREALAND",
+        "AREAWATER"
+      ],
+      "added_area_m2": 0.0,
+      "baseline_path": "data/geojson/kerr_county_countywide.geojson",
+      "baseline_replacement_approved": false,
+      "baseline_sha256": "c68903e4d915bdc383225cb50c6063836fd369f034111204948f1267017045e9",
+      "baseline_valid": true,
+      "baseline_vintage": "2025-01-01",
+      "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/kerr_county_countywide.geojson",
+      "candidate_sha256": "63ef642ca5f26fb0ba07a19d29031bce7f18365fec920f69bc937d2d1c444608",
+      "candidate_valid": true,
+      "candidate_vintage": "2026-01-01",
+      "capture_finished_at_utc": "2026-10-14T15:39:05.312577+00:00",
+      "capture_started_at_utc": "2026-10-14T15:38:59.860182+00:00",
+      "census_internal_point_checks": [
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "baseline",
+          "real_address": false
+        },
+        {
+          "baseline_covers": true,
+          "candidate_covers": true,
+          "kind": "census_internal_point",
+          "origin": "candidate",
+          "real_address": false
+        }
+      ],
+      "coordinates_changed": false,
+      "geoid": "48265",
+      "geometry_id": "kerr-county-countywide",
+      "hausdorff_distance_m": 0.0,
+      "join_and_attribution_unchanged": true,
+      "name": "kerr_county_countywide",
+      "net_area_change_m2": 0.0,
+      "projected_baseline_area_m2": 2867849567.4422026,
+      "projected_candidate_area_m2": 2867849567.4422026,
+      "raw_canonical_support_passed": true,
+      "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/kerr_county_countywide.geojson",
+      "raw_sha256": "b8efe157c254d00bcc38f0bc347cba0e0ba5476ae07ebdb368f327d64e47c0bf",
+      "real_address_impact": "UNVERIFIED",
+      "record_id": "TX:county:kerr:countywide:COUNTYWIDE",
+      "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+      "removed_area_m2": 0.0,
+      "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82/query?where=GEOID%3D%2748265%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "source_value_deltas": {
+        "AREALAND": {
+          "baseline": 2857619152,
+          "candidate": 2857614405
+        },
+        "AREAWATER": {
+          "baseline": 10230171,
+          "candidate": 10234913
+        }
+      },
+      "symmetric_difference_area_m2": 0.0,
+      "symmetric_difference_pct_of_baseline": 0.0,
+      "synthetic_probes": [],
+      "topologically_equal": true
+    }
+  ],
+  "scope": "18 TIGERweb failures associated with PR #480",
+  "shapely": "2.2.0",
+  "target_count": 18
+}
