@@ -1,0 +1,3220 @@
+{
+  "operationalLayers": [
+    {
+      "id": "1994edfbcec-layer-6",
+      "title": "Parcels",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Parcels_FC/MapServer/0",
+      "visibility": true,
+      "layerType": "ArcGISFeatureLayer",
+      "layerDefinition": {
+        "fieldConfigurations": [
+          {
+            "name": "confidential",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "deedDt",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "deedID",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "effectiveSizeAcres",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "improvementNHSValue",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "improvementValue",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "imprvActualYearBuilt",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "imprvEffYearBuilt",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "imprvMainArea",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "imprvTotalArea",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "land_sqft",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "landHSValue",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "landNHSValue",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "landTotalSqft",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "legalAcreage",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "ownerAgExclusionValue",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "ownerAgValue",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "ownerAppraisedValue",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "ownerHSTaxLimitationValue",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "ownerImprovementHSValue",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "ownerMarketValue",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "ownerNetAppraisedValue",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "ownerPct",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "ownerTaxLimitationValue",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "pid",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "pYear",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "Shape.STArea()",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "Shape.STLength()",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          }
+        ],
+        "drawingInfo": {
+          "renderer": {
+            "type": "simple",
+            "symbol": {
+              "type": "esriSFS",
+              "color": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "outline": {
+                "type": "esriSLS",
+                "color": [
+                  110,
+                  110,
+                  110,
+                  64
+                ],
+                "width": 0.75,
+                "style": "esriSLSSolid"
+              },
+              "style": "esriSFSSolid"
+            }
+          }
+        }
+      },
+      "popupInfo": {
+        "popupElements": [
+          {
+            "type": "fields"
+          },
+          {
+            "type": "attachments",
+            "displayType": "auto"
+          }
+        ],
+        "showAttachments": true,
+        "fieldInfos": [
+          {
+            "fieldName": "OBJECTID",
+            "isEditable": false,
+            "label": "OBJECTID",
+            "visible": false
+          },
+          {
+            "fieldName": "name",
+            "isEditable": true,
+            "label": "name",
+            "visible": true
+          },
+          {
+            "fieldName": "abstractSubdivisionDescription",
+            "isEditable": true,
+            "label": "abstractSubdivisionDescription",
+            "visible": true
+          },
+          {
+            "fieldName": "addrCity",
+            "isEditable": true,
+            "label": "addrCity",
+            "visible": true
+          },
+          {
+            "fieldName": "addrCountry",
+            "isEditable": true,
+            "label": "addrCountry",
+            "visible": true
+          },
+          {
+            "fieldName": "addrDeliveryLine",
+            "isEditable": true,
+            "label": "addrDeliveryLine",
+            "visible": true
+          },
+          {
+            "fieldName": "addrFreeForm3",
+            "isEditable": true,
+            "label": "addrFreeForm3",
+            "visible": true
+          },
+          {
+            "fieldName": "addrState",
+            "isEditable": true,
+            "label": "addrState",
+            "visible": true
+          },
+          {
+            "fieldName": "addrUnitDesignator",
+            "isEditable": true,
+            "label": "addrUnitDesignator",
+            "visible": true
+          },
+          {
+            "fieldName": "addrZip",
+            "isEditable": true,
+            "label": "addrZip",
+            "visible": true
+          },
+          {
+            "fieldName": "asCode",
+            "isEditable": true,
+            "label": "asCode",
+            "visible": true
+          },
+          {
+            "fieldName": "block",
+            "isEditable": true,
+            "label": "block",
+            "visible": true
+          },
+          {
+            "fieldName": "cad_zoning",
+            "isEditable": true,
+            "label": "cad_zoning",
+            "visible": true
+          },
+          {
+            "fieldName": "cityTaxingUnitCode",
+            "isEditable": true,
+            "label": "cityTaxingUnitCode",
+            "visible": true
+          },
+          {
+            "fieldName": "cityTaxingUnitName",
+            "isEditable": true,
+            "label": "cityTaxingUnitName",
+            "visible": true
+          },
+          {
+            "fieldName": "confidential",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "confidential",
+            "visible": true
+          },
+          {
+            "fieldName": "dba",
+            "isEditable": true,
+            "label": "dba",
+            "visible": true
+          },
+          {
+            "fieldName": "deedDt",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "deedDt",
+            "visible": true
+          },
+          {
+            "fieldName": "deedID",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "deedID",
+            "visible": true
+          },
+          {
+            "fieldName": "deedType",
+            "isEditable": true,
+            "label": "deedType",
+            "visible": true
+          },
+          {
+            "fieldName": "effectiveSizeAcres",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "effectiveSizeAcres",
+            "visible": true
+          },
+          {
+            "fieldName": "exemptions",
+            "isEditable": true,
+            "label": "exemptions",
+            "visible": true
+          },
+          {
+            "fieldName": "geoID",
+            "isEditable": true,
+            "label": "geoID",
+            "visible": true
+          },
+          {
+            "fieldName": "improvementNHSValue",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "improvementNHSValue",
+            "visible": true
+          },
+          {
+            "fieldName": "improvementValue",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "improvementValue",
+            "visible": true
+          },
+          {
+            "fieldName": "imprvActualYearBuilt",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "imprvActualYearBuilt",
+            "visible": true
+          },
+          {
+            "fieldName": "imprvClasses",
+            "isEditable": true,
+            "label": "imprvClasses",
+            "visible": true
+          },
+          {
+            "fieldName": "imprvEffYearBuilt",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "imprvEffYearBuilt",
+            "visible": true
+          },
+          {
+            "fieldName": "imprvMainArea",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "imprvMainArea",
+            "visible": true
+          },
+          {
+            "fieldName": "imprvTotalArea",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "imprvTotalArea",
+            "visible": true
+          },
+          {
+            "fieldName": "instrumentNum",
+            "isEditable": true,
+            "label": "instrumentNum",
+            "visible": true
+          },
+          {
+            "fieldName": "land_sqft",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "land_sqft",
+            "visible": true
+          },
+          {
+            "fieldName": "landHSValue",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "landHSValue",
+            "visible": true
+          },
+          {
+            "fieldName": "landNHSValue",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "landNHSValue",
+            "visible": true
+          },
+          {
+            "fieldName": "landTotalSqft",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "landTotalSqft",
+            "visible": true
+          },
+          {
+            "fieldName": "landType",
+            "isEditable": true,
+            "label": "landType",
+            "visible": true
+          },
+          {
+            "fieldName": "legalAcreage",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "legalAcreage",
+            "visible": true
+          },
+          {
+            "fieldName": "legalDescription",
+            "isEditable": true,
+            "label": "legalDescription",
+            "visible": true
+          },
+          {
+            "fieldName": "lot",
+            "isEditable": true,
+            "label": "lot",
+            "visible": true
+          },
+          {
+            "fieldName": "nameSecondary",
+            "isEditable": true,
+            "label": "nameSecondary",
+            "visible": true
+          },
+          {
+            "fieldName": "ownerAgExclusionValue",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "ownerAgExclusionValue",
+            "visible": true
+          },
+          {
+            "fieldName": "ownerAgValue",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "ownerAgValue",
+            "visible": true
+          },
+          {
+            "fieldName": "ownerAppraisedValue",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "ownerAppraisedValue",
+            "visible": true
+          },
+          {
+            "fieldName": "ownerHSTaxLimitationValue",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "ownerHSTaxLimitationValue",
+            "visible": true
+          },
+          {
+            "fieldName": "ownerImprovementHSValue",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "ownerImprovementHSValue",
+            "visible": true
+          },
+          {
+            "fieldName": "ownerMarketValue",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "ownerMarketValue",
+            "visible": true
+          },
+          {
+            "fieldName": "ownerNetAppraisedValue",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "ownerNetAppraisedValue",
+            "visible": true
+          },
+          {
+            "fieldName": "ownerPct",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "ownerPct",
+            "visible": true
+          },
+          {
+            "fieldName": "ownerTaxLimitationValue",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "ownerTaxLimitationValue",
+            "visible": true
+          },
+          {
+            "fieldName": "page",
+            "isEditable": true,
+            "label": "page",
+            "visible": true
+          },
+          {
+            "fieldName": "pid",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "pid",
+            "visible": true
+          },
+          {
+            "fieldName": "property_url",
+            "isEditable": true,
+            "label": "property_url",
+            "visible": true
+          },
+          {
+            "fieldName": "propType",
+            "isEditable": true,
+            "label": "propType",
+            "visible": true
+          },
+          {
+            "fieldName": "pYear",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "pYear",
+            "visible": true
+          },
+          {
+            "fieldName": "schoolTaxingUnitCode",
+            "isEditable": true,
+            "label": "schoolTaxingUnitCode",
+            "visible": true
+          },
+          {
+            "fieldName": "schoolTaxingUnitName",
+            "isEditable": true,
+            "label": "schoolTaxingUnitName",
+            "visible": true
+          },
+          {
+            "fieldName": "Shape.STArea()",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "Shape.STArea()",
+            "visible": true
+          },
+          {
+            "fieldName": "Shape.STLength()",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "Shape.STLength()",
+            "visible": true
+          },
+          {
+            "fieldName": "situs_full_address",
+            "isEditable": true,
+            "label": "situs_full_address",
+            "visible": true
+          },
+          {
+            "fieldName": "situs_street_address",
+            "isEditable": true,
+            "label": "situs_street_address",
+            "visible": true
+          },
+          {
+            "fieldName": "situsCity",
+            "isEditable": true,
+            "label": "situsCity",
+            "visible": true
+          },
+          {
+            "fieldName": "situsState",
+            "isEditable": true,
+            "label": "situsState",
+            "visible": true
+          },
+          {
+            "fieldName": "situsStreetName",
+            "isEditable": true,
+            "label": "situsStreetName",
+            "visible": true
+          },
+          {
+            "fieldName": "situsStreetNumb",
+            "isEditable": true,
+            "label": "situsStreetNumb",
+            "visible": true
+          },
+          {
+            "fieldName": "situsStreetPrefix",
+            "isEditable": true,
+            "label": "situsStreetPrefix",
+            "visible": true
+          },
+          {
+            "fieldName": "situsStreetSuff",
+            "isEditable": true,
+            "label": "situsStreetSuff",
+            "visible": true
+          },
+          {
+            "fieldName": "situsZip",
+            "isEditable": true,
+            "label": "situsZip",
+            "visible": true
+          },
+          {
+            "fieldName": "stateCodes",
+            "isEditable": true,
+            "label": "stateCodes",
+            "visible": true
+          },
+          {
+            "fieldName": "taxingUnits",
+            "isEditable": true,
+            "label": "taxingUnits",
+            "visible": true
+          },
+          {
+            "fieldName": "tract",
+            "isEditable": true,
+            "label": "tract",
+            "visible": true
+          },
+          {
+            "fieldName": "volume",
+            "isEditable": true,
+            "label": "volume",
+            "visible": true
+          }
+        ],
+        "title": "Parcels FC: {name}"
+      }
+    },
+    {
+      "id": "1994ed9aff1-layer-2",
+      "title": "Planned Developments",
+      "url": "https://services6.arcgis.com/FbV5B2MCrVpjQcOY/arcgis/rest/services/Planned_Developments/FeatureServer/0",
+      "visibility": true,
+      "itemId": "d4fd07ba977e4ce090d5c146ba4f72dc",
+      "layerType": "ArcGISFeatureLayer",
+      "effect": [
+        {
+          "type": "saturate",
+          "amount": 0.6
+        },
+        {
+          "type": "opacity",
+          "amount": 0.8
+        }
+      ],
+      "featureEffect": null,
+      "attributeTableInfo": {
+        "attributeTableElements": [
+          {
+            "type": "field",
+            "fieldName": "Name"
+          },
+          {
+            "type": "field",
+            "fieldName": "Shape__Area"
+          },
+          {
+            "type": "field",
+            "fieldName": "Shape__Length"
+          },
+          {
+            "type": "attachment",
+            "displayType": "auto"
+          }
+        ],
+        "orderByFields": []
+      },
+      "layerDefinition": {
+        "fieldConfigurations": [
+          {
+            "name": "Shape__Area",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "Shape__Length",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          }
+        ],
+        "drawingInfo": {
+          "labelingInfo": [
+            {
+              "labelExpression": "[Name]",
+              "labelExpressionInfo": {
+                "expression": "$feature[\"Name\"]"
+              },
+              "labelPlacement": "esriServerPolygonPlacementAlwaysHorizontal",
+              "repeatLabel": true,
+              "symbol": {
+                "type": "esriTS",
+                "color": [
+                  38,
+                  38,
+                  38,
+                  255
+                ],
+                "font": {
+                  "family": "Arial",
+                  "size": 9.75
+                },
+                "horizontalAlignment": "center",
+                "kerning": true,
+                "haloColor": [
+                  247,
+                  247,
+                  247,
+                  255
+                ],
+                "haloSize": 1.5,
+                "rotated": false,
+                "text": "",
+                "verticalAlignment": "baseline",
+                "xoffset": 0,
+                "yoffset": 0,
+                "angle": 0
+              }
+            }
+          ],
+          "renderer": {
+            "type": "simple",
+            "symbol": {
+              "type": "esriSFS",
+              "color": [
+                209,
+                78,
+                242,
+                138
+              ],
+              "outline": {
+                "type": "esriSLS",
+                "color": [
+                  0,
+                  0,
+                  0,
+                  255
+                ],
+                "width": 0.75,
+                "style": "esriSLSSolid"
+              },
+              "style": "esriSFSSolid"
+            }
+          }
+        }
+      },
+      "showLabels": true,
+      "popupInfo": {
+        "popupElements": [
+          {
+            "type": "fields",
+            "description": "",
+            "fieldInfos": [
+              {
+                "fieldFormat": {
+                  "type": "number",
+                  "useGrouping": "never"
+                },
+                "fieldName": "Name",
+                "format": {
+                  "digitSeparator": false,
+                  "places": 2
+                },
+                "isEditable": true,
+                "label": "Name",
+                "tooltip": "",
+                "visible": true
+              }
+            ],
+            "title": ""
+          },
+          {
+            "type": "attachments",
+            "description": "",
+            "displayType": "auto",
+            "title": ""
+          }
+        ],
+        "showAttachments": true,
+        "fieldInfos": [
+          {
+            "fieldName": "OBJECTID",
+            "isEditable": false,
+            "label": "OBJECTID",
+            "visible": false
+          },
+          {
+            "fieldName": "Shape__Area",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": false,
+            "label": "Shape__Area",
+            "visible": false
+          },
+          {
+            "fieldName": "Shape__Length",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": false,
+            "label": "Shape__Length",
+            "visible": false
+          },
+          {
+            "fieldName": "Name",
+            "format": {
+              "digitSeparator": false
+            },
+            "isEditable": true,
+            "label": "Name",
+            "tooltip": "",
+            "visible": true
+          }
+        ],
+        "title": "Planned Developments"
+      }
+    },
+    {
+      "id": "1999ff17d34-layer-6",
+      "title": "Neighborhoods",
+      "url": "https://services6.arcgis.com/FbV5B2MCrVpjQcOY/arcgis/rest/services/Neighborhoods/FeatureServer/0",
+      "visibility": false,
+      "itemId": "63c78a35c208434d87af5404517bae08",
+      "layerType": "ArcGISFeatureLayer",
+      "effect": null,
+      "attributeTableInfo": {
+        "attributeTableElements": [
+          {
+            "type": "field",
+            "fieldName": "Name"
+          },
+          {
+            "type": "attachment",
+            "displayType": "auto"
+          }
+        ],
+        "orderByFields": []
+      },
+      "layerDefinition": {
+        "fieldConfigurations": [
+          {
+            "name": "Shape__Area",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "Shape__Length",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          }
+        ],
+        "drawingInfo": {
+          "labelingInfo": [
+            {
+              "labelExpression": "[Name]",
+              "labelExpressionInfo": {
+                "expression": "$feature[\"Name\"]"
+              },
+              "labelPlacement": "esriServerPolygonPlacementAlwaysHorizontal",
+              "repeatLabel": true,
+              "symbol": {
+                "type": "esriTS",
+                "color": [
+                  38,
+                  38,
+                  38,
+                  255
+                ],
+                "font": {
+                  "family": "Arial",
+                  "size": 9.75
+                },
+                "horizontalAlignment": "center",
+                "kerning": true,
+                "haloColor": [
+                  247,
+                  247,
+                  247,
+                  255
+                ],
+                "haloSize": 1.5,
+                "rotated": false,
+                "text": "",
+                "verticalAlignment": "baseline",
+                "xoffset": 0,
+                "yoffset": 0,
+                "angle": 0
+              }
+            }
+          ],
+          "renderer": {
+            "type": "simple",
+            "symbol": {
+              "type": "esriSFS",
+              "color": [
+                76,
+                129,
+                205,
+                128
+              ],
+              "outline": {
+                "type": "esriSLS",
+                "color": [
+                  0,
+                  0,
+                  0,
+                  128
+                ],
+                "width": 0.375,
+                "style": "esriSLSSolid"
+              },
+              "style": "esriSFSSolid"
+            }
+          }
+        }
+      },
+      "showLabels": true,
+      "popupInfo": {
+        "popupElements": [
+          {
+            "type": "fields",
+            "description": "",
+            "fieldInfos": [
+              {
+                "fieldFormat": {
+                  "type": "number",
+                  "useGrouping": "never"
+                },
+                "fieldName": "Name",
+                "format": {
+                  "digitSeparator": false,
+                  "places": 2
+                },
+                "isEditable": true,
+                "label": "Name",
+                "tooltip": "",
+                "visible": true
+              }
+            ],
+            "title": ""
+          },
+          {
+            "type": "attachments",
+            "description": "",
+            "displayType": "auto",
+            "title": ""
+          }
+        ],
+        "showAttachments": true,
+        "fieldInfos": [
+          {
+            "fieldName": "OBJECTID",
+            "isEditable": false,
+            "label": "OBJECTID",
+            "visible": false
+          },
+          {
+            "fieldName": "Shape__Area",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": false,
+            "label": "Shape__Area",
+            "visible": false
+          },
+          {
+            "fieldName": "Shape__Length",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": false,
+            "label": "Shape__Length",
+            "visible": false
+          },
+          {
+            "fieldName": "Name",
+            "format": {
+              "digitSeparator": false
+            },
+            "isEditable": true,
+            "label": "Name",
+            "tooltip": "",
+            "visible": true
+          },
+          {
+            "fieldName": "Platted_Parcel_Count",
+            "isEditable": true,
+            "label": "Platted_Parcel_Count",
+            "visible": false
+          }
+        ],
+        "title": "Neighborhoods"
+      }
+    },
+    {
+      "id": "199e3a90d35-layer-6",
+      "title": "Special DistrictsGC - Outlines",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Special_DistrictsGC/MapServer/1",
+      "visibility": false,
+      "layerType": "ArcGISFeatureLayer",
+      "featureEffect": null,
+      "layerDefinition": {
+        "definitionExpression": "NAME = 'Wildridge PID' OR NAME = 'Shahan Prairie Road PID' OR NAME = 'Oak Point 720 PID' OR NAME = 'Rudman Tract PID' OR NAME = 'Prairie Oaks PID 1' OR NAME = 'Prairie Oaks Municipal Utility District 1' OR NAME = 'DC MUD 04' OR NAME = 'DC MUD 05' OR NAME = 'Oak Point Municipal Development District'",
+        "fieldConfigurations": [
+          {
+            "name": "created_date",
+            "fieldFormat": {
+              "type": "date-time",
+              "dateStyle": "short",
+              "hour12": "always",
+              "timeStyle": "short"
+            }
+          },
+          {
+            "name": "Dist_Type",
+            "fieldFormat": {
+              "type": "number",
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "last_edited_date",
+            "fieldFormat": {
+              "type": "date-time",
+              "dateStyle": "short",
+              "hour12": "always",
+              "timeStyle": "short"
+            }
+          },
+          {
+            "name": "Shape.STArea()",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "Shape.STLength()",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          }
+        ],
+        "drawingInfo": {
+          "renderer": {
+            "authoringInfo": {
+              "visualVariables": []
+            },
+            "type": "uniqueValue",
+            "visualVariables": [
+              {
+                "type": "sizeInfo",
+                "valueExpression": "$view.scale",
+                "stops": [
+                  {
+                    "size": 1.9968911917098446,
+                    "value": 31308
+                  },
+                  {
+                    "size": 0.9984455958549223,
+                    "value": 97837
+                  },
+                  {
+                    "size": 0.49922279792746116,
+                    "value": 391350
+                  },
+                  {
+                    "size": 0,
+                    "value": 782699
+                  }
+                ],
+                "target": "outline"
+              }
+            ],
+            "field1": "NAME",
+            "uniqueValueGroups": [
+              {
+                "heading": "MUDs",
+                "classes": [
+                  {
+                    "label": "DC MUD 04",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        153,
+                        36,
+                        27,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.75,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "DC MUD 04"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "DC MUD 05",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        168,
+                        40,
+                        30,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.75,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "DC MUD 05"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "Prairie Oaks Municipal Utility District 1",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        192,
+                        44,
+                        31,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.75,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "Prairie Oaks Municipal Utility District 1"
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "PIDs",
+                "classes": [
+                  {
+                    "label": "Oak Point 720 PID",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        93,
+                        45,
+                        102,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.75,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "Oak Point 720 PID"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "Prairie Oaks PID 1",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        115,
+                        55,
+                        126,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.75,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "Prairie Oaks PID 1"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "Rudman Tract PID",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        134,
+                        70,
+                        145,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.75,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "Rudman Tract PID"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "Shahan Prairie Road PID",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        151,
+                        83,
+                        163,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.75,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "Shahan Prairie Road PID"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "Wildridge PID",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        164,
+                        102,
+                        175,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.75,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "Wildridge PID"
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "MDD",
+                "classes": [
+                  {
+                    "label": "Oak Point Municipal Development District",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 1.927,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "Oak Point Municipal Development District"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ],
+            "uniqueValueInfos": [
+              {
+                "label": "DC MUD 04",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    153,
+                    36,
+                    27,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.75,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "DC MUD 04"
+              },
+              {
+                "label": "DC MUD 05",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    168,
+                    40,
+                    30,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.75,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "DC MUD 05"
+              },
+              {
+                "label": "Prairie Oaks Municipal Utility District 1",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    192,
+                    44,
+                    31,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.75,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "Prairie Oaks Municipal Utility District 1"
+              },
+              {
+                "label": "Oak Point 720 PID",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    93,
+                    45,
+                    102,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.75,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "Oak Point 720 PID"
+              },
+              {
+                "label": "Prairie Oaks PID 1",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    115,
+                    55,
+                    126,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.75,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "Prairie Oaks PID 1"
+              },
+              {
+                "label": "Rudman Tract PID",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    134,
+                    70,
+                    145,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.75,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "Rudman Tract PID"
+              },
+              {
+                "label": "Shahan Prairie Road PID",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    151,
+                    83,
+                    163,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.75,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "Shahan Prairie Road PID"
+              },
+              {
+                "label": "Wildridge PID",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    164,
+                    102,
+                    175,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.75,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "Wildridge PID"
+              },
+              {
+                "label": "Oak Point Municipal Development District",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 1.927,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "Oak Point Municipal Development District"
+              }
+            ]
+          }
+        }
+      },
+      "popupInfo": {
+        "popupElements": [
+          {
+            "type": "fields"
+          },
+          {
+            "type": "attachments",
+            "displayType": "auto"
+          }
+        ],
+        "showAttachments": true,
+        "fieldInfos": [
+          {
+            "fieldName": "OBJECTID",
+            "isEditable": false,
+            "label": "OBJECTID",
+            "visible": false
+          },
+          {
+            "fieldName": "NAME",
+            "isEditable": true,
+            "label": "NAME",
+            "visible": true
+          },
+          {
+            "fieldName": "Abbrev",
+            "isEditable": true,
+            "label": "Abbrev",
+            "visible": true
+          },
+          {
+            "fieldName": "CODE",
+            "isEditable": true,
+            "label": "CODE",
+            "visible": true
+          },
+          {
+            "fieldName": "created_date",
+            "isEditable": true,
+            "label": "created_date",
+            "visible": true
+          },
+          {
+            "fieldName": "created_user",
+            "isEditable": true,
+            "label": "created_user",
+            "visible": true
+          },
+          {
+            "fieldName": "Dist_Code",
+            "isEditable": true,
+            "label": "Dist_Code",
+            "visible": true
+          },
+          {
+            "fieldName": "Dist_Type",
+            "format": {
+              "digitSeparator": true,
+              "places": 0
+            },
+            "isEditable": true,
+            "label": "Dist_Type",
+            "visible": true
+          },
+          {
+            "fieldName": "DISTRICT_N",
+            "isEditable": true,
+            "label": "DISTRICT_N",
+            "visible": true
+          },
+          {
+            "fieldName": "GlobalID",
+            "isEditable": false,
+            "label": "GlobalID",
+            "visible": false
+          },
+          {
+            "fieldName": "IcoMapAttr",
+            "isEditable": true,
+            "label": "IcoMapAttr",
+            "visible": true
+          },
+          {
+            "fieldName": "LandmarkLabel",
+            "isEditable": true,
+            "label": "LandmarkLabel",
+            "visible": true
+          },
+          {
+            "fieldName": "last_edited_date",
+            "isEditable": true,
+            "label": "last_edited_date",
+            "visible": true
+          },
+          {
+            "fieldName": "last_edited_user",
+            "isEditable": true,
+            "label": "last_edited_user",
+            "visible": true
+          },
+          {
+            "fieldName": "Shape.STArea()",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "Shape.STArea()",
+            "visible": true
+          },
+          {
+            "fieldName": "Shape.STLength()",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "Shape.STLength()",
+            "visible": true
+          },
+          {
+            "fieldName": "Status",
+            "isEditable": true,
+            "label": "Status",
+            "visible": true
+          },
+          {
+            "fieldName": "TaxActive",
+            "isEditable": true,
+            "label": "TaxActive",
+            "visible": true
+          },
+          {
+            "fieldName": "TYPE",
+            "isEditable": true,
+            "label": "TYPE",
+            "visible": true
+          }
+        ],
+        "title": "Special DistrictsGC - Outlines: {NAME}"
+      }
+    },
+    {
+      "id": "19ae9a402c1-layer-9",
+      "disablePopup": true,
+      "title": "City Boundaries - City",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Landmark_Base_GC/MapServer/1",
+      "itemId": "4c13ea454c2f43af97d1d99a7f16c256",
+      "layerType": "ArcGISFeatureLayer",
+      "featureEffect": null,
+      "layerDefinition": {
+        "definitionExpression": "NAME = 'Oak Point'",
+        "fieldConfigurations": [
+          {
+            "name": "Shape.STArea()",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "Shape.STLength()",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          }
+        ],
+        "drawingInfo": {
+          "renderer": {
+            "type": "uniqueValue",
+            "field1": "TYPE",
+            "uniqueValueGroups": [
+              {
+                "classes": [
+                  {
+                    "label": "CITY",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          0,
+                          0,
+                          0,
+                          199
+                        ],
+                        "width": 2.25,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "CITY"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "ETJ",
+                    "symbol": {
+                      "type": "CIMSymbolReference",
+                      "symbol": {
+                        "type": "CIMPolygonSymbol",
+                        "symbolLayers": [
+                          {
+                            "type": "CIMSolidStroke",
+                            "enable": true,
+                            "capStyle": "Round",
+                            "joinStyle": "Round",
+                            "lineStyle3D": "Strip",
+                            "miterLimit": 10,
+                            "width": 2.25,
+                            "color": [
+                              0,
+                              0,
+                              0,
+                              255
+                            ]
+                          },
+                          {
+                            "type": "CIMHatchFill",
+                            "enable": true,
+                            "lineSymbol": {
+                              "type": "CIMLineSymbol",
+                              "symbolLayers": [
+                                {
+                                  "type": "CIMSolidStroke",
+                                  "enable": true,
+                                  "capStyle": "Butt",
+                                  "joinStyle": "Miter",
+                                  "lineStyle3D": "Strip",
+                                  "miterLimit": 10,
+                                  "width": 1,
+                                  "color": [
+                                    156,
+                                    156,
+                                    156,
+                                    255
+                                  ]
+                                }
+                              ]
+                            },
+                            "rotation": 45,
+                            "separation": 5
+                          }
+                        ]
+                      }
+                    },
+                    "values": [
+                      [
+                        "ETJ"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ],
+            "uniqueValueInfos": [
+              {
+                "label": "CITY",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      0,
+                      0,
+                      0,
+                      199
+                    ],
+                    "width": 2.25,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "CITY"
+              },
+              {
+                "label": "ETJ",
+                "symbol": {
+                  "type": "CIMSymbolReference",
+                  "symbol": {
+                    "type": "CIMPolygonSymbol",
+                    "symbolLayers": [
+                      {
+                        "type": "CIMSolidStroke",
+                        "enable": true,
+                        "capStyle": "Round",
+                        "joinStyle": "Round",
+                        "lineStyle3D": "Strip",
+                        "miterLimit": 10,
+                        "width": 2.25,
+                        "color": [
+                          0,
+                          0,
+                          0,
+                          255
+                        ]
+                      },
+                      {
+                        "type": "CIMHatchFill",
+                        "enable": true,
+                        "lineSymbol": {
+                          "type": "CIMLineSymbol",
+                          "symbolLayers": [
+                            {
+                              "type": "CIMSolidStroke",
+                              "enable": true,
+                              "capStyle": "Butt",
+                              "joinStyle": "Miter",
+                              "lineStyle3D": "Strip",
+                              "miterLimit": 10,
+                              "width": 1,
+                              "color": [
+                                156,
+                                156,
+                                156,
+                                255
+                              ]
+                            }
+                          ]
+                        },
+                        "rotation": 45,
+                        "separation": 5
+                      }
+                    ]
+                  }
+                },
+                "value": "ETJ"
+              }
+            ]
+          }
+        }
+      },
+      "popupInfo": {
+        "popupElements": [
+          {
+            "type": "fields",
+            "description": "",
+            "fieldInfos": [
+              {
+                "fieldName": "NAME",
+                "isEditable": true,
+                "label": "NAME",
+                "tooltip": "",
+                "visible": true
+              },
+              {
+                "fieldName": "TYPE",
+                "isEditable": true,
+                "label": "TYPE",
+                "tooltip": "",
+                "visible": true
+              },
+              {
+                "fieldName": "CITY",
+                "isEditable": true,
+                "label": "CITY",
+                "tooltip": "",
+                "visible": true
+              },
+              {
+                "fieldName": "DIST_CODE",
+                "isEditable": true,
+                "label": "DIST_CODE",
+                "tooltip": "",
+                "visible": true
+              }
+            ],
+            "title": ""
+          }
+        ],
+        "fieldInfos": [
+          {
+            "fieldName": "NAME",
+            "isEditable": true,
+            "label": "NAME",
+            "tooltip": "",
+            "visible": true
+          },
+          {
+            "fieldName": "TYPE",
+            "isEditable": true,
+            "label": "TYPE",
+            "tooltip": "",
+            "visible": true
+          },
+          {
+            "fieldName": "CITY",
+            "isEditable": true,
+            "label": "CITY",
+            "tooltip": "",
+            "visible": true
+          },
+          {
+            "fieldName": "Shape.STArea()",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "Shape.STArea()",
+            "tooltip": "",
+            "visible": false
+          },
+          {
+            "fieldName": "Shape.STLength()",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": true,
+            "label": "Shape.STLength()",
+            "tooltip": "",
+            "visible": false
+          },
+          {
+            "fieldName": "DIST_CODE",
+            "isEditable": true,
+            "label": "DIST_CODE",
+            "tooltip": "",
+            "visible": true
+          },
+          {
+            "fieldName": "OBJECTID_1",
+            "isEditable": true,
+            "label": "OBJECTID_1",
+            "visible": false
+          },
+          {
+            "fieldName": "Shape_STAr",
+            "isEditable": true,
+            "label": "Shape_STAr",
+            "visible": false
+          },
+          {
+            "fieldName": "Shape_STLe",
+            "isEditable": true,
+            "label": "Shape_STLe",
+            "visible": false
+          },
+          {
+            "fieldName": "created_user",
+            "isEditable": true,
+            "label": "created_user",
+            "visible": false
+          },
+          {
+            "fieldName": "created_date",
+            "isEditable": true,
+            "label": "created_date",
+            "visible": false
+          },
+          {
+            "fieldName": "last_edited_user",
+            "isEditable": true,
+            "label": "last_edited_user",
+            "visible": false
+          },
+          {
+            "fieldName": "last_edited_date",
+            "isEditable": true,
+            "label": "last_edited_date",
+            "visible": false
+          },
+          {
+            "fieldName": "CityCode",
+            "isEditable": true,
+            "label": "CityCode",
+            "visible": false
+          },
+          {
+            "fieldName": "INC_MUNI",
+            "isEditable": true,
+            "label": "INC_MUNI",
+            "visible": false
+          }
+        ],
+        "title": "City: {NAME}"
+      }
+    },
+    {
+      "id": "19aef5ae3e0-layer-8",
+      "opacity": 0.5,
+      "title": "Zoning",
+      "url": "https://services6.arcgis.com/FbV5B2MCrVpjQcOY/arcgis/rest/services/Zoning/FeatureServer/0",
+      "itemId": "fc028e17925f478dbce64436342332a1",
+      "layerType": "ArcGISFeatureLayer",
+      "layerDefinition": {
+        "fieldConfigurations": [
+          {
+            "name": "Shape__Area",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "Shape__Length",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          }
+        ],
+        "drawingInfo": {
+          "labelingInfo": [
+            {
+              "labelExpression": "[Zoning]",
+              "labelExpressionInfo": {
+                "expression": "$feature[\"Zoning\"]"
+              },
+              "labelPlacement": "esriServerPolygonPlacementAlwaysHorizontal",
+              "repeatLabel": true,
+              "symbol": {
+                "type": "esriTS",
+                "color": [
+                  38,
+                  38,
+                  38,
+                  255
+                ],
+                "font": {
+                  "family": "Arial",
+                  "size": 9.75
+                },
+                "horizontalAlignment": "center",
+                "kerning": true,
+                "haloColor": [
+                  247,
+                  247,
+                  247,
+                  255
+                ],
+                "haloSize": 1.5,
+                "rotated": false,
+                "text": "",
+                "verticalAlignment": "baseline",
+                "xoffset": 0,
+                "yoffset": 0,
+                "angle": 0
+              }
+            }
+          ],
+          "renderer": {
+            "type": "uniqueValue",
+            "visualVariables": [
+              {
+                "type": "sizeInfo",
+                "valueExpression": "$view.scale",
+                "stops": [
+                  {
+                    "size": 1.972006629943848,
+                    "value": 7331
+                  },
+                  {
+                    "size": 0.986003314971924,
+                    "value": 22910
+                  },
+                  {
+                    "size": 0.493001657485962,
+                    "value": 91638
+                  },
+                  {
+                    "size": 0,
+                    "value": 183277
+                  }
+                ],
+                "target": "outline"
+              }
+            ],
+            "field1": "Zoning",
+            "uniqueValueGroups": [
+              {
+                "classes": [
+                  {
+                    "label": "R-3X",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        34,
+                        98,
+                        125,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.637,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "R-3X"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "R-4X",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        106,
+                        196,
+                        235,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.637,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "R-4X"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "R-1",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        237,
+                        233,
+                        171,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.637,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "R-1"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "R-2",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        230,
+                        118,
+                        7,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.63,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "R-2"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "RE-3",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        230,
+                        118,
+                        7,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.63,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "RE-3"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "RE-5",
+                    "symbol": {
+                      "type": "esriSFS",
+                      "color": [
+                        237,
+                        226,
+                        80,
+                        255
+                      ],
+                      "outline": {
+                        "type": "esriSLS",
+                        "color": [
+                          153,
+                          153,
+                          153,
+                          64
+                        ],
+                        "width": 0.63,
+                        "style": "esriSLSSolid"
+                      },
+                      "style": "esriSFSSolid"
+                    },
+                    "values": [
+                      [
+                        "RE-5"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ],
+            "uniqueValueInfos": [
+              {
+                "label": "R-3X",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    34,
+                    98,
+                    125,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.637,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "R-3X"
+              },
+              {
+                "label": "R-4X",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    106,
+                    196,
+                    235,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.637,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "R-4X"
+              },
+              {
+                "label": "R-1",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    237,
+                    233,
+                    171,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.637,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "R-1"
+              },
+              {
+                "label": "R-2",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    230,
+                    118,
+                    7,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.63,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "R-2"
+              },
+              {
+                "label": "RE-3",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    230,
+                    118,
+                    7,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.63,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "RE-3"
+              },
+              {
+                "label": "RE-5",
+                "symbol": {
+                  "type": "esriSFS",
+                  "color": [
+                    237,
+                    226,
+                    80,
+                    255
+                  ],
+                  "outline": {
+                    "type": "esriSLS",
+                    "color": [
+                      153,
+                      153,
+                      153,
+                      64
+                    ],
+                    "width": 0.63,
+                    "style": "esriSLSSolid"
+                  },
+                  "style": "esriSFSSolid"
+                },
+                "value": "RE-5"
+              }
+            ]
+          }
+        }
+      },
+      "showLabels": true,
+      "popupInfo": {
+        "popupElements": [
+          {
+            "type": "fields",
+            "description": "",
+            "fieldInfos": [
+              {
+                "fieldName": "Zoning",
+                "isEditable": true,
+                "label": "Zoning",
+                "visible": true
+              }
+            ],
+            "title": ""
+          },
+          {
+            "type": "attachments",
+            "description": "",
+            "displayType": "auto",
+            "title": ""
+          }
+        ],
+        "showAttachments": true,
+        "fieldInfos": [
+          {
+            "fieldName": "OBJECTID",
+            "isEditable": false,
+            "label": "OBJECTID",
+            "visible": false
+          },
+          {
+            "fieldName": "Shape__Area",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": false,
+            "label": "Shape__Area",
+            "visible": false
+          },
+          {
+            "fieldName": "Shape__Length",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": false,
+            "label": "Shape__Length",
+            "visible": false
+          },
+          {
+            "fieldName": "Zoning",
+            "isEditable": true,
+            "label": "Zoning",
+            "visible": true
+          }
+        ],
+        "title": "Zoning"
+      }
+    },
+    {
+      "id": "19cd8605956-layer-8",
+      "title": "FM 720 Corridor Overlay",
+      "url": "https://services6.arcgis.com/FbV5B2MCrVpjQcOY/arcgis/rest/services/FM_720_Corridor_Overlay/FeatureServer/0",
+      "itemId": "81397c6d31f346e6a0ba220690454d5e",
+      "layerType": "ArcGISFeatureLayer",
+      "layerDefinition": {
+        "fieldConfigurations": [
+          {
+            "name": "Shape__Area",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          },
+          {
+            "name": "Shape__Length",
+            "fieldFormat": {
+              "type": "number",
+              "minimumFractionDigits": 2,
+              "useGrouping": "always"
+            }
+          }
+        ],
+        "drawingInfo": {
+          "renderer": {
+            "type": "uniqueValue",
+            "field1": "Sub_District_Type",
+            "uniqueValueGroups": [
+              {
+                "classes": [
+                  {
+                    "label": "Mixed-Use",
+                    "symbol": {
+                      "type": "CIMSymbolReference",
+                      "symbol": {
+                        "type": "CIMPolygonSymbol",
+                        "symbolLayers": [
+                          {
+                            "type": "CIMSolidStroke",
+                            "enable": true,
+                            "capStyle": "Round",
+                            "joinStyle": "Round",
+                            "lineStyle3D": "Strip",
+                            "miterLimit": 10,
+                            "width": 0.4,
+                            "color": [
+                              255,
+                              179,
+                              0,
+                              255
+                            ]
+                          },
+                          {
+                            "type": "CIMHatchFill",
+                            "enable": true,
+                            "lineSymbol": {
+                              "type": "CIMLineSymbol",
+                              "symbolLayers": [
+                                {
+                                  "type": "CIMSolidStroke",
+                                  "enable": true,
+                                  "capStyle": "Butt",
+                                  "joinStyle": "Miter",
+                                  "lineStyle3D": "Strip",
+                                  "miterLimit": 10,
+                                  "width": 1,
+                                  "color": [
+                                    255,
+                                    179,
+                                    0,
+                                    255
+                                  ]
+                                }
+                              ]
+                            },
+                            "rotation": 135,
+                            "separation": 5
+                          },
+                          {
+                            "type": "CIMHatchFill",
+                            "enable": true,
+                            "lineSymbol": {
+                              "type": "CIMLineSymbol",
+                              "symbolLayers": [
+                                {
+                                  "type": "CIMSolidStroke",
+                                  "enable": true,
+                                  "capStyle": "Butt",
+                                  "joinStyle": "Miter",
+                                  "lineStyle3D": "Strip",
+                                  "miterLimit": 10,
+                                  "width": 1,
+                                  "color": [
+                                    255,
+                                    179,
+                                    0,
+                                    255
+                                  ]
+                                }
+                              ]
+                            },
+                            "rotation": 45,
+                            "separation": 5
+                          }
+                        ]
+                      }
+                    },
+                    "values": [
+                      [
+                        "Mixed-Use"
+                      ]
+                    ]
+                  },
+                  {
+                    "label": "Corridor Residential",
+                    "symbol": {
+                      "type": "CIMSymbolReference",
+                      "symbol": {
+                        "type": "CIMPolygonSymbol",
+                        "symbolLayers": [
+                          {
+                            "type": "CIMSolidStroke",
+                            "enable": true,
+                            "capStyle": "Round",
+                            "joinStyle": "Round",
+                            "lineStyle3D": "Strip",
+                            "miterLimit": 10,
+                            "width": 0.4,
+                            "color": [
+                              246,
+                              250,
+                              27,
+                              255
+                            ]
+                          },
+                          {
+                            "type": "CIMHatchFill",
+                            "enable": true,
+                            "lineSymbol": {
+                              "type": "CIMLineSymbol",
+                              "symbolLayers": [
+                                {
+                                  "type": "CIMSolidStroke",
+                                  "enable": true,
+                                  "capStyle": "Butt",
+                                  "joinStyle": "Miter",
+                                  "lineStyle3D": "Strip",
+                                  "miterLimit": 10,
+                                  "width": 1,
+                                  "color": [
+                                    246,
+                                    250,
+                                    27,
+                                    255
+                                  ]
+                                }
+                              ]
+                            },
+                            "rotation": 135,
+                            "separation": 5
+                          },
+                          {
+                            "type": "CIMHatchFill",
+                            "enable": true,
+                            "lineSymbol": {
+                              "type": "CIMLineSymbol",
+                              "symbolLayers": [
+                                {
+                                  "type": "CIMSolidStroke",
+                                  "enable": true,
+                                  "capStyle": "Butt",
+                                  "joinStyle": "Miter",
+                                  "lineStyle3D": "Strip",
+                                  "miterLimit": 10,
+                                  "width": 1,
+                                  "color": [
+                                    246,
+                                    250,
+                                    27,
+                                    255
+                                  ]
+                                }
+                              ]
+                            },
+                            "rotation": 45,
+                            "separation": 5
+                          }
+                        ]
+                      }
+                    },
+                    "values": [
+                      [
+                        "Corridor Residential"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ],
+            "uniqueValueInfos": [
+              {
+                "label": "Mixed-Use",
+                "symbol": {
+                  "type": "CIMSymbolReference",
+                  "symbol": {
+                    "type": "CIMPolygonSymbol",
+                    "symbolLayers": [
+                      {
+                        "type": "CIMSolidStroke",
+                        "enable": true,
+                        "capStyle": "Round",
+                        "joinStyle": "Round",
+                        "lineStyle3D": "Strip",
+                        "miterLimit": 10,
+                        "width": 0.4,
+                        "color": [
+                          255,
+                          179,
+                          0,
+                          255
+                        ]
+                      },
+                      {
+                        "type": "CIMHatchFill",
+                        "enable": true,
+                        "lineSymbol": {
+                          "type": "CIMLineSymbol",
+                          "symbolLayers": [
+                            {
+                              "type": "CIMSolidStroke",
+                              "enable": true,
+                              "capStyle": "Butt",
+                              "joinStyle": "Miter",
+                              "lineStyle3D": "Strip",
+                              "miterLimit": 10,
+                              "width": 1,
+                              "color": [
+                                255,
+                                179,
+                                0,
+                                255
+                              ]
+                            }
+                          ]
+                        },
+                        "rotation": 135,
+                        "separation": 5
+                      },
+                      {
+                        "type": "CIMHatchFill",
+                        "enable": true,
+                        "lineSymbol": {
+                          "type": "CIMLineSymbol",
+                          "symbolLayers": [
+                            {
+                              "type": "CIMSolidStroke",
+                              "enable": true,
+                              "capStyle": "Butt",
+                              "joinStyle": "Miter",
+                              "lineStyle3D": "Strip",
+                              "miterLimit": 10,
+                              "width": 1,
+                              "color": [
+                                255,
+                                179,
+                                0,
+                                255
+                              ]
+                            }
+                          ]
+                        },
+                        "rotation": 45,
+                        "separation": 5
+                      }
+                    ]
+                  }
+                },
+                "value": "Mixed-Use"
+              },
+              {
+                "label": "Corridor Residential",
+                "symbol": {
+                  "type": "CIMSymbolReference",
+                  "symbol": {
+                    "type": "CIMPolygonSymbol",
+                    "symbolLayers": [
+                      {
+                        "type": "CIMSolidStroke",
+                        "enable": true,
+                        "capStyle": "Round",
+                        "joinStyle": "Round",
+                        "lineStyle3D": "Strip",
+                        "miterLimit": 10,
+                        "width": 0.4,
+                        "color": [
+                          246,
+                          250,
+                          27,
+                          255
+                        ]
+                      },
+                      {
+                        "type": "CIMHatchFill",
+                        "enable": true,
+                        "lineSymbol": {
+                          "type": "CIMLineSymbol",
+                          "symbolLayers": [
+                            {
+                              "type": "CIMSolidStroke",
+                              "enable": true,
+                              "capStyle": "Butt",
+                              "joinStyle": "Miter",
+                              "lineStyle3D": "Strip",
+                              "miterLimit": 10,
+                              "width": 1,
+                              "color": [
+                                246,
+                                250,
+                                27,
+                                255
+                              ]
+                            }
+                          ]
+                        },
+                        "rotation": 135,
+                        "separation": 5
+                      },
+                      {
+                        "type": "CIMHatchFill",
+                        "enable": true,
+                        "lineSymbol": {
+                          "type": "CIMLineSymbol",
+                          "symbolLayers": [
+                            {
+                              "type": "CIMSolidStroke",
+                              "enable": true,
+                              "capStyle": "Butt",
+                              "joinStyle": "Miter",
+                              "lineStyle3D": "Strip",
+                              "miterLimit": 10,
+                              "width": 1,
+                              "color": [
+                                246,
+                                250,
+                                27,
+                                255
+                              ]
+                            }
+                          ]
+                        },
+                        "rotation": 45,
+                        "separation": 5
+                      }
+                    ]
+                  }
+                },
+                "value": "Corridor Residential"
+              }
+            ]
+          }
+        }
+      },
+      "popupInfo": {
+        "popupElements": [
+          {
+            "type": "fields"
+          },
+          {
+            "type": "attachments",
+            "displayType": "auto"
+          }
+        ],
+        "showAttachments": true,
+        "fieldInfos": [
+          {
+            "fieldName": "OBJECTID",
+            "isEditable": false,
+            "label": "OBJECTID",
+            "visible": false
+          },
+          {
+            "fieldName": "GlobalID",
+            "isEditable": false,
+            "label": "GlobalID",
+            "visible": false
+          },
+          {
+            "fieldName": "Shape__Area",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": false,
+            "label": "Shape__Area",
+            "visible": true
+          },
+          {
+            "fieldName": "Shape__Length",
+            "format": {
+              "digitSeparator": true,
+              "places": 2
+            },
+            "isEditable": false,
+            "label": "Shape__Length",
+            "visible": true
+          },
+          {
+            "fieldName": "Sub_District_Type",
+            "isEditable": true,
+            "label": "Sub-District Type",
+            "visible": true
+          }
+        ],
+        "title": "FM 720 Corridor Overlay"
+      }
+    }
+  ],
+  "baseMap": {
+    "baseMapLayers": [
+      {
+        "id": "World_Hillshade_3805",
+        "opacity": 1,
+        "title": "World Hillshade",
+        "url": "https://services.arcgisonline.com/arcgis/rest/services/Elevation/World_Hillshade/MapServer",
+        "visibility": true,
+        "layerType": "ArcGISTiledMapServiceLayer"
+      },
+      {
+        "id": "195012aeb31-layer-2",
+        "opacity": 1,
+        "title": "World Topographic Map",
+        "visibility": true,
+        "layerType": "VectorTileLayer",
+        "styleUrl": "https://cdn.arcgis.com/sharing/rest/content/items/27e89eb03c1e4341a1d75e597f0291e6/resources/styles/root.json"
+      }
+    ],
+    "title": "Topographic"
+  },
+  "authoringApp": "ArcGISMapViewer",
+  "authoringAppVersion": "2026.1",
+  "initialState": {
+    "viewpoint": {
+      "rotation": 358.96152319521616,
+      "targetGeometry": {
+        "spatialReference": {
+          "latestWkid": 3857,
+          "wkid": 102100
+        },
+        "xmin": -10799254.426810274,
+        "ymin": 3917777.2194565022,
+        "xmax": -10792384.648892963,
+        "ymax": 3921861.8231555987
+      }
+    }
+  },
+  "spatialReference": {
+    "latestWkid": 3857,
+    "wkid": 102100
+  },
+  "timeZone": "system",
+  "version": "2.36"
+}

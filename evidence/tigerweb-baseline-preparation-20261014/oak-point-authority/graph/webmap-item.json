@@ -1,0 +1,72 @@
+{
+  "id": "8bd15c6337ea45c3b572936116f7b3a6",
+  "owner": "OakpointDevelopment",
+  "ownerId": "e550b295c5d94cc891ef7d2537fe6471",
+  "created": 1764856381000,
+  "modified": 1773158296000,
+  "guid": null,
+  "name": null,
+  "title": "Oak Point Public One Stop Map",
+  "type": "Web Map",
+  "typeKeywords": [
+    "ArcGIS API for JavaScript",
+    "ArcGIS Online",
+    "Collector",
+    "Data Editing",
+    "Explorer Web Map",
+    "Map",
+    "Online Map",
+    "Web Map"
+  ],
+  "description": "",
+  "tags": [
+    "Oak Point",
+    "Planned Development",
+    "Zoning",
+    "City Boundaries",
+    "Parcels"
+  ],
+  "snippet": "One Stop map for Oak Point Development",
+  "thumbnail": "thumbnail/ago_downloaded.png",
+  "documentation": null,
+  "extent": [
+    [
+      -97.01135308699072,
+      33.169148797874975
+    ],
+    [
+      -96.94964082197444,
+      33.19985730469981
+    ]
+  ],
+  "categories": [],
+  "spatialReference": "",
+  "accessInformation": "",
+  "classification": null,
+  "licenseInfo": "",
+  "culture": "en-us",
+  "properties": null,
+  "advancedSettings": null,
+  "url": "",
+  "proxyFilter": null,
+  "access": "public",
+  "size": 37000,
+  "subInfo": 0,
+  "appCategories": [],
+  "industries": [],
+  "languages": [],
+  "largeThumbnail": null,
+  "banner": null,
+  "screenshots": [],
+  "listed": false,
+  "commentsEnabled": true,
+  "numComments": 0,
+  "numRatings": 0,
+  "avgRating": 0,
+  "numViews": 1473,
+  "scoreCompleteness": 61,
+  "groupDesignations": null,
+  "apiToken1ExpirationDate": -1,
+  "apiToken2ExpirationDate": -1,
+  "lastViewed": 1791982800000
+}

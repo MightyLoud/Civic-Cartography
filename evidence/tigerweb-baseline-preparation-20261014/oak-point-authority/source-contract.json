@@ -1,0 +1,65 @@
+{
+  "baseline_replacement_approved": false,
+  "boundary_item": {
+    "access": "public",
+    "description": "This layer shows the up-to-date boundaries for all cities within Denton County.\u00a0",
+    "id": "4c13ea454c2f43af97d1d99a7f16c256",
+    "modified": 1590594079000,
+    "owner": "DentonCountyGIS",
+    "title": "City Boundaries",
+    "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Landmark_Base_GC/MapServer/1"
+  },
+  "captured_on": "2026-10-14",
+  "city_last_edited_utc": "2026-02-17T15:56:51+00:00",
+  "comparison_filter": {
+    "CityCode": "OAKP",
+    "INC_MUNI": "OAK POINT",
+    "TYPE": "CITY"
+  },
+  "etj_last_edited_utc": "2026-03-13T15:53:48+00:00",
+  "excluded_etj": {
+    "INC_MUNI": "DENTON COUNTY",
+    "TYPE": "ETJ"
+  },
+  "experience": {
+    "access": "public",
+    "id": "ba87aee73fc74607bcca8cd8356071f2",
+    "modified": 1776204561000,
+    "owner": "OakpointDevelopment",
+    "title": "Public Onestop"
+  },
+  "graph_metadata_paths": {
+    "boundary-item.json": "evidence/tigerweb-baseline-preparation-20261014/oak-point-authority/graph/boundary-item.json",
+    "boundary-layer.json": "evidence/tigerweb-baseline-preparation-20261014/oak-point-authority/graph/boundary-layer.json",
+    "data.json": "evidence/tigerweb-baseline-preparation-20261014/oak-point-authority/graph/data.json",
+    "item.json": "evidence/tigerweb-baseline-preparation-20261014/oak-point-authority/graph/item.json",
+    "webmap-data.json": "evidence/tigerweb-baseline-preparation-20261014/oak-point-authority/graph/webmap-data.json",
+    "webmap-item.json": "evidence/tigerweb-baseline-preparation-20261014/oak-point-authority/graph/webmap-item.json"
+  },
+  "graph_metadata_sha256": {
+    "boundary-item.json": "83c41419a0e2c5ac190e84a201566c949a55373ae49496e6a25ba71474fdbc71",
+    "boundary-layer.json": "04777aa3d46a6f254daa83011094428fac12daf2c78057f49c8498be13cf3be2",
+    "data.json": "99ce9543b78c9bbc73d285533f588decec5f42e6a2cff843db4df6729f6e53a7",
+    "item.json": "b1de9017ea52f43f7f0b79f546cc61884a2fe694fba78d4c08ef781449ea1cc8",
+    "webmap-data.json": "aafb795503d3ac8deb03eee28056b6df5c6710a8673ea63f748f93e65d007882",
+    "webmap-item.json": "f98c32118bfe05361907042e6f5dccb0e585eefa6213c6091d76c01268807ab7"
+  },
+  "legal_effective_date": "UNVERIFIED",
+  "official_entrypoint": "https://www.oakpointtexas.com/173/Planning-Engineering",
+  "queried_feature_count": 2,
+  "query_url": "https://gis.dentoncounty.gov/arcgis/rest/services/Landmark_Base_GC/MapServer/1/query?where=UPPER%28NAME%29+LIKE+%27%25OAK%25POINT%25%27+OR+UPPER%28CITY%29+LIKE+%27%25OAK%25POINT%25%27&outFields=NAME%2CTYPE%2CCITY%2CINC_MUNI%2CCityCode%2Clast_edited_date&returnGeometry=true&outSR=4326&f=geojson",
+  "real_address_impact": "UNVERIFIED",
+  "sha256": {
+    "census-current.geojson": "bdbb9954e057ba0fb05908a12e0678d835d167587b113f0b2412538a96a8a046",
+    "county-boundary-query.geojson": "4be1176c4c2fa527c4f7b53402c09cf1a879d6d3f04c4f38afb4798fd3cf4345",
+    "coverage-comparison.json": "9df0fb654ae311030e983d2e05c4a82c1a459833774bd74780f3ef2c9631a596"
+  },
+  "status": "UNRESOLVED_NO_BASELINE_REPLACEMENT",
+  "webmap": {
+    "access": "public",
+    "id": "8bd15c6337ea45c3b572936116f7b3a6",
+    "modified": 1773158296000,
+    "owner": "OakpointDevelopment",
+    "title": "Oak Point Public One Stop Map"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "id": "4c13ea454c2f43af97d1d99a7f16c256",
+  "owner": "DentonCountyGIS",
+  "ownerId": "34fe4b8f0d1c32f5553fb8aec571c132",
+  "created": 1583782668000,
+  "modified": 1590594079000,
+  "guid": null,
+  "name": null,
+  "title": "City Boundaries",
+  "type": "Feature Service",
+  "typeKeywords": [
+    "ArcGIS Server",
+    "Data",
+    "Feature Access",
+    "Feature Service",
+    "Service"
+  ],
+  "description": "This layer shows the up-to-date boundaries for all cities within Denton County.\u00a0",
+  "tags": [
+    "Boundary",
+    "Hub",
+    "Denton County",
+    "Open Data",
+    "Cities"
+  ],
+  "snippet": "This layer shows the up-to-date boundaries for all cities within Denton County. ",
+  "thumbnail": "thumbnail/ago_downloaded.png",
+  "documentation": null,
+  "extent": [
+    [
+      -97.4506,
+      32.9412
+    ],
+    [
+      -96.7809,
+      33.4745
+    ]
+  ],
+  "categories": [],
+  "spatialReference": null,
+  "accessInformation": null,
+  "classification": null,
+  "licenseInfo": null,
+  "culture": "en-us",
+  "properties": null,
+  "advancedSettings": null,
+  "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Landmark_Base_GC/MapServer/1",
+  "proxyFilter": null,
+  "access": "public",
+  "size": 78,
+  "subInfo": 0,
+  "appCategories": [],
+  "industries": [],
+  "languages": [],
+  "largeThumbnail": null,
+  "banner": null,
+  "screenshots": [],
+  "listed": false,
+  "commentsEnabled": true,
+  "numComments": 0,
+  "numRatings": 0,
+  "avgRating": 0,
+  "numViews": 16681,
+  "scoreCompleteness": 75,
+  "groupDesignations": null,
+  "apiToken1ExpirationDate": -1,
+  "apiToken2ExpirationDate": -1,
+  "lastViewed": 1791990000000
+}
