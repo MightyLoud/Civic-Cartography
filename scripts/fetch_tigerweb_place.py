@@ -5,9 +5,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from scripts.tigerweb_source import fetch_with_vintage
 
 LAYER_URL = (
     "https://tigerweb.geo.census.gov/arcgis/rest/services/"
@@ -68,6 +74,7 @@ def canonicalize(
     geometry_id: str,
     retrieved_at: str,
     request_url: str,
+    source_vintage: str,
 ) -> dict:
     """Add stable repository join properties to the Census feature."""
     source_feature = raw_payload["features"][0]
@@ -94,7 +101,7 @@ def canonicalize(
                     "source_agency": "U.S. Census Bureau",
                     "source_layer": LAYER_URL,
                     "source_request_url": request_url,
-                    "source_vintage": "2025-01-01",
+                    "source_vintage": source_vintage,
                     "source_retrieved_at": retrieved_at,
                     "source_attributes": source_properties,
                 },
@@ -122,7 +129,9 @@ def main() -> int:
     parser.add_argument("--raw-output", type=Path)
     args = parser.parse_args()
 
-    raw_payload, request_url = fetch_place(args.geoid)
+    raw_payload, request_url, source_vintage = fetch_with_vintage(
+        LAYER_URL, lambda: fetch_place(args.geoid),
+    )
     if args.raw_output:
         write_json(args.raw_output, raw_payload)
 
@@ -132,6 +141,7 @@ def main() -> int:
         geometry_id=args.geometry_id,
         retrieved_at=args.retrieved_at,
         request_url=request_url,
+        source_vintage=source_vintage,
     )
     write_json(args.output, canonical)
     print(f"Wrote one map-ready feature to {args.output}")

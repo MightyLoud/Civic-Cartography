@@ -1,9 +1,13 @@
 import json
+import copy
 from pathlib import Path
+
+import pytest
 
 from scripts.compare_tigerweb_snapshot import (
     compare_canonical_files,
     compare_raw_and_canonical,
+    stable_source_view,
 )
 
 
@@ -112,3 +116,49 @@ def test_canonical_join_change_is_reported(tmp_path: Path) -> None:
     errors = compare_canonical_files(committed, fresh)
 
     assert any("snapshot changed" in error for error in errors)
+
+
+@pytest.mark.parametrize("field", ["AREALAND", "AREAWATER"])
+def test_integer_area_representation_is_equivalent_without_mutating_input(field: str) -> None:
+    raw = raw_payload()
+    canonical = canonical_payload()
+    raw["features"][0]["properties"][field] = "2709073"
+    canonical["features"][0]["properties"]["source_attributes"][field] = 2709073
+    original = copy.deepcopy(raw)
+    assert stable_source_view(raw, canonical=False) == stable_source_view(canonical, canonical=True)
+    assert raw == original
+
+
+@pytest.mark.parametrize("fresh_value", [2709074, "2709074", "2709073.0", None])
+def test_area_value_changes_still_fail(tmp_path: Path, fresh_value) -> None:
+    committed = canonical_payload()
+    fresh = canonical_payload()
+    committed["features"][0]["properties"]["source_attributes"]["AREAWATER"] = "2709073"
+    fresh["features"][0]["properties"]["source_attributes"]["AREAWATER"] = fresh_value
+    write(tmp_path / "committed.json", committed)
+    write(tmp_path / "fresh.json", fresh)
+    errors = compare_canonical_files(tmp_path / "committed.json", tmp_path / "fresh.json")
+    assert len(errors) == 1
+    assert "source attributes changed: AREAWATER" in errors[0]
+
+
+@pytest.mark.parametrize("field", ["GEOID", "NAME"])
+def test_other_source_attributes_remain_strict(tmp_path: Path, field: str) -> None:
+    committed = canonical_payload()
+    fresh = canonical_payload()
+    fresh["features"][0]["properties"]["source_attributes"][field] = 4853988
+    write(tmp_path / "committed.json", committed)
+    write(tmp_path / "fresh.json", fresh)
+    assert compare_canonical_files(tmp_path / "committed.json", tmp_path / "fresh.json")
+
+
+def test_geometry_and_provenance_drift_are_reported_separately(tmp_path: Path) -> None:
+    committed = canonical_payload()
+    fresh = canonical_payload(x=-98.50)
+    committed["features"][0]["properties"]["source_vintage"] = "2025-01-01"
+    fresh["features"][0]["properties"]["source_vintage"] = "2026-01-01"
+    write(tmp_path / "committed.json", committed)
+    write(tmp_path / "fresh.json", fresh)
+    errors = compare_canonical_files(tmp_path / "committed.json", tmp_path / "fresh.json")
+    assert "geometry changed" in errors[0]
+    assert "canonical properties changed: source_vintage" in errors[0]
