@@ -54,7 +54,10 @@ jobs:
           deterministic=$?
           cmp -s requirements-dev.lock /tmp/requirements-dev.generated.lock
           retained=$?
+          if [[ $first -eq 0 && $second -eq 0 && $deterministic -eq 0 ]]; then repeatability=0; else repeatability=1; fi
           if [[ $first -eq 0 && $second -eq 0 && $deterministic -eq 0 && $retained -eq 0 ]]; then code=0; else code=1; fi
+          echo "repeatability_exit_code=$repeatability" >> "$GITHUB_OUTPUT"
+          echo "retained_exit_code=$retained" >> "$GITHUB_OUTPUT"
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           cp /tmp/requirements-dev.generated.lock evidence/licensing/lic-g5/requirements-dev.generated.lock 2>/dev/null || true
           exit 0
@@ -124,6 +127,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           LOCK_EXIT: ${{ steps.lock.outputs.exit_code }}
+          LOCK_REPEATABILITY_EXIT: ${{ steps.lock.outputs.repeatability_exit_code }}
           YAML_EXIT: ${{ steps.yaml.outputs.exit_code }}
           PYTEST_EXIT: ${{ steps.pytest.outputs.exit_code }}
         run: python scripts/lic_g5_evidence.py
