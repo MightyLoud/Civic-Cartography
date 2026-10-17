@@ -99,7 +99,7 @@ def main():
       'pip_audit_zero_vulnerabilities':aud['count']==0,
       'pytest_passed':os.getenv('PYTEST_EXIT')=='0',
       'yaml_passed':os.getenv('YAML_EXIT')=='0',
-      'lock_deterministic':os.getenv('LOCK_EXIT')=='0'}
+      'lock_deterministic':os.getenv('LOCK_REPEATABILITY_EXIT')=='0'}
     passed=all(checks.values())
     env={'python':platform.python_version(),'pip':metadata.version('pip'),'pip-tools':metadata.version('pip-tools'),'pip-audit':metadata.version('pip-audit'),'pip-licenses':metadata.version('pip-licenses')}
     ev={'control_id':'LIC-G5','schema_version':1,'repository':'MightyLoud/Civic-Cartography','commit_sha':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'tree_sha':subprocess.check_output(['git','rev-parse','HEAD^{tree}'],cwd=ROOT,text=True).strip(),'github_run_id':os.getenv('GITHUB_RUN_ID'),'environment':env,'requirements_sha256':SHA(ROOT/'requirements-dev.txt'),'generated_lock_sha256':SHA(GEN) if GEN.exists() else None,'committed_lock_sha256':SHA(COM) if COM.exists() else None,'resolved_dependencies':lock,'workflow_actions':acts,'mutable_action_refs':[a['reference'] for a in acts if a.get('kind')=='external' and not a.get('ref_is_sha')],'installer_commands':inst,'vulnerabilities':aud,'checks':checks,'lic_g5_pass':passed,'authority_boundary':{'dependency_licenses_create_root_license':False,'publication_authority':False,'transfer_authority':False,'implementation_authority':False},'reopen_on':['dependency or lock change','workflow action or installer change','new vulnerability','repository drift']}
