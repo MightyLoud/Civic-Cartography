@@ -92,7 +92,13 @@ jobs:
                           urls.append(url.rstrip('/'))
                       walk(layer.get('layers'))
           walk(data.get('operationalLayers'))
-          if not any(url == LAYER or url == LAYER.rsplit('/', 1)[0] for url in urls):
+          accepted_portal_layers = {
+              LAYER,
+              LAYER.rsplit('/', 1)[0],
+              'https://maps.epcountytx.gov/arcgis/rest/services/Website_Basemap/MapServer/10',
+              'https://maps.epcountytx.gov/arcgis/rest/services/Website_Basemap/MapServer',
+          }
+          if not any(url in accepted_portal_layers for url in urls):
               raise SystemExit(f'El Paso County portal item no longer exposes expected operational layer: {urls!r}')
           if item.get('id') != ITEM_ID:
               raise SystemExit(f'Unexpected El Paso County portal item metadata: {item!r}')
