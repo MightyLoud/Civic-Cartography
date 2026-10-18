@@ -46,16 +46,29 @@ jobs:
         run: |
           set +e
           rm -f /tmp/requirements-dev.generated.lock /tmp/requirements-dev.generated.second.lock
-          uv pip compile requirements-dev.txt --generate-hashes --python-version 3.12 --no-header --output-file /tmp/requirements-dev.generated.lock
+          # Constrain reviewed versions; regenerate hashes independently from the index.
+          python - <<'PY_LOCK'
+          from pathlib import Path
+          import re
+          lines = Path('requirements-dev.lock').read_text().splitlines()
+          pins = [line.split()[0] for line in lines if re.match(r'^[A-Za-z0-9_.-]+==', line)]
+          if not pins:
+              raise SystemExit('Committed lock contains no version pins')
+          Path('/tmp/requirements-dev.constraints.txt').write_text('\n'.join(pins) + '\n')
+          retained = [line for line in lines if not line.lstrip().startswith('#')]
+          Path('/tmp/requirements-dev.retained.lock').write_text('\n'.join(retained) + '\n')
+          PY_LOCK
+          prepare=$?
+          uv pip compile requirements-dev.txt --constraint /tmp/requirements-dev.constraints.txt --generate-hashes --python-version 3.12 --no-header --no-annotate --output-file /tmp/requirements-dev.generated.lock
           first=$?
-          uv pip compile requirements-dev.txt --generate-hashes --python-version 3.12 --no-header --output-file /tmp/requirements-dev.generated.second.lock
+          uv pip compile requirements-dev.txt --constraint /tmp/requirements-dev.constraints.txt --generate-hashes --python-version 3.12 --no-header --no-annotate --output-file /tmp/requirements-dev.generated.second.lock
           second=$?
           cmp -s /tmp/requirements-dev.generated.lock /tmp/requirements-dev.generated.second.lock
           deterministic=$?
-          cmp -s requirements-dev.lock /tmp/requirements-dev.generated.lock
+          cmp -s /tmp/requirements-dev.retained.lock /tmp/requirements-dev.generated.lock
           retained=$?
-          if [[ $first -eq 0 && $second -eq 0 && $deterministic -eq 0 ]]; then repeatability=0; else repeatability=1; fi
-          if [[ $first -eq 0 && $second -eq 0 && $deterministic -eq 0 && $retained -eq 0 ]]; then code=0; else code=1; fi
+          if [[ $prepare -eq 0 && $first -eq 0 && $second -eq 0 && $deterministic -eq 0 ]]; then repeatability=0; else repeatability=1; fi
+          if [[ $prepare -eq 0 && $first -eq 0 && $second -eq 0 && $deterministic -eq 0 && $retained -eq 0 ]]; then code=0; else code=1; fi
           echo "repeatability_exit_code=$repeatability" >> "$GITHUB_OUTPUT"
           echo "retained_exit_code=$retained" >> "$GITHUB_OUTPUT"
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
