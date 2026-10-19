@@ -9,6 +9,8 @@ OUT=ROOT/'evidence/licensing/lic-g5'; OUT.mkdir(parents=True,exist_ok=True)
 GEN=Path('/tmp/requirements-dev.generated.lock'); COM=ROOT/'requirements-dev.lock'
 NORM=lambda s: re.sub(r'[-_.]+','-',s).lower()
 SHA=lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+# Dependency equality ignores only comments; versions, hashes, and options remain exact.
+LOCK_CONTENT=lambda p: '\n'.join(line for line in Path(p).read_text().splitlines() if not line.lstrip().startswith('#')) + '\n'
 
 def dump(name,obj): (OUT/name).write_text(json.dumps(obj,indent=2,sort_keys=True)+'\n')
 def git_files(): return [ROOT/p for p in subprocess.check_output(['git','ls-files','-z'],cwd=ROOT).decode().split('\0') if p]
@@ -89,7 +91,7 @@ def main():
       'pytest_fixed_range':fixed,
       'generated_lock_exists':GEN.exists(),
       'committed_lock_exists':COM.exists(),
-      'lock_matches_generated':GEN.exists() and COM.exists() and SHA(GEN)==SHA(COM),
+      'lock_matches_generated':GEN.exists() and COM.exists() and LOCK_CONTENT(GEN)==LOCK_CONTENT(COM),
       'lock_hash_complete':bool(lock) and all(r['hashes'] for r in lock),
       'direct_requirements_covered':set(direct)<=names,
       'python_license_inventory_complete':names<=package_names,
