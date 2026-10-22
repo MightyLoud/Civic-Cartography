@@ -1,0 +1,29 @@
+{
+  "all_other_stable_source_values_equal": true,
+  "area_land_fresh": 4069433006,
+  "area_land_prior": 4069433009,
+  "area_water_unchanged": 30081128,
+  "base_tree": "4c63d7416838b9e50c140252121a01982174aacc",
+  "capture_date": "2026-10-22",
+  "cause_verified": false,
+  "checks": {
+    "archived_bytes_equal_parent": true,
+    "full_tests_passed": 258,
+    "geojson_joins_passed": true,
+    "normalized_files_validated": 33,
+    "raw_canonical_support_passed": true
+  },
+  "file_sha256": {
+    "data/geojson/hidalgo_county_countywide.geojson": "586e7dc8302eba9863d22f0fb4ca6f1ba564d2029025073a87125a97ef9c3b64",
+    "data/raw/hidalgo-county/archive/2026-08-02/hidalgo_county_countywide.geojson": "d6fcb524b08e59fb70b9190800eed454c26cbdcf0daac95929b1d16ee355b618",
+    "data/raw/hidalgo-county/archive/2026-08-02/tigerweb-county-48215.geojson": "b41c5c2f6ec613e51836f2a00b5733d1514570739a2f282bd025e3a0a1cdd59b",
+    "data/raw/hidalgo-county/source-manifest.csv": "6fb0dbe90ae96bd0af80290c7b99909d612cec13c41951bf477f59dfbe7acd3a",
+    "data/raw/hidalgo-county/tigerweb-county-48215.geojson": "3fec7e348eaaa4180b815c47f94a8071659b216807b6ae08a93ffebeeffb9ff2"
+  },
+  "geoid": "48215",
+  "geometry_exactly_equal": true,
+  "github_ci_verified": false,
+  "production_baseline_promoted": false,
+  "source_vintage": "2026-01-01",
+  "status": "DRAFT_NOT_MERGED"
+}

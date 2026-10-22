@@ -188,7 +188,7 @@ jobs:
               --geoid 48215 \
               --record-id TX:county:hidalgo:countywide:COUNTYWIDE \
               --geometry-id hidalgo-county-countywide \
-              --retrieved-at 2026-08-02 \
+              --retrieved-at 2026-10-22 \
               --raw-output build/hidalgo-county/county/raw/tigerweb-county-48215.geojson \
               --output build/hidalgo-county/county/geojson/hidalgo_county_countywide.geojson; then
               exit 0
