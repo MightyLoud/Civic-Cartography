@@ -48,7 +48,7 @@ jobs:
             --geoid 48257 \
             --record-id TX:county:kaufman:countywide:COUNTYWIDE \
             --geometry-id kaufman-county-countywide \
-            --retrieved-at 2026-08-02 \
+            --retrieved-at 2026-10-22 \
             --raw-output build/kaufman-county/county/raw/tigerweb-county-48257.geojson \
             --output build/kaufman-county/county/geojson/kaufman_county_countywide.geojson
 
@@ -83,7 +83,7 @@ jobs:
               digest.update(path.name.encode("utf-8"));digest.update(b"\0")
               digest.update(path.read_bytes());digest.update(b"\0")
           value=digest.hexdigest()
-          expected="50a46300a55671c29268ddfbae11cac3a8e189c02ff8b8f6754211b920be250b"
+          expected="d735ae4f7f53d88aaebc072fa67b585b4ea01109ff9f7ac0b57a43b93a2cf9a1"
           if value!=expected:raise SystemExit(f"Kaufman release digest changed: {value} != {expected}")
           output=Path("build/kaufman-county/release-sha256.txt")
           output.parent.mkdir(parents=True,exist_ok=True);output.write_text(value+"\n")
