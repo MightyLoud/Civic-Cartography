@@ -52,8 +52,7 @@ SUPPORTED_RESOLUTION_POLICIES = frozenset({"override_or_exception"})
 TARGET_ID_PATTERN = re.compile(r"^[A-Z0-9][A-Z0-9_-]*$")
 STATE_PATTERN = re.compile(r"^[a-z]{2}$")
 US_ADMIN1_TYPES = ("state", "district", "territory")
-CENSUS_PLACE_GEOID_PATTERN = re.compile(r"^[0-9]{7}$")
-CENSUS_COUNTY_GEOID_PATTERN = re.compile(r"^[0-9]{5}$")
+CENSUS_GEOID_PATTERN = re.compile(r"^[0-9]{7}$")
 WAVE_PATTERN = re.compile(r"^[A-Z0-9]+(?:-[A-Z0-9]+)*$")
 
 
@@ -101,10 +100,10 @@ def _require_nonempty_string(value: Any, location: str) -> str:
 def _require_string_list(value: Any, location: str) -> list[str]:
     if not isinstance(value, list) or not value:
         raise ManifestError(f"{location} must be a non-empty list")
-    return [
-        _require_nonempty_string(item, f"{location}[{index}]")
-        for index, item in enumerate(value)
-    ]
+    result: list[str] = []
+    for index, item in enumerate(value):
+        result.append(_require_nonempty_string(item, f"{location}[{index}]"))
+    return result
 
 
 def normalize_run_asof(value: str) -> str:
@@ -217,58 +216,6 @@ def _normalize_relative_path(value: Any, location: str) -> str:
     return normalized
 
 
-def _selector_geography_type(selector: Mapping[str, Any]) -> str | None:
-    selector_type = selector.get("type")
-    values: list[str]
-    if selector_type == "ocdid":
-        value = selector.get("value")
-        values = [value] if isinstance(value, str) else []
-    elif selector_type == "alias_group":
-        raw_members = selector.get("members")
-        values = [item for item in raw_members or [] if isinstance(item, str)]
-    else:
-        # Existing explicit-lookup production targets predate geography typing and
-        # remain place-compatible until an exact OCD ID resolves them.
-        return "place"
-
-    kinds: set[str] = set()
-    for value in values:
-        if "/place:" in value:
-            kinds.add("place")
-        elif "/county:" in value:
-            kinds.add("county")
-        else:
-            kinds.add("other")
-    if len(kinds) != 1:
-        return None
-    kind = next(iter(kinds))
-    return kind if kind in {"place", "county"} else None
-
-
-def _validate_production_geoid(
-    census_geoid: str, selector: Mapping[str, Any], location: str
-) -> None:
-    geography_type = _selector_geography_type(selector)
-    if geography_type == "place":
-        if not CENSUS_PLACE_GEOID_PATTERN.fullmatch(census_geoid):
-            raise ManifestError(
-                f"{location}.census_geoid must be a seven-digit Census place GEOID "
-                "for a place selector"
-            )
-        return
-    if geography_type == "county":
-        if not CENSUS_COUNTY_GEOID_PATTERN.fullmatch(census_geoid):
-            raise ManifestError(
-                f"{location}.census_geoid must be a five-digit Census county GEOID "
-                "for a county selector"
-            )
-        return
-    raise ManifestError(
-        f"{location}.selector must resolve to a single supported production "
-        "geography type (place or county)"
-    )
-
-
 def _validate_target(raw_target: Any, index: int) -> Target:
     location = f"targets[{index}]"
     target = _require_mapping(raw_target, location)
@@ -300,8 +247,6 @@ def _validate_target(raw_target: Any, index: int) -> Target:
     if not STATE_PATTERN.fullmatch(state):
         raise ManifestError(f"{location}.state must be a two-letter code")
 
-    selector = _validate_selector(target.get("selector"), state, f"{location}.selector")
-
     expected_classification = _require_nonempty_string(
         target.get("expected_classification"),
         f"{location}.expected_classification",
@@ -328,7 +273,10 @@ def _validate_target(raw_target: Any, index: int) -> Target:
         census_geoid = _require_nonempty_string(
             raw_census_geoid, f"{location}.census_geoid"
         )
-        _validate_production_geoid(census_geoid, selector, location)
+        if not CENSUS_GEOID_PATTERN.fullmatch(census_geoid):
+            raise ManifestError(
+                f"{location}.census_geoid must be a seven-digit Census place GEOID"
+            )
         wave = _require_nonempty_string(raw_wave, f"{location}.wave")
         if not WAVE_PATTERN.fullmatch(wave):
             raise ManifestError(
@@ -345,7 +293,9 @@ def _validate_target(raw_target: Any, index: int) -> Target:
             target.get("jurisdiction_name"), f"{location}.jurisdiction_name"
         ),
         state=state,
-        selector=selector,
+        selector=_validate_selector(
+            target.get("selector"), state, f"{location}.selector"
+        ),
         expected_archetype=_require_nonempty_string(
             target.get("expected_archetype"),
             f"{location}.expected_archetype",
@@ -766,7 +716,9 @@ def build_report(
 
     manifest_dict = manifest_to_dict(manifest)
     manifest_sha256 = _sha256_value(manifest_dict)
-    selector_counts = Counter(target.selector["type"] for target in manifest.targets)
+    selector_counts = Counter(
+        target.selector["type"] for target in manifest.targets
+    )
     generation_counts = Counter(result["generation_status"] for result in results)
     exception_count = sum(
         1 for result in results if result["exception_class"] is not None

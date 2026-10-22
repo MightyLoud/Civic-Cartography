@@ -2,6 +2,10 @@ from __future__ import annotations
 import csv, hashlib, json
 from pathlib import Path
 
+import pytest
+
+import scripts.validate_schleicher_sources as source_validator
+
 ROOT=Path(__file__).resolve().parents[1]
 RAW=ROOT/"data/raw/schleicher-county"
 ROSTER=RAW/"current-elected-offices.csv"
@@ -29,7 +33,7 @@ def test_schleicher_combined_clerk_release_contract():
         "Sheriff":"Jason Chatham",
         "County and District Clerk":"Marsha L. Maskill",
         "Tax Assessor-Collector":"Vanessa Covarrubiaz",
-        "County Treasurer":"Jennifer L. Henderson",
+        "County Treasurer":"Cassandra Buitron",
     }
     assert len(roster)==9
     assert {row["office_name"]:row["officeholder"] for row in roster}==expected
@@ -89,3 +93,46 @@ def test_schleicher_combined_clerk_release_contract():
         digest.update(path.read_bytes())
         digest.update(b"\0")
     assert digest.hexdigest()==EXPECTED_DIGEST
+
+
+def test_schleicher_live_contract_retries_incomplete_http_200(monkeypatch):
+    pages=iter([
+        "<html><body>County Treasurer</body></html>",
+        "<html><body>County Treasurer Jennifer L. Henderson</body></html>",
+    ])
+    sleeps=[]
+    monkeypatch.setattr(source_validator,"fetch",lambda _url:next(pages))
+    monkeypatch.setattr(source_validator.time,"sleep",sleeps.append)
+
+    page=source_validator.fetch_contract_page(
+        "https://example.test/Treasurer",("Jennifer L. Henderson",)
+    )
+
+    assert "Jennifer L. Henderson" in page
+    assert sleeps==[3]
+
+
+def test_schleicher_live_contract_fails_after_three_incomplete_pages(monkeypatch):
+    calls=[]
+    sleeps=[]
+    def incomplete(url):
+        calls.append(url)
+        return "<html><body>County Treasurer</body></html>"
+    monkeypatch.setattr(source_validator,"fetch",incomplete)
+    monkeypatch.setattr(source_validator.time,"sleep",sleeps.append)
+
+    with pytest.raises(SystemExit,match="lost markers"):
+        source_validator.fetch_contract_page(
+            "https://example.test/Treasurer",("Jennifer L. Henderson",)
+        )
+
+    assert len(calls)==3
+    assert sleeps==[3,6]
+
+
+def test_schleicher_live_contract_preserves_unavailable_page_behavior(monkeypatch):
+    monkeypatch.setattr(source_validator,"fetch",lambda _url:None)
+
+    assert source_validator.fetch_contract_page(
+        "https://example.test/Treasurer",("Jennifer L. Henderson",)
+    ) is None
