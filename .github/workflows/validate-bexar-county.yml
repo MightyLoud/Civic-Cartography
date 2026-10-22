@@ -37,7 +37,7 @@ jobs:
             --record-id-prefix TX:county:bexar:commissioner_precinct \
             --geometry-id-prefix bexar-county-commissioner-precinct \
             --source-agency "Bexar County GIS" \
-            --retrieved-at 2026-08-02 \
+            --retrieved-at 2026-10-22 \
             --raw-output build/bexar-county/precincts/raw/commissioner-precincts-1-4.geojson \
             --output build/bexar-county/precincts/geojson/bexar_county_commissioner_precincts.geojson
 
