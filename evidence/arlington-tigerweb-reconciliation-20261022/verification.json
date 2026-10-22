@@ -1,0 +1,24 @@
+{
+  "base_tree": "9bc77e5ab603c64082cc6ce3f95b650c898bb563",
+  "capture_date": "2026-10-22",
+  "checks": {
+    "archived_bytes_equal_parent": true,
+    "fresh_census_comparison_passed": true,
+    "full_tests_passed": 255,
+    "geojson_joins_passed": true,
+    "normalized_files_validated": 33
+  },
+  "file_sha256": {
+    "data/geojson/arlington_citywide.geojson": "b6211db9e1bb9e1c4b4d20266c7a16bfaf354d5322d218f464ac1a038e4bf6be",
+    "data/raw/arlington/archive/2026-08-01/arlington_citywide.geojson": "751a5ce1daf54fad53de3882c832dab956b9425280e835e8cff4095867a93c52",
+    "data/raw/arlington/archive/2026-08-01/tigerweb-incorporated-place-4804000.geojson": "57504d916c8e5b21d10f3250a3a24fb685546820a2d51ce5cc9678f99a3213e9",
+    "data/raw/arlington/source-manifest.csv": "ffccff18fd1e16ed4ca78fd9b92bdc182fe167fe252a3b281318c23a0ef65b97",
+    "data/raw/arlington/tigerweb-incorporated-place-4804000.geojson": "be7810f2f4e94cf82753f696a82f3ab4f6fe9f025664c3b815793411c91c652c"
+  },
+  "geoid": "4804000",
+  "geometry_exactly_equal": true,
+  "github_ci_verified": false,
+  "source_vintage": "2026-01-01",
+  "stable_source_values_equal": true,
+  "status": "DRAFT_NOT_MERGED"
+}
