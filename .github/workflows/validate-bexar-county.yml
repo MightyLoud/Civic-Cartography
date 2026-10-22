@@ -81,7 +81,7 @@ jobs:
               --geoid 48029 \
               --record-id TX:county:bexar:countywide:COUNTYWIDE \
               --geometry-id bexar-county-countywide \
-              --retrieved-at 2026-08-02 \
+              --retrieved-at 2026-10-22 \
               --raw-output build/bexar-county/county/raw/tigerweb-county-48029.geojson \
               --output build/bexar-county/county/geojson/bexar_county_countywide.geojson; then
               exit 0
