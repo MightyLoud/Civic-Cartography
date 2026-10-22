@@ -1,0 +1,29 @@
+{
+  "all_other_stable_source_values_equal": true,
+  "area_land_fresh": 3212765014,
+  "area_land_prior": 3212765009,
+  "area_water_unchanged": 40484944,
+  "base_tree": "64ce9aa962facfb7240790eb43976441f4b02262",
+  "capture_date": "2026-10-22",
+  "cause_verified": false,
+  "checks": {
+    "archived_bytes_equal_parent": true,
+    "full_tests_passed": 259,
+    "geojson_joins_passed": true,
+    "normalized_files_validated": 33,
+    "raw_canonical_support_passed": true
+  },
+  "file_sha256": {
+    "data/geojson/bexar_county_countywide.geojson": "7010f195e5e2163b5d7000d097ea59a80a0a9bb407f8058956fa94696a345413",
+    "data/raw/bexar-county/archive/2026-08-02/bexar_county_countywide.geojson": "58fd045673bbd807fe5aeabb4d1aa8f45eff8b540c4d787714dfa9372efe1039",
+    "data/raw/bexar-county/archive/2026-08-02/tigerweb-county-48029.geojson": "e096a90d64340d31ec1e38760a983fb4e55161111d35c9550b942d87e60711dc",
+    "data/raw/bexar-county/source-manifest.csv": "84a18e9787f4202ecf8f72ad3bff2fd4bae7168b4125fbe329ad11b6c34626fe",
+    "data/raw/bexar-county/tigerweb-county-48029.geojson": "5a7cd75563d51167f384782479e2e617ed09c0b8406e8a715e580d95d4fe338e"
+  },
+  "geoid": "48029",
+  "geometry_exactly_equal": true,
+  "github_ci_verified": false,
+  "production_baseline_promoted": false,
+  "source_vintage": "2026-01-01",
+  "status": "DRAFT_NOT_MERGED"
+}
