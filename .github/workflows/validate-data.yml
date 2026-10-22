@@ -31,7 +31,7 @@ jobs:
             --geoid 4853988 \
             --record-id TX:municipality:olmos-park:at_large:CITYWIDE \
             --geometry-id olmos-park-citywide \
-            --retrieved-at 2026-08-01 \
+            --retrieved-at 2026-10-22 \
             --raw-output build/olmos-park/raw/tigerweb-incorporated-place-4853988.geojson \
             --output build/olmos-park/geojson/olmos_park_citywide.geojson
 
