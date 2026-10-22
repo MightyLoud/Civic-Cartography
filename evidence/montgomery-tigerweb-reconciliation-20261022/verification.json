@@ -1,0 +1,48 @@
+{
+  "AREALAND_numeric_delta": 2028,
+  "AREAWATER_numeric_delta": -2024,
+  "all_other_stable_source_values_equal": true,
+  "base_tree": "6320b01534d30e9b96f7f6dd1fdea175a14d9080",
+  "baseline_modified": false,
+  "capture_date": "2026-10-22",
+  "checks": {
+    "archived_bytes_equal_parent": true,
+    "full_tests_passed": 256,
+    "geojson_joins_passed": true,
+    "normalized_files_validated": 33,
+    "raw_canonical_support_verified": true
+  },
+  "draft_candidate_files_modified": true,
+  "file_sha256": {
+    "data/geojson/montgomery_county_countywide.geojson": "cfd2924afb8bc61e6585a95e67bdafd2f2c7a01b43f0e2794dbd4815bc8cc38c",
+    "data/raw/montgomery-county/archive/2026-08-02/montgomery_county_countywide.geojson": "ee694a6b9bec006ec0055f89baca648b8dbdc703c1420506fbf8e2bdd6fd7de9",
+    "data/raw/montgomery-county/archive/2026-08-02/tigerweb-county-48339.geojson": "d859c15c4991ecbabee4424e3af92c5dfda924c16ac7c3d6b4fd69c203a5b563",
+    "data/raw/montgomery-county/source-manifest.csv": "cd51e67d161557175585491727f79f5a33d54279598f311ac27d601acf8eff5d",
+    "data/raw/montgomery-county/tigerweb-county-48339.geojson": "801d7ee39f3fdab70075d7f5078b34266f59d261d3dad1ec2d563167fc0ea407"
+  },
+  "geoid": "48339",
+  "geometry_exactly_equal": true,
+  "geometry_sha256": "f7b12701815640221fe7fadb25daa8088d1207fee20e46d9f2eb112d50649cdf",
+  "raw_canonical_support_verified": true,
+  "reported_total_area_delta_m2": 4,
+  "source_attribute_changes": {
+    "AREALAND": {
+      "fresh": 2699231373,
+      "prior": "2699229345"
+    },
+    "AREAWATER": {
+      "fresh": 89889706,
+      "prior": "89891730"
+    },
+    "OBJECTID": {
+      "fresh": 1572,
+      "prior": 3081
+    }
+  },
+  "source_vintage": [
+    "2025-01-01",
+    "2026-01-01"
+  ],
+  "stable_source_view_equal": false,
+  "status": "DRAFT_NOT_MERGED"
+}
