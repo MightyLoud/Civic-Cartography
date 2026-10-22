@@ -1,0 +1,100 @@
+{
+  "status": "EVIDENCE_ONLY_NO_ADOPTION",
+  "source_url": "https://maps.bexar.org/arcgis/rest/services/CommissionerPrecincts/MapServer/0",
+  "capture_date": "2026-10-22",
+  "projection": "EPSG:32614",
+  "districts": [
+    {
+      "district": "1",
+      "coordinate_exact": true,
+      "topologically_equal": true,
+      "old_valid": true,
+      "fresh_valid": true,
+      "stable_source_attributes_equal": true,
+      "added_m2": 0.0,
+      "removed_m2": 0.0,
+      "symmetric_difference_m2": 0.0,
+      "hausdorff_m": 0.0,
+      "coordinate_scalar_counts": [
+        4920,
+        4920
+      ],
+      "changed_coordinate_scalars": 0,
+      "max_absolute_coordinate_delta_degrees": 0.0
+    },
+    {
+      "district": "2",
+      "coordinate_exact": false,
+      "topologically_equal": false,
+      "old_valid": true,
+      "fresh_valid": true,
+      "stable_source_attributes_equal": true,
+      "added_m2": 1.000111803941238e-07,
+      "removed_m2": 1.5323867225280224e-07,
+      "symmetric_difference_m2": 2.5324985264692603e-07,
+      "hausdorff_m": 2.3283064365386963e-09,
+      "coordinate_scalar_counts": [
+        4702,
+        4702
+      ],
+      "changed_coordinate_scalars": 6,
+      "max_absolute_coordinate_delta_degrees": 1.7763568394002505e-14
+    },
+    {
+      "district": "3",
+      "coordinate_exact": false,
+      "topologically_equal": false,
+      "old_valid": true,
+      "fresh_valid": true,
+      "stable_source_attributes_equal": true,
+      "added_m2": 8.979335097518415e-08,
+      "removed_m2": 3.4019547899300515e-07,
+      "symmetric_difference_m2": 4.299888299681893e-07,
+      "hausdorff_m": 2.7939677238464355e-09,
+      "coordinate_scalar_counts": [
+        9382,
+        9382
+      ],
+      "changed_coordinate_scalars": 11,
+      "max_absolute_coordinate_delta_degrees": 2.1316282072803006e-14
+    },
+    {
+      "district": "4",
+      "coordinate_exact": false,
+      "topologically_equal": false,
+      "old_valid": true,
+      "fresh_valid": true,
+      "stable_source_attributes_equal": true,
+      "added_m2": 2.6835498619006554e-07,
+      "removed_m2": 2.0571073218578055e-07,
+      "symmetric_difference_m2": 4.740657183758461e-07,
+      "hausdorff_m": 2.7939677238464355e-09,
+      "coordinate_scalar_counts": [
+        8986,
+        8986
+      ],
+      "changed_coordinate_scalars": 7,
+      "max_absolute_coordinate_delta_degrees": 2.1316282072803006e-14
+    }
+  ],
+  "combined_symmetric_difference_m2": 2.4704402386158206e-07,
+  "fresh_raw_canonical_errors": [],
+  "cause_verified": false,
+  "measurement_note": "Projected differences at this scale are numerical diagnostics, not evidence of physical boundary movement. No legal or source-cause explanation is verified.",
+  "repeat_capture": {
+    "canonical_byte_equal": true,
+    "raw_byte_equal": true,
+    "district_geometry_exact_equal": {
+      "1": true,
+      "2": true,
+      "3": true,
+      "4": true
+    }
+  },
+  "capture_sha256": {
+    "build/bexar-precinct-review/raw.geojson": "64aafe0a2f653c55dbd87aedebb0e82596bb5e037183559d94f8bcf767799c89",
+    "build/bexar-precinct-review/canonical.geojson": "ee7a385aee38495f52904aa373792333c2fe4839d8156a48d178a573001c1702",
+    "build/bexar-precinct-repeat/raw.geojson": "64aafe0a2f653c55dbd87aedebb0e82596bb5e037183559d94f8bcf767799c89",
+    "build/bexar-precinct-repeat/canonical.geojson": "ee7a385aee38495f52904aa373792333c2fe4839d8156a48d178a573001c1702"
+  }
+}

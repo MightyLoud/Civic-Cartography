@@ -1,0 +1,17 @@
+{
+  "base_tree": "e7d696ed9ebf26d7cbf4cb136b341ef1dd742c0f",
+  "cause_verified": false,
+  "changed_coordinate_scalars": 24,
+  "checks": {
+    "archived_bytes_equal_parent": true,
+    "full_tests_passed": 260,
+    "geojson_joins_passed": true,
+    "normalized_files_validated": 33,
+    "raw_canonical_support_passed": true,
+    "strict_repeat_capture_comparison_passed": true
+  },
+  "github_ci_verified": false,
+  "production_baseline_promoted": false,
+  "repeat_raw_and_canonical_byte_equal": true,
+  "status": "DRAFT_NOT_MERGED"
+}
