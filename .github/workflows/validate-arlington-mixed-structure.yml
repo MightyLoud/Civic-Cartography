@@ -31,7 +31,7 @@ jobs:
             --geoid 4804000 \
             --record-id TX:municipality:arlington:at_large:CITYWIDE \
             --geometry-id arlington-citywide \
-            --retrieved-at 2026-08-01 \
+            --retrieved-at 2026-10-22 \
             --raw-output build/arlington-citywide/raw/tigerweb-incorporated-place-4804000.geojson \
             --output build/arlington-citywide/geojson/arlington_citywide.geojson
 
