@@ -1,0 +1,31 @@
+{
+  "area_land_fresh": 2232877078,
+  "area_land_prior": 2232877080,
+  "area_water_fresh": 60631454,
+  "area_water_prior": 60631457,
+  "base_tree": "573c083385d04b100f137e6c64521bbd338faef6",
+  "capture_date": "2026-10-22",
+  "cause_verified": false,
+  "checks": {
+    "archived_bytes_equal_parent": true,
+    "full_tests_passed": 257,
+    "geojson_joins_passed": true,
+    "normalized_files_validated": 33,
+    "raw_canonical_support_passed": true
+  },
+  "file_sha256": {
+    "data/geojson/fort_bend_county_countywide.geojson": "40a7d0a9ce1cc9d54e570c7e7af87cf2b21c40819704e3d57854c24b4a9f7542",
+    "data/raw/fort-bend-county/archive/2026-08-02/fort_bend_county_countywide.geojson": "769fbbf28c38fba94d370eb7ab0ec1c3b29d8c7215ae970dcfac0740b87a0035",
+    "data/raw/fort-bend-county/archive/2026-08-02/tigerweb-county-48157.geojson": "a79d0b537143a812358181d737fec1ee7781e8c42988d4d078dfa1505b701517",
+    "data/raw/fort-bend-county/source-manifest.csv": "5d4797dbc631adb25d78cbb5ea66135c88f6066c54de5ab7b7c1f2a36f0e7dc1",
+    "data/raw/fort-bend-county/tigerweb-county-48157.geojson": "4daed0a97f6931e572190ff3d8b8fbb2f52eac0089b71891a4e1c39901ed449e"
+  },
+  "geoid": "48157",
+  "geometry_exactly_equal": true,
+  "github_ci_verified": false,
+  "other_stable_values_equal": true,
+  "production_baseline_promoted": false,
+  "reported_total_area_delta_m2": -5,
+  "source_vintage": "2026-01-01",
+  "status": "DRAFT_NOT_MERGED"
+}

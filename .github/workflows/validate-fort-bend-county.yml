@@ -197,7 +197,7 @@ jobs:
               --geoid 48157 \
               --record-id TX:county:fort-bend:countywide:COUNTYWIDE \
               --geometry-id fort-bend-county-countywide \
-              --retrieved-at 2026-08-02 \
+              --retrieved-at 2026-10-22 \
               --raw-output build/fort-bend-county/county/raw/tigerweb-county-48157.geojson \
               --output build/fort-bend-county/county/geojson/fort_bend_county_countywide.geojson; then
               exit 0
