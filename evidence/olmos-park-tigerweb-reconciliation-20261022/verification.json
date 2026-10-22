@@ -1,0 +1,24 @@
+{
+  "base_tree": "fc44211ba20a2d7b41b1d6a28d4dfc0c3975e5e7",
+  "capture_date": "2026-10-22",
+  "checks": {
+    "archived_bytes_equal_parent": true,
+    "fresh_census_comparison_passed": true,
+    "full_tests_passed": 254,
+    "geojson_joins_passed": true,
+    "normalized_files_validated": 33
+  },
+  "file_sha256": {
+    "data/geojson/olmos_park_citywide.geojson": "b9f05a012d2c54ee5d4e1cdb7eec9199a23cd7df84d6b0994b26e1f351d4b4bc",
+    "data/raw/olmos-park/archive/2026-08-01/olmos_park_citywide.geojson": "9f779a20b74de6b54f3bb92715942704f39f286c9a4178af8c418c02f7bcbcbc",
+    "data/raw/olmos-park/archive/2026-08-01/tigerweb-incorporated-place-4853988.geojson": "0f41ed3a45ddc0bc5dfcabe0fe878f71fcfa880c9d8916998b193fffb6b3d438",
+    "data/raw/olmos-park/source-manifest.csv": "858f5590d07cdb0520cec69181280cf9953b26a2eebd34918aac81e74bd6af49",
+    "data/raw/olmos-park/tigerweb-incorporated-place-4853988.geojson": "928f572283ffe07ea97f3609dda89131c13fd71a9023e32525b541b81ecba1ff"
+  },
+  "geoid": "4853988",
+  "geometry_exactly_equal": true,
+  "github_ci_verified": false,
+  "source_vintage": "2026-01-01",
+  "stable_source_values_equal": true,
+  "status": "DRAFT_NOT_MERGED"
+}
