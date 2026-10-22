@@ -6,12 +6,60 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
 
 # ArcGIS service bookkeeping can change without changing the civic geography.
 VOLATILE_SOURCE_FIELDS = {"OBJECTID", "OID", "DISP_CLR"}
+# Census changed these integer-valued fields from JSON strings to numbers.
+# Normalize representation only; every actual area value remains significant.
+INTEGER_SOURCE_FIELDS = {"AREALAND", "AREAWATER"}
+
+
+def stable_attributes(properties: dict[str, Any]) -> dict[str, Any]:
+    for field in VOLATILE_SOURCE_FIELDS:
+        properties.pop(field, None)
+    for field in INTEGER_SOURCE_FIELDS:
+        if field not in properties:
+            continue
+        value = properties[field]
+        if isinstance(value, str) and re.fullmatch(r"[0-9]+", value):
+            properties[field] = int(value)
+        elif type(value) is not int or value < 0:
+            raise ValueError(f"TIGERweb source attribute {field} must be a nonnegative integer")
+    return properties
+
+
+def changed_fields(left: dict[str, Any], right: dict[str, Any]) -> list[str]:
+    return sorted(
+        field for field in left.keys() | right.keys()
+        if field not in left or field not in right or left[field] != right[field]
+    )
+
+
+def drift_details(left: dict[str, Any], right: dict[str, Any], *, canonical: bool) -> str:
+    if canonical:
+        left = left["features"][0]
+        right = right["features"][0]
+    details = []
+    if left["geometry"] != right["geometry"]:
+        details.append("geometry changed")
+    left_properties = left["properties"].copy()
+    right_properties = right["properties"].copy()
+    if canonical:
+        fields = changed_fields(
+            left_properties.pop("source_attributes"),
+            right_properties.pop("source_attributes"),
+        )
+        if fields:
+            details.append(f"source attributes changed: {', '.join(fields)}")
+    fields = changed_fields(left_properties, right_properties)
+    if fields:
+        label = "canonical properties" if canonical else "source attributes"
+        details.append(f"{label} changed: {', '.join(fields)}")
+    return "; ".join(details)
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -54,8 +102,7 @@ def stable_source_view(payload: dict[str, Any], *, canonical: bool) -> dict[str,
             raise ValueError("canonical snapshot must include source_attributes")
         raise ValueError("raw snapshot properties must be an object")
 
-    for field in VOLATILE_SOURCE_FIELDS:
-        source_properties.pop(field, None)
+    stable_attributes(source_properties)
 
     return {
         "properties": source_properties,
@@ -69,8 +116,7 @@ def stable_canonical_view(payload: dict[str, Any]) -> dict[str, Any]:
     source_properties = properties.get("source_attributes")
     if not isinstance(source_properties, dict):
         raise ValueError("canonical snapshot must include source_attributes")
-    for field in VOLATILE_SOURCE_FIELDS:
-        source_properties.pop(field, None)
+    stable_attributes(source_properties)
 
     return {
         "type": "FeatureCollection",
@@ -94,7 +140,7 @@ def compare_raw_and_canonical(raw_path: Path, canonical_path: Path) -> list[str]
     if raw_view != canonical_view:
         return [
             f"raw and canonical snapshots disagree: {raw_path} does not support "
-            f"{canonical_path}"
+            f"{canonical_path}; {drift_details(raw_view, canonical_view, canonical=False)}"
         ]
     return []
 
@@ -108,7 +154,8 @@ def compare_canonical_files(committed: Path, fresh: Path) -> list[str]:
 
     if committed_view != fresh_view:
         return [
-            f"canonical TIGERweb snapshot changed: {committed} does not match {fresh}"
+            f"canonical TIGERweb snapshot changed: {committed} does not match {fresh}; "
+            f"{drift_details(committed_view, fresh_view, canonical=True)}"
         ]
     return []
 

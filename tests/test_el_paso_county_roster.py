@@ -11,6 +11,24 @@ COUNTY = ROOT / "data/geojson/el_paso_county_countywide.geojson"
 LAYER = "https://maps.epcounty.com/arcgis/rest/services/Website_Basemap/MapServer/10"
 
 
+def test_el_paso_census_refresh_preserves_geometry_and_source_values() -> None:
+    from scripts.compare_tigerweb_snapshot import compare_raw_and_canonical, stable_source_view
+
+    archive = ROOT / "data/raw/el-paso-county/archive/2026-08-02"
+    archived = json.loads((archive / "el_paso_county_countywide.geojson").read_text())
+    current = json.loads(COUNTY.read_text())
+    assert current["features"][0]["geometry"] == archived["features"][0]["geometry"]
+    assert stable_source_view(current, canonical=True) == stable_source_view(archived, canonical=True)
+    for directory, canonical in [(archive, archive / COUNTY.name), (ROOT / "data/raw/el-paso-county", COUNTY)]:
+        assert compare_raw_and_canonical(directory / "tigerweb-county-48141.geojson", canonical) == []
+    properties = current["features"][0]["properties"]
+    assert properties["source_vintage"] == "2026-01-01"
+    assert properties["source_retrieved_at"] == "2026-10-22"
+    with MANIFEST.open(newline="", encoding="utf-8") as handle:
+        census = next(row for row in csv.DictReader(handle) if row["source_id"] == "census-el-paso-county")
+    assert census["retrieved_at"] == properties["source_retrieved_at"]
+
+
 def test_el_paso_county_bilingual_alias_and_portal_geometry_contract() -> None:
     expected = {
         "County Judge": "Ricardo A. Samaniego",

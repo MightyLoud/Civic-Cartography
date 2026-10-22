@@ -162,7 +162,7 @@ jobs:
               --geoid 48141 \
               --record-id TX:county:el_paso:countywide:COUNTYWIDE \
               --geometry-id el-paso-county-countywide \
-              --retrieved-at 2026-08-02 \
+              --retrieved-at 2026-10-22 \
               --raw-output build/el-paso-county/county/raw/tigerweb-county-48141.geojson \
               --output build/el-paso-county/county/geojson/el_paso_county_countywide.geojson; then
               exit 0

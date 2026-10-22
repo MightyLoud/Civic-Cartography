@@ -1,0 +1,31 @@
+{
+  "base_code_commit": "289b27ce6e72c6fc2481b75748c3dc9cc1b48586",
+  "baseline_replacement_in_main_approved": false,
+  "capture_date": "2026-10-22",
+  "checks": {
+    "full_tests_passed": 231,
+    "geojson_joins_passed": true,
+    "normalized_files_validated": 34,
+    "raw_canonical_support_passed": true
+  },
+  "combined_github_ci_verified": false,
+  "file_sha256": {
+    "data/geojson/el_paso_county_countywide.geojson": "45dfc5c4b72b04888cc068a765d7f53244df8d45ce1dfe10e5f60414988981cb",
+    "data/raw/el-paso-county/archive/2026-08-02/el_paso_county_countywide.geojson": "bd611358d66ea2e0bee20870a5c42e2421efcfa020bc746899cece1b6b8e8a80",
+    "data/raw/el-paso-county/archive/2026-08-02/tigerweb-county-48141.geojson": "4ea0046fd4a3bc7feef9580aeeebab300dd28785969b1f4177032a5f84d06176",
+    "data/raw/el-paso-county/source-manifest.csv": "325ea438faa4c8a58c6cfe87f0d04754320b681d59afeaf2ef3d1dfa20e926f2",
+    "data/raw/el-paso-county/tigerweb-county-48141.geojson": "10363f9f5047e410df0ac35c33dfd933dc36c8dcd225049fa6b0b4409942efca"
+  },
+  "geoid": "48141",
+  "geometry_exactly_equal": true,
+  "geometry_sha256": "3c730a68ec920c25286e7e32a1843298080bef158ab531f7d9b7c6921eb26ad3",
+  "prerequisites": [
+    "PR #481 vintage/comparator correction",
+    "PR #487 portal fix for complete El Paso workflow"
+  ],
+  "prior_bytes_preserved": true,
+  "source_vintage": "2026-01-01",
+  "stable_source_values_equal": true,
+  "status": "DRAFT_NOT_MERGED",
+  "verified_at_utc": "2026-10-22T11:16:14.253909+00:00"
+}

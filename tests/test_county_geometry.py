@@ -25,6 +25,7 @@ def test_county_canonicalize_uses_countywide_semantics():
         geometry_id="denton-county-countywide",
         retrieved_at="2026-08-01",
         request_url="https://example.test/query",
+        source_vintage="2026-01-01",
     )
 
     properties = canonical["features"][0]["properties"]
@@ -32,6 +33,7 @@ def test_county_canonicalize_uses_countywide_semantics():
     assert properties["district_type"] == "countywide"
     assert properties["district_id"] == "COUNTYWIDE"
     assert properties["census_geoid"] == "48121"
+    assert properties["source_vintage"] == "2026-01-01"
 
 
 def test_arcgis_inference_prefers_precinct_field():
