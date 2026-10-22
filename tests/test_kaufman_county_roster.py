@@ -10,7 +10,7 @@ NORMALIZED=ROOT/"data/normalized/kaufman_county_elected_offices.csv"
 PRECINCTS=ROOT/"data/geojson/kaufman_county_commissioner_precincts.geojson"
 COUNTY=ROOT/"data/geojson/kaufman_county_countywide.geojson"
 CONTRACT=ROOT/"data/raw/kaufman-county/gis-source-contract.json"
-DIGEST="50a46300a55671c29268ddfbae11cac3a8e189c02ff8b8f6754211b920be250b"
+DIGEST="d735ae4f7f53d88aaebc072fa67b585b4ea01109ff9f7ac0b57a43b93a2cf9a1"
 
 def test_kaufman_county_criminal_district_attorney_and_geometry_contract()->None:
     expected={
@@ -75,3 +75,21 @@ def test_kaufman_county_criminal_district_attorney_and_geometry_contract()->None
     for path in sorted((COUNTY,PRECINCTS),key=lambda p:p.name):
         digest.update(path.name.encode("utf-8"));digest.update(b"\0");digest.update(path.read_bytes());digest.update(b"\0")
     assert digest.hexdigest()==DIGEST
+
+
+def test_kaufman_census_provenance_refresh_preserves_geometry_and_source_values() -> None:
+    from scripts.compare_tigerweb_snapshot import compare_raw_and_canonical, stable_source_view
+
+    archive = ROOT / "data/raw/kaufman-county/archive/2026-08-02"
+    archived_county = json.loads((archive / "kaufman_county_countywide.geojson").read_text())
+    current_county = json.loads(COUNTY.read_text())
+    assert current_county["features"][0]["geometry"] == archived_county["features"][0]["geometry"]
+    assert stable_source_view(current_county, canonical=True) == stable_source_view(archived_county, canonical=True)
+    assert compare_raw_and_canonical(archive / "tigerweb-county-48257.geojson", archive / "kaufman_county_countywide.geojson") == []
+    assert compare_raw_and_canonical(ROOT / "data/raw/kaufman-county/tigerweb-county-48257.geojson", COUNTY) == []
+    properties = current_county["features"][0]["properties"]
+    assert properties["source_vintage"] == "2026-01-01"
+    assert properties["source_retrieved_at"] == "2026-10-22"
+    with MANIFEST.open(newline="", encoding="utf-8") as handle:
+        census = next(row for row in csv.DictReader(handle) if row["source_id"] == "census-kaufman-county")
+    assert census["retrieved_at"] == properties["source_retrieved_at"]

@@ -1,0 +1,31 @@
+{
+  "base_tree": "d3cf6380c3b7d4436dc123ef012a905af1f7960d",
+  "baseline_replacement_in_main_approved": false,
+  "capture_date": "2026-10-22",
+  "checks": {
+    "combined_digest_passed": true,
+    "commissioner_derivation_and_snapshot_comparison_passed": true,
+    "fresh_census_comparison_passed": true,
+    "full_tests_passed": 253,
+    "geojson_joins_passed": true,
+    "live_county_page_contracts_passed": 8,
+    "normalized_files_validated": 33,
+    "raw_canonical_support_passed": true
+  },
+  "file_sha256": {
+    "data/geojson/kaufman_county_countywide.geojson": "fe1e782e5e01d84bafb2c7974d5508674895dce0f76b480ff31afde7b905d744",
+    "data/raw/kaufman-county/archive/2026-08-02/kaufman_county_countywide.geojson": "caf1d7132d973fafb5ad24671d6c6a0ffdfa30fa4c7228867944ded858457666",
+    "data/raw/kaufman-county/archive/2026-08-02/tigerweb-county-48257.geojson": "b2ecd6c7c6f53538a24d1eeaf280babbc660695d4e6251d13294debe39479a0a",
+    "data/raw/kaufman-county/source-manifest.csv": "85bd64f9604c1910f9094d48f907f5e9d431e99db5eb3cb8b67381389ec9c876",
+    "data/raw/kaufman-county/tigerweb-county-48257.geojson": "13512c0ef7d3158cd6c0f030bc90a880535504ba12e21cceca865b3c8c20fbd4"
+  },
+  "geoid": "48257",
+  "geometry_exactly_equal": true,
+  "geometry_sha256": "63599711451669c25706dc6b221c73599a7ea0a1f46ea9c3768cefb6c2fc4cd7",
+  "github_ci_verified": false,
+  "prior_combined_digest": "50a46300a55671c29268ddfbae11cac3a8e189c02ff8b8f6754211b920be250b",
+  "proposed_combined_digest": "d735ae4f7f53d88aaebc072fa67b585b4ea01109ff9f7ac0b57a43b93a2cf9a1",
+  "source_vintage": "2026-01-01",
+  "stable_source_values_equal": true,
+  "status": "DRAFT_NOT_MERGED"
+}
