@@ -97,6 +97,8 @@ All normalized rows use `qa_status = approved` and `parity_ok = TRUE`.
 
 ## Validation evidence
 
+The counts and digest below describe the original release proof. The October 14, 2026 Census provenance refresh is proposed in a separate draft: its polygon coordinates and stable Census source values are identical, its current capture is attributed to the January 1, 2026 layer vintage, and its prior raw/canonical snapshots are archived under `data/raw/galveston-county/archive/2026-08-02/`. This proposal does not recertify officeholder retrieval dates or alter Commissioner precinct geometry. See the bounded reconciliation report in `docs/galveston-tigerweb-reconciliation-20261014.md` for current validation and approval status.
+
 - First green Galveston County workflow: #19
 - First green repository workflow: #1050
 - Automated tests: 82 passed
