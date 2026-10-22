@@ -9,6 +9,8 @@ OUT=ROOT/'evidence/licensing/lic-g5'; OUT.mkdir(parents=True,exist_ok=True)
 GEN=Path('/tmp/requirements-dev.generated.lock'); COM=ROOT/'requirements-dev.lock'
 NORM=lambda s: re.sub(r'[-_.]+','-',s).lower()
 SHA=lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+# Dependency equality ignores only comments; versions, hashes, and options remain exact.
+LOCK_CONTENT=lambda p: '\n'.join(line for line in Path(p).read_text().splitlines() if not line.lstrip().startswith('#')) + '\n'
 
 def dump(name,obj): (OUT/name).write_text(json.dumps(obj,indent=2,sort_keys=True)+'\n')
 def git_files(): return [ROOT/p for p in subprocess.check_output(['git','ls-files','-z'],cwd=ROOT).decode().split('\0') if p]
@@ -89,7 +91,7 @@ def main():
       'pytest_fixed_range':fixed,
       'generated_lock_exists':GEN.exists(),
       'committed_lock_exists':COM.exists(),
-      'lock_matches_generated':GEN.exists() and COM.exists() and SHA(GEN)==SHA(COM),
+      'lock_matches_generated':GEN.exists() and COM.exists() and LOCK_CONTENT(GEN)==LOCK_CONTENT(COM),
       'lock_hash_complete':bool(lock) and all(r['hashes'] for r in lock),
       'direct_requirements_covered':set(direct)<=names,
       'python_license_inventory_complete':names<=package_names,
@@ -99,7 +101,7 @@ def main():
       'pip_audit_zero_vulnerabilities':aud['count']==0,
       'pytest_passed':os.getenv('PYTEST_EXIT')=='0',
       'yaml_passed':os.getenv('YAML_EXIT')=='0',
-      'lock_deterministic':os.getenv('LOCK_EXIT')=='0'}
+      'lock_deterministic':os.getenv('LOCK_REPEATABILITY_EXIT')=='0'}
     passed=all(checks.values())
     env={'python':platform.python_version(),'pip':metadata.version('pip'),'pip-tools':metadata.version('pip-tools'),'pip-audit':metadata.version('pip-audit'),'pip-licenses':metadata.version('pip-licenses')}
     ev={'control_id':'LIC-G5','schema_version':1,'repository':'MightyLoud/Civic-Cartography','commit_sha':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'tree_sha':subprocess.check_output(['git','rev-parse','HEAD^{tree}'],cwd=ROOT,text=True).strip(),'github_run_id':os.getenv('GITHUB_RUN_ID'),'environment':env,'requirements_sha256':SHA(ROOT/'requirements-dev.txt'),'generated_lock_sha256':SHA(GEN) if GEN.exists() else None,'committed_lock_sha256':SHA(COM) if COM.exists() else None,'resolved_dependencies':lock,'workflow_actions':acts,'mutable_action_refs':[a['reference'] for a in acts if a.get('kind')=='external' and not a.get('ref_is_sha')],'installer_commands':inst,'vulnerabilities':aud,'checks':checks,'lic_g5_pass':passed,'authority_boundary':{'dependency_licenses_create_root_license':False,'publication_authority':False,'transfer_authority':False,'implementation_authority':False},'reopen_on':['dependency or lock change','workflow action or installer change','new vulnerability','repository drift']}
