@@ -1,0 +1,53 @@
+{
+  "status": "EVIDENCE_ONLY_NO_ADOPTION",
+  "geoid": "48453",
+  "capture_date": "2026-10-23",
+  "source_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/82",
+  "geometry_exact": false,
+  "prior_valid": true,
+  "fresh_valid": true,
+  "projection": "EPSG:32614",
+  "added_m2": 0.20216947066597157,
+  "removed_m2": 0.1863384616227961,
+  "symmetric_difference_m2": 0.38850793228871794,
+  "hausdorff_m": 0.012566291018906111,
+  "changed_bounds_wgs84": [
+    -97.85124000008622,
+    30.473201000071878,
+    -97.84627300018296,
+    30.482759999786225
+  ],
+  "property_differences": {
+    "AREALAND": [
+      "2575299585",
+      2575354868
+    ],
+    "AREAWATER": [
+      "79506870",
+      79451592
+    ],
+    "OBJECTID": [
+      2420,
+      2500
+    ]
+  },
+  "cause_verified": false,
+  "prior_ring_vertex_counts": [
+    1952
+  ],
+  "fresh_ring_vertex_counts": [
+    1955
+  ],
+  "coordinate_edit_groups": 3,
+  "repeat_raw_byte_equal": true,
+  "repeat_canonical_byte_equal": true,
+  "exact_geometry_reconstructed_from_three_insertions": true,
+  "all_other_stable_values_equal": true,
+  "fresh_raw_canonical_support_passed": true,
+  "sha256": {
+    "data/geojson/travis_county_countywide.geojson": "4f35478810172f7d5c8a5a373d65652100406c49a0d01c2ca6a3ccc42569109f",
+    "build/travis-review/raw.geojson": "df9e1b01191d9c0c143c893528076919d08cc8abeb22fcf813b546c2f1f0de26",
+    "build/travis-review/canonical.geojson": "211c18776be3e8c6e59ece4e4f91fdadd0d47395a3bd3a4dddf0dafe537b8f40",
+    "build/travis-review/coordinate-edits.json": "f4caa486cbe3fe2b6a2435faddb751fb4e4a43db0685977d2fbb15ba8c113ad7"
+  }
+}

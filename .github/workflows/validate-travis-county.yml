@@ -60,7 +60,7 @@ jobs:
               --geoid 48453 \
               --record-id TX:county:travis:countywide:COUNTYWIDE \
               --geometry-id travis-county-countywide \
-              --retrieved-at 2026-08-02 \
+              --retrieved-at 2026-10-23 \
               --raw-output build/travis-county/county/raw/tigerweb-county-48453.geojson \
               --output build/travis-county/county/geojson/travis_county_countywide.geojson; then
               exit 0
