@@ -1,0 +1,15 @@
+{
+  "base_tree": "eff7d90a3801615277ab27a92bb6d89e6e21822a",
+  "cause_verified": false,
+  "checks": {
+    "archived_bytes_equal_parent": true,
+    "exact_three_insertion_reconstruction_passed": true,
+    "full_tests_passed": 262,
+    "geojson_joins_passed": true,
+    "normalized_files_validated": 33,
+    "raw_canonical_support_passed": true
+  },
+  "github_ci_verified": false,
+  "production_baseline_promoted": false,
+  "status": "DRAFT_NOT_MERGED"
+}
