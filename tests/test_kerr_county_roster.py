@@ -162,4 +162,4 @@ def test_kerr_county_judicial_appointment_and_geometry_contract() -> None:
         digest.update(b"\0")
         digest.update(path.read_bytes())
         digest.update(b"\0")
-    assert digest.hexdigest() == "c55276bef1b02f6f0de42f000e20f0218a7ee83b4ea95f0304ea921ddbfa5a4c"
+    assert digest.hexdigest() == "3a7791bf612f6ae1c8a3c4a387cb75fbaf314f62b6c165b4e8b1185c42a923b0"

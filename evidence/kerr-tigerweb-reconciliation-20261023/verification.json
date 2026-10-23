@@ -1,0 +1,22 @@
+{
+  "all_other_stable_source_values_equal": true,
+  "area_land_fresh": 2857614405,
+  "area_land_prior": 2857619152,
+  "area_water_fresh": 10234913,
+  "area_water_prior": 10230171,
+  "base_tree": "630a92115e80ee5cee5622f02585837dcaa2f13e",
+  "capture_date": "2026-10-23",
+  "cause_verified": false,
+  "checks": {
+    "archived_bytes_equal_parent": true,
+    "full_tests_passed": 261,
+    "geojson_joins_passed": true,
+    "normalized_files_validated": 33,
+    "raw_canonical_support_passed": true
+  },
+  "combined_digest": "3a7791bf612f6ae1c8a3c4a387cb75fbaf314f62b6c165b4e8b1185c42a923b0",
+  "geometry_exactly_equal": true,
+  "github_ci_verified": false,
+  "production_baseline_promoted": false,
+  "status": "DRAFT_NOT_MERGED"
+}

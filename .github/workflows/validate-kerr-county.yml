@@ -67,7 +67,7 @@ jobs:
               --geoid 48265 \
               --record-id TX:county:kerr:countywide:COUNTYWIDE \
               --geometry-id kerr-county-countywide \
-              --retrieved-at 2026-08-02 \
+              --retrieved-at 2026-10-23 \
               --raw-output build/kerr-county/county/raw/tigerweb-county-48265.geojson \
               --output build/kerr-county/county/geojson/kerr_county_countywide.geojson; then
               exit 0
@@ -109,7 +109,7 @@ jobs:
               digest.update(path.read_bytes())
               digest.update(b'\0')
           value = digest.hexdigest()
-          expected = 'c55276bef1b02f6f0de42f000e20f0218a7ee83b4ea95f0304ea921ddbfa5a4c'
+          expected = '3a7791bf612f6ae1c8a3c4a387cb75fbaf314f62b6c165b4e8b1185c42a923b0'
           if value != expected:
               raise SystemExit(f'Kerr County release digest changed: {value} != {expected}')
           output = Path('build/kerr-county/release-sha256.txt')
