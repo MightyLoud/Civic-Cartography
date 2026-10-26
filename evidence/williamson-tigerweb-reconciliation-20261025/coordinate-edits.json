@@ -1,0 +1,59 @@
+[
+  {
+    "ring": 0,
+    "operation": "insert",
+    "prior_index_range": [
+      310,
+      310
+    ],
+    "fresh_index_range": [
+      310,
+      311
+    ],
+    "prior_coordinates": [],
+    "fresh_coordinates": [
+      [
+        -97.85108699992534,
+        30.482556999942275
+      ]
+    ]
+  },
+  {
+    "ring": 0,
+    "operation": "insert",
+    "prior_index_range": [
+      323,
+      323
+    ],
+    "fresh_index_range": [
+      324,
+      325
+    ],
+    "prior_coordinates": [],
+    "fresh_coordinates": [
+      [
+        -97.84652599990297,
+        30.47353600012744
+      ]
+    ]
+  },
+  {
+    "ring": 0,
+    "operation": "insert",
+    "prior_index_range": [
+      325,
+      325
+    ],
+    "fresh_index_range": [
+      327,
+      328
+    ],
+    "prior_coordinates": [],
+    "fresh_coordinates": [
+      [
+        -97.84636400041956,
+        30.473271999833237
+      ]
+    ]
+  }
+]
