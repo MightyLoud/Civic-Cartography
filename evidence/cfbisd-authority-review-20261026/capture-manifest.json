@@ -1,0 +1,187 @@
+{
+  "package_id": "CFBISD-AUTH-001",
+  "baseline_commit": "4256b435dc6cb55d4160f2c220c6124608271e63",
+  "baseline_replacement_approved": false,
+  "source_captures": [
+    {
+      "file": "tea-2026-cfbisd.geojson",
+      "url": "https://services2.arcgis.com/5MVN2jsqIrNZD4tP/arcgis/rest/services/School_Districts__2026/FeatureServer/0/query?where=NCES_DISTR+%3D+%274813050%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+      "started_at_utc": "2026-10-26T13:59:50.303009+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 13:59:57 GMT",
+        "Content-Type": "application/json; charset=utf-8",
+        "ETag": "sd3503_1481316125",
+        "Last-Modified": "Thu, 30 Apr 2026 17:24:20 GMT"
+      },
+      "sha256": "ed4d82b4494ff1d241dbf55d088077b4c1fcd319dcb0b006de7dc9d4fb3364e3",
+      "bytes": 37974,
+      "finished_at_utc": "2026-10-26T13:59:57.470147+00:00",
+      "storage_encoding": "identity",
+      "package_path": "sources/tea-2026-cfbisd.geojson",
+      "stored_sha256": "ed4d82b4494ff1d241dbf55d088077b4c1fcd319dcb0b006de7dc9d4fb3364e3"
+    },
+    {
+      "file": "denton-cfbisd.geojson",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/ISD_GC/MapServer/0/query?where=UPPER%28ISD%29+LIKE+%27%25CARROLLTON%25%27&outFields=OBJECTID_1%2CISD%2CDIST_CODE%2Clast_edited_date&returnGeometry=true&outSR=4326&f=geojson",
+      "started_at_utc": "2026-10-26T14:02:19.573844+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:02:26 GMT",
+        "Content-Type": "application/geo+json; charset=UTF-8",
+        "ETag": "W/\"e68945c8\"",
+        "Last-Modified": null
+      },
+      "sha256": "7c5c1cb9ae5036e2b0e25729cd373a120462131505f3e642aa711e48e8c1a8ee",
+      "bytes": 40206,
+      "finished_at_utc": "2026-10-26T14:02:26.527868+00:00",
+      "storage_encoding": "identity",
+      "package_path": "sources/denton-cfbisd.geojson",
+      "stored_sha256": "7c5c1cb9ae5036e2b0e25729cd373a120462131505f3e642aa711e48e8c1a8ee"
+    },
+    {
+      "file": "west-addresses.geojson",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Addresses911Permits_GC/MapServer/0/query?where=1%3D1&geometry=-96.94244500040489%2C32.988444999837284%2C-96.92721499990886%2C32.98895700032165&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=true&outSR=4326&f=geojson&outFields=OBJECTID%2CAddress%2CCity%2CState%2CNEWZIP%2CTYPE%2CSiteID%2CUpdateSou%2CUpdateDat%2Clast_edited_date",
+      "started_at_utc": "2026-10-26T14:02:19.701770+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:02:26 GMT",
+        "Content-Type": "application/geo+json; charset=UTF-8",
+        "ETag": "W/\"qBr62io9b282IPJi_1705418372\"",
+        "Last-Modified": null
+      },
+      "sha256": "03208d891d7da1d2c5ac7e1db6ab639951dc1f494e94eb0fa76a9907c21c60a7",
+      "bytes": 2873,
+      "finished_at_utc": "2026-10-26T14:02:26.734670+00:00",
+      "storage_encoding": "identity",
+      "package_path": "sources/west-addresses.geojson",
+      "stored_sha256": "03208d891d7da1d2c5ac7e1db6ab639951dc1f494e94eb0fa76a9907c21c60a7"
+    },
+    {
+      "file": "north-parcels.geojson",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/CAD_GC/MapServer/0/query?where=1%3D1&geometry=-96.85506100025647%2C33.01167000020978%2C-96.8456449995855%2C33.01189499963495&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=true&outSR=4326&f=geojson&outFields=OBJECTID%2Cprop_val_yr%2Cprop_id%2CschoolTaxingUnitCode%2Cschool%2Csitus%2Cconfidential%2Cproperty_url",
+      "started_at_utc": "2026-10-26T14:02:19.683394+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:02:26 GMT",
+        "Content-Type": "application/geo+json; charset=UTF-8",
+        "ETag": "W/\"a6651481\"",
+        "Last-Modified": null
+      },
+      "sha256": "807b3061b867c660c52d1670a165e0094123984ac0b205a54405e6f74f073ca0",
+      "bytes": 16484,
+      "finished_at_utc": "2026-10-26T14:02:26.756451+00:00",
+      "storage_encoding": "identity",
+      "package_path": "sources/north-parcels.geojson",
+      "stored_sha256": "807b3061b867c660c52d1670a165e0094123984ac0b205a54405e6f74f073ca0"
+    },
+    {
+      "file": "west-parcels.geojson",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/CAD_GC/MapServer/0/query?where=1%3D1&geometry=-96.94244500040489%2C32.988444999837284%2C-96.92721499990886%2C32.98895700032165&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=true&outSR=4326&f=geojson&outFields=OBJECTID%2Cprop_val_yr%2Cprop_id%2CschoolTaxingUnitCode%2Cschool%2Csitus%2Cconfidential%2Cproperty_url",
+      "started_at_utc": "2026-10-26T14:02:26.447990+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:02:30 GMT",
+        "Content-Type": "application/geo+json; charset=UTF-8",
+        "ETag": "W/\"9a9bfb6\"",
+        "Last-Modified": null
+      },
+      "sha256": "4d64cccae171e2422558458aa2bf33fcdb89e9d1102234d97251fc5cf616bf03",
+      "bytes": 15367,
+      "finished_at_utc": "2026-10-26T14:02:30.830106+00:00",
+      "storage_encoding": "identity",
+      "package_path": "sources/west-parcels.geojson",
+      "stored_sha256": "4d64cccae171e2422558458aa2bf33fcdb89e9d1102234d97251fc5cf616bf03"
+    },
+    {
+      "file": "tea-2026-service.json",
+      "url": "https://services2.arcgis.com/5MVN2jsqIrNZD4tP/arcgis/rest/services/School_Districts__2026/FeatureServer?f=json",
+      "started_at_utc": "2026-10-26T13:59:50.310571+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 13:59:57 GMT",
+        "Content-Type": "application/json; charset=utf-8",
+        "ETag": "sds_1481316125",
+        "Last-Modified": "Thu, 30 Apr 2026 17:24:20 GMT"
+      },
+      "sha256": "4b52fd95f34011ea6db88b7ef20454355d773d1cece8ee698d8b639e302dabd3",
+      "bytes": 7961,
+      "finished_at_utc": "2026-10-26T13:59:57.441613+00:00",
+      "storage_encoding": "identity",
+      "package_path": "sources/tea-2026-service.json",
+      "stored_sha256": "4b52fd95f34011ea6db88b7ef20454355d773d1cece8ee698d8b639e302dabd3"
+    },
+    {
+      "file": "denton-isd-layer.json",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/ISD_GC/MapServer/0?f=json",
+      "started_at_utc": "2026-10-26T14:01:24.061900+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:01:28 GMT",
+        "Content-Type": "application/json; charset=UTF-8",
+        "ETag": "W/\"273255b0\"",
+        "Last-Modified": null
+      },
+      "sha256": "7af619d069d21959c89b7d79078481cd956f1719c2e1fcd157b81ff1549cc51b",
+      "bytes": 5943,
+      "finished_at_utc": "2026-10-26T14:01:28.532866+00:00",
+      "storage_encoding": "identity",
+      "package_path": "sources/denton-isd-layer.json",
+      "stored_sha256": "7af619d069d21959c89b7d79078481cd956f1719c2e1fcd157b81ff1549cc51b"
+    },
+    {
+      "file": "denton-address-layer.json",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Addresses911Permits_GC/MapServer/0?f=json",
+      "started_at_utc": "2026-10-26T14:01:24.139986+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:01:28 GMT",
+        "Content-Type": "application/json; charset=UTF-8",
+        "ETag": "W/\"d9fa6652\"",
+        "Last-Modified": null
+      },
+      "sha256": "561d4668358258f28da730606eb79354ee7d7fafd7dfd644e740c04545953f33",
+      "bytes": 10447,
+      "finished_at_utc": "2026-10-26T14:01:28.542200+00:00",
+      "storage_encoding": "identity",
+      "package_path": "sources/denton-address-layer.json",
+      "stored_sha256": "561d4668358258f28da730606eb79354ee7d7fafd7dfd644e740c04545953f33"
+    },
+    {
+      "file": "denton-cad-layer.json",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/CAD_GC/MapServer/0?f=json",
+      "started_at_utc": "2026-10-26T14:01:24.126816+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:01:28 GMT",
+        "Content-Type": "application/json; charset=UTF-8",
+        "ETag": "W/\"a6fa391\"",
+        "Last-Modified": null
+      },
+      "sha256": "171a20dd588733bbe30074473b57b04242f6a2906d6a01e411a5c7b19534f84b",
+      "bytes": 10605,
+      "finished_at_utc": "2026-10-26T14:01:29.735445+00:00",
+      "storage_encoding": "identity",
+      "package_path": "sources/denton-cad-layer.json",
+      "stored_sha256": "171a20dd588733bbe30074473b57b04242f6a2906d6a01e411a5c7b19534f84b"
+    },
+    {
+      "file": "tea-2026-layer.json",
+      "url": "https://services2.arcgis.com/5MVN2jsqIrNZD4tP/arcgis/rest/services/School_Districts__2026/FeatureServer/0?f=json",
+      "started_at_utc": "2026-10-26T13:59:50.306770+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 13:59:57 GMT",
+        "Content-Type": "application/json; charset=utf-8",
+        "ETag": "-1152220426",
+        "Last-Modified": "Thu, 30 Apr 2026 17:24:20 GMT"
+      },
+      "sha256": "1aae5d7946f0c51835e047cd26844b5f66e2dd58056a145f05b03dfab1305cef",
+      "bytes": 963108,
+      "finished_at_utc": "2026-10-26T13:59:58.033071+00:00",
+      "storage_encoding": "gzip-base64",
+      "package_path": "sources/tea-2026-layer.json.gz.b64",
+      "stored_sha256": "1c1fbca387b3d037c01bee1ea51d580f7ed158cd17f8ccb22de59400918d73e5"
+    }
+  ]
+}

@@ -1,0 +1,224 @@
+[
+  {
+    "region": "north",
+    "kind": "addresses",
+    "feature_query_capture": {
+      "file": "north-addresses.geojson",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Addresses911Permits_GC/MapServer/0/query?where=1%3D1&geometry=-96.85506100025647%2C33.01167000020978%2C-96.8456449995855%2C33.01189499963495&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=true&outSR=4326&f=geojson&outFields=OBJECTID%2CAddress%2CCity%2CState%2CNEWZIP%2CTYPE%2CSiteID%2CUpdateSou%2CUpdateDat%2Clast_edited_date",
+      "started_at_utc": "2026-10-26T14:02:19.658300+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:02:26 GMT",
+        "Content-Type": "application/geo+json; charset=UTF-8",
+        "ETag": "W/\"qBr62io9b282IPJi_1705418372\"",
+        "Last-Modified": null
+      },
+      "sha256": "ed778c73ea51338d6576fb5992b189f2b94d9f3d5e199f46c1af520d6b0b3e6c",
+      "bytes": 42,
+      "finished_at_utc": "2026-10-26T14:02:26.707757+00:00"
+    },
+    "feature_query_response_utf8": "{\"type\":\"FeatureCollection\",\"features\":[]}",
+    "retained_source_file": null,
+    "count_query_capture": {
+      "file": "north-addresses-count.json",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Addresses911Permits_GC/MapServer/0/query?where=1%3D1&geometry=-96.85506100025647%2C33.01167000020978%2C-96.8456449995855%2C33.01189499963495&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=false&outSR=4326&f=json&returnCountOnly=true",
+      "started_at_utc": "2026-10-26T14:06:34.971910+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:06:39 GMT",
+        "Content-Type": "application/json; charset=UTF-8",
+        "ETag": "W/\"qBr62io9b282IPJi_1705418372\"",
+        "Last-Modified": null
+      },
+      "sha256": "618de7d9f46f3f697d827a1b6d84974760d5deda62e4e592adaa3c646602a94c",
+      "bytes": 11,
+      "finished_at_utc": "2026-10-26T14:06:39.905029+00:00"
+    },
+    "count_response_utf8": "{\"count\":0}"
+  },
+  {
+    "region": "north",
+    "kind": "parcels",
+    "feature_query_capture": {
+      "file": "north-parcels.geojson",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/CAD_GC/MapServer/0/query?where=1%3D1&geometry=-96.85506100025647%2C33.01167000020978%2C-96.8456449995855%2C33.01189499963495&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=true&outSR=4326&f=geojson&outFields=OBJECTID%2Cprop_val_yr%2Cprop_id%2CschoolTaxingUnitCode%2Cschool%2Csitus%2Cconfidential%2Cproperty_url",
+      "started_at_utc": "2026-10-26T14:02:19.683394+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:02:26 GMT",
+        "Content-Type": "application/geo+json; charset=UTF-8",
+        "ETag": "W/\"a6651481\"",
+        "Last-Modified": null
+      },
+      "sha256": "807b3061b867c660c52d1670a165e0094123984ac0b205a54405e6f74f073ca0",
+      "bytes": 16484,
+      "finished_at_utc": "2026-10-26T14:02:26.756451+00:00"
+    },
+    "feature_query_response_utf8": null,
+    "retained_source_file": "sources/north-parcels.geojson",
+    "count_query_capture": {
+      "file": "north-parcels-count.json",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/CAD_GC/MapServer/0/query?where=1%3D1&geometry=-96.85506100025647%2C33.01167000020978%2C-96.8456449995855%2C33.01189499963495&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=false&outSR=4326&f=json&returnCountOnly=true",
+      "started_at_utc": "2026-10-26T14:06:34.993986+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:06:39 GMT",
+        "Content-Type": "application/json; charset=UTF-8",
+        "ETag": "W/\"2613741e\"",
+        "Last-Modified": null
+      },
+      "sha256": "7512669ba3d728b7c043f6d90372533fbd036755844fb231b0bf242e2f712bbf",
+      "bytes": 12,
+      "finished_at_utc": "2026-10-26T14:06:39.940796+00:00"
+    },
+    "count_response_utf8": "{\"count\":11}"
+  },
+  {
+    "region": "west",
+    "kind": "addresses",
+    "feature_query_capture": {
+      "file": "west-addresses.geojson",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Addresses911Permits_GC/MapServer/0/query?where=1%3D1&geometry=-96.94244500040489%2C32.988444999837284%2C-96.92721499990886%2C32.98895700032165&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=true&outSR=4326&f=geojson&outFields=OBJECTID%2CAddress%2CCity%2CState%2CNEWZIP%2CTYPE%2CSiteID%2CUpdateSou%2CUpdateDat%2Clast_edited_date",
+      "started_at_utc": "2026-10-26T14:02:19.701770+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:02:26 GMT",
+        "Content-Type": "application/geo+json; charset=UTF-8",
+        "ETag": "W/\"qBr62io9b282IPJi_1705418372\"",
+        "Last-Modified": null
+      },
+      "sha256": "03208d891d7da1d2c5ac7e1db6ab639951dc1f494e94eb0fa76a9907c21c60a7",
+      "bytes": 2873,
+      "finished_at_utc": "2026-10-26T14:02:26.734670+00:00"
+    },
+    "feature_query_response_utf8": null,
+    "retained_source_file": "sources/west-addresses.geojson",
+    "count_query_capture": {
+      "file": "west-addresses-count.json",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Addresses911Permits_GC/MapServer/0/query?where=1%3D1&geometry=-96.94244500040489%2C32.988444999837284%2C-96.92721499990886%2C32.98895700032165&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=false&outSR=4326&f=json&returnCountOnly=true",
+      "started_at_utc": "2026-10-26T14:06:35.005694+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:06:39 GMT",
+        "Content-Type": "application/json; charset=UTF-8",
+        "ETag": "W/\"qBr62io9b282IPJi_1705418372\"",
+        "Last-Modified": null
+      },
+      "sha256": "77225c1b889e1a23d33f5e7724a89deba869a0b481aff9fe90736b56532d0542",
+      "bytes": 11,
+      "finished_at_utc": "2026-10-26T14:06:39.912822+00:00"
+    },
+    "count_response_utf8": "{\"count\":9}"
+  },
+  {
+    "region": "west",
+    "kind": "parcels",
+    "feature_query_capture": {
+      "file": "west-parcels.geojson",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/CAD_GC/MapServer/0/query?where=1%3D1&geometry=-96.94244500040489%2C32.988444999837284%2C-96.92721499990886%2C32.98895700032165&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=true&outSR=4326&f=geojson&outFields=OBJECTID%2Cprop_val_yr%2Cprop_id%2CschoolTaxingUnitCode%2Cschool%2Csitus%2Cconfidential%2Cproperty_url",
+      "started_at_utc": "2026-10-26T14:02:26.447990+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:02:30 GMT",
+        "Content-Type": "application/geo+json; charset=UTF-8",
+        "ETag": "W/\"9a9bfb6\"",
+        "Last-Modified": null
+      },
+      "sha256": "4d64cccae171e2422558458aa2bf33fcdb89e9d1102234d97251fc5cf616bf03",
+      "bytes": 15367,
+      "finished_at_utc": "2026-10-26T14:02:30.830106+00:00"
+    },
+    "feature_query_response_utf8": null,
+    "retained_source_file": "sources/west-parcels.geojson",
+    "count_query_capture": {
+      "file": "west-parcels-count.json",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/CAD_GC/MapServer/0/query?where=1%3D1&geometry=-96.94244500040489%2C32.988444999837284%2C-96.92721499990886%2C32.98895700032165&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=false&outSR=4326&f=json&returnCountOnly=true",
+      "started_at_utc": "2026-10-26T14:06:35.006880+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:06:39 GMT",
+        "Content-Type": "application/json; charset=UTF-8",
+        "ETag": "W/\"2613747b\"",
+        "Last-Modified": null
+      },
+      "sha256": "d086d346fbb21cce7fd033131dbc339e86fd2416ddc29c726c6708825c13f382",
+      "bytes": 12,
+      "finished_at_utc": "2026-10-26T14:06:39.892621+00:00"
+    },
+    "count_response_utf8": "{\"count\":14}"
+  },
+  {
+    "region": "insert",
+    "kind": "addresses",
+    "feature_query_capture": {
+      "file": "insert-addresses.geojson",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Addresses911Permits_GC/MapServer/0/query?where=1%3D1&geometry=-96.84089699996538%2C32.93984500032128%2C-96.83902300019666%2C32.93985900031461&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=true&outSR=4326&f=geojson&outFields=OBJECTID%2CAddress%2CCity%2CState%2CNEWZIP%2CTYPE%2CSiteID%2CUpdateSou%2CUpdateDat%2Clast_edited_date",
+      "started_at_utc": "2026-10-26T14:02:26.576073+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:02:30 GMT",
+        "Content-Type": "application/geo+json; charset=UTF-8",
+        "ETag": "W/\"qBr62io9b282IPJi_1705418372\"",
+        "Last-Modified": null
+      },
+      "sha256": "ed778c73ea51338d6576fb5992b189f2b94d9f3d5e199f46c1af520d6b0b3e6c",
+      "bytes": 42,
+      "finished_at_utc": "2026-10-26T14:02:30.584434+00:00"
+    },
+    "feature_query_response_utf8": "{\"type\":\"FeatureCollection\",\"features\":[]}",
+    "retained_source_file": null,
+    "count_query_capture": {
+      "file": "insert-addresses-count.json",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/Addresses911Permits_GC/MapServer/0/query?where=1%3D1&geometry=-96.84089699996538%2C32.93984500032128%2C-96.83902300019666%2C32.93985900031461&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=false&outSR=4326&f=json&returnCountOnly=true",
+      "started_at_utc": "2026-10-26T14:06:35.010371+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:06:39 GMT",
+        "Content-Type": "application/json; charset=UTF-8",
+        "ETag": "W/\"qBr62io9b282IPJi_1705418372\"",
+        "Last-Modified": null
+      },
+      "sha256": "618de7d9f46f3f697d827a1b6d84974760d5deda62e4e592adaa3c646602a94c",
+      "bytes": 11,
+      "finished_at_utc": "2026-10-26T14:06:39.897097+00:00"
+    },
+    "count_response_utf8": "{\"count\":0}"
+  },
+  {
+    "region": "insert",
+    "kind": "parcels",
+    "feature_query_capture": {
+      "file": "insert-parcels.geojson",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/CAD_GC/MapServer/0/query?where=1%3D1&geometry=-96.84089699996538%2C32.93984500032128%2C-96.83902300019666%2C32.93985900031461&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=true&outSR=4326&f=geojson&outFields=OBJECTID%2Cprop_val_yr%2Cprop_id%2CschoolTaxingUnitCode%2Cschool%2Csitus%2Cconfidential%2Cproperty_url",
+      "started_at_utc": "2026-10-26T14:02:26.719019+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:02:30 GMT",
+        "Content-Type": "application/geo+json; charset=UTF-8",
+        "ETag": "W/\"b5731b5a\"",
+        "Last-Modified": null
+      },
+      "sha256": "ed778c73ea51338d6576fb5992b189f2b94d9f3d5e199f46c1af520d6b0b3e6c",
+      "bytes": 42,
+      "finished_at_utc": "2026-10-26T14:02:30.856572+00:00"
+    },
+    "feature_query_response_utf8": "{\"type\":\"FeatureCollection\",\"features\":[]}",
+    "retained_source_file": null,
+    "count_query_capture": {
+      "file": "insert-parcels-count.json",
+      "url": "https://gis.dentoncounty.gov/arcgis/rest/services/CAD_GC/MapServer/0/query?where=1%3D1&geometry=-96.84089699996538%2C32.93984500032128%2C-96.83902300019666%2C32.93985900031461&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=false&outSR=4326&f=json&returnCountOnly=true",
+      "started_at_utc": "2026-10-26T14:06:39.894118+00:00",
+      "http_status": 200,
+      "headers": {
+        "Date": "Mon, 26 Oct 2026 14:06:44 GMT",
+        "Content-Type": "application/json; charset=UTF-8",
+        "ETag": "W/\"53cf146c\"",
+        "Last-Modified": null
+      },
+      "sha256": "618de7d9f46f3f697d827a1b6d84974760d5deda62e4e592adaa3c646602a94c",
+      "bytes": 11,
+      "finished_at_utc": "2026-10-26T14:06:44.242395+00:00"
+    },
+    "count_response_utf8": "{\"count\":0}"
+  }
+]

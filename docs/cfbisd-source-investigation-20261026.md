@@ -96,3 +96,7 @@ The [evidence folder](../evidence/cfbisd-source-investigation-20261026/) contain
 `capture.py NEW_DIRECTORY` refuses an existing output directory. `analyze.py` reads only the retained files and refuses to overwrite existing derived outputs. Optional analysis dependencies are isolated in `analysis-requirements.txt`; production dependencies and lockfiles are unchanged. To reproduce analysis, work on a disposable copy with only the two derived output files omitted.
 
 Validation: all 272 local tests passed, including 46 CFBISD and TIGERweb checks. Normalized validation passed for 33 files; GeoJSON joins passed; whitespace checks passed. The disposable local environment used the analysis versions recorded in `analysis.json` and did not reproduce the entire repository dependency lock. GitHub's locked-environment checks remain separate. No local result is represented as a passing live-source workflow on this unchanged boundary.
+
+## Authority follow-up — October 26
+
+The [bounded authority review](cfbisd-authority-review-20261026.md) records a remaining source conflict: state and county district polygons and the district's own public locator include three synthetic changed-area points excluded by fresh Census. Nine county address records at seven unique coordinates have no old/new Census membership change in the limited sample; overall address impact remains unverified. Parcel labels and source dates need further adjudication. No approved baseline or release hold was changed.
