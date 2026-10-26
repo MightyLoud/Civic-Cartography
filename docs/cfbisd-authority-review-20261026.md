@@ -59,6 +59,8 @@ The repository record and geometry IDs remain `TX:school_district:carrollton-far
 
 ## Review files and QA
 
+The [annual Census publication follow-up](cfbisd-source-lineage-20261026.md) corroborates the current 2026 source revision and checks archived SDRP listings. It does not resolve the authority conflicts or identify a controlling correction/action record. The original review and its source snapshots remain intact.
+
 - [analysis.json](../evidence/cfbisd-authority-review-20261026/analysis.json): counts, limits, source conflicts, diagnostics and blocked disposition.
 - [probe-comparisons.csv](../evidence/cfbisd-authority-review-20261026/probe-comparisons.csv): synthetic, address-source and internal-point results with distinct evidence types.
 - [review-overlay.geojson](../evidence/cfbisd-authority-review-20261026/review-overlay.geojson): four exact source polygons and twelve uniquely located review probes for QGIS or another GIS viewer. This is a review overlay, not a canonical dataset.
