@@ -31,7 +31,7 @@ jobs:
             --geoid 48491 \
             --record-id TX:county:williamson:countywide:COUNTYWIDE \
             --geometry-id williamson-county-countywide \
-            --retrieved-at 2026-08-02 \
+            --retrieved-at 2026-10-25 \
             --raw-output build/williamson-county/county/raw/tigerweb-county-48491.geojson \
             --output build/williamson-county/county/geojson/williamson_county_countywide.geojson
 

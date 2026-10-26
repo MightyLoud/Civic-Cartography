@@ -1,0 +1,5 @@
+# Williamson Census reconciliation — draft review
+
+Based on #500. Fresh October 25 capture reproduces the previously reviewed three inserted vertices (1,628 to 1,631 ring vertices), preserving all original vertices. Land changes 2,890,090,365 to 2,890,092,199 m² (+1,834); water 41,474,365 to 41,472,527 m² (-1,838); combined -4 m². Other stable values match. Cause unverified; no legal boundary or reclassification explanation inferred.
+
+An independent October 25 fetch reproduces both candidate raw and canonical files byte for byte; the strict snapshot comparator passes. Archives preserve original raw/canonical bytes. Only Census snapshots, Census manifest row and countywide replay attribution are refreshed, with exact insertion evidence and regression coverage. Precinct data/dates, transfer-proof contracts, identifiers and strict comparators remain intact. No tolerance or rounding. User approved draft upload on October 25, including the enumerated geometry and area changes. Draft review only. No merge, production promotion, dispatch or governance closure. Full GitHub CI remains unverified.
