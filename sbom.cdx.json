@@ -4438,16 +4438,16 @@
       "version": "2026.9.1"
     },
     {
-      "bom-ref": "pkg:pypi/setuptools@84.0.0",
+      "bom-ref": "pkg:pypi/setuptools@84.1.0",
       "description": "Most extensible Python build backend with support for C/C++ extension modules",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "51a52592b3b99e102b609654876bd65f19f999935166d1352678931132b0c670"
+          "content": "23657205b63d4d31395ab917815247f694aafad28cd21316bf5fd45a51048ea0"
         },
         {
           "alg": "SHA-256",
-          "content": "f4695c21257f0d9b537ec2692c941d02ee143b7cc1276941349a546573b2ef73"
+          "content": "5231689c6ac8156cd155cfb98c3fd6fb252c3e7e9bd3d78b64d3c55f132624c9"
         }
       ],
       "licenses": [
@@ -4461,16 +4461,16 @@
       "properties": [
         {
           "name": "civic-cartography:direct-dependency",
-          "value": "false"
+          "value": "true"
         },
         {
           "name": "civic-cartography:retained-hash-count",
           "value": "2"
         }
       ],
-      "purl": "pkg:pypi/setuptools@84.0.0",
+      "purl": "pkg:pypi/setuptools@84.1.0",
       "type": "library",
-      "version": "84.0.0"
+      "version": "84.1.0"
     },
     {
       "bom-ref": "pkg:pypi/shapely@2.1.2",
@@ -5176,7 +5176,7 @@
     "properties": [
       {
         "name": "civic-cartography:requirements-lock-sha256",
-        "value": "3cb5eceaeaef6451033f9441de8cc86acf98e206d7d3f7848a3a42ae3e754332"
+        "value": "3986efca655e578a1fe093d9e69cd581755896f8d44e5180176ba099e536fcc4"
       },
       {
         "name": "civic-cartography:component-count",
@@ -5184,7 +5184,7 @@
       }
     ]
   },
-  "serialNumber": "urn:uuid:89f32b3f-ce91-5b50-9683-1eae7b8716fe",
+  "serialNumber": "urn:uuid:8cd48eec-9de7-5f7e-a0ea-5ddcc35f5e8a",
   "specVersion": "1.6",
   "version": 1
 }

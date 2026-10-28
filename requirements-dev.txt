@@ -20,3 +20,6 @@ urllib3==2.8.0
 
 # Security constraint from retained October 22 audit.
 certifi==2026.10.19
+
+# Security constraint: GHSA-xmj3-9gf7-h52w.
+setuptools==84.1.0
