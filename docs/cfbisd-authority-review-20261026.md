@@ -67,3 +67,56 @@ The [annual Census publication follow-up](cfbisd-source-lineage-20261026.md) cor
 - [reproduce.py](../evidence/cfbisd-authority-review-20261026/reproduce.py): offline regeneration using the earlier investigation's optional analysis requirements; refuses to overwrite its five derived outputs.
 
 Source hashes, lossless decompression, district identity, query completeness, duplicate-coordinate handling, probe classification and release holds are checked by the added regression tests. Local and GitHub validation results are recorded in draft PR #502. Original source snapshots and the prior evidence package remain unchanged.
+
+
+## October 29, 2026 — TLC response and qualified hypothesis review
+
+**Disposition: AGENCY RESPONSE RECEIVED; SOURCE/SEGMENT AUTHORITY STILL UNRESOLVED.** This dated addendum supplements the original October 26 observations; it does not retroactively change their capture dates, findings or snapshots.
+
+The established official email thread was read directly. Charles Eckstein, Texas Legislative Council (TLC), Research Division, Mapping and Redistricting Section, replied on October 29, 2026 at 17:27:27 UTC, after TEA's Julia Schacherl added him at 15:53:52 UTC. In paraphrase, he reports that TLC's records identify December 2018 as its last CFBISD SDRP submission on TEA's behalf, requesting a minor alignment correction from Dallas County Central Appraisal District geography. He suggests that 2010-versus-2020 Census TIGER base geography may explain differences and reports subsequent slight school-district/county movements from base geography. His office does not possess the district's controlling field notes, metes-and-bounds description or official survey map. This is an attributed records-history statement and suggested explanation, not a supplied submission, geometry file, Census processing receipt or legal boundary instrument. The private source message and headers were verified in Gmail; private mailbox identifiers, routing headers, signatures and full correspondence are not redistributed here. No spatial submission attachment accompanied the substantive reply; inline signature images are not boundary evidence.
+
+### What the response changes
+
+| Hypothesis or claim | Assessment against retained evidence |
+| --- | --- |
+| TLC submitted a recent CFBISD-specific SDRP correction for the 2026 cycle | Weakened by Charles's statement that December 2018 was the last submission in his records. Not ruled out for other submitters or Census internal processing; no exhaustive Census transaction history was supplied. |
+| A spatial alignment correction, rather than a jurisdictional transfer, is a plausible explanation | Supported as a historical mechanism and investigation lead. His description concerns the 2018 request, not an adjudication of the exact 2026 changes. |
+| The December 2018 request caused these exact 2026 edits | Unproven. No submitted coordinates, affected-segment map, acceptance record or processing/publication crosswalk was provided. Delayed processing or later realignment remains a hypothesis only. |
+| A simple comparison of a 2010 product with a 2020 product explains the whole observed discrepancy | Insufficient as a complete account: the retained annual evidence compares 2024 and 2025 identical native rings with a different 2026 native ring. An older-base lineage could still underlie those publications, but must explain that later transition. |
+| A recent legal boundary action occurred | Not established. A reported cartographic correction does not demonstrate annexation, detachment or transfer; absence of a newer submission in TLC's records is not proof no legal action occurred. |
+| TLC's response legally certifies either polygon | Unsupported. Charles explicitly reports lack of controlling legal-description/survey records in his office. Operational publications remain reference evidence. |
+
+The [annual-publication review](cfbisd-source-lineage-20261026.md) retains 1,020 vertices for the baseline; 1,018 for both 2024 and 2025 annual products; and 1,000 for 2026. The 2024/2025 rings are exactly identical despite their 1 m² AREALAND difference. The retained baseline is not an exact match for either annual product; its hard-coded 2025 label is not independently verified vintage evidence. Thus neither that label nor the proposed base-geography explanation establishes when or why the baseline linework originated. The 2026 annual/TIGERweb agreement remains corroborative publication evidence, not authority certification.
+
+### Exact edits remain individually unassigned
+
+Indices below refer only to the original baseline-to-current ring comparison (zero-based, half-open), not the separate annual-to-annual edit sequence. Original full-precision coordinates and neighboring geometry remain in [coordinate-edits.json](../evidence/cfbisd-source-investigation-20261026/coordinate-edits.json).
+
+| Edit | Retained → current range | Outstanding attribution test |
+| --- | --- | --- |
+| Inserted vertex | [381,381) → [381,382), inserted coordinate (-96.83976499963819, 32.93985299999463) | Determine whether it appears in the 2018 submitted/exported line or a later base correction. The removed-sliver probe still conflicts with state, county and district operational representations. |
+| North/Rosemeade | [568,582) → [569,578), 14 → 9 vertices | Obtain controlling linework and Census processing lineage for this exact replacement, shared endpoints and removed/added patches; reconcile property 86140 and the northern probe. |
+| West | [751,784) → [747,764), 33 → 17 vertices | Identify the source for this exact replacement and reconcile properties 225342/225343, unknown 336972 and the western probe. Mixed parcel labels do not supply a controlling line. |
+
+Neither fewer vertices nor apparently straighter segments proves simplification, improved accuracy or a lawful jurisdictional change. The two long replacements and inserted sliver must be attributed separately. No new spatial overlay was calculated in this addendum; existing probe and annual comparisons are preserved, not represented as newly executed.
+
+### Bounded public-source search
+
+Official public pages and targeted indexed searches were inspected for DCAD historical GIS, the 2018 submission and state historical school-district products. Capture/review date is October 29, 2026 (America/Denver); source descriptions retain their own dates.
+
+- [DCAD GIS Data Products](https://dcadwebdev.dallascad.org/GISDataProducts.aspx) exposes an Independent School Districts ZIP via its SchoolTaxDistrict.zip download link. The download resolved as ZIP content, which the web reader could not inspect. Its bytes, CRS, coverage and geometry were therefore not validated. The page lists recent historical parcel products (2022–2026), not a dated 2018 school-district archive. Parcel history is not district-linework history. The page describes district-defined school boundaries and warns that GIS products are informational approximations, not surveys.
+- [TLC's School Districts catalog](https://data.capitol.texas.gov/dataset/school-districts) exposes annual school-year shapefiles for 2021–22 through 2025–26 in the inspected listing. Those are potentially useful temporal controls, not the 2018 SDRP submission itself. The catalog warns that its boundaries do not determine jurisdictional authority.
+- An [older TEA School Districts hosted layer](https://services.arcgis.com/su8ic9KbA7PYVxPS/ArcGIS/rest/services/TEA_School_Districts/FeatureServer/0) has metadata referring both to 2019–20 and to corrections for 2018–19 using a 2010 TIGER base. It exposes NCES_DISTR and SDLEA10 fields and EPSG:4269. Its last-edit metadata is June 24, 2024, so it is not a certified immutable 2018 snapshot. Only its metadata was inspected; no claim is made that its CFBISD polygon matches the submitted correction.
+- [Census SDRP program documentation](https://www.census.gov/programs-surveys/sdrp/about.html) distinguishes annotation submissions from verification of their incorporation into MAF/TIGER. Both sides of that process are needed here. The existing 2026 inventory/coverage listings contain no edit geometry or causal transaction record.
+
+**Result:** useful public retrieval routes located; no public copy of the specific December 2018 submission, historical DCAD source file used by TLC, or Census record linking it to these 2026 segments was located in this bounded search. This is not proof such records are unavailable or do not exist.
+
+### Smallest next documentation request
+
+A focused electronic reply in the established thread would materially improve adjudication. Proposed request, not sent:
+
+Thank Charles and Julia for the records history, then ask for (1) the December 2018 CFBISD submission/export and accompanying map or correspondence, including the DCAD source file/version and CRS; (2) any Census acceptance/verification record and first publication incorporating that correction; and (3) whether the submission covers the linked north, west and inserted-vertex edits. Ask Census to identify any later MAF/TIGER base-alignment transaction affecting those segments, including source, reason and processing/publication dates. Request a custodian referral if the records reside elsewhere. Ask for an existing legal instrument and legal-effective date only if a jurisdictional action is asserted; do not infer one from a cartographic processing date.
+
+Receipt of the original request (December 2018), source-data date, Census processing date, first publication vintage and any legal-effective date must remain separate. Attribution requires exact segment correspondence plus a documentary processing chain; legal authority additionally requires the controlling instrument or custodian confirmation of the applicable line. Electronic outreach remains subject to user approval.
+
+Approved geometry, repository identifiers, original evidence, strict comparison behavior and all release restrictions remain unchanged. This addendum changes documentation only; it authorizes no baseline replacement, merge, workflow dispatch or release.
