@@ -1,0 +1,103 @@
+{
+  "district_entrypoint": {
+    "file": "discovery-district-page.html",
+    "url": "https://www.cfbisd.edu/students/school-maps-locator-system",
+    "started_at_utc": "2026-10-26T14:09:21.367693+00:00",
+    "http_status": 200,
+    "headers": {
+      "Date": "Mon, 26 Oct 2026 14:09:28 GMT",
+      "Content-Type": "text/html; charset=utf-8",
+      "ETag": null,
+      "Last-Modified": null
+    },
+    "sha256": "e91be02f7f111eccff20f0cc627f5e6a1e182d9c8335564eb273e2601f12bf74",
+    "bytes": 115185,
+    "finished_at_utc": "2026-10-26T14:09:28.149756+00:00"
+  },
+  "district_locator_iframe": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/",
+  "district_page_context": "School attendance zones approved March 6, 2025; this is not evidence of an outer-district boundary action.",
+  "district_config_capture": {
+    "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+    "request_json": {
+      "mode": "web_cfg"
+    },
+    "method": "POST",
+    "started_at_utc": "2026-10-26T14:01:18.730063+00:00",
+    "http_status": 200,
+    "sha256": "4524e10bd500fac48a063f9b9cd304d68a010454f8c0f0f38e2648b53586bc52",
+    "finished_at_utc": "2026-10-26T14:01:23.445811+00:00"
+  },
+  "district_config_selected_values": {
+    "bounds": [
+      -96.98831157913645,
+      32.86836074558562,
+      -96.83871454294552,
+      33.01904377972801
+    ],
+    "zones": {
+      "attendance": {
+        "key": "attendance",
+        "label": "Attendance Area"
+      }
+    }
+  },
+  "district_locator_limit": "Operational school lookup; no placement guarantee or legal boundary certification; data lineage not established.",
+  "tea_entrypoint": {
+    "file": "discovery-tea-page.html",
+    "url": "https://tea.texas.gov/families-and-students/school-district-locator/school-district-locator",
+    "started_at_utc": "2026-10-26T14:09:21.377983+00:00",
+    "http_status": 200,
+    "headers": {
+      "Date": "Mon, 26 Oct 2026 14:09:27 GMT",
+      "Content-Type": "text/html; charset=UTF-8",
+      "ETag": "W/\"1793022808-gzip\"",
+      "Last-Modified": "Mon, 26 Oct 2026 13:53:28 GMT"
+    },
+    "sha256": "156fdacf47be6df730e1b57823c53867ddcb0d8c316812621a035fcfe62fbf76",
+    "bytes": 147971,
+    "finished_at_utc": "2026-10-26T14:09:27.908842+00:00"
+  },
+  "tea_entrypoint_locator_links": [
+    "http://tea-texas.maps.arcgis.com/apps/webappviewer/index.html?id=51f0c8fa684c4d399d8d182e6edd5d97",
+    "http://tea-texas.maps.arcgis.com/apps/webappviewer/index.html?id=51f0c8fa684c4d399d8d182e6edd5d97"
+  ],
+  "tea_app_capture": {
+    "file": "discovery-tea-app.json",
+    "url": "https://www.arcgis.com/sharing/rest/content/items/51f0c8fa684c4d399d8d182e6edd5d97/data?f=json",
+    "started_at_utc": "2026-10-26T14:09:21.383531+00:00",
+    "http_status": 200,
+    "headers": {
+      "Date": "Mon, 26 Oct 2026 14:09:27 GMT",
+      "Content-Type": "application/json;charset=utf-8",
+      "ETag": "\"1901899c8d0\"",
+      "Last-Modified": null
+    },
+    "sha256": "ad15a4580b43b760e00573c1227d44136eb966d1936eca5c8d63bb6de4c5a343",
+    "bytes": 46823,
+    "finished_at_utc": "2026-10-26T14:09:27.744380+00:00"
+  },
+  "tea_webmap_id": "15ce858b4ad5408480950db704fd455a",
+  "tea_webmap_capture": {
+    "file": "discovery-tea-webmap.json",
+    "url": "https://www.arcgis.com/sharing/rest/content/items/15ce858b4ad5408480950db704fd455a/data?f=json",
+    "started_at_utc": "2026-10-26T14:09:21.394518+00:00",
+    "http_status": 200,
+    "headers": {
+      "Date": "Mon, 26 Oct 2026 14:09:27 GMT",
+      "Content-Type": "application/json;charset=utf-8",
+      "ETag": "\"19de098ede0\"",
+      "Last-Modified": null
+    },
+    "sha256": "11130c18303f7cfe4cd3350cebc8a2372663756abcdac72760f36a1a387615ab",
+    "bytes": 70540,
+    "finished_at_utc": "2026-10-26T14:09:27.732595+00:00"
+  },
+  "tea_operational_district_layer": {
+    "title": "Districts",
+    "url": "https://services2.arcgis.com/5MVN2jsqIrNZD4tP/arcgis/rest/services/School_Districts__2026/FeatureServer/0"
+  },
+  "tea_search_widget_district_layer": "https://services2.arcgis.com/5MVN2jsqIrNZD4tP/arcgis/rest/services/Current_Districts_2023/FeatureServer/0",
+  "metadata_and_html_storage_note": "Discovery documents are represented by exact response hashes, capture records and selected routing fields; their full HTML/UI configuration is not redistributed.",
+  "publication_lineage": "UNKNOWN_POTENTIALLY_SHARED",
+  "governance_status": "BLOCKED_PENDING_SOURCE_ADJUDICATION_AND_EXPLICIT_BASELINE_APPROVAL"
+}

@@ -1,0 +1,93 @@
+{
+  "actual_changed_source_fields": [
+    "AREALAND",
+    "CENTLAT",
+    "CENTLON"
+  ],
+  "added_area_m2": 25.253962179324468,
+  "baseline_path": "data/geojson/carrollton_farmers_branch_isd_districtwide.geojson",
+  "baseline_replacement_approved": false,
+  "baseline_sha256": "654f976e5885cf93253b8cd4957b9a74577db2189d48e48fe3e37bc0ee0dbe8f",
+  "baseline_valid": true,
+  "baseline_vintage": "2025-01-01",
+  "candidate_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/carrollton_farmers_branch_isd_districtwide.geojson",
+  "candidate_sha256": "427835de5805def1c2be1070c0bae96b18230ca76e664197c69e32dd57e31303",
+  "candidate_valid": true,
+  "candidate_vintage": "2026-01-01",
+  "capture_finished_at_utc": "2026-10-14T15:38:38.480084+00:00",
+  "capture_started_at_utc": "2026-10-14T15:38:31.395356+00:00",
+  "census_internal_point_checks": [
+    {
+      "baseline_covers": true,
+      "candidate_covers": true,
+      "kind": "census_internal_point",
+      "origin": "baseline",
+      "real_address": false
+    },
+    {
+      "baseline_covers": true,
+      "candidate_covers": true,
+      "kind": "census_internal_point",
+      "origin": "candidate",
+      "real_address": false
+    }
+  ],
+  "coordinates_changed": true,
+  "geoid": "4813050",
+  "geometry_id": "carrollton-farmers-branch-isd-districtwide",
+  "hausdorff_distance_m": 44.47654155734213,
+  "join_and_attribution_unchanged": true,
+  "name": "carrollton_farmers_branch_isd_districtwide",
+  "net_area_change_m2": -29740.893108427525,
+  "projected_baseline_area_m2": 125081368.67086934,
+  "projected_candidate_area_m2": 125051627.77776091,
+  "raw_canonical_support_passed": true,
+  "raw_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/carrollton_farmers_branch_isd_districtwide.geojson",
+  "raw_sha256": "c3982123587aa1ff1fb576ec30948c33d00774539726d00d92daada6f0d36bbf",
+  "real_address_impact": "UNVERIFIED",
+  "record_id": "TX:school_district:carrollton-farmers-branch-isd:at_large:DISTRICTWIDE",
+  "release_status": "BLOCKED_PENDING_BASELINE_REVIEW",
+  "removed_area_m2": 29766.14707041912,
+  "source_request_url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/14/query?where=BASENAME+LIKE+%27%25Carrollton-Farmers+Branch%25%27&outFields=%2A&returnGeometry=true&outSR=4326&f=geojson",
+  "source_value_deltas": {
+    "AREALAND": {
+      "baseline": 122372279,
+      "candidate": 122342541
+    },
+    "CENTLAT": {
+      "baseline": "+32.9460217",
+      "candidate": "+32.9460108"
+    },
+    "CENTLON": {
+      "baseline": "-096.9133555",
+      "candidate": "-096.9133531"
+    }
+  },
+  "symmetric_difference_area_m2": 29791.401032598445,
+  "symmetric_difference_pct_of_baseline": 0.02381761676352417,
+  "synthetic_probes": [
+    {
+      "baseline_covers": false,
+      "candidate_covers": true,
+      "change": "added",
+      "coordinates": [
+        -96.85486912021838,
+        33.01171239138266
+      ],
+      "kind": "synthetic_change_probe",
+      "real_address": false
+    },
+    {
+      "baseline_covers": true,
+      "candidate_covers": false,
+      "change": "removed",
+      "coordinates": [
+        -96.93873645994313,
+        32.988713000101896
+      ],
+      "kind": "synthetic_change_probe",
+      "real_address": false
+    }
+  ],
+  "topologically_equal": false
+}

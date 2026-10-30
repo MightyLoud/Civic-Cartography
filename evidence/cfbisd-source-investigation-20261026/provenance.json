@@ -1,0 +1,31 @@
+{
+  "baseline_commit": "18088213e74ac42cb2932227d1ad7ede2ebffadc",
+  "files": [
+    {
+      "repository_path": "data/raw/cfbisd/tigerweb-unified-school-district-4813050.geojson",
+      "archive_path": "evidence/cfbisd-source-investigation-20261026/baseline/tigerweb-unified-school-district-4813050.geojson",
+      "sha256": "a8ec07d81f7f4ad6592c6488b9a4d077c4a985a8c570150475e37e2cbce37e08"
+    },
+    {
+      "repository_path": "data/geojson/carrollton_farmers_branch_isd_districtwide.geojson",
+      "archive_path": "evidence/cfbisd-source-investigation-20261026/baseline/carrollton_farmers_branch_isd_districtwide.geojson",
+      "sha256": "654f976e5885cf93253b8cd4957b9a74577db2189d48e48fe3e37bc0ee0dbe8f"
+    }
+  ],
+  "prior_work": {
+    "ref": "origin/draft/tigerweb-baseline-preparation-20261014",
+    "commit": "dc148ab3c4b9be2034777f48cdc86d3dbe40cb86",
+    "files": [
+      {
+        "repository_path": "evidence/tigerweb-baseline-preparation-20261014/capture/raw/carrollton_farmers_branch_isd_districtwide.geojson",
+        "local_file": "prior-20261014/raw.geojson",
+        "sha256": "c3982123587aa1ff1fb576ec30948c33d00774539726d00d92daada6f0d36bbf"
+      },
+      {
+        "repository_path": "evidence/tigerweb-baseline-preparation-20261014/capture/candidates/carrollton_farmers_branch_isd_districtwide.geojson",
+        "local_file": "prior-20261014/candidate.geojson",
+        "sha256": "427835de5805def1c2be1070c0bae96b18230ca76e664197c69e32dd57e31303"
+      }
+    ]
+  }
+}

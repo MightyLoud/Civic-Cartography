@@ -1,0 +1,399 @@
+{
+  "inspected_at_utc": "2026-10-26T13:30:25.483Z",
+  "prs": [
+    {
+      "url": "https://github.com/MightyLoud/Civic-Cartography/pull/501",
+      "number": 501,
+      "state": "open",
+      "merged": false,
+      "mergeable": true,
+      "draft": true,
+      "body": "Reconciles the retained Williamson County Census snapshot (GEOID 48491) with two independent October 25 captures. Stacked onto #500; exactly ten changed files.\n\nThree inserted ring vertices (1,628 → 1,631) preserve every original vertex. AREALAND changes 2,890,090,365 → 2,890,092,199 m² (+1,834); AREAWATER changes 41,474,365 → 41,472,527 m² (−1,838); combined −4 m². Other stable attributes match. Cause remains unverified; no legal boundary or reclassification conclusion is inferred.\n\nOriginal raw/canonical bytes are archived. Both independent captures match the candidate byte for byte; strict snapshot comparison passes. Exact insertion evidence and regression coverage are included. Census attribution/date only is refreshed; precinct dates, strict comparators and governance holds remain intact.\n\nValidation: 263 local tests passed; 33 normalized datasets validated; GeoJSON joins, raw/canonical support, archived-byte preservation and diff checks passed. Uploaded tree matches the local reviewed tree exactly: 8fba3467f1cfdafe7cca695036d4f7f7486eca9c.\n\nUser approved this bounded draft upload including the geometry and area changes. GitHub CI is pending verification. Draft only: no merge, production promotion, manual workflow dispatch or governance closure.",
+      "title": "Reconcile Williamson Census snapshot with explicit geometry evidence",
+      "base": "agent/travis-census-snapshot-20261023",
+      "base_sha": "dbdfd06b0a23097692f5dd5dd70d8392e1c36d98",
+      "head": "agent/williamson-census-snapshot-20261025",
+      "head_sha": "18088213e74ac42cb2932227d1ad7ede2ebffadc",
+      "head_repo_id": 1319566306,
+      "head_repo_full_name": "MightyLoud/Civic-Cartography",
+      "merge_commit_sha": "629321f361bb6f39459b0598fe4489892f2c5c9a",
+      "user": {
+        "login": "MightyLoud",
+        "name": "MightyLoud",
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/208344341?v=4",
+        "id": 208344341
+      },
+      "requested_reviewers": null,
+      "requested_team_reviewers": null,
+      "diff": null,
+      "comments": null,
+      "created_at": "2026-10-26T03:55:23Z",
+      "updated_at": "2026-10-26T03:55:23Z",
+      "closed_at": null,
+      "merged_at": null,
+      "commits": 1,
+      "changed_files": 10,
+      "additions": 131,
+      "deletions": 4,
+      "display_url": "https://github.com/MightyLoud/Civic-Cartography/pull/501",
+      "display_title": "Reconcile Williamson Census snapshot with explicit geometry evidence"
+    },
+    {
+      "url": "https://github.com/MightyLoud/Civic-Cartography/pull/500",
+      "number": 500,
+      "state": "open",
+      "merged": false,
+      "mergeable": true,
+      "draft": true,
+      "body": "Travis County's fresh October 23 Census GEOID 48453 snapshot contains exactly three inserted ring vertices (1,952 prior; 1,955 fresh); all original vertices remain unchanged. Two official captures are byte-identical. The recorded insertions reconstruct fresh geometry exactly; both polygons are valid. EPSG:32614 diagnostics: approximately 0.388508 m² symmetric difference and 0.0125663 m planar Hausdorff distance. These diagnostics do not establish physical or legal boundary movement.\n\nAREALAND changes from 2,575,299,585 to 2,575,354,868 m² (+55,283); AREAWATER changes from 79,506,870 to 79,451,592 m² (-55,278); combined +5 m². Every other stable source value matches. Cause unverified; no reclassification, rounding or legal explanation inferred.\n\nThis eleven-file draft archives original August 2 raw/canonical bytes exactly and refreshes only Census snapshots, Census manifest row and countywide replay attribution, plus evidence/regression coverage. Precinct data/dates, live renderer and roster contracts, identifiers and strict comparison gates remain intact. No tolerance, rounding or future exception is introduced.\n\nBased on #499 at d2bf06e98dda1c5270be5ac727498b0a73c997e6. Local validation: 262 tests passed, 33 normalized files validated, geometry joins passed, archived-byte equality and archived/current raw-canonical support passed. Full GitHub workflow and live precinct checks remain pending. The user explicitly approved draft upload including the three inserted vertices and both area changes, not merge or production promotion.\n\nSee docs/travis-tigerweb-reconciliation-20261023.md and evidence/travis-tigerweb-reconciliation-20261023/. Draft only: no merge, production promotion, manual dispatch, release activation or governance closure.\n\n## GitHub verification — October 23\n\n[Travis run 40028432121](https://github.com/MightyLoud/Civic-Cartography/actions/runs/40028432121) passed every step: official precinct export and metadata retrieval, precinct snapshot construction, strict fresh Census and precinct comparisons, 262 tests, 33 normalized files, geometry joins, combined digest and artifact upload.\n\n[LIC-G5 aggregate 40028432076](https://github.com/MightyLoud/Civic-Cartography/actions/runs/40028432076) passed with 262 tests, no known audit vulnerabilities, lock_matches_generated=true, lock_deterministic=true and final technical gate. Supply-chain controls, El Paso, Bexar, Montgomery, Arlington, Irving, Kerr, Hidalgo, Fort Bend and Kaufman also passed.\n\nAll 22 workflows completed: 12 passed, 10 failed. Every failed step was inspected. Nine remain Census comparisons: Addison (shared civic-data workflow), CFBISD, Collin, Dallas, Denton, Harris, Oak Point, Tarrant and Williamson. Galveston's roster/abolition/cutover/portal contract step failed with urllib.error.URLError: connection refused; this run does not establish a contract discrepancy. Overall CI remains blocked. No rerun or manual dispatch occurred.\n\nMerge-preview tree 5118327bce5155a43cb1f048de11c5fbb36e7e48 matches the reviewed uploaded/local tree. Geometry and area-change causes remain unverified. Draft and unmerged; no production promotion or governance closure.",
+      "title": "Reconcile Travis Census snapshot with three documented inserted vertices",
+      "base": "agent/kerr-census-values-20261023",
+      "base_sha": "d2bf06e98dda1c5270be5ac727498b0a73c997e6",
+      "head": "agent/travis-census-snapshot-20261023",
+      "head_sha": "dbdfd06b0a23097692f5dd5dd70d8392e1c36d98",
+      "head_repo_id": 1319566306,
+      "head_repo_full_name": "MightyLoud/Civic-Cartography",
+      "merge_commit_sha": "2916db8de15199b678b1a8b04030f00778001e2d",
+      "user": {
+        "login": "MightyLoud",
+        "name": "MightyLoud",
+        "email": null,
+        "avatar_url": "https://avatars.githubusercontent.com/u/208344341?v=4",
+        "id": 208344341
+      },
+      "requested_reviewers": null,
+      "requested_team_reviewers": null,
+      "diff": null,
+      "comments": null,
+      "created_at": "2026-10-23T21:40:05Z",
+      "updated_at": "2026-10-24T00:02:30Z",
+      "closed_at": null,
+      "merged_at": null,
+      "commits": 1,
+      "changed_files": 11,
+      "additions": 182,
+      "deletions": 4,
+      "display_url": "https://github.com/MightyLoud/Civic-Cartography/pull/500",
+      "display_title": "Reconcile Travis Census snapshot with three documented inserted vertices"
+    }
+  ],
+  "pr501_workflows": [
+    {
+      "id": 40266429847,
+      "name": "Validate LIC-G5 supply-chain controls",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 63,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429847/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429847/logs",
+      "workflow_id": 333665134
+    },
+    {
+      "id": 40266429816,
+      "name": "Validate Denton County proof",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_number": 3276,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429816/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429816/logs",
+      "workflow_id": 325401333
+    },
+    {
+      "id": 40266429781,
+      "name": "Validate Oak Point top-N proof",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_number": 3333,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429781/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429781/logs",
+      "workflow_id": 325347063
+    },
+    {
+      "id": 40266429941,
+      "name": "Validate El Paso County complete schema",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_number": 2640,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429941/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429941/logs",
+      "workflow_id": 325823392
+    },
+    {
+      "id": 40266429953,
+      "name": "Validate Fort Bend County Commissioners Court",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 2825,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429953/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429953/logs",
+      "workflow_id": 325748678
+    },
+    {
+      "id": 40266429827,
+      "name": "Validate Irving runoff proof",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 3355,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429827/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429827/logs",
+      "workflow_id": 325341856
+    },
+    {
+      "id": 40266429872,
+      "name": "Validate Kerr County judicial appointment schema",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 2438,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429872/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429872/logs",
+      "workflow_id": 325903750
+    },
+    {
+      "id": 40266429832,
+      "name": "Validate Travis County Commissioners Court",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 3120,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429832/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429832/logs",
+      "workflow_id": 325660725
+    },
+    {
+      "id": 40266429890,
+      "name": "Validate Collin County Commissioners Court",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_number": 2695,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429890/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429890/logs",
+      "workflow_id": 325809042
+    },
+    {
+      "id": 40266429807,
+      "name": "Validate CFBISD cumulative-voting proof",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_number": 3319,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429807/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429807/logs",
+      "workflow_id": 325350881
+    },
+    {
+      "id": 40266429857,
+      "name": "Validate Hidalgo County dual-body schema",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 2565,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429857/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429857/logs",
+      "workflow_id": 325832592
+    },
+    {
+      "id": 40266429863,
+      "name": "Validate Galveston County effective-date cutover",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 2490,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429863/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429863/logs",
+      "workflow_id": 325880025
+    },
+    {
+      "id": 40266429927,
+      "name": "Validate Montgomery County complete schema",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 2566,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429927/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429927/logs",
+      "workflow_id": 325834212
+    },
+    {
+      "id": 40266429823,
+      "name": "Validate Dallas County Commissioners Court",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_number": 2735,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429823/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429823/logs",
+      "workflow_id": 325800845
+    },
+    {
+      "id": 40266429873,
+      "name": "Validate civic data",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_number": 3526,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429873/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429873/logs",
+      "workflow_id": 325231137
+    },
+    {
+      "id": 40266429773,
+      "name": "Validate Harris County Commissioners Court",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_number": 2960,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429773/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429773/logs",
+      "workflow_id": 325699447
+    },
+    {
+      "id": 40266429833,
+      "name": "Validate Tarrant County Commissioners Court",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_number": 2894,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429833/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429833/logs",
+      "workflow_id": 325717129
+    },
+    {
+      "id": 40266429981,
+      "name": "Validate Bexar County Commissioners Court",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 3011,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429981/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429981/logs",
+      "workflow_id": 325689393
+    },
+    {
+      "id": 40266429888,
+      "name": "Validate Kaufman County Criminal District Attorney consolidation",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 2380,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429888/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429888/logs",
+      "workflow_id": 325934306
+    },
+    {
+      "id": 40266429880,
+      "name": "Validate Arlington mixed structure",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 3303,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429880/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429880/logs",
+      "workflow_id": 325354524
+    },
+    {
+      "id": 40266429783,
+      "name": "Validate LIC-G5 Supply Chain",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_number": 256,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429783/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266429783/logs",
+      "workflow_id": 333665066
+    },
+    {
+      "id": 40266430127,
+      "name": "Validate Williamson County transfer proof",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 3219,
+      "jobs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266430127/jobs",
+      "logs_url": "https://api.github.com/repos/MightyLoud/Civic-Cartography/actions/runs/40266430127/logs",
+      "workflow_id": 325432071
+    }
+  ],
+  "pr500_cfbisd_jobs": [
+    {
+      "id": 120670368839,
+      "name": "validate-cfbisd",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_id": 40028432028,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Check out repository",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Set up Python",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Install test dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Fetch current CFBISD boundary",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Verify committed CFBISD boundary matches Census",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 6
+        },
+        {
+          "name": "Run automated tests",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7
+        },
+        {
+          "name": "Validate normalized datasets",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8
+        },
+        {
+          "name": "Validate geometry joins",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Upload CFBISD boundary check",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10
+        },
+        {
+          "name": "Post Set up Python",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 19
+        },
+        {
+          "name": "Post Check out repository",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        }
+      ]
+    }
+  ],
+  "pr501_cfbisd_artifacts": [],
+  "failure_excerpt": [
+    "2026-10-26T03:56:10.8076547Z TIGERweb snapshot comparison failed:",
+    "2026-10-26T03:56:10.8079197Z - canonical TIGERweb snapshot changed: data/geojson/carrollton_farmers_branch_isd_districtwide.geojson does not match build/cfbisd/geojson/carrollton_farmers_branch_isd_districtwide.geojson; geometry changed; source attributes changed: AREALAND, CENTLAT, CENTLON; canonical properties changed: source_vintage",
+    "2026-10-26T03:56:10.8135313Z ##[error]Process completed with exit code 1."
+  ]
+}

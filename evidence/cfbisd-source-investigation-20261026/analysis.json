@@ -1,0 +1,179 @@
+{
+  "added_area_m2": 25.253962179324468,
+  "analysis_environment": {
+    "geos": "3.14.1",
+    "proj": "9.8.1",
+    "pyproj": "3.8.0",
+    "python": "3.12.14",
+    "shapely": "2.2.0"
+  },
+  "area_crs": "EPSG:5070",
+  "baseline_replacement_approved": false,
+  "baseline_ring_vertices_including_closure": 1020,
+  "baseline_valid": true,
+  "baseline_vintage": "2025-01-01",
+  "baseline_vintage_independently_verified": false,
+  "candidate_ring_vertices_including_closure": 1000,
+  "candidate_valid": true,
+  "candidate_vintage": "2026-01-01",
+  "canonical_replay_drift": "geometry changed; source attributes changed: AREALAND, CENTLAT, CENTLON; canonical properties changed: source_vintage",
+  "capture_candidates_byte_equal": true,
+  "capture_raw_responses_byte_equal": true,
+  "census_internal_point_checks": [
+    {
+      "baseline_covers": true,
+      "candidate_covers": true,
+      "coordinates": [
+        -96.9116198,
+        32.9441755
+      ],
+      "kind": "census_internal_point",
+      "origin": "baseline",
+      "real_address": false
+    },
+    {
+      "baseline_covers": true,
+      "candidate_covers": true,
+      "coordinates": [
+        -96.9116198,
+        32.9441755
+      ],
+      "kind": "census_internal_point",
+      "origin": "candidate",
+      "real_address": false
+    }
+  ],
+  "classification": "VERIFIED_CURRENT_2026_VINTAGE_WITH_GEOMETRY_AND_ATTRIBUTE_DRIFT_FROM_BASELINE_LABELED_2025",
+  "coordinate_edit_count": 3,
+  "current_vintage_verified_by_metadata": true,
+  "file_sha256": {
+    "analysis-requirements.txt": "30d29b3bc7fa77e9984dd57506da8d03280364520676e9af6df0d303b1d67f2b",
+    "analyze.py": "d55d674b9f218e487cfc72dc61a54b978c7e81a2288addc6b18ff27a2d25af87",
+    "baseline/carrollton_farmers_branch_isd_districtwide.geojson": "654f976e5885cf93253b8cd4957b9a74577db2189d48e48fe3e37bc0ee0dbe8f",
+    "baseline/tigerweb-unified-school-district-4813050.geojson": "a8ec07d81f7f4ad6592c6488b9a4d077c4a985a8c570150475e37e2cbce37e08",
+    "capture.py": "dfab25efd739786410c5d1db5a3467b77c2e73399a4b3243dcc2ee3c9d008554",
+    "current/capture-1-candidate.geojson": "81521ca3a8cc78d1beac98e864f8f41cfdc37be5cbdd72773307301476733c2f",
+    "current/capture-1-metadata-after.json": "086c25839ba883307929d4c4e1303636242507d2f614ce607ccb168b299d8e8a",
+    "current/capture-1-metadata-before.json": "086c25839ba883307929d4c4e1303636242507d2f614ce607ccb168b299d8e8a",
+    "current/capture-1-raw.geojson": "c3982123587aa1ff1fb576ec30948c33d00774539726d00d92daada6f0d36bbf",
+    "current/capture-2-candidate.geojson": "81521ca3a8cc78d1beac98e864f8f41cfdc37be5cbdd72773307301476733c2f",
+    "current/capture-2-metadata-after.json": "086c25839ba883307929d4c4e1303636242507d2f614ce607ccb168b299d8e8a",
+    "current/capture-2-metadata-before.json": "086c25839ba883307929d4c4e1303636242507d2f614ce607ccb168b299d8e8a",
+    "current/capture-2-raw.geojson": "c3982123587aa1ff1fb576ec30948c33d00774539726d00d92daada6f0d36bbf",
+    "current/capture-manifest.json": "ad8e9a6acbd88af22134bd494fbfebefcf76d6dbac080c7966173a732face9b5",
+    "github-state.json": "8cd1e7cae683699164261a4dedf4292ba297fc90ab70268a903e2c57b366b235",
+    "prior-20261014/candidate.geojson": "427835de5805def1c2be1070c0bae96b18230ca76e664197c69e32dd57e31303",
+    "prior-20261014/manifest-row.json": "18e7d73358a3612c5b61681f28e37e57d5f643e68df6e811f42eb725b4878efd",
+    "prior-20261014/raw.geojson": "c3982123587aa1ff1fb576ec30948c33d00774539726d00d92daada6f0d36bbf",
+    "provenance.json": "28b34729979bf2d0bfdec04cbb65d4c831b1b173e93eaf9ac9d653f50b2f3891"
+  },
+  "geoid": "4813050",
+  "geometry_id": "carrollton-farmers-branch-isd-districtwide",
+  "hausdorff_distance_m": 44.47654155734213,
+  "identical_vertices_in_sequence": 973,
+  "independent_capture_stable_source_equal": true,
+  "legal_effective_date": null,
+  "legal_or_upstream_edit_cause": "UNVERIFIED",
+  "method": "Exact source coordinates; no snapping, buffering, simplification, rounding, repair or acceptance threshold",
+  "net_area_change_m2": -29740.893108427525,
+  "october_14_stable_source_equal": true,
+  "raw_canonical_errors": {
+    "baseline": [],
+    "capture_1": [],
+    "capture_2": [],
+    "october_14": []
+  },
+  "real_address_controls_available": 0,
+  "real_address_impact": "UNVERIFIED",
+  "record_id": "TX:school_district:carrollton-farmers-branch-isd:at_large:DISTRICTWIDE",
+  "release_status": "BLOCKED_PENDING_AUTHORITY_AND_BASELINE_REVIEW",
+  "removed_area_m2": 29766.14707041912,
+  "source_value_deltas": {
+    "AREALAND": {
+      "baseline": 122372279,
+      "candidate": 122342541
+    },
+    "CENTLAT": {
+      "baseline": "+32.9460217",
+      "candidate": "+32.9460108"
+    },
+    "CENTLON": {
+      "baseline": "-096.9133555",
+      "candidate": "-096.9133531"
+    }
+  },
+  "symmetric_difference_area_m2": 29791.40103259844,
+  "symmetric_difference_pct_of_baseline": 0.023817616763524167,
+  "synthetic_change_probes": [
+    {
+      "baseline_covers": false,
+      "bounds_wgs84": [
+        -96.85506100025647,
+        33.01167000020978,
+        -96.8546485699009,
+        33.01175500000992
+      ],
+      "candidate_covers": true,
+      "change": "added",
+      "coordinates": [
+        -96.85486912021838,
+        33.01171239138266
+      ],
+      "kind": "synthetic_change_probe",
+      "real_address": false
+    },
+    {
+      "baseline_covers": true,
+      "bounds_wgs84": [
+        -96.84089699996538,
+        32.93984500032128,
+        -96.83902300019666,
+        32.93985900031461
+      ],
+      "candidate_covers": false,
+      "change": "removed",
+      "coordinates": [
+        -96.84034629643506,
+        32.93984900015795
+      ],
+      "kind": "synthetic_change_probe",
+      "real_address": false
+    },
+    {
+      "baseline_covers": true,
+      "bounds_wgs84": [
+        -96.8546485699009,
+        33.01171999988057,
+        -96.8456449995855,
+        33.01189499963495
+      ],
+      "candidate_covers": false,
+      "change": "removed",
+      "coordinates": [
+        -96.8504405132917,
+        33.01179900005508
+      ],
+      "kind": "synthetic_change_probe",
+      "real_address": false
+    },
+    {
+      "baseline_covers": true,
+      "bounds_wgs84": [
+        -96.94244500040489,
+        32.988444999837284,
+        -96.92721499990886,
+        32.98895700032165
+      ],
+      "candidate_covers": false,
+      "change": "removed",
+      "coordinates": [
+        -96.93873645994313,
+        32.988713000101896
+      ],
+      "kind": "synthetic_change_probe",
+      "real_address": false
+    }
+  ],
+  "topologically_equal": false,
+  "unchanged_areawater_m2": 2709073
+}
