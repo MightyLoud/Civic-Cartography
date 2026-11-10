@@ -120,3 +120,25 @@ Thank Charles and Julia for the records history, then ask for (1) the December 2
 Receipt of the original request (December 2018), source-data date, Census processing date, first publication vintage and any legal-effective date must remain separate. Attribution requires exact segment correspondence plus a documentary processing chain; legal authority additionally requires the controlling instrument or custodian confirmation of the applicable line. Electronic outreach remains subject to user approval.
 
 Approved geometry, repository identifiers, original evidence, strict comparison behavior and all release restrictions remain unchanged. This addendum changes documentation only; it authorizes no baseline replacement, merge, workflow dispatch or release.
+
+## November 9, 2026 — Historical Census segment comparison
+
+The 2020 TIGER/Line publication contains the retained coordinate sequences for all three disputed segments. The same sequences appear in 2024 and 2025. The 2026 publication contains all three revised sequences. Of the seven sampled products, 2026 is the only one containing those revised sequences. Any explanation based on Census base geography must account for the changes between the 2025 and 2026 publications.
+
+| Census publication | Vertices including closure | Land area (m²) | Inserted-vertex site | North/Rosemeade | West |
+| --- | ---: | ---: | --- | --- | --- |
+| [2010](https://www2.census.gov/geo/tiger/TIGER2010/UNSD/2010/tl_2010_48_unsd10.zip) | 1,073 | 122,049,417 | Retained | Neither sequence | Neither sequence |
+| [2018](https://www2.census.gov/geo/tiger/TIGER2018/UNSD/tl_2018_48_unsd.zip) | 1,084 | 122,001,351 | Retained | Neither sequence | Neither sequence |
+| [2019](https://www2.census.gov/geo/tiger/TIGER2019/UNSD/tl_2019_48_unsd.zip) | 1,017 | 122,373,692 | Retained | Neither sequence | Neither sequence |
+| [2020](https://www2.census.gov/geo/tiger/TIGER2020/UNSD/tl_2020_48_unsd.zip) | 1,018 | 122,372,376 | Retained | Retained | Retained |
+| 2024 | 1,018 | 122,372,374 | Retained | Retained | Retained |
+| 2025 | 1,018 | 122,372,375 | Retained | Retained | Retained |
+| 2026 | 1,000 | 122,342,541 | Revised | Revised | Revised |
+
+Each segment comparison includes the shared neighboring endpoints and checks the ordered vertex sequence in either direction at seven decimal places. The historical Census records carry NAD83 coordinates. The retained and revised TIGERweb snapshots carry EPSG:4326 coordinates. This comparison of angular values is a publication diagnostic with limited precision. Whole-ring comparisons between the native annual products use exact coordinates and account for ring start and direction. The 2020 whole ring differs from the 2024 and 2025 rings, and none of the sampled whole rings reproduces the 1,020-vertex baseline.
+
+The 2018 and 2019 archive modification dates bracket the reported December 2018 submission. Their whole rings and area attributes differ. The 2019 publication contains neither the retained nor the revised north and west coordinate sequences. Its inserted-vertex site still matches the retained sequence. A submission or processing record is needed to attribute any of these changes to the December 2018 request. The exact cause and controlling authority for the 2026 revision remain open.
+
+The [historical evidence directory](../evidence/cfbisd-historical-publications-20261109/) retains the four exact target SHP records, DBF header and record bytes, source CRS, archive and member digests, and retrieval timestamps. The timestamps are November 10 UTC, corresponding to November 9 in Denver. The [comparison output](../evidence/cfbisd-historical-publications-20261109/analysis.json) includes land and water values and each segment result. Run `python evidence/cfbisd-historical-publications-20261109/compare.py` from the repository root to reproduce it. The optional `--verify-archives /path/to/zips` verifies the retained byte slices against the complete official archives. Production acceptance continues to use the existing strict comparator.
+
+The outstanding source request is for the accepted December 2018 submission and its first publication, plus the processing record for the 2025–2026 revision on these three segments. The available evidence supports the existing failure artifact capture and the hold on replacement geometry.
