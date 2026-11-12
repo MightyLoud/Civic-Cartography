@@ -1,0 +1,179 @@
+{
+  "annual": {
+    "2024": {
+      "ALAND": 122372374,
+      "AWATER": 2709073,
+      "archive_sha256": "dba039a65b4300d4ef1d62e83f1e8c4337b3e2d59562a710921d5d16c28b2124",
+      "archive_url": "https://www2.census.gov/geo/tiger/TIGER2024/UNSD/tl_2024_48_unsd.zip",
+      "vertices_including_closure": 1018
+    },
+    "2025": {
+      "ALAND": 122372375,
+      "AWATER": 2709073,
+      "archive_sha256": "eb09241316f0814abf4d015f5981dd0c20347dc813ee2d6e204bf01378d1c2ab",
+      "archive_url": "https://www2.census.gov/geo/tiger/TIGER2025/UNSD/tl_2025_48_unsd.zip",
+      "vertices_including_closure": 1018
+    },
+    "2026": {
+      "ALAND": 122342541,
+      "AWATER": 2709073,
+      "archive_sha256": "2490ecfd8047a1b0d1e2ec2c31d0bc2edde075e7b85b2d052ad600aca128c68f",
+      "archive_url": "https://www2.census.gov/geo/tiger/TIGER2026/UNSD/tl_2026_48_unsd.zip",
+      "vertices_including_closure": 1000
+    }
+  },
+  "annual_2024_2025_native_points_exactly_equal": true,
+  "annual_2025_2026_exact_native_edits": [
+    {
+      "fresh_range": [
+        129,
+        132
+      ],
+      "operation": "replace",
+      "prior_range": [
+        129,
+        131
+      ]
+    },
+    {
+      "fresh_range": [
+        236,
+        253
+      ],
+      "operation": "replace",
+      "prior_range": [
+        235,
+        268
+      ]
+    },
+    {
+      "fresh_range": [
+        422,
+        431
+      ],
+      "operation": "replace",
+      "prior_range": [
+        437,
+        451
+      ]
+    },
+    {
+      "fresh_range": [
+        618,
+        619
+      ],
+      "operation": "insert",
+      "prior_range": [
+        638,
+        638
+      ]
+    },
+    {
+      "fresh_range": [
+        811,
+        812
+      ],
+      "operation": "insert",
+      "prior_range": [
+        830,
+        830
+      ]
+    }
+  ],
+  "annual_2026_current_7_decimal_diagnostic_ring_match": true,
+  "annual_2026_current_exact_area_attribute_match": true,
+  "annual_2026_current_exact_coordinate_ring_match_ignoring_start_and_direction": false,
+  "baseline_ALAND": 122372279,
+  "baseline_replacement_approved": false,
+  "baseline_reproduced_by_2024_or_2025_annual_product": false,
+  "baseline_vertices_including_closure": 1020,
+  "baseline_vintage_independently_verified": false,
+  "classification": "ANNUAL_2026_PUBLICATION_CORROBORATES_CURRENT_SOURCE_REVISION_CAUSE_UNVERIFIED",
+  "controlling_boundary_action_or_correction_record_located": false,
+  "diagnostic_limit": "NAD83 native angular coordinates versus EPSG:4326 TIGERweb output. Seven-decimal quantization, ring rotation and reversal are publication-history diagnostics only, not exact-coordinate/geodetic equality or an acceptance gate. Original doubles are preserved.",
+  "geoid": "4813050",
+  "geometry_id": "carrollton-farmers-branch-isd-districtwide",
+  "inventory_limit": "Identity, grades, district level/type and county coverage only. No boundary geometry, change-reason field, correction record or legal-effective-date field. Blank SDTYPE is retained, not treated as a change flag.",
+  "legal_effective_date": null,
+  "legal_or_upstream_edit_cause": "UNVERIFIED",
+  "record_id": "TX:school_district:carrollton-farmers-branch-isd:at_large:DISTRICTWIDE",
+  "release_status": "BLOCKED_PENDING_AUTHORITY_AND_BASELINE_REVIEW",
+  "source_file_sha256": {
+    "cfbisd-tiger2024-native.json": "dfa16da1c23189f293867d6bb2941801305c4b9968bd609c8de619773445cdf7",
+    "cfbisd-tiger2025-native.json": "8ff48b3f6b190198bb27fcdef4707a71515c65b62624ced3daf710d280b13417",
+    "cfbisd-tiger2026-native.json": "1f203b0556d9a5be5c5b61592c8564e3a99caaf29efd9fbd423c91da667364b4",
+    "public-records-review.json": "1e4309bc008ac30f6073d7b694a0239c312b510e75efeba9cf82ed88a2c23c7d",
+    "texas-2026-verification.zip.b64": "81ee85d09fbcbd9735a2c19303fbc8280671d7b3503d4a2b48cff0ef2507ae8f",
+    "verification-capture.json": "a114151ce3e5b49393174aeef5465a99f5cb480ffea42e9b29cff1ca8e35ffa8"
+  },
+  "verification_workbooks": {
+    "48_County_Coverage_V.xlsx": {
+      "bytes": 49058,
+      "data_rows": 1556,
+      "formula_cells": 0,
+      "headers": {
+        "A1": "STATE CODE",
+        "B1": "COUNTY CODE",
+        "C1": "COUNTY NAME",
+        "D1": "SDLEA",
+        "E1": "NAME"
+      },
+      "sha256": "110adfdde485c3555074dff7bf47d59a89b0537d851a710596a378637d76bd8d",
+      "sheet": "sheet 1",
+      "target_rows": [
+        {
+          "cells": {
+            "A338": "48",
+            "B338": "113",
+            "C338": "Dallas",
+            "D338": "13050",
+            "E338": "Carrollton-Farmers Branch Independent School District"
+          },
+          "row": 338
+        },
+        {
+          "cells": {
+            "A371": "48",
+            "B371": "121",
+            "C371": "Denton",
+            "D371": "13050",
+            "E371": "Carrollton-Farmers Branch Independent School District"
+          },
+          "row": 371
+        }
+      ],
+      "worksheet_part": "xl/worksheets/sheet1.xml"
+    },
+    "48_SD_Inventory_V.xlsx": {
+      "bytes": 37048,
+      "data_rows": 1018,
+      "formula_cells": 0,
+      "headers": {
+        "A1": "STATE CODE",
+        "B1": "SDLEA",
+        "C1": "LOGRADE",
+        "D1": "HIGRADE",
+        "E1": "SDLEVEL",
+        "F1": "SDTYPE",
+        "G1": "NAME"
+      },
+      "sha256": "654d7d5f69d5ca16e571913e6989d52a908553077ba0b5eb024ecb5bb19352dc",
+      "sheet": "sheet 1",
+      "target_rows": [
+        {
+          "cells": {
+            "A145": "48",
+            "B145": "13050",
+            "C145": "PK",
+            "D145": "12",
+            "E145": "U",
+            "F145": "",
+            "G145": "Carrollton-Farmers Branch Independent School District"
+          },
+          "row": 145
+        }
+      ],
+      "worksheet_part": "xl/worksheets/sheet1.xml"
+    }
+  }
+}

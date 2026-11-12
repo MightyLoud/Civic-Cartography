@@ -1,0 +1,428 @@
+[
+  {
+    "capture": {
+      "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+      "method": "POST",
+      "request_json": {
+        "mode": "schools_spatial",
+        "attr": {},
+        "grades": [],
+        "spatial_args": {
+          "wkt": "POINT(-96.85486912021838 33.01171239138266)",
+          "srid": 4326,
+          "type": "point"
+        },
+        "zones": [
+          "attendance"
+        ]
+      },
+      "probe": {
+        "id": "synthetic-1",
+        "kind": "synthetic_change_probe",
+        "real_address": false,
+        "coordinates": [
+          -96.85486912021838,
+          33.01171239138266
+        ]
+      },
+      "started_at_utc": "2026-10-26T14:05:30.137295+00:00",
+      "http_status": 200,
+      "sha256": "7c8445ec9fae07481116b903032ce24e89302a3020ed2a7a55614549287f3780",
+      "finished_at_utc": "2026-10-26T14:05:35.467151+00:00"
+    },
+    "raw_response_utf8": "{\"status\": \"OK\", \"messages\": [], \"result\": {\"in_district\": true, \"school_results\": [{\"id\": 18, \"zones\": [\"attendance\"], \"bounds\": [-96.87273807087519, 32.996850369319816, -96.84814355180328, 33.019043779727895]}, {\"id\": 19, \"zones\": [\"attendance\"], \"bounds\": [-96.87273807087519, 32.996850369319816, -96.84814355180328, 33.019043779727895]}, {\"id\": 28, \"zones\": [\"attendance\"], \"bounds\": [-96.89024245299998, 32.95308876776386, -96.84373155036587, 33.01904377972801]}, {\"id\": 31, \"zones\": [\"attendance\"], \"bounds\": [-96.93076796441818, 32.946990148960936, -96.84373155036587, 33.019043779727895]}, {\"id\": 55, \"zones\": [\"attendance\"], \"bounds\": [-96.87273807087519, 32.996850369319816, -96.84814355180328, 33.019043779727895]}, {\"id\": 66, \"zones\": [\"attendance\"], \"bounds\": [-96.87273807087519, 32.996850369319816, -96.84814355180328, 33.019043779727895]}]}}"
+  },
+  {
+    "capture": {
+      "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+      "method": "POST",
+      "request_json": {
+        "mode": "schools_spatial",
+        "attr": {},
+        "grades": [],
+        "spatial_args": {
+          "wkt": "POINT(-96.84034629643506 32.93984900015795)",
+          "srid": 4326,
+          "type": "point"
+        },
+        "zones": [
+          "attendance"
+        ]
+      },
+      "probe": {
+        "id": "synthetic-2",
+        "kind": "synthetic_change_probe",
+        "real_address": false,
+        "coordinates": [
+          -96.84034629643506,
+          32.93984900015795
+        ]
+      },
+      "started_at_utc": "2026-10-26T14:05:30.124242+00:00",
+      "http_status": 200,
+      "sha256": "6a74f6bfb02ef3fe74b7291e21fc50838a6ec312245d5a00ce8b666b08310a39",
+      "finished_at_utc": "2026-10-26T14:05:35.578065+00:00"
+    },
+    "raw_response_utf8": "{\"status\": \"OK\", \"messages\": [], \"result\": {\"in_district\": true, \"school_results\": [{\"id\": 21, \"zones\": [\"attendance\"], \"bounds\": [-96.90000334909519, 32.91368275881854, -96.83871454294552, 32.93996176495807]}, {\"id\": 22, \"zones\": [\"attendance\"], \"bounds\": [-96.90000334909519, 32.91368275881854, -96.83871454294552, 32.93996176495807]}, {\"id\": 26, \"zones\": [\"attendance\"], \"bounds\": [-96.90259068747275, 32.91368275881865, -96.83871454294552, 32.94848273047745]}, {\"id\": 34, \"zones\": [\"attendance\"], \"bounds\": [-96.90610703325103, 32.91368275881865, -96.83871454294552, 32.95367504736771]}, {\"id\": 56, \"zones\": [\"attendance\"], \"bounds\": [-96.90000334909519, 32.91368275881854, -96.83871454294552, 32.93996176495807]}, {\"id\": 67, \"zones\": [\"attendance\"], \"bounds\": [-96.90000334909519, 32.91368275881854, -96.83871454294552, 32.93996176495807]}]}}"
+  },
+  {
+    "capture": {
+      "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+      "method": "POST",
+      "request_json": {
+        "mode": "schools_spatial",
+        "attr": {},
+        "grades": [],
+        "spatial_args": {
+          "wkt": "POINT(-96.8504405132917 33.01179900005508)",
+          "srid": 4326,
+          "type": "point"
+        },
+        "zones": [
+          "attendance"
+        ]
+      },
+      "probe": {
+        "id": "synthetic-3",
+        "kind": "synthetic_change_probe",
+        "real_address": false,
+        "coordinates": [
+          -96.8504405132917,
+          33.01179900005508
+        ]
+      },
+      "started_at_utc": "2026-10-26T14:05:30.130265+00:00",
+      "http_status": 200,
+      "sha256": "7c8445ec9fae07481116b903032ce24e89302a3020ed2a7a55614549287f3780",
+      "finished_at_utc": "2026-10-26T14:05:35.168786+00:00"
+    },
+    "raw_response_utf8": "{\"status\": \"OK\", \"messages\": [], \"result\": {\"in_district\": true, \"school_results\": [{\"id\": 18, \"zones\": [\"attendance\"], \"bounds\": [-96.87273807087519, 32.996850369319816, -96.84814355180328, 33.019043779727895]}, {\"id\": 19, \"zones\": [\"attendance\"], \"bounds\": [-96.87273807087519, 32.996850369319816, -96.84814355180328, 33.019043779727895]}, {\"id\": 28, \"zones\": [\"attendance\"], \"bounds\": [-96.89024245299998, 32.95308876776386, -96.84373155036587, 33.01904377972801]}, {\"id\": 31, \"zones\": [\"attendance\"], \"bounds\": [-96.93076796441818, 32.946990148960936, -96.84373155036587, 33.019043779727895]}, {\"id\": 55, \"zones\": [\"attendance\"], \"bounds\": [-96.87273807087519, 32.996850369319816, -96.84814355180328, 33.019043779727895]}, {\"id\": 66, \"zones\": [\"attendance\"], \"bounds\": [-96.87273807087519, 32.996850369319816, -96.84814355180328, 33.019043779727895]}]}}"
+  },
+  {
+    "capture": {
+      "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+      "method": "POST",
+      "request_json": {
+        "mode": "schools_spatial",
+        "attr": {},
+        "grades": [],
+        "spatial_args": {
+          "wkt": "POINT(-96.93873645994313 32.988713000101896)",
+          "srid": 4326,
+          "type": "point"
+        },
+        "zones": [
+          "attendance"
+        ]
+      },
+      "probe": {
+        "id": "synthetic-4",
+        "kind": "synthetic_change_probe",
+        "real_address": false,
+        "coordinates": [
+          -96.93873645994313,
+          32.988713000101896
+        ]
+      },
+      "started_at_utc": "2026-10-26T14:05:30.145935+00:00",
+      "http_status": 200,
+      "sha256": "fdc912cad75c1e951964164ff18ac5c5d30d08e8400649e98e1af5de2d3d3b2a",
+      "finished_at_utc": "2026-10-26T14:05:35.588493+00:00"
+    },
+    "raw_response_utf8": "{\"status\": \"OK\", \"messages\": [], \"result\": {\"in_district\": true, \"school_results\": [{\"id\": 25, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}, {\"id\": 29, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}, {\"id\": 44, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559598, -96.9097525143535, 33.01236477526737]}, {\"id\": 45, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.84373155036587, 33.01542177893367]}, {\"id\": 50, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.84373155036587, 33.0166267770897]}, {\"id\": 68, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}]}}"
+  },
+  {
+    "capture": {
+      "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+      "method": "POST",
+      "request_json": {
+        "mode": "schools_spatial",
+        "attr": {},
+        "grades": [],
+        "spatial_args": {
+          "wkt": "POINT(-96.93428735277716 32.98892480694552)",
+          "srid": 4326,
+          "type": "point"
+        },
+        "zones": [
+          "attendance"
+        ]
+      },
+      "probe": {
+        "id": "address-195537",
+        "kind": "county_911_address_point",
+        "real_address": true,
+        "coordinates": [
+          -96.93428735277716,
+          32.98892480694552
+        ],
+        "source_object_ids": [
+          195537,
+          195538,
+          195539
+        ],
+        "coordinate_quality": "NOT_INDEPENDENTLY_FIELD_VERIFIED"
+      },
+      "started_at_utc": "2026-10-26T14:05:35.176737+00:00",
+      "http_status": 200,
+      "sha256": "85ced4c07636838902cbf28f6d948297c64015a71ce555836b42472d10b3ae21",
+      "finished_at_utc": "2026-10-26T14:05:39.037021+00:00"
+    },
+    "raw_response_utf8": "{\"status\": \"OK\", \"messages\": [], \"result\": {\"in_district\": false, \"school_results\": []}}"
+  },
+  {
+    "capture": {
+      "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+      "method": "POST",
+      "request_json": {
+        "mode": "schools_spatial",
+        "attr": {},
+        "grades": [],
+        "spatial_args": {
+          "wkt": "POINT(-96.92933378943917 32.98865125381522)",
+          "srid": 4326,
+          "type": "point"
+        },
+        "zones": [
+          "attendance"
+        ]
+      },
+      "probe": {
+        "id": "address-211800",
+        "kind": "county_911_address_point",
+        "real_address": true,
+        "coordinates": [
+          -96.92933378943917,
+          32.98865125381522
+        ],
+        "source_object_ids": [
+          211800
+        ],
+        "coordinate_quality": "NOT_INDEPENDENTLY_FIELD_VERIFIED"
+      },
+      "started_at_utc": "2026-10-26T14:05:35.498969+00:00",
+      "http_status": 200,
+      "sha256": "85ced4c07636838902cbf28f6d948297c64015a71ce555836b42472d10b3ae21",
+      "finished_at_utc": "2026-10-26T14:05:39.195183+00:00"
+    },
+    "raw_response_utf8": "{\"status\": \"OK\", \"messages\": [], \"result\": {\"in_district\": false, \"school_results\": []}}"
+  },
+  {
+    "capture": {
+      "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+      "method": "POST",
+      "request_json": {
+        "mode": "schools_spatial",
+        "attr": {},
+        "grades": [],
+        "spatial_args": {
+          "wkt": "POINT(-96.92721121969707 32.98868195603768)",
+          "srid": 4326,
+          "type": "point"
+        },
+        "zones": [
+          "attendance"
+        ]
+      },
+      "probe": {
+        "id": "address-211801",
+        "kind": "county_911_address_point",
+        "real_address": true,
+        "coordinates": [
+          -96.92721121969707,
+          32.98868195603768
+        ],
+        "source_object_ids": [
+          211801
+        ],
+        "coordinate_quality": "NOT_INDEPENDENTLY_FIELD_VERIFIED"
+      },
+      "started_at_utc": "2026-10-26T14:05:35.581303+00:00",
+      "http_status": 200,
+      "sha256": "fdc912cad75c1e951964164ff18ac5c5d30d08e8400649e98e1af5de2d3d3b2a",
+      "finished_at_utc": "2026-10-26T14:05:39.155742+00:00"
+    },
+    "raw_response_utf8": "{\"status\": \"OK\", \"messages\": [], \"result\": {\"in_district\": true, \"school_results\": [{\"id\": 25, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}, {\"id\": 29, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}, {\"id\": 44, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559598, -96.9097525143535, 33.01236477526737]}, {\"id\": 45, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.84373155036587, 33.01542177893367]}, {\"id\": 50, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.84373155036587, 33.0166267770897]}, {\"id\": 68, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}]}}"
+  },
+  {
+    "capture": {
+      "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+      "method": "POST",
+      "request_json": {
+        "mode": "schools_spatial",
+        "attr": {},
+        "grades": [],
+        "spatial_args": {
+          "wkt": "POINT(-96.93714606946162 32.988859946298675)",
+          "srid": 4326,
+          "type": "point"
+        },
+        "zones": [
+          "attendance"
+        ]
+      },
+      "probe": {
+        "id": "address-224487",
+        "kind": "county_911_address_point",
+        "real_address": true,
+        "coordinates": [
+          -96.93714606946162,
+          32.988859946298675
+        ],
+        "source_object_ids": [
+          224487
+        ],
+        "coordinate_quality": "NOT_INDEPENDENTLY_FIELD_VERIFIED"
+      },
+      "started_at_utc": "2026-10-26T14:05:35.593729+00:00",
+      "http_status": 200,
+      "sha256": "85ced4c07636838902cbf28f6d948297c64015a71ce555836b42472d10b3ae21",
+      "finished_at_utc": "2026-10-26T14:05:39.099213+00:00"
+    },
+    "raw_response_utf8": "{\"status\": \"OK\", \"messages\": [], \"result\": {\"in_district\": false, \"school_results\": []}}"
+  },
+  {
+    "capture": {
+      "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+      "method": "POST",
+      "request_json": {
+        "mode": "schools_spatial",
+        "attr": {},
+        "grades": [],
+        "spatial_args": {
+          "wkt": "POINT(-96.93295610417032 32.98836839813966)",
+          "srid": 4326,
+          "type": "point"
+        },
+        "zones": [
+          "attendance"
+        ]
+      },
+      "probe": {
+        "id": "address-273947",
+        "kind": "county_911_address_point",
+        "real_address": true,
+        "coordinates": [
+          -96.93295610417032,
+          32.98836839813966
+        ],
+        "source_object_ids": [
+          273947
+        ],
+        "coordinate_quality": "NOT_INDEPENDENTLY_FIELD_VERIFIED"
+      },
+      "started_at_utc": "2026-10-26T14:05:39.038037+00:00",
+      "http_status": 200,
+      "sha256": "fdc912cad75c1e951964164ff18ac5c5d30d08e8400649e98e1af5de2d3d3b2a",
+      "finished_at_utc": "2026-10-26T14:05:42.222198+00:00"
+    },
+    "raw_response_utf8": "{\"status\": \"OK\", \"messages\": [], \"result\": {\"in_district\": true, \"school_results\": [{\"id\": 25, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}, {\"id\": 29, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}, {\"id\": 44, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559598, -96.9097525143535, 33.01236477526737]}, {\"id\": 45, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.84373155036587, 33.01542177893367]}, {\"id\": 50, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.84373155036587, 33.0166267770897]}, {\"id\": 68, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}]}}"
+  },
+  {
+    "capture": {
+      "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+      "method": "POST",
+      "request_json": {
+        "mode": "schools_spatial",
+        "attr": {},
+        "grades": [],
+        "spatial_args": {
+          "wkt": "POINT(-96.9284293125138 32.988418986532174)",
+          "srid": 4326,
+          "type": "point"
+        },
+        "zones": [
+          "attendance"
+        ]
+      },
+      "probe": {
+        "id": "address-273987",
+        "kind": "county_911_address_point",
+        "real_address": true,
+        "coordinates": [
+          -96.9284293125138,
+          32.988418986532174
+        ],
+        "source_object_ids": [
+          273987
+        ],
+        "coordinate_quality": "NOT_INDEPENDENTLY_FIELD_VERIFIED"
+      },
+      "started_at_utc": "2026-10-26T14:05:39.100019+00:00",
+      "http_status": 200,
+      "sha256": "fdc912cad75c1e951964164ff18ac5c5d30d08e8400649e98e1af5de2d3d3b2a",
+      "finished_at_utc": "2026-10-26T14:05:42.239073+00:00"
+    },
+    "raw_response_utf8": "{\"status\": \"OK\", \"messages\": [], \"result\": {\"in_district\": true, \"school_results\": [{\"id\": 25, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}, {\"id\": 29, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}, {\"id\": 44, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559598, -96.9097525143535, 33.01236477526737]}, {\"id\": 45, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.84373155036587, 33.01542177893367]}, {\"id\": 50, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.84373155036587, 33.0166267770897]}, {\"id\": 68, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}]}}"
+  },
+  {
+    "capture": {
+      "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+      "method": "POST",
+      "request_json": {
+        "mode": "schools_spatial",
+        "attr": {},
+        "grades": [],
+        "spatial_args": {
+          "wkt": "POINT(-96.92828242969472 32.988406138604674)",
+          "srid": 4326,
+          "type": "point"
+        },
+        "zones": [
+          "attendance"
+        ]
+      },
+      "probe": {
+        "id": "address-273988",
+        "kind": "county_911_address_point",
+        "real_address": true,
+        "coordinates": [
+          -96.92828242969472,
+          32.988406138604674
+        ],
+        "source_object_ids": [
+          273988
+        ],
+        "coordinate_quality": "NOT_INDEPENDENTLY_FIELD_VERIFIED"
+      },
+      "started_at_utc": "2026-10-26T14:05:39.157122+00:00",
+      "http_status": 200,
+      "sha256": "fdc912cad75c1e951964164ff18ac5c5d30d08e8400649e98e1af5de2d3d3b2a",
+      "finished_at_utc": "2026-10-26T14:05:42.162368+00:00"
+    },
+    "raw_response_utf8": "{\"status\": \"OK\", \"messages\": [], \"result\": {\"in_district\": true, \"school_results\": [{\"id\": 25, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}, {\"id\": 29, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}, {\"id\": 44, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559598, -96.9097525143535, 33.01236477526737]}, {\"id\": 45, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.84373155036587, 33.01542177893367]}, {\"id\": 50, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.84373155036587, 33.0166267770897]}, {\"id\": 68, \"zones\": [\"attendance\"], \"bounds\": [-96.93947957308427, 32.98229458559604, -96.86629819730274, 33.0166267770897]}]}}"
+  },
+  {
+    "capture": {
+      "url": "https://app.guidek12.com/carrolltonfarmersbranchtx/school_search/current/api.json",
+      "method": "POST",
+      "request_json": {
+        "mode": "schools_spatial",
+        "attr": {},
+        "grades": [],
+        "spatial_args": {
+          "wkt": "POINT(-96.9116198 32.9441755)",
+          "srid": 4326,
+          "type": "point"
+        },
+        "zones": [
+          "attendance"
+        ]
+      },
+      "probe": {
+        "id": "internal-control",
+        "kind": "census_internal_point",
+        "real_address": false,
+        "coordinates": [
+          -96.9116198,
+          32.9441755
+        ]
+      },
+      "started_at_utc": "2026-10-26T14:05:39.195662+00:00",
+      "http_status": 200,
+      "sha256": "cec499eda0061dfad3f1dbf2211555d221571e95b84aee17bde3836ae5cab73f",
+      "finished_at_utc": "2026-10-26T14:05:42.226715+00:00"
+    },
+    "raw_response_utf8": "{\"status\": \"OK\", \"messages\": [], \"result\": {\"in_district\": true, \"school_results\": [{\"id\": 3, \"zones\": [\"attendance\"], \"bounds\": [-96.96416768600795, 32.86839174690482, -96.90348045278523, 32.98882777040802]}, {\"id\": 15, \"zones\": [\"attendance\"], \"bounds\": [-96.95940457665654, 32.933596588858336, -96.90348045278523, 32.98882777040802]}, {\"id\": 24, \"zones\": [\"attendance\"], \"bounds\": [-96.98831157913645, 32.86836074558562, -96.8983605588644, 32.98882777040802]}, {\"id\": 30, \"zones\": [\"attendance\"], \"bounds\": [-96.98831157913645, 32.86836074558562, -96.8983605588644, 32.98882777040802]}, {\"id\": 54, \"zones\": [\"attendance\"], \"bounds\": [-96.98831157913645, 32.86836074558562, -96.8983605588644, 32.98882777040802]}, {\"id\": 65, \"zones\": [\"attendance\"], \"bounds\": [-96.98831157913645, 32.86836074558562, -96.8983605588644, 32.98882777040802]}]}}"
+  }
+]

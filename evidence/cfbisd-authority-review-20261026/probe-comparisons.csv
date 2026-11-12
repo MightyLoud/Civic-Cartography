@@ -1,0 +1,13 @@
+probe_id,kind,real_address,longitude,latitude,baseline,candidate,tea_2025_26,denton_isd,district_locator,census_membership_changes,legal_assignment
+synthetic-1,synthetic_change_probe,False,-96.85486912021838,33.01171239138266,False,True,True,True,True,True,UNKNOWN
+synthetic-2,synthetic_change_probe,False,-96.84034629643506,32.93984900015795,True,False,True,True,True,True,UNKNOWN
+synthetic-3,synthetic_change_probe,False,-96.8504405132917,33.01179900005508,True,False,True,True,True,True,UNKNOWN
+synthetic-4,synthetic_change_probe,False,-96.93873645994313,32.988713000101896,True,False,True,True,True,True,UNKNOWN
+address-195537,county_911_address_point,True,-96.93428735277716,32.98892480694552,False,False,False,False,False,False,UNKNOWN
+address-211800,county_911_address_point,True,-96.92933378943917,32.98865125381522,False,False,False,False,False,False,UNKNOWN
+address-211801,county_911_address_point,True,-96.92721121969707,32.98868195603768,True,True,True,True,True,False,UNKNOWN
+address-224487,county_911_address_point,True,-96.93714606946162,32.988859946298675,False,False,False,False,False,False,UNKNOWN
+address-273947,county_911_address_point,True,-96.93295610417032,32.98836839813966,True,True,True,True,True,False,UNKNOWN
+address-273987,county_911_address_point,True,-96.9284293125138,32.988418986532174,True,True,True,True,True,False,UNKNOWN
+address-273988,county_911_address_point,True,-96.92828242969472,32.988406138604674,True,True,True,True,True,False,UNKNOWN
+internal-control,census_internal_point,False,-96.9116198,32.9441755,True,True,True,True,True,False,UNKNOWN

@@ -1,0 +1,3 @@
+# Optional evidence analysis only; not imported by production or regression tests.
+shapely==2.2.0
+pyproj==3.8.0

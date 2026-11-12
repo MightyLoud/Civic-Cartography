@@ -1,0 +1,163 @@
+{
+  "geoid": "4813050",
+  "sources": {
+    "2010": {
+      "aland_m2": 122049417,
+      "awater_m2": 2546805,
+      "baseline_ring_matches_at_seven_decimal_places": false,
+      "exact_native_ring_matches": [],
+      "fresh_ring_matches_at_seven_decimal_places": false,
+      "segment_coordinate_matches_at_seven_decimal_places": {
+        "inserted_vertex": {
+          "baseline": true,
+          "fresh": false
+        },
+        "north": {
+          "baseline": false,
+          "fresh": false
+        },
+        "west": {
+          "baseline": false,
+          "fresh": false
+        }
+      },
+      "vertices_including_closure": 1073
+    },
+    "2018": {
+      "aland_m2": 122001351,
+      "awater_m2": 2731296,
+      "baseline_ring_matches_at_seven_decimal_places": false,
+      "exact_native_ring_matches": [],
+      "fresh_ring_matches_at_seven_decimal_places": false,
+      "segment_coordinate_matches_at_seven_decimal_places": {
+        "inserted_vertex": {
+          "baseline": true,
+          "fresh": false
+        },
+        "north": {
+          "baseline": false,
+          "fresh": false
+        },
+        "west": {
+          "baseline": false,
+          "fresh": false
+        }
+      },
+      "vertices_including_closure": 1084
+    },
+    "2019": {
+      "aland_m2": 122373692,
+      "awater_m2": 2708971,
+      "baseline_ring_matches_at_seven_decimal_places": false,
+      "exact_native_ring_matches": [],
+      "fresh_ring_matches_at_seven_decimal_places": false,
+      "segment_coordinate_matches_at_seven_decimal_places": {
+        "inserted_vertex": {
+          "baseline": true,
+          "fresh": false
+        },
+        "north": {
+          "baseline": false,
+          "fresh": false
+        },
+        "west": {
+          "baseline": false,
+          "fresh": false
+        }
+      },
+      "vertices_including_closure": 1017
+    },
+    "2020": {
+      "aland_m2": 122372376,
+      "awater_m2": 2709073,
+      "baseline_ring_matches_at_seven_decimal_places": false,
+      "exact_native_ring_matches": [],
+      "fresh_ring_matches_at_seven_decimal_places": false,
+      "segment_coordinate_matches_at_seven_decimal_places": {
+        "inserted_vertex": {
+          "baseline": true,
+          "fresh": false
+        },
+        "north": {
+          "baseline": true,
+          "fresh": false
+        },
+        "west": {
+          "baseline": true,
+          "fresh": false
+        }
+      },
+      "vertices_including_closure": 1018
+    },
+    "2024": {
+      "aland_m2": 122372374,
+      "awater_m2": 2709073,
+      "baseline_ring_matches_at_seven_decimal_places": false,
+      "exact_native_ring_matches": [
+        "2025"
+      ],
+      "fresh_ring_matches_at_seven_decimal_places": false,
+      "segment_coordinate_matches_at_seven_decimal_places": {
+        "inserted_vertex": {
+          "baseline": true,
+          "fresh": false
+        },
+        "north": {
+          "baseline": true,
+          "fresh": false
+        },
+        "west": {
+          "baseline": true,
+          "fresh": false
+        }
+      },
+      "vertices_including_closure": 1018
+    },
+    "2025": {
+      "aland_m2": 122372375,
+      "awater_m2": 2709073,
+      "baseline_ring_matches_at_seven_decimal_places": false,
+      "exact_native_ring_matches": [
+        "2024"
+      ],
+      "fresh_ring_matches_at_seven_decimal_places": false,
+      "segment_coordinate_matches_at_seven_decimal_places": {
+        "inserted_vertex": {
+          "baseline": true,
+          "fresh": false
+        },
+        "north": {
+          "baseline": true,
+          "fresh": false
+        },
+        "west": {
+          "baseline": true,
+          "fresh": false
+        }
+      },
+      "vertices_including_closure": 1018
+    },
+    "2026": {
+      "aland_m2": 122342541,
+      "awater_m2": 2709073,
+      "baseline_ring_matches_at_seven_decimal_places": false,
+      "exact_native_ring_matches": [],
+      "fresh_ring_matches_at_seven_decimal_places": true,
+      "segment_coordinate_matches_at_seven_decimal_places": {
+        "inserted_vertex": {
+          "baseline": false,
+          "fresh": true
+        },
+        "north": {
+          "baseline": false,
+          "fresh": true
+        },
+        "west": {
+          "baseline": false,
+          "fresh": true
+        }
+      },
+      "vertices_including_closure": 1000
+    }
+  }
+}

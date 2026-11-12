@@ -1,0 +1,84 @@
+{
+  "address_sample_all_five_publications_agree": true,
+  "address_sample_old_new_flips": 0,
+  "address_sample_quality": "COUNTY_SOURCE_RECORDS_UPDATED_2021_NOT_FIELD_VALIDATED",
+  "address_sample_records": 9,
+  "address_sample_unique_coordinates": 7,
+  "area_crs": "EPSG:5070",
+  "baseline_replacement_approved": false,
+  "bounded_queries": [
+    {
+      "features": 0,
+      "independent_count": 0,
+      "kind": "addresses",
+      "region": "north"
+    },
+    {
+      "features": 11,
+      "independent_count": 11,
+      "kind": "parcels",
+      "region": "north"
+    },
+    {
+      "features": 9,
+      "independent_count": 9,
+      "kind": "addresses",
+      "region": "west"
+    },
+    {
+      "features": 14,
+      "independent_count": 14,
+      "kind": "parcels",
+      "region": "west"
+    },
+    {
+      "features": 0,
+      "independent_count": 0,
+      "kind": "addresses",
+      "region": "insert"
+    },
+    {
+      "features": 0,
+      "independent_count": 0,
+      "kind": "parcels",
+      "region": "insert"
+    }
+  ],
+  "diagnostics_are_not_acceptance_thresholds": true,
+  "environment": {
+    "geos": "3.14.1",
+    "proj": "9.8.1",
+    "pyproj": "3.8.0",
+    "shapely": "2.2.0"
+  },
+  "exhaustive_address_inventory": false,
+  "legal_cause": "UNVERIFIED",
+  "legal_effective_date": null,
+  "overall_real_address_impact": "UNVERIFIED",
+  "overlapping_parcel_labels": {
+    "CARROLLTON-FB ISD": 3,
+    "LEWISVILLE ISD": 10,
+    "UNKNOWN": 1
+  },
+  "package_id": "CFBISD-AUTH-001",
+  "parcel_features_with_positive_changed_coverage_overlap": 14,
+  "parcel_query_feature_count": 25,
+  "parcel_query_unique_property_ids": 21,
+  "parcel_year_fields": [
+    2027
+  ],
+  "parcel_year_is_not_legal_effective_date": true,
+  "parcel_year_unknown_count": 1,
+  "release_status": "BLOCKED_SOURCE_CONFLICT_AND_BASELINE_APPROVAL",
+  "source_lineage": "UNKNOWN_POTENTIALLY_SHARED",
+  "source_polygons_valid": true,
+  "synthetic_candidate_disagreements": 3,
+  "synthetic_probe_count": 4,
+  "synthetic_probes_cannot_count_as_real_addresses": true,
+  "whole_polygon_symmetric_difference_m2": {
+    "baseline_vs_denton_isd": 92535.07945756344,
+    "baseline_vs_tea_2025_26": 50667.28626462536,
+    "candidate_vs_denton_isd": 122260.85823973236,
+    "candidate_vs_tea_2025_26": 80393.06672651642
+  }
+}
