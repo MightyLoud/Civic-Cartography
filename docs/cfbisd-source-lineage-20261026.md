@@ -43,3 +43,60 @@ No canonical dataset, original snapshot, generator, comparator, dependency lock,
 Run `python evidence/cfbisd-source-lineage-20261026/reproduce.py`. It decodes and checks original target record bytes and the unmodified verification workbooks using only the Python standard library, then prints the derived analysis. `--verify-archives /path/to/zips` additionally checks every original annual ZIP/member hash and extracts the same target records through their SHX/DBF offsets. `--output /new/path.json` refuses to overwrite existing evidence.
 
 The added regression tests check source-byte decoding, stable identities, annual area/geometry distinctions, inventory limits, reproducible output and preservation of strict comparison below the diagnostic rounding precision.
+
+## November 12, 2026 — Census edge and face trace
+
+The January 14 Texas partnership extract (`25v2`) has the retained CFBISD
+ring's 1,020 vertices at seven decimal places across the whole ring. The
+March 30 verification extract (`26v0`) has the 1,000-vertex ring, exactly
+matching the later 2026 TIGER/Line native coordinates. The cross-product
+seven-decimal comparison is a publication diagnostic across NAD83 and
+EPSG:4326. It does not change strict validation.
+
+The corresponding county partnership shapefiles identify the linework
+under each change. The trace matched exact native NAD83 coordinate pairs,
+then joined edge `TFIDL` and `TFIDR` to the adjacent faces' `TFID` and
+read their `UNSD` codes. Duplicate county copies with identical records
+were counted once by `TLID`.
+
+| Segment | Census edge evidence | Adjacent district |
+| --- | --- | --- |
+| Spring Valley Road | One edge, `103250522`, became `658611476` and `658611477`. The split adds the vertex at `(-96.839765, 32.939853)`. Both new edges carry `MTUPDATE` January 14, 2026. | Dallas ISD (`4816230`) |
+| North / Rosemeade | All 10 edge IDs persisted with revised coordinates. All carry `MTUPDATE` January 16, 2026. Edge `103425454` has a replacement CFBISD face ID. | Lewisville ISD (`4827300`) |
+| West | All 16 edge IDs persisted with revised coordinates. Fifteen carry `MTUPDATE` December 31, 2025 or January 5, 2026. The Elm Fork Trinity River edge `103278314` changed an endpoint and retains its May 14, 2018 timestamp. | Lewisville ISD (`4827300`) and Coppell ISD (`4815210`) |
+
+The left and right school-district codes agree across the two extracts
+for all matched edges, including the split and replacement face. The
+revised coordinates change the published CFBISD polygon and its area.
+The edge timestamps describe the archived edge records. The exact
+geometry comparison shows why they cannot establish a legal effective
+date or reliably date every coordinate edit. `CHNG_TYPE` and `JUSTIFY`
+are blank on the traced edges. The 2026 Texas SDRP change layer contains
+38 polygon records paired into 19 transactions in Houston and Tom Green
+counties. It contains no matching or spatially overlapping CFBISD
+transaction. This review identifies the Census topology edits. The
+processing reason and legal boundary authority remain unresolved.
+
+Sources: [Census partnership archive](https://www2.census.gov/geo/pvs/48/),
+[January Dallas](https://www2.census.gov/geo/pvs/48/partnership_shapefiles_25v2_48113.zip),
+[January Denton](https://www2.census.gov/geo/pvs/48/partnership_shapefiles_25v2_48121.zip),
+[March Dallas](https://www2.census.gov/geo/pvs/48/partnership_shapefiles_26v0_48113.zip),
+[March Denton](https://www2.census.gov/geo/pvs/48/partnership_shapefiles_26v0_48121.zip),
+[Texas verification package](https://www2.census.gov/geo/pvs/48/partnership_shapefiles_26v0_48.zip),
+and the [SDRP field definitions](https://www2.census.gov/geo/pdfs/partnerships/sdrp/2026_SDRP_RespondentGuide.pdf).
+
+### Spatial source attribution and annual cross-check
+
+All 28 revised edge IDs have the same native line coordinates in the
+2026 annual TIGER/Line county edge files, allowing reversed traversal.
+The original Spring Valley Road edge and both replacement edges carry
+spatial metadata ID `605`. The annual files corroborate that ID. The
+county metadata reviewed did not resolve the source associated with it.
+All 26 revised Rosemeade and west edges have blank `SMID` and
+`SMIDTYPE` in the March partnership files and blank `SMID` in the
+2026 annual files. This leaves the processing reason and authority for
+those geometry edits open.
+
+See the annual edge archives for [Dallas County](https://www2.census.gov/geo/tiger/TIGER2026/EDGES/tl_2026_48113_edges.zip)
+and [Denton County](https://www2.census.gov/geo/tiger/TIGER2026/EDGES/tl_2026_48121_edges.zip)
+and the [2026 TIGER/Line technical documentation](https://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2026/TGRSHP2026_TechDoc_Ch3.pdf).
